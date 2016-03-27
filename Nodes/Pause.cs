@@ -19,7 +19,7 @@ namespace Exodrifter.Rumor.Nodes
 			this.seconds = seconds;
 		}
 
-		public override IEnumerator<RumorYield> Run()
+		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			yield return new ForSeconds(seconds);
 		}

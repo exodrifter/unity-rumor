@@ -10,13 +10,34 @@ namespace Exodrifter.Rumor.Engine
 	/// </summary>
 	public sealed class Rumor
 	{
-		private IEnumerator<Node> nodes;
+		/// <summary>
+		/// The nodes in this Rumor.
+		/// </summary>
+		private readonly IEnumerable<Node> nodes;
+
+		/// <summary>
+		/// The current call stack.
+		/// </summary>
+		private readonly Stack<StackFrame> stack;
+
+		/// <summary>
+		/// The current yield.
+		/// </summary>
 		private IEnumerator<RumorYield> yield;
 
 		/// <summary>
 		/// The current node.
 		/// </summary>
-		public Node Current { get { return nodes.Current; } }
+		public Node Current
+		{
+			get
+			{
+				if (stack.Count > 0) {
+					return stack.Peek().Current;
+				}
+				return null;
+			}
+		}
 
 		/// <summary>
 		/// True if the script has been started.
@@ -34,7 +55,9 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="nodes">The nodes to use in the rumor script.</param>
 		public Rumor(IEnumerable<Node> nodes)
 		{
-			this.nodes = nodes.GetEnumerator();
+			this.stack = new Stack<StackFrame>();
+			this.nodes = nodes;
+
 			Started = false;
 			Finished = false;
 		}
@@ -62,22 +85,30 @@ namespace Exodrifter.Rumor.Engine
 					"The rumor has not finished execution yet.");
 			}
 
+			stack.Clear();
+			stack.Push(new StackFrame(nodes));
+
 			Started = true;
 			Finished = false;
-			nodes.Reset();
 
-			while (nodes.MoveNext()) {
+			while (stack.Count > 0) {
 
-				yield = nodes.Current.Run();
+				// Check if the stack frame is exhausted
+				if (stack.Peek().Finished) {
+					stack.Pop();
+					continue;
+				}
 
-				while (yield.MoveNext()) {
-					while (!yield.Current.Finished) {
-						yield return null;
-					}
+				// Execute the next statement
+				yield = stack.Peek().Run(this);
+				yield.MoveNext();
+
+				// Wait for the yield to complete
+				while (yield.Current != null && !yield.Current.Finished) {
+					yield return null;
 				}
 			}
 
-			yield = null;
 			Finished = true;
 		}
 
@@ -116,6 +147,44 @@ namespace Exodrifter.Rumor.Engine
 			if (null != yield.Current) {
 				yield.Current.OnAdvance();
 			}
+		}
+
+		/// <summary>
+		/// Pushes a new stack frame onto the stack.
+		/// </summary>
+		/// <param name="nodes">
+		/// The nodes to use in the new stack frame.
+		/// </param>
+		internal void EnterBlock(IEnumerable<Node> nodes)
+		{
+			var frame = new StackFrame(nodes);
+
+			// Ignore empty frames
+			if (frame.Finished) {
+				return;
+			}
+
+			stack.Push(frame);
+		}
+
+		/// <summary>
+		/// Jumps execution to a label with the specified name that is closest
+		/// to the top of the stack.
+		/// </summary>
+		/// <param name="label">
+		/// The name of the label to jump to.
+		/// </param>
+		internal void JumpToLabel(string label)
+		{
+			while (stack.Count > 0) {
+				if (stack.Peek().JumpToLabel(label)) {
+					return;
+				}
+				stack.Pop();
+			}
+
+			throw new InvalidOperationException(
+				"Label \"" + label + "\" cannot be found");
 		}
 	}
 }

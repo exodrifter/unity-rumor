@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Nodes
 			this.text = text;
 		}
 
-		public override IEnumerator<RumorYield> Run()
+		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			UnityEngine.Debug.Log(text);
 			yield return new ForAdvance();

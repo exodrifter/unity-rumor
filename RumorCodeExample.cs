@@ -15,14 +15,17 @@ namespace Example.Exodrifter
 		void Awake()
 		{
 			rumor = new Rumor(new List<Node>() {
-				new Dialog("Hi!"),
-				new Dialog("How are you?"),
-				new Dialog("I am doing fine."),
-				new Dialog("Did you see the show last night?"),
-				new Dialog("It was very good."),
-				new Dialog("I shouldn't have watched it though..."),
-				new Pause(3),
-				new Dialog("I didn't finish my assignment!"),
+				new Label("start", new List<Node>() {
+					new Dialog("Hi!"),
+					new Dialog("How are you?"),
+					new Dialog("I am doing fine."),
+					new Dialog("Did you see the show last night?"),
+					new Dialog("It was very good."),
+					new Dialog("I shouldn't have watched it though..."),
+					new Pause(3),
+					new Dialog("I didn't finish my assignment!"),
+					new Jump("start"),
+				}),
 			});
 
 			StartCoroutine(rumor.Run());
