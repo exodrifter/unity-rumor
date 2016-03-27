@@ -1,12 +1,15 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
 	/// <summary>
 	/// Specifies a location that can be jumped to.
 	/// </summary>
-	public class Label : Node
+	[Serializable]
+	public sealed class Label : Node, ISerializable
 	{
 		public readonly string name;
 
@@ -26,5 +29,21 @@ namespace Exodrifter.Rumor.Nodes
 			rumor.EnterBlock(children);
 			yield return null;
 		}
+
+		#region Serialization
+
+		public Label(SerializationInfo info, StreamingContext context)
+			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
+		{
+			name = (string)info.GetValue("name", typeof(string));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("children", children, typeof(List<Node>));
+			info.AddValue("name", name, typeof(string));
+		}
+
+		#endregion
 	}
 }

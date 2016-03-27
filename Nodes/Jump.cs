@@ -1,12 +1,15 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
 	/// <summary>
 	/// A jump node jumps to a label in a script.
 	/// </summary>
-	public class Jump : Node
+	[Serializable]
+	public sealed class Jump : Node, ISerializable
 	{
 		public readonly string to;
 
@@ -24,5 +27,19 @@ namespace Exodrifter.Rumor.Nodes
 			rumor.JumpToLabel(to);
 			yield return null;
 		}
+
+		#region Serialization
+
+		public Jump(SerializationInfo info, StreamingContext context)
+		{
+			to = (string)info.GetValue("to", typeof(string));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("to", to, typeof(string));
+		}
+
+		#endregion
 	}
 }

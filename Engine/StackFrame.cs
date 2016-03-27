@@ -1,12 +1,15 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
 	/// <summary>
 	/// Runs and represents the state of a stack frame in a Rumor.
 	/// </summary>
-	public sealed class StackFrame
+	[Serializable]
+	public sealed class StackFrame : ISerializable
 	{
 		/// <summary>
 		/// The list of nodes in this stack frame.
@@ -99,5 +102,21 @@ namespace Exodrifter.Rumor.Engine
 
 			return false;
 		}
+
+		#region Serialization
+
+		public StackFrame(SerializationInfo info, StreamingContext context)
+		{
+			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
+			index = (int)info.GetValue("index", typeof(int));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("nodes", nodes, typeof(List<Node>));
+			info.AddValue("index", index, typeof(int));
+		}
+
+		#endregion
 	}
 }

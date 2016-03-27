@@ -2,18 +2,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
 	/// <summary>
 	/// Runs and represents the state of a Rumor.
 	/// </summary>
-	public sealed class Rumor
+	[Serializable]
+	public sealed class Rumor : ISerializable
 	{
 		/// <summary>
 		/// The nodes in this Rumor.
 		/// </summary>
-		private readonly IEnumerable<Node> nodes;
+		private readonly List<Node> nodes;
 
 		/// <summary>
 		/// The current call stack.
@@ -56,7 +58,7 @@ namespace Exodrifter.Rumor.Engine
 		public Rumor(IEnumerable<Node> nodes)
 		{
 			this.stack = new Stack<StackFrame>();
-			this.nodes = nodes;
+			this.nodes = new List<Node>(nodes);
 
 			Started = false;
 			Finished = false;
@@ -85,8 +87,10 @@ namespace Exodrifter.Rumor.Engine
 					"The rumor has not finished execution yet.");
 			}
 
-			stack.Clear();
-			stack.Push(new StackFrame(nodes));
+			// If the stack is not empty, this is a saved game
+			if (stack.Count == 0) {
+				stack.Push(new StackFrame(nodes));
+			}
 
 			Started = true;
 			Finished = false;
@@ -186,5 +190,21 @@ namespace Exodrifter.Rumor.Engine
 			throw new InvalidOperationException(
 				"Label \"" + label + "\" cannot be found");
 		}
+
+		#region Serialization
+
+		public Rumor(SerializationInfo info, StreamingContext context)
+		{
+			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
+			stack = (Stack<StackFrame>)info.GetValue("stack", typeof(Stack<StackFrame>));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("nodes", nodes, typeof(List<Node>));
+			info.AddValue("stack", stack, typeof(Stack<StackFrame>));
+		}
+
+		#endregion
 	}
 }
