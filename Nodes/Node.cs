@@ -11,6 +11,17 @@ namespace Exodrifter.Rumor.Nodes
 		protected readonly List<Node> children;
 
 		/// <summary>
+		/// Returns a copy of the children in this node.
+		/// </summary>
+		public List<Node> Children
+		{
+			get
+			{
+				return new List<Node>(children);
+			}
+		}
+
+		/// <summary>
 		/// Creates a new node with no children.
 		/// </summary>
 		protected Node()

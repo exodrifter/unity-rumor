@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Returns a list of nodes for each choice
 		/// </summary>
-		List<IEnumerable<Node>> Consequences { get; }
+		List<List<Node>> Consequences { get; }
 
 		/// <summary>
 		/// Sets the dialog for the state.
@@ -68,7 +68,7 @@ namespace Exodrifter.Rumor.Engine
 		public string Dialog { get; private set; }
 
 		public List<string> Choices { get; private set; }
-		public List<IEnumerable<Node>> Consequences { get; private set; }
+		public List<List<Node>> Consequences { get; private set; }
 
 		public DefaultRumorState()
 		{
@@ -91,7 +91,7 @@ namespace Exodrifter.Rumor.Engine
 		public int AddChoice(string choice, IEnumerable<Node> nodes)
 		{
 			Choices.Add(choice);
-			Consequences.Add(nodes);
+			Consequences.Add(new List<Node>(nodes));
 			return Choices.Count - 1;
 		}
 
@@ -105,7 +105,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Dialog = "";
 			Choices = new List<string>();
-			Consequences = new List<IEnumerable<Node>>();
+			Consequences = new List<List<Node>>();
 		}
 
 		#region Serialization
@@ -113,11 +113,15 @@ namespace Exodrifter.Rumor.Engine
 		public DefaultRumorState(SerializationInfo info, StreamingContext context)
 		{
 			Dialog = (string)info.GetValue("dialog", typeof(string));
+			Choices = (List<string>)info.GetValue("choices", typeof(List<string>));
+			Consequences = (List<List<Node>>)info.GetValue("consequences", typeof(List<List<Node>>));
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("dialog", Dialog, typeof(string));
+			info.AddValue("choices", Choices, typeof(List<string>));
+			info.AddValue("consequences", Consequences, typeof(List<List<Node>>));
 		}
 
 		#endregion

@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Pause : Node, ISerializable
 	{
-		private readonly float seconds;
+		public readonly float seconds;
 
 		/// <summary>
 		/// Creates a new pause node.

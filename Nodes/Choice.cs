@@ -32,12 +32,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Choice(SerializationInfo info, StreamingContext context)
+			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
 		{
 			text = (string)info.GetValue("text", typeof(string));
 		}
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			info.AddValue("children", children, typeof(List<Node>));
 			info.AddValue("text", text, typeof(string));
 		}
 
