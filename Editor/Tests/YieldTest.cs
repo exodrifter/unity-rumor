@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that yield objects operate as expected.
+	/// Ensure yield objects operate as expected.
 	/// </summary>
 	public class YieldTest
 	{

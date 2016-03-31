@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that jump nodes operate as expected.
+	/// Ensure Jump nodes operate as expected.
 	/// </summary>
 	public class JumpTest
 	{
 		/// <summary>
-		/// Makes sure jumps to undefined labels throw an exception.
+		/// Ensure jumps to undefined labels throw an exception.
 		/// </summary>
 		[Test]
 		public void JumpUndefined()
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure jumps to defined labels operate as expected.
+		/// Ensure jumps to defined labels operate as expected.
 		/// </summary>
 		[Test]
 		public void JumpDefined()
@@ -42,15 +42,15 @@ namespace Exodrifter.Rumor.Test
 			var yield = rumor.Run();
 			yield.MoveNext();
 			Assert.AreEqual("a", (rumor.Current as Say).text);
-			
+
 			rumor.Advance();
 			yield.MoveNext();
 			Assert.AreEqual("b", (rumor.Current as Say).text);
 		}
 
 		/// <summary>
-		/// Makes sure jumps go to the first defined label when the same
-		/// label is defined multiple times in the same scope.
+		/// Ensure jumps go to the first defined label when the same label is
+		/// defined multiple times in the same scope.
 		/// </summary>
 		[Test]
 		public void JumpMultipleDefinedSameScope()
@@ -76,8 +76,8 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure jumps go to the closest defined label when the same
-		/// label is defined multiple times in different scopes.
+		/// Ensure jumps go to the closest defined label when the same label
+		/// is defined multiple times in different scopes.
 		/// </summary>
 		[Test]
 		public void JumpMultipleDefinedDifferentScope()

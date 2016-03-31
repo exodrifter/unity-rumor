@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that call nodes operate as expected.
+	/// Ensure Call nodes operate as expected.
 	/// </summary>
 	public class CallTest
 	{
 		/// <summary>
-		/// Makes sure calls to undefined labels throw an exception.
+		/// Ensure calls to undefined labels throw an exception.
 		/// </summary>
 		[Test]
 		public void CallUndefined()
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure calls to defined labels operate as expected.
+		/// Ensure calls to defined labels operate as expected.
 		/// </summary>
 		[Test]
 		public void CallDefined()
@@ -59,8 +59,8 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure calls go to the first defined label when the same
-		/// label is defined multiple times in the same scope.
+		/// Ensure calls go to the first defined label when the same label is
+		/// defined multiple times in the same scope.
 		/// </summary>
 		[Test]
 		public void CallMultipleDefinedSameScope()
@@ -86,8 +86,8 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure calls go to the closest defined label when the same
-		/// label is defined multiple times in different scopes.
+		/// Ensure calls go to the closest defined label when the same label
+		/// is defined multiple times in different scopes.
 		/// </summary>
 		[Test]
 		public void CallMultipleDefinedDifferentScope()

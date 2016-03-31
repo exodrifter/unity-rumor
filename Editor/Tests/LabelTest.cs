@@ -1,12 +1,11 @@
 ﻿using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that label nodes operate as expected.
+	/// Ensure Label nodes operate as expected.
 	/// </summary>
 	public class LabelTest
 	{

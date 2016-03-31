@@ -6,17 +6,22 @@ using System.Runtime.Serialization;
 namespace Exodrifter.Rumor.Nodes
 {
 	/// <summary>
-	/// Pauses execution of the Rumor for a certain amount of time.
+	/// Pauses execution for a certain amount of time.
 	/// </summary>
 	[Serializable]
 	public sealed class Pause : Node, ISerializable
 	{
+		/// <summary>
+		/// The number of seconds to pause for.
+		/// </summary>
 		public readonly float seconds;
 
 		/// <summary>
 		/// Creates a new pause node.
 		/// </summary>
-		/// <param name="seconds">The number of seconds to pause for.</param>
+		/// <param name="seconds">
+		/// The number of seconds to pause for.
+		/// </param>
 		public Pause(float seconds)
 		{
 			this.seconds = seconds;

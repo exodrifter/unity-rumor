@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that Rumor objects operate as expected.
+	/// Ensure Rumor objects operate as expected.
 	/// </summary>
 	public class RumorTest
 	{
 		/// <summary>
-		/// Makes sure empty Rumor objects operate without exceptions.
+		/// Ensure empty Rumor objects operate without exceptions.
 		/// </summary>
 		[Test]
 		public void EmptyRumor()
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure a simple Rumor object can operate without exceptions.
+		/// Ensure a simple Rumor object can operate without exceptions.
 		/// </summary>
 		[Test]
 		public void SimpleRumor()
@@ -65,8 +65,8 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure Rumor objects do not throw exceptions when events are
-		/// passed to it while it is not running
+		/// Ensure Rumor objects do not throw exceptions when events are
+		/// passed to it while it is not running.
 		/// </summary>
 		[Test]
 		public void RumorEventWithoutStart()
@@ -78,8 +78,8 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure Rumor objects throw an exception when run is invoked
-		/// before the previous run has completed.
+		/// Ensure Rumor objects throw an exception when run is invoked before
+		/// the previous run has completed.
 		/// </summary>
 		[Test]
 		public void RumorDisallowMultipleRun()

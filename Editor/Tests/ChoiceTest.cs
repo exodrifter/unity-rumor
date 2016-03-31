@@ -1,12 +1,11 @@
 ﻿using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that choice nodes operate as expected.
+	/// Ensure Choice nodes operate as expected.
 	/// </summary>
 	public class ChoiceTest
 	{

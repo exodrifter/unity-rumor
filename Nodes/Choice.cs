@@ -11,8 +11,20 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public class Choice : Node, ISerializable
 	{
+		/// <summary>
+		/// The text to display for this choice.
+		/// </summary>
 		public readonly string text;
 
+		/// <summary>
+		/// Creates a new choice
+		/// </summary>
+		/// <param name="text">
+		/// The text to display for this choice.
+		/// </param>
+		/// <param name="children">
+		/// The children for this choice.
+		/// </param>
 		public Choice(string text, List<Node> children)
 			: base(children)
 		{

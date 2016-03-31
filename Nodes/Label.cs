@@ -11,6 +11,9 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Label : Node, ISerializable
 	{
+		/// <summary>
+		/// The name of the label.
+		/// </summary>
 		public readonly string name;
 
 		/// <summary>

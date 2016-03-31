@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that Rumors can be serialized and deserialized properly.
+	/// Ensure Rumors can be serialized and deserialized properly.
 	/// </summary>
 	public class SerializationTest
 	{
@@ -299,6 +299,18 @@ namespace Exodrifter.Rumor.Test
 
 		#region Utility
 
+		/// <summary>
+		/// Serializes and then deserializes the passed object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the object.
+		/// </typeparam>
+		/// <param name="o">
+		/// The object to re-serialize.
+		/// </param>
+		/// <returns>
+		/// The object after it has been re-serialized.
+		/// </returns>
 		private static T Reserialize<T>(T o)
 		{
 			return Deserialize<T>(Serialize(o));

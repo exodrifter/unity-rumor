@@ -11,8 +11,17 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Say : Node, ISerializable
 	{
+		/// <summary>
+		/// The text to replace the dialog with.
+		/// </summary>
 		public readonly string text;
 
+		/// <summary>
+		/// Creates a new Say node.
+		/// </summary>
+		/// <param name="text">
+		/// The text to replace the dialog with.
+		/// </param>
 		public Say(string text)
 		{
 			this.text = text;

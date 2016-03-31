@@ -1,18 +1,16 @@
-﻿using Exodrifter.Rumor.Engine;
-using Exodrifter.Rumor.Nodes;
+﻿using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that add nodes operate as expected.
+	/// Ensure Add nodes operate as expected.
 	/// </summary>
 	public class AddTest
 	{
 		/// <summary>
-		/// Ensures Add nodes work if there is no existing dialog.
+		/// Ensure Add nodes work if there is no existing dialog.
 		/// </summary>
 		[Test]
 		public void AddNoneExisting()
@@ -23,12 +21,11 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Ensures Add nodes work if there is existing dialog.
+		/// Ensure Add nodes work if there is existing dialog.
 		/// </summary>
 		[Test]
 		public void AddExisting()
 		{
-
 			// Auto-add a space if dialog doesn't end with whitespace
 			var rumor = new Engine.Rumor(new List<Node>());
 			new Say("thing").Run(rumor).MoveNext();
@@ -55,7 +52,7 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Ensures empty Add nodes work properly with existing dialog.
+		/// Ensure empty Add nodes work properly with existing dialog.
 		/// </summary>
 		[Test]
 		public void AddEmpty()

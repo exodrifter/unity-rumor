@@ -11,8 +11,17 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Add : Node, ISerializable
 	{
+		/// <summary>
+		/// The text to append to the dialog.
+		/// </summary>
 		public readonly string text;
 
+		/// <summary>
+		/// Creates a new Add node.
+		/// </summary>
+		/// <param name="text">
+		/// The text to append to the dialog.
+		/// </param>
 		public Add(string text)
 		{
 			this.text = text;

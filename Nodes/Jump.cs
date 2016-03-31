@@ -11,12 +11,17 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Jump : Node, ISerializable
 	{
+		/// <summary>
+		/// The name of the label to jump to.
+		/// </summary>
 		public readonly string to;
 
 		/// <summary>
 		/// Creates a new jump node.
 		/// </summary>
-		/// <param name="to">The name of the label to jump to.</param>
+		/// <param name="to">
+		/// The name of the label to jump to.
+		/// </param>
 		public Jump(string to)
 		{
 			this.to = to;

@@ -11,8 +11,17 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Call : Node, ISerializable
 	{
+		/// <summary>
+		/// The name of the label to move to.
+		/// </summary>
 		public readonly string to;
 
+		/// <summary>
+		/// Creates a new Call node
+		/// </summary>
+		/// <param name="to">
+		/// The name of the label to move to.
+		/// </param>
 		public Call(string to)
 		{
 			this.to = to;

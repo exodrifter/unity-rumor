@@ -11,6 +11,9 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Return : Node, ISerializable
 	{
+		/// <summary>
+		/// Creates a new Return node.
+		/// </summary>
 		public Return() { }
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
