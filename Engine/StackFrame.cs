@@ -37,6 +37,20 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// The next node or null if the stack frame is about to be exhausted.
+		/// </summary>
+		internal Node Next
+		{
+			get
+			{
+				if (0 <= index && index < nodes.Count) {
+					return nodes[index];
+				}
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// Returns true if the stack frame is exhausted.
 		/// </summary>
 		public bool Finished
@@ -71,7 +85,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Moves the frame's index pointer back to the beginning.
 		/// </summary>
-		internal void Reset ()
+		internal void Reset()
 		{
 			index = 0;
 		}

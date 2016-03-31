@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Exodrifter.Rumor.Nodes;
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
@@ -14,6 +16,16 @@ namespace Exodrifter.Rumor.Engine
 		string Dialog { get; }
 
 		/// <summary>
+		/// Returns a list of choices.
+		/// </summary>
+		List<string> Choices { get; }
+
+		/// <summary>
+		/// Returns a list of nodes for each choice
+		/// </summary>
+		List<IEnumerable<Node>> Consequences { get; }
+
+		/// <summary>
 		/// Sets the dialog for the state.
 		/// </summary>
 		/// <param name="dialog">The dialog to set.</param>
@@ -24,6 +36,22 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="dialog">The dialog to add.</param>
 		void AddDialog(string dialog);
+
+		/// <summary>
+		/// Adds a choice for the state.
+		/// </summary>
+		/// <param name="choice">
+		/// The text for the choice.
+		/// </param>
+		/// <param name="nodes">
+		/// The nodes to use if the choice is selected.
+		/// </param>
+		/// <returns>
+		/// The index of the choice.
+		/// </returns>
+		int AddChoice(string choice, IEnumerable<Node> nodes);
+
+		void ClearChoices();
 	}
 
 	/// <summary>
@@ -34,11 +62,19 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public string Dialog { get; private set; }
 
-		public DefaultRumorState() { }
+		public List<string> Choices { get; private set; }
+		public List<IEnumerable<Node>> Consequences { get; private set; }
+
+		public DefaultRumorState()
+		{
+			Dialog = "";
+			Choices = new List<string>();
+			Consequences = new List<IEnumerable<Node>>();
+		}
 
 		public void SetDialog(string dialog)
 		{
-			Dialog = dialog;
+			Dialog = dialog ?? "";
 		}
 
 		public void AddDialog(string dialog)
@@ -47,6 +83,19 @@ namespace Exodrifter.Rumor.Engine
 				Dialog += " ";
 			}
 			Dialog += dialog;
+		}
+
+		public int AddChoice(string choice, IEnumerable<Node> nodes)
+		{
+			Choices.Add(choice);
+			Consequences.Add(nodes);
+			return Choices.Count - 1;
+		}
+
+		public void ClearChoices()
+		{
+			Choices.Clear();
+			Consequences.Clear();
 		}
 
 		#region Serialization

@@ -42,6 +42,20 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// The next node.
+		/// </summary>
+		public Node Next
+		{
+			get
+			{
+				if (stack.Count > 0) {
+					return stack.Peek().Next;
+				}
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// The state of the script.
 		/// </summary>
 		public IRumorState State { get; private set; }
@@ -157,6 +171,26 @@ namespace Exodrifter.Rumor.Engine
 
 			if (null != yield.Current) {
 				yield.Current.OnAdvance();
+			}
+		}
+
+		/// <summary>
+		/// Choose the choice at the specified index.
+		/// </summary>
+		/// <param name="index">The index of the choice to pick.</param>
+		public void Choose(int index)
+		{
+			if (0 <= index && index < State.Consequences.Count) {
+				EnterBlock(State.Consequences[index]);
+				State.ClearChoices();
+			}
+
+			if (null == yield) {
+				return;
+			}
+
+			if (null != yield.Current) {
+				yield.Current.OnChoice();
 			}
 		}
 

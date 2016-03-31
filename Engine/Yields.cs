@@ -23,6 +23,11 @@
 		/// Called when an advance event occurs.
 		/// </summary>
 		public virtual void OnAdvance() { }
+
+		/// <summary>
+		/// Called when a choice is made.
+		/// </summary>
+		public virtual void OnChoice() { }
 	}
 
 	/// <summary>
@@ -31,6 +36,17 @@
 	public class ForAdvance : RumorYield
 	{
 		public override void OnAdvance()
+		{
+			Finished = true;
+		}
+	}
+
+	/// <summary>
+	/// Yields until a choice event occurs.
+	/// </summary>
+	public class ForChoice : RumorYield
+	{
+		public override void OnChoice()
 		{
 			Finished = true;
 		}
