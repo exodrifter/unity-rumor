@@ -52,6 +52,11 @@ namespace Exodrifter.Rumor.Engine
 		int AddChoice(string choice, IEnumerable<Node> nodes);
 
 		void ClearChoices();
+
+		/// <summary>
+		/// Resets the state.
+		/// </summary>
+		void Reset();
 	}
 
 	/// <summary>
@@ -67,9 +72,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public DefaultRumorState()
 		{
-			Dialog = "";
-			Choices = new List<string>();
-			Consequences = new List<IEnumerable<Node>>();
+			Reset();
 		}
 
 		public void SetDialog(string dialog)
@@ -96,6 +99,13 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Choices.Clear();
 			Consequences.Clear();
+		}
+
+		public void Reset()
+		{
+			Dialog = "";
+			Choices = new List<string>();
+			Consequences = new List<IEnumerable<Node>>();
 		}
 
 		#region Serialization

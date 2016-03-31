@@ -111,6 +111,7 @@ namespace Exodrifter.Rumor.Engine
 			// If the stack is not empty, this is a saved game
 			if (stack.Count == 0) {
 				stack.Push(new StackFrame(nodes));
+				State.Reset();
 			}
 
 			Started = true;
@@ -134,6 +135,8 @@ namespace Exodrifter.Rumor.Engine
 				}
 			}
 
+			// Reset the state when we are finished
+			State.Reset();
 			Finished = true;
 		}
 
