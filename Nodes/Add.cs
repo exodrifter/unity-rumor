@@ -20,7 +20,17 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.State.AddDialog(text);
+			string dialog = rumor.State.Dialog;
+			if (string.IsNullOrEmpty(dialog)
+				|| dialog.EndsWith(" ")
+				|| dialog.EndsWith("\t")
+				|| dialog.EndsWith("\n")) {
+
+				rumor.State.AddDialog(text);
+			}
+			else if (!string.IsNullOrEmpty(text)) {
+				rumor.State.AddDialog(" " + text);
+			}
 			yield return new ForAdvance();
 		}
 

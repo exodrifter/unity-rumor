@@ -82,9 +82,6 @@ namespace Exodrifter.Rumor.Engine
 
 		public void AddDialog(string dialog)
 		{
-			if (!Dialog.EndsWith(" ")) {
-				Dialog += " ";
-			}
 			Dialog += dialog;
 		}
 
