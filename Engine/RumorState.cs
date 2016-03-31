@@ -8,34 +8,59 @@ namespace Exodrifter.Rumor.Engine
 	/// <summary>
 	/// Interface for storing state about the game.
 	/// </summary>
-	public interface IRumorState : ISerializable
+	[Serializable]
+	public class RumorState : ISerializable
 	{
 		/// <summary>
 		/// Returns the current dialog.
 		/// </summary>
-		string Dialog { get; }
+		public string Dialog { get; private set; }
 
 		/// <summary>
 		/// Returns a list of choices.
 		/// </summary>
-		List<string> Choices { get; }
+		public List<string> Choices { get; private set; }
 
 		/// <summary>
 		/// Returns a list of nodes for each choice
 		/// </summary>
-		List<List<Node>> Consequences { get; }
+		public List<List<Node>> Consequences { get; private set; }
+
+		/// <summary>
+		/// Creates a new Rumor state.
+		/// </summary>
+		public RumorState()
+		{
+			Reset();
+		}
+
+		/// <summary>
+		/// Resets the state.
+		/// </summary>
+		public void Reset()
+		{
+			Dialog = "";
+			Choices = new List<string>();
+			Consequences = new List<List<Node>>();
+		}
 
 		/// <summary>
 		/// Sets the dialog for the state.
 		/// </summary>
 		/// <param name="dialog">The dialog to set.</param>
-		void SetDialog(string dialog);
+		public void SetDialog(string dialog)
+		{
+			Dialog = dialog ?? "";
+		}
 
 		/// <summary>
 		/// Adds to the dialog for the state.
 		/// </summary>
 		/// <param name="dialog">The dialog to add.</param>
-		void AddDialog(string dialog);
+		public void AddDialog(string dialog)
+		{
+			Dialog += dialog;
+		}
 
 		/// <summary>
 		/// Adds a choice for the state.
@@ -49,42 +74,6 @@ namespace Exodrifter.Rumor.Engine
 		/// <returns>
 		/// The index of the choice.
 		/// </returns>
-		int AddChoice(string choice, IEnumerable<Node> nodes);
-
-		void ClearChoices();
-
-		/// <summary>
-		/// Resets the state.
-		/// </summary>
-		void Reset();
-	}
-
-	/// <summary>
-	/// A default rumor state that may be polled.
-	/// </summary>
-	[Serializable]
-	public class DefaultRumorState : IRumorState
-	{
-		public string Dialog { get; private set; }
-
-		public List<string> Choices { get; private set; }
-		public List<List<Node>> Consequences { get; private set; }
-
-		public DefaultRumorState()
-		{
-			Reset();
-		}
-
-		public void SetDialog(string dialog)
-		{
-			Dialog = dialog ?? "";
-		}
-
-		public void AddDialog(string dialog)
-		{
-			Dialog += dialog;
-		}
-
 		public int AddChoice(string choice, IEnumerable<Node> nodes)
 		{
 			Choices.Add(choice);
@@ -92,22 +81,18 @@ namespace Exodrifter.Rumor.Engine
 			return Choices.Count - 1;
 		}
 
+		/// <summary>
+		/// Removes all current choices.
+		/// </summary>
 		public void ClearChoices()
 		{
 			Choices.Clear();
 			Consequences.Clear();
 		}
 
-		public void Reset()
-		{
-			Dialog = "";
-			Choices = new List<string>();
-			Consequences = new List<List<Node>>();
-		}
-
 		#region Serialization
 
-		public DefaultRumorState(SerializationInfo info, StreamingContext context)
+		public RumorState(SerializationInfo info, StreamingContext context)
 		{
 			Dialog = (string)info.GetValue("dialog", typeof(string));
 			Choices = (List<string>)info.GetValue("choices", typeof(List<string>));

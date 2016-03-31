@@ -123,7 +123,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SerializeState()
 		{
-			var a = new DefaultRumorState();
+			var a = new RumorState();
 			a.AddChoice("choice", new List<Node>() {
 				new Say("say"),
 			});

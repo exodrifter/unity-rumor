@@ -58,7 +58,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// The state of the script.
 		/// </summary>
-		public IRumorState State { get; private set; }
+		public RumorState State { get; private set; }
 
 		/// <summary>
 		/// True if the script has been started.
@@ -75,12 +75,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="nodes">The nodes to use in the rumor script.</param>
 		/// <param name="state">The state to store data in.</param>
-		public Rumor(IEnumerable<Node> nodes, IRumorState state = null)
+		public Rumor(IEnumerable<Node> nodes)
 		{
 			this.stack = new Stack<StackFrame>();
 			this.nodes = new List<Node>(nodes);
 
-			State = state ?? new DefaultRumorState();
+			State = new RumorState();
 			Started = false;
 			Finished = false;
 		}
@@ -277,7 +277,7 @@ namespace Exodrifter.Rumor.Engine
 			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
 			stack = (Stack<StackFrame>)info.GetValue("stack", typeof(Stack<StackFrame>));
 
-			State = (IRumorState)info.GetValue("state", typeof(IRumorState));
+			State = (RumorState)info.GetValue("state", typeof(RumorState));
 		}
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
@@ -285,7 +285,7 @@ namespace Exodrifter.Rumor.Engine
 			info.AddValue("nodes", nodes, typeof(List<Node>));
 			info.AddValue("stack", stack, typeof(Stack<StackFrame>));
 
-			info.AddValue("state", State, typeof(IRumorState));
+			info.AddValue("state", State, typeof(RumorState));
 		}
 
 		#endregion
