@@ -57,6 +57,26 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Creates a copy of an existing stack frame.
+		/// </summary>
+		/// <param name="frame">
+		/// The stack frame to copy.
+		/// </param>
+		internal StackFrame(StackFrame frame)
+		{
+			this.nodes = frame.nodes;
+			this.index = frame.index;
+		}
+
+		/// <summary>
+		/// Moves the frame's index pointer back to the beginning.
+		/// </summary>
+		internal void Reset ()
+		{
+			index = 0;
+		}
+
+		/// <summary>
 		/// Starts or resumes execution of the stack frame. Note that this
 		/// does not actually run the stack frame, but instead returns an
 		/// IEnumerator that can be used to wait on the completion of a yield
@@ -81,6 +101,24 @@ namespace Exodrifter.Rumor.Engine
 					yield return yield.Current;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns true if this stack frame has a label with the specified
+		/// name.
+		/// </summary>
+		/// <param name="name">The name of the label to find.</param>
+		/// <returns>True if the label exists.</returns>
+		internal bool HasLabel(string name)
+		{
+			foreach (var node in nodes) {
+				var label = node as Label;
+				if (label != null && label.name == name) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>

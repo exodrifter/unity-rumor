@@ -6,18 +6,18 @@ using System.Collections.Generic;
 namespace Exodrifter.Rumor.Test
 {
 	/// <summary>
-	/// Makes sure that jump nodes operate as expected.
+	/// Makes sure that call nodes operate as expected.
 	/// </summary>
-	public class JumpTest
+	public class CallTest
 	{
 		/// <summary>
-		/// Makes sure jumps to undefined labels throw an exception.
+		/// Makes sure calls to undefined labels throw an exception.
 		/// </summary>
 		[Test]
-		public void JumpUndefined()
+		public void CallUndefined()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
-				new Jump("start"),
+				new Call("start"),
 			});
 
 			var yield = rumor.Run();
@@ -25,35 +25,45 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure jumps to defined labels operate as expected.
+		/// Makes sure calls to defined labels operate as expected.
 		/// </summary>
 		[Test]
-		public void JumpDefined()
+		public void CallDefined()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
-				new Jump("a"),
+				new Call("a"),
 				new Label("b", null),
 				new Say("b"),
+				new Return(),
 				new Label("a", null),
 				new Say("a"),
-				new Jump("b"),
+				new Call("b"),
 			});
 
 			var yield = rumor.Run();
 			yield.MoveNext();
 			Assert.AreEqual("a", (rumor.Current as Say).text);
-			
+
 			rumor.Advance();
 			yield.MoveNext();
 			Assert.AreEqual("b", (rumor.Current as Say).text);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("b", (rumor.Current as Say).text);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.True(rumor.Started);
+			Assert.True(rumor.Finished);
 		}
 
 		/// <summary>
-		/// Makes sure jumps go to the first defined label when the same
+		/// Makes sure calls go to the first defined label when the same
 		/// label is defined multiple times in the same scope.
 		/// </summary>
 		[Test]
-		public void JumpMultipleDefinedSameScope()
+		public void CallMultipleDefinedSameScope()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Jump ("start"),
@@ -67,7 +77,7 @@ namespace Exodrifter.Rumor.Test
 					new Say("ac"),
 				}),
 				new Label("start", null),
-				new Jump("a"),
+				new Call("a"),
 			});
 
 			var yield = rumor.Run();
@@ -76,11 +86,11 @@ namespace Exodrifter.Rumor.Test
 		}
 
 		/// <summary>
-		/// Makes sure jumps go to the closest defined label when the same
+		/// Makes sure calls go to the closest defined label when the same
 		/// label is defined multiple times in different scopes.
 		/// </summary>
 		[Test]
-		public void JumpMultipleDefinedDifferentScope()
+		public void CallMultipleDefinedDifferentScope()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
@@ -91,7 +101,7 @@ namespace Exodrifter.Rumor.Test
 					}),
 					new Label("b", new List<Node>() {
 						new Say("ab"),
-						new Jump("a"),
+						new Call("a"),
 					}),
 				}),
 			});

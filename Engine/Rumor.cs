@@ -179,6 +179,14 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Pops the top-most stack frame from the stack.
+		/// </summary>
+		internal void ExitBlock()
+		{
+			stack.Pop();
+		}
+
+		/// <summary>
 		/// Jumps execution to a label with the specified name that is closest
 		/// to the top of the stack.
 		/// </summary>
@@ -196,6 +204,33 @@ namespace Exodrifter.Rumor.Engine
 
 			throw new InvalidOperationException(
 				"Label \"" + label + "\" cannot be found");
+		}
+
+		/// <summary>
+		/// Moves execution to a label with the specified name that is closest
+		/// to the top of the stack.
+		/// </summary>
+		/// <param name="label">move to.
+		/// </param>
+		internal void MoveToLabel(string label)
+		{
+			StackFrame toCopy = null;
+			foreach (var frame in stack) {
+				if (frame.HasLabel(label)) {
+					toCopy = frame;
+					break;
+				}
+			}
+
+			if (toCopy == null) {
+				throw new InvalidOperationException(
+					"Label \"" + label + "\" cannot be found");
+			}
+
+			var newFrame = new StackFrame(toCopy);
+			newFrame.Reset();
+			newFrame.JumpToLabel(label);
+			stack.Push(newFrame);
 		}
 
 		#region Serialization
