@@ -2,6 +2,7 @@
 using Exodrifter.Rumor.Nodes;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Example.Exodrifter
 {
@@ -11,6 +12,8 @@ namespace Example.Exodrifter
 	public class RumorCodeExample : MonoBehaviour
 	{
 		private Rumor rumor;
+
+		public Text text;
 
 		void Awake()
 		{
@@ -33,12 +36,16 @@ namespace Example.Exodrifter
 
 		void Update()
 		{
-			if (rumor == null)
+			if (rumor == null) {
+				text.text = "";
 				return;
+			}
+
+			text.text = rumor.State.Dialog;
 
 			rumor.Update(Time.deltaTime);
 
-			if (Input.GetKeyDown(KeyCode.Space)) {
+			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
 				rumor.Advance();
 			}
 		}
