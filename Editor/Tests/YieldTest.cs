@@ -9,29 +9,7 @@ namespace Exodrifter.Rumor.Test
 	public class YieldTest
 	{
 		/// <summary>
-		/// Makes sure yield for seconds operates as expected.
-		/// </summary>
-		[Test]
-		public void YieldSeconds()
-		{
-			var yield = new ForSeconds(1);
-			Assert.False(yield.Finished);
-
-			yield.OnAdvance();
-			Assert.False(yield.Finished);
-
-			yield.OnUpdate(0);
-			Assert.False(yield.Finished);
-
-			yield.OnUpdate(1);
-			Assert.True(yield.Finished);
-
-			yield.OnUpdate(1);
-			Assert.True(yield.Finished);
-		}
-
-		/// <summary>
-		/// Makes sure yield for advance operates as expected.
+		/// Ensure yield for advance operates as expected.
 		/// </summary>
 		[Test]
 		public void YieldAdvance()
@@ -46,6 +24,53 @@ namespace Exodrifter.Rumor.Test
 			Assert.True(yield.Finished);
 
 			yield.OnAdvance();
+			Assert.True(yield.Finished);
+		}
+
+		/// <summary>
+		/// Ensure yield for choice operates as expected.
+		/// </summary>
+		[Test]
+		public void YieldChoice()
+		{
+			var yield = new ForChoice();
+			Assert.False(yield.Finished);
+
+			yield.OnUpdate(0);
+			Assert.False(yield.Finished);
+
+			yield.OnAdvance();
+			Assert.False(yield.Finished);
+
+			yield.OnChoice();
+			Assert.True(yield.Finished);
+
+			yield.OnChoice();
+			Assert.True(yield.Finished);
+		}
+
+		/// <summary>
+		/// Ensure yield for seconds operates as expected.
+		/// </summary>
+		[Test]
+		public void YieldSeconds()
+		{
+			var yield = new ForSeconds(1);
+			Assert.False(yield.Finished);
+
+			yield.OnAdvance();
+			Assert.False(yield.Finished);
+
+			yield.OnChoice();
+			Assert.False(yield.Finished);
+
+			yield.OnUpdate(0);
+			Assert.False(yield.Finished);
+
+			yield.OnUpdate(1);
+			Assert.True(yield.Finished);
+
+			yield.OnUpdate(1);
 			Assert.True(yield.Finished);
 		}
 	}
