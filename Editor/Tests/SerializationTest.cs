@@ -104,6 +104,8 @@ namespace Exodrifter.Rumor.Test
 			a = Serialize(b);
 			b = Deserialize(a);
 
+			Assert.AreEqual("How are you?", b.State.Dialog);
+
 			yield = b.Run();
 			yield.MoveNext();
 			Assert.True(b.Started);
