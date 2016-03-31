@@ -18,6 +18,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="dialog">The dialog to set.</param>
 		void SetDialog(string dialog);
+
+		/// <summary>
+		/// Adds to the dialog for the state.
+		/// </summary>
+		/// <param name="dialog">The dialog to add.</param>
+		void AddDialog(string dialog);
 	}
 
 	/// <summary>
@@ -33,6 +39,14 @@ namespace Exodrifter.Rumor.Engine
 		public void SetDialog(string dialog)
 		{
 			Dialog = dialog;
+		}
+
+		public void AddDialog(string dialog)
+		{
+			if (!Dialog.EndsWith(" ")) {
+				Dialog += " ";
+			}
+			Dialog += dialog;
 		}
 
 		#region Serialization

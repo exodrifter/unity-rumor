@@ -34,19 +34,19 @@ namespace Exodrifter.Rumor.Test
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Jump("a"),
 				new Label("b", null),
-				new Dialog("b"),
+				new Say("b"),
 				new Label("a", null),
-				new Dialog("a"),
+				new Say("a"),
 				new Jump("b"),
 			});
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Dialog).text);
+			Assert.AreEqual("a", (rumor.Current as Say).text);
 			
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("b", (rumor.Current as Dialog).text);
+			Assert.AreEqual("b", (rumor.Current as Say).text);
 		}
 
 		/// <summary>
@@ -59,13 +59,13 @@ namespace Exodrifter.Rumor.Test
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Jump ("start"),
 				new Label("a", new List<Node>() {
-					new Dialog("aa"),
+					new Say("aa"),
 				}),
 				new Label("a", new List<Node>() {
-					new Dialog("ab"),
+					new Say("ab"),
 				}),
 				new Label("a", new List<Node>() {
-					new Dialog("ac"),
+					new Say("ac"),
 				}),
 				new Label("start", null),
 				new Jump("a"),
@@ -73,7 +73,7 @@ namespace Exodrifter.Rumor.Test
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Dialog).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).text);
 		}
 
 		/// <summary>
@@ -85,14 +85,14 @@ namespace Exodrifter.Rumor.Test
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
-					new Dialog("a"),
+					new Say("a"),
 
 					new Label("a", new List<Node>() {
-						new Dialog("aa"),
+						new Say("aa"),
 						new Jump("b"),
 					}),
 					new Label("b", new List<Node>() {
-						new Dialog("ab"),
+						new Say("ab"),
 						new Jump("a"),
 					}),
 				}),
@@ -100,19 +100,19 @@ namespace Exodrifter.Rumor.Test
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Dialog).text);
+			Assert.AreEqual("a", (rumor.Current as Say).text);
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Dialog).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).text);
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("ab", (rumor.Current as Dialog).text);
+			Assert.AreEqual("ab", (rumor.Current as Say).text);
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Dialog).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).text);
 		}
 	}
 }

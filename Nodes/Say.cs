@@ -5,12 +5,15 @@ using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
+	/// <summary>
+	/// Sets the dialog in the rumor state.
+	/// </summary>
 	[Serializable]
-	public sealed class Dialog : Node, ISerializable
+	public sealed class Say : Node, ISerializable
 	{
 		public readonly string text;
 
-		public Dialog(string text)
+		public Say(string text)
 		{
 			this.text = text;
 		}
@@ -23,7 +26,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		#region Serialization
 
-		public Dialog(SerializationInfo info, StreamingContext context)
+		public Say(SerializationInfo info, StreamingContext context)
 		{
 			text = (string)info.GetValue("text", typeof(string));
 		}

@@ -40,8 +40,8 @@ namespace Exodrifter.Rumor.Test
 		public void SerializeSimple()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
-				new Dialog("Hello!"),
-				new Dialog("How are you?"),
+				new Say("Hello!"),
+				new Say("How are you?"),
 			});
 
 			var a = Serialize(rumor);
@@ -54,11 +54,11 @@ namespace Exodrifter.Rumor.Test
 			yield.MoveNext();
 			Assert.True(b.Started);
 			Assert.False(b.Finished);
-			Assert.AreEqual("Hello!", (b.Current as Dialog).text);
+			Assert.AreEqual("Hello!", (b.Current as Say).text);
 
 			b.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How are you?", (b.Current as Dialog).text);
+			Assert.AreEqual("How are you?", (b.Current as Say).text);
 
 			b.Advance();
 			yield.MoveNext();
@@ -75,12 +75,12 @@ namespace Exodrifter.Rumor.Test
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
-					new Dialog("Hello!"),
-					new Dialog("How are you?"),
+					new Say("Hello!"),
+					new Say("How are you?"),
 				}),
 				new Label("b", new List<Node>() {
-					new Dialog("Good."),
-					new Dialog("How about yourself?"),
+					new Say("Good."),
+					new Say("How about yourself?"),
 				}),
 			});
 
@@ -94,11 +94,11 @@ namespace Exodrifter.Rumor.Test
 			yield.MoveNext();
 			Assert.True(b.Started);
 			Assert.False(b.Finished);
-			Assert.AreEqual("Hello!", (b.Current as Dialog).text);
+			Assert.AreEqual("Hello!", (b.Current as Say).text);
 
 			b.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How are you?", (b.Current as Dialog).text);
+			Assert.AreEqual("How are you?", (b.Current as Say).text);
 
 			// Check to see if serializing during execution works
 			a = Serialize(b);
@@ -110,11 +110,11 @@ namespace Exodrifter.Rumor.Test
 			yield.MoveNext();
 			Assert.True(b.Started);
 			Assert.False(b.Finished);
-			Assert.AreEqual("Good.", (b.Current as Dialog).text);
+			Assert.AreEqual("Good.", (b.Current as Say).text);
 
 			b.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How about yourself?", (b.Current as Dialog).text);
+			Assert.AreEqual("How about yourself?", (b.Current as Say).text);
 
 			b.Advance();
 			yield.MoveNext();

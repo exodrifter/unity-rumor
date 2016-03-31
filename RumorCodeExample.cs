@@ -16,14 +16,14 @@ namespace Example.Exodrifter
 		{
 			rumor = new Rumor(new List<Node>() {
 				new Label("start", new List<Node>() {
-					new Dialog("Hi!"),
-					new Dialog("How are you?"),
-					new Dialog("I am doing fine."),
-					new Dialog("Did you see the show last night?"),
-					new Dialog("It was very good."),
-					new Dialog("I shouldn't have watched it though..."),
+					new Say("Hi!"),
+					new Say("How are you?"),
+					new Say("I am doing fine."),
+					new Say("Did you see the show last night?"),
+					new Say("It was very good."),
+					new Say("I shouldn't have watched it though..."),
 					new Pause(3),
-					new Dialog("I didn't finish my assignment!"),
+					new Say("I didn't finish my assignment!"),
 					new Jump("start"),
 				}),
 			});

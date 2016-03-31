@@ -35,8 +35,8 @@ namespace Exodrifter.Rumor.Test
 		public void SimpleRumor()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
-				new Dialog("a"),
-				new Dialog("b"),
+				new Say("a"),
+				new Say("b"),
 			});
 
 			var iter = rumor.Run();
@@ -85,7 +85,7 @@ namespace Exodrifter.Rumor.Test
 		public void RumorDisallowMultipleRun()
 		{
 			var rumor = new Engine.Rumor(new List<Node>() {
-				new Dialog("a")
+				new Say("a")
 			});
 
 			rumor.Run().MoveNext();
