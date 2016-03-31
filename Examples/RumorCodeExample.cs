@@ -20,15 +20,18 @@ namespace Example.Exodrifter
 			rumor = new Rumor(new List<Node>() {
 				new Label("start", new List<Node>() {
 					new Say("Hi!"),
-					new Say("How are you?"),
-					new Say("I am doing fine."),
-					new Say("Did you see the show last night?"),
-					new Say("It was very good."),
-					new Say("I shouldn't have watched it though..."),
-					new Pause(3),
-					new Say("I didn't finish my assignment!"),
-					new Jump("start"),
+					new Say("Is this working?"),
+					new Choice("Yes!", new List<Node>() {
+						new Say("Great!"),
+					}),
+					new Choice("No.", new List<Node>() {
+						new Say("Darn..."),
+						new Pause(0.5f),
+						new Add("Maybe next time."),
+					}),
 				}),
+				new Say("Well, thanks for stopping by!"),
+				new Say("See you next time!"),
 			});
 
 			StartCoroutine(rumor.Run());
@@ -41,12 +44,31 @@ namespace Example.Exodrifter
 				return;
 			}
 
-			text.text = rumor.State.Dialog;
+			if (rumor.State.Choices.Count > 0) {
+				int num = 1;
+				text.text = "";
+
+				foreach (var choice in rumor.State.Choices) {
+					text.text += num + ") " + choice + "\n";
+					num++;
+				}
+			}
+			else {
+				text.text = rumor.State.Dialog;
+			}
 
 			rumor.Update(Time.deltaTime);
 
 			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
 				rumor.Advance();
+			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha1)) {
+				rumor.Choose(0);
+			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha2)) {
+				rumor.Choose(1);
 			}
 		}
 	}
