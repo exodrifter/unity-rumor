@@ -109,7 +109,7 @@ namespace Exodrifter.Rumor.Lang
 							continue;
 						}
 
-						// ...or if the previous token was a newline
+						// ...or if the previous token was wa newline
 						var last = logicalTokens[logicalTokens.Count - 1].text;
 						if (newlines.Contains(last)) {
 							row++;
