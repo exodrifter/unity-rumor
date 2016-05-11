@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Lang
 {
 	internal class TokenizerTest
 	{

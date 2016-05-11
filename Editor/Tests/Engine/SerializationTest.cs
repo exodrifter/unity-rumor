@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Engine
 {
 	/// <summary>
 	/// Ensure Rumors can be serialized and deserialized properly.
@@ -149,7 +149,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SerializeRumorEmpty()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 
 			rumor = Reserialize(rumor);
 
@@ -168,7 +168,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SerializeRumorSimple()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Say("Hello!"),
 				new Say("How are you?"),
 			});
@@ -200,7 +200,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SerializeRumorNormal()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
 					new Say("Hello!"),
 					new Say("How are you?"),
@@ -253,7 +253,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SerializeRumorNested()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
 					new Say("a!"),
 					new Label("b", new List<Node>() {

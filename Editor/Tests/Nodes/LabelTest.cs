@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Nodes
 {
 	/// <summary>
 	/// Ensure Label nodes operate as expected.
@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void LabelEnter()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
 					new Say("a"),
 				}),
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void LabelExit()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
 					new Say("a"),
 				}),
@@ -62,7 +62,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void LabelExitNested()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Label("a", new List<Node>() {
 					new Label("b", new List<Node>() {
 						new Label("c", new List<Node>() {

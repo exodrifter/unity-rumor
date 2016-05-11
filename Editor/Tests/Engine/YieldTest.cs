@@ -1,7 +1,7 @@
 ﻿using Exodrifter.Rumor.Engine;
 using NUnit.Framework;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Engine
 {
 	/// <summary>
 	/// Ensure yield objects operate as expected.

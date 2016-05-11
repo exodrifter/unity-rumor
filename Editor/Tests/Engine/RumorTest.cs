@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Engine
 {
 	/// <summary>
 	/// Ensure Rumor objects operate as expected.
@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void EmptyRumor()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 
 			var iter = rumor.Run();
 			iter.MoveNext();
@@ -34,7 +34,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void SimpleRumor()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Say("a"),
 				new Say("b"),
 			});
@@ -71,7 +71,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void RumorEventWithoutStart()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 
 			Assert.DoesNotThrow(rumor.Advance);
 			Assert.DoesNotThrow(() => rumor.Update(0));
@@ -84,7 +84,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void RumorDisallowMultipleRun()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Say("a")
 			});
 

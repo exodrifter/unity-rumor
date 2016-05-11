@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Lang
 {
 	internal class ParserTest
 	{
