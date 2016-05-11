@@ -9,6 +9,7 @@ namespace Example.Exodrifter
 	/// <summary>
 	/// This is an example of how a Rumor may be intialized using just code.
 	/// </summary>
+	[AddComponentMenu("")]
 	public class RumorCodeExample : MonoBehaviour
 	{
 		private Rumor rumor;

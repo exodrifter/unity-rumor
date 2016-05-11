@@ -10,6 +10,7 @@ namespace Example.Exodrifter
 	/// <summary>
 	/// This is an example of how a Rumor may be intialized using a script.
 	/// </summary>
+	[AddComponentMenu("")]
 	public class RumorScriptExample : MonoBehaviour
 	{
 		private Rumor rumor;
