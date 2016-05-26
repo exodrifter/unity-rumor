@@ -23,6 +23,18 @@ namespace Exodrifter.Rumor.Engine
 		private readonly Stack<StackFrame> stack;
 
 		/// <summary>
+		/// The current scope.
+		/// </summary>
+		public Scope Scope
+		{
+			get
+			{
+				return scope;
+			}
+		}
+		private readonly Scope scope;
+
+		/// <summary>
 		/// The current yield.
 		/// </summary>
 		private IEnumerator<RumorYield> yield;
@@ -77,8 +89,9 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="state">The state to store data in.</param>
 		public Rumor(IEnumerable<Node> nodes)
 		{
-			this.stack = new Stack<StackFrame>();
 			this.nodes = new List<Node>(nodes);
+			this.stack = new Stack<StackFrame>();
+			this.scope = new Scope();
 
 			State = new RumorState();
 			Started = false;
@@ -136,6 +149,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			// Reset the state when we are finished
+			scope.Clear(false);
 			State.Reset();
 			Finished = true;
 		}

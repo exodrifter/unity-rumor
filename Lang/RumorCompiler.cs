@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using Exodrifter.Rumor.Expressions;
 using System;
 using System.Collections.Generic;
 
@@ -56,6 +57,7 @@ namespace Exodrifter.Rumor.Lang
 				.Instantiate();
 
 			handlers = new Dictionary<string, NodeParser>();
+			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
 			handlers["choice"] = CompileChoice;
 			handlers["label"] = CompileLabel;
@@ -124,6 +126,103 @@ namespace Exodrifter.Rumor.Lang
 			return nodes;
 		}
 
+		public Expression CompileExpression(List<LogicalToken> tokens)
+		{
+			tokens = Trim(tokens);
+			if (tokens == null || tokens.Count == 0) {
+				return new NoOpExpression();
+			}
+
+			var ops = new List<string>() { "=", "*", "/", "+", "-" };
+			int opValue = int.MaxValue; // operator's index in ops list
+			int opIndex = -1; // operator's index in the token list
+			int parenthesis = 0;
+
+			for (int i = 0; i < tokens.Count; ++i) {
+				var token = tokens[i];
+
+				if (parenthesis == 0 && ops.Contains(token.text)) {
+					var newOpValue = ops.IndexOf(token.text);
+
+					// Token is an operator with a higher priority
+					if (newOpValue < opValue) {
+						opValue = newOpValue;
+						opIndex = i;
+					}
+				}
+				else if (token.text == "(") {
+					parenthesis++;
+				}
+				else if (token.text == ")") {
+					parenthesis--;
+					if (parenthesis < 0) {
+						throw new CompilerError(token,
+							"Unexpected close parenthesis!");
+					}
+				}
+			}
+
+			if (parenthesis != 0) {
+				throw new CompilerError(tokens[tokens.Count - 1],
+					"Expected close parenthesis, but there is none!");
+			}
+
+			// Split on the operator, if there is one
+			if (opValue != int.MaxValue || opIndex != -1) {
+				var left = CompileExpression(Slice(tokens, 0, opIndex));
+				var right = CompileExpression(Slice(tokens, opIndex + 1));
+				switch (ops[opValue]) {
+					case "=":
+						return new SetExpression(left, right);
+					case "*":
+						return new MultiplyExpression(left, right);
+					case "/":
+						return new DivideExpression(left, right);
+					case "+":
+						return new AddExpression(left, right);
+					case "-":
+						return new SubtractExpression(left, right);
+				}
+			}
+
+			else {
+				// Drop parenthesis, if they exist
+				var parenthesisAtStart = tokens[0].text == "(";
+				var parenthesisAtEnd = tokens[tokens.Count - 1].text == ")";
+				if (parenthesisAtStart && parenthesisAtEnd) {
+					return CompileExpression(Slice(tokens, 1, -1));
+				}
+				// Parse the literal
+				else if (tokens.Count == 1) {
+					var str = tokens[0].text;
+					float @float;
+					if (float.TryParse(str, out @float)) {
+						return new LiteralExpression(@float);
+					}
+					int @int;
+					if (int.TryParse(str, out @int)) {
+						return new LiteralExpression(@int);
+					}
+					// Assume the token is a variable
+					return new VariableExpression(str);
+				}
+				// Parse a string
+				else {
+					int pos = 0;
+					var str = Quote(new LogicalLine(tokens), ref pos);
+					if (str != null && pos == tokens.Count) {
+						return new LiteralExpression(str);
+					}
+					else {
+						throw new CompilerError(tokens[tokens.Count - 1],
+							"Unable to parse expression");
+					}
+				}
+			}
+
+			return null;
+		}
+
 		#region Node Compilation Functions
 
 		private Node CompileAdd(LogicalLine line, ref int pos, List<Node> children)
@@ -168,6 +267,15 @@ namespace Exodrifter.Rumor.Lang
 
 			string text = Quote(line, ref pos);
 			return new Say(text);
+		}
+
+		private Node CompileStatement(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+
+			var tokens = Slice(line.tokens, pos);
+			var expression = CompileExpression(tokens);
+			return new Statement(expression);
 		}
 
 		#endregion
@@ -390,6 +498,56 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			return foundEndQuote ? quote : null;
+		}
+
+		#endregion
+
+		#region Helper Methods
+
+		private static List<T> Slice<T>(List<T> list,
+			int? begin = null, int? end = null)
+		{
+			begin = begin ?? 0;
+			end = end ?? list.Count;
+			while (begin < 0) {
+				begin += list.Count;
+			}
+			while (end < 0) {
+				end += list.Count;
+			}
+
+			var ret = new List<T>();
+			for (int i = begin.Value; i < end.Value; ++i) {
+				ret.Add(list[i]);
+			}
+
+			return ret;
+		}
+
+		private List<LogicalToken> Trim(List<LogicalToken> list)
+		{
+			if (list == null) {
+				return null;
+			}
+
+			var ret = new List<LogicalToken>();
+
+			bool add = false;
+			for (int i = 0; i < list.Count; ++i) {
+				if (add) {
+					ret.Add(list[i]);
+				}
+				else if (!IsWhitespace(list[i])) {
+					add = true;
+					ret.Add(list[i]);
+				}
+			}
+
+			while (ret.Count > 0 && IsWhitespace(ret[ret.Count - 1])) {
+				ret.RemoveAt(ret.Count - 1);
+			}
+
+			return ret;
 		}
 
 		#endregion

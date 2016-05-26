@@ -21,6 +21,7 @@ namespace Example.Exodrifter
 		{
 			rumor = new Rumor(new RumorCompiler().Compile(@"
 label start:
+	$ x = 4 + 8
 	say ""Hi!""
 	say ""Is this working?""
 
