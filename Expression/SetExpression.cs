@@ -1,12 +1,13 @@
 ﻿using Exodrifter.Rumor.Engine;
 using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
 {
 	/// <summary>
 	/// Represents an set operator that is used to assign a variable.
 	/// </summary>
-	public class SetExpression : Expression
+	public class SetExpression : Expression, ISerializable
 	{
 		private readonly Expression left;
 		private readonly Expression right;
@@ -28,7 +29,6 @@ namespace Exodrifter.Rumor.Expressions
 			var l = left as VariableExpression;
 			var r = right.Evaluate(scope);
 			scope.SetVar(l.Name, r);
-			UnityEngine.Debug.Log("Set " + l.Name + " to " + r);
 			return r;
 		}
 
@@ -36,5 +36,21 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			return left + "+" + right;
 		}
+
+		#region Serialization
+
+		public SetExpression(SerializationInfo info, StreamingContext context)
+		{
+			left = (Expression)info.GetValue("left", typeof(Expression));
+			right = (Expression)info.GetValue("right", typeof(Expression));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("left", left, typeof(Expression));
+			info.AddValue("right", right, typeof(Expression));
+		}
+
+		#endregion
 	}
 }
