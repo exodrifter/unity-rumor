@@ -153,6 +153,11 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override string ToString()
+		{
+			return value.ToString();
+		}
+
 		#region Equality
 
 		public override bool Equals(object obj)
@@ -284,6 +289,11 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override string ToString()
+		{
+			return value.ToString();
+		}
+
 		#region Equality
 
 		public override bool Equals(object obj)
@@ -413,6 +423,11 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(StringValue @string)
 		{
 			throw new InvalidOperationException();
+		}
+
+		public override string ToString()
+		{
+			return value.ToString();
 		}
 
 		#region Equality
