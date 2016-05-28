@@ -153,6 +153,48 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as IntValue;
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public bool Equals(IntValue other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public override int GetHashCode()
+		{
+			return value.GetHashCode();
+		}
+
+		public static bool operator ==(IntValue l, IntValue r)
+		{
+			if (ReferenceEquals(l, r)) {
+				return true;
+			}
+			if ((object)l == null ^ (object)r == null) {
+				return false;
+			}
+			return l.value == r.value;
+		}
+
+		public static bool operator !=(IntValue a, IntValue b)
+		{
+			return !(a == b);
+		}
+
+		#endregion
+
 		#region Serialization
 
 		public IntValue(SerializationInfo info, StreamingContext context)
@@ -180,18 +222,6 @@ namespace Exodrifter.Rumor.Expressions
 		public FloatValue(float value)
 		{
 			this.value = value;
-		}
-
-		#region Serialization
-
-		public FloatValue(SerializationInfo info, StreamingContext context)
-		{
-			value = (float)info.GetValue("value", typeof(float));
-		}
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("value", value, typeof(float));
 		}
 
 		public override Value Add(IntValue @int)
@@ -252,6 +282,60 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(StringValue @string)
 		{
 			throw new InvalidOperationException();
+		}
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as FloatValue;
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public bool Equals(FloatValue other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public override int GetHashCode()
+		{
+			return value.GetHashCode();
+		}
+
+		public static bool operator ==(FloatValue l, FloatValue r)
+		{
+			if (ReferenceEquals(l, r)) {
+				return true;
+			}
+			if ((object)l == null ^ (object)r == null) {
+				return false;
+			}
+			return l.value == r.value;
+		}
+
+		public static bool operator !=(FloatValue a, FloatValue b)
+		{
+			return !(a == b);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public FloatValue(SerializationInfo info, StreamingContext context)
+		{
+			value = (float)info.GetValue("value", typeof(float));
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("value", value, typeof(float));
 		}
 
 		#endregion
@@ -330,6 +414,48 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			throw new InvalidOperationException();
 		}
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as StringValue;
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public bool Equals(StringValue other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public override int GetHashCode()
+		{
+			return value.GetHashCode();
+		}
+
+		public static bool operator ==(StringValue l, StringValue r)
+		{
+			if (ReferenceEquals(l, r)) {
+				return true;
+			}
+			if ((object)l == null ^ (object)r == null) {
+				return false;
+			}
+			return l.value == r.value;
+		}
+
+		public static bool operator !=(StringValue a, StringValue b)
+		{
+			return !(a == b);
+		}
+
+		#endregion
 
 		#region Serialization
 

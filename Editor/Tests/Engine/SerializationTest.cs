@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		#region Nodes
 
 		/// <summary>
-		/// Ensure Add nodes are serialized properly
+		/// Ensure Add nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeAdd()
@@ -28,7 +28,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Call nodes are serialized properly
+		/// Ensure Call nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeCall()
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Choice nodes are serialized properly
+		/// Ensure Choice nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeChoice()
@@ -59,7 +59,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Jump nodes are serialized properly
+		/// Ensure Jump nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeJump()
@@ -71,7 +71,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Label nodes are serialized properly
+		/// Ensure Label nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeLabel()
@@ -90,7 +90,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Pause nodes are serialized properly
+		/// Ensure Pause nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializePause()
@@ -102,7 +102,17 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Say nodes are serialized properly
+		/// Ensure Return nodes are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeReturn()
+		{
+			// Just make sure no exceptions are thrown
+			Reserialize(new Return());
+		}
+
+		/// <summary>
+		/// Ensure Say nodes are serialized properly.
 		/// </summary>
 		[Test]
 		public void SerializeSay()
@@ -116,32 +126,6 @@ namespace Exodrifter.Rumor.Test.Engine
 		#endregion
 
 		#region Rumor
-
-		/// <summary>
-		/// Ensure the Rumor state is serialized properly
-		/// </summary>
-		[Test]
-		public void SerializeState()
-		{
-			var a = new RumorState();
-			a.AddChoice("choice", new List<Node>() {
-				new Say("say"),
-			});
-			a.SetDialog("dialog");
-			var b = Reserialize(a);
-
-			Assert.AreEqual(1, a.Choices.Count);
-			Assert.AreEqual(a.Choices.Count, b.Choices.Count);
-			Assert.AreEqual(a.Choices[0], b.Choices[0]);
-
-			Assert.AreEqual(1, a.Consequences.Count);
-			Assert.AreEqual(a.Consequences.Count, b.Consequences.Count);
-			Assert.AreEqual(1, a.Consequences[0].Count);
-			Assert.AreEqual(a.Consequences[0].Count, b.Consequences[0].Count);
-			Assert.AreEqual(
-				(a.Consequences[0][0] as Say).text,
-				(b.Consequences[0][0] as Say).text);
-		}
 
 		/// <summary>
 		/// Ensure empty Rumors are serialized properly.
@@ -159,6 +143,20 @@ namespace Exodrifter.Rumor.Test.Engine
 			rumor.Run().MoveNext();
 			Assert.True(rumor.Started);
 			Assert.True(rumor.Finished);
+		}
+
+		[Test]
+		public void SerializeRumorScope()
+		{
+			var a = new Rumor.Engine.Rumor(new List<Node>());
+			a.Scope.SetVar("a", 1);
+			a.Scope.SetVar("b", 1f);
+			a.Scope.SetVar("c", "1");
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a.Scope.GetVar("a"), b.Scope.GetVar("a"));
+			Assert.AreEqual(a.Scope.GetVar("b"), b.Scope.GetVar("b"));
+			Assert.AreEqual(a.Scope.GetVar("c"), b.Scope.GetVar("c"));
 		}
 
 		/// <summary>
@@ -293,6 +291,45 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.True(rumor.Finished);
+		}
+
+		#endregion
+
+		#region RumorState
+
+		/// <summary>
+		/// Ensure the Rumor dialog state is serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeRumorStateDialog()
+		{
+			var a = new RumorState();
+			a.SetDialog("dialog");
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a.Dialog, b.Dialog);
+		}
+
+		[Test]
+		public void SerializeRumorStateChoice()
+		{
+			var a = new RumorState();
+			a.AddChoice("choice", new List<Node>() {
+				new Say("say"),
+			});
+
+			var b = Reserialize(a);
+			Assert.AreEqual(1, a.Choices.Count);
+			Assert.AreEqual(a.Choices.Count, b.Choices.Count);
+			Assert.AreEqual(a.Choices[0], b.Choices[0]);
+
+			Assert.AreEqual(1, a.Consequences.Count);
+			Assert.AreEqual(a.Consequences.Count, b.Consequences.Count);
+			Assert.AreEqual(1, a.Consequences[0].Count);
+			Assert.AreEqual(a.Consequences[0].Count, b.Consequences[0].Count);
+			Assert.AreEqual(
+				(a.Consequences[0][0] as Say).text,
+				(b.Consequences[0][0] as Say).text);
 		}
 
 		#endregion
