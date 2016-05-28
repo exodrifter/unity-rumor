@@ -1,7 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Lang;
-using Exodrifter.Rumor.Nodes;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +19,7 @@ namespace Example.Exodrifter
 		{
 			rumor = new Rumor(new RumorCompiler().Compile(@"
 label start:
-	$ x = 4 + 8
+	$ x = ""This is a string"" + 8
 	say ""Hi!""
 	say ""Is this working?""
 
