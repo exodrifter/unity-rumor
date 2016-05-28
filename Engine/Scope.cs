@@ -1,22 +1,20 @@
 ﻿using Exodrifter.Rumor.Expressions;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
 	/// <summary>
 	/// A scope which keeps track of declared variables and functions.
 	/// </summary>
-	public class Scope
+	[Serializable]
+	public class Scope : ISerializable
 	{
-		/// <summary>
-		/// The parent scope.
-		/// </summary>
-		private Scope parent;
-
 		/// <summary>
 		/// The variables in this scope.
 		/// </summary>
-		private Dictionary<string, Value> vars;
+		private readonly Dictionary<string, Value> vars;
 
 		/// <summary>
 		/// Creates a new scope.
@@ -24,9 +22,8 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="parent">
 		/// The parent scope or null if there is none.
 		/// </param>
-		public Scope(Scope parent = null)
+		public Scope()
 		{
-			this.parent = parent;
 			vars = new Dictionary<string, Value>();
 		}
 
@@ -37,16 +34,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="value">The value of the variable to use.</param>
 		public void SetVar(string name, int @int)
 		{
-			var value = new IntValue(@int);
-			if (vars.ContainsKey(name)) {
-				vars[name] = value;
-				return;
-			}
-			if (parent != null && parent.HasVar(name)) {
-				parent.SetVar(name, value);
-				return;
-			}
-			vars[name] = value;
+			vars[name] = new IntValue(@int);
 		}
 
 		/// <summary>
@@ -56,16 +44,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="value">The value of the variable to use.</param>
 		public void SetVar(string name, float @float)
 		{
-			var value = new FloatValue(@float);
-			if (vars.ContainsKey(name)) {
-				vars[name] = value;
-				return;
-			}
-			if (parent != null && parent.HasVar(name)) {
-				parent.SetVar(name, value);
-				return;
-			}
-			vars[name] = value;
+			vars[name] = new FloatValue(@float);
 		}
 
 		/// <summary>
@@ -75,16 +54,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="value">The value of the variable to use.</param>
 		public void SetVar(string name, string @string)
 		{
-			var value = new StringValue(@string);
-			if (vars.ContainsKey(name)) {
-				vars[name] = value;
-				return;
-			}
-			if (parent != null && parent.HasVar(name)) {
-				parent.SetVar(name, value);
-				return;
-			}
-			vars[name] = value;
+			vars[name] = new StringValue(@string);
 		}
 
 		/// <summary>
@@ -94,14 +64,6 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="value">The value of the variable to use.</param>
 		public void SetVar(string name, Value value)
 		{
-			if (vars.ContainsKey(name)) {
-				vars[name] = value;
-				return;
-			}
-			if (parent != null && parent.HasVar(name)) {
-				parent.SetVar(name, value);
-				return;
-			}
 			vars[name] = value;
 		}
 
@@ -115,9 +77,6 @@ namespace Exodrifter.Rumor.Engine
 			if (vars.ContainsKey(name)) {
 				return vars[name];
 			}
-			if (parent != null) {
-				return parent.GetVar(name);
-			}
 			return null;
 		}
 
@@ -129,13 +88,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <returns>True if the variable is declared.</returns>
 		public bool HasVar(string name)
 		{
-			if (vars.ContainsKey(name)) {
-				return true;
-			}
-			if (parent != null) {
-				return parent.HasVar(name);
-			}
-			return false;
+			return vars.ContainsKey(name);
 		}
 
 		/// <summary>
@@ -145,9 +98,35 @@ namespace Exodrifter.Rumor.Engine
 		public void Clear(bool recursive)
 		{
 			vars.Clear();
-			if (recursive && parent != null) {
-				parent.Clear(recursive);
+		}
+
+		#region Serialization
+
+		public Scope(SerializationInfo info, StreamingContext context)
+		{
+			var keys = (List<string>)info.GetValue("keys", typeof(List<string>));
+			var values = (List<Value>)info.GetValue("values", typeof(List<Value>));
+
+			vars = new Dictionary<string, Value>();
+			for (int i = 0; i < keys.Count; ++i) {
+				vars.Add(keys[i], values[i]);
 			}
 		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			var keys = new List<string>(vars.Count);
+			var values = new List<Value>(vars.Count);
+
+			foreach (var kvp in vars) {
+				keys.Add(kvp.Key);
+				values.Add(kvp.Value);
+			}
+
+			info.AddValue("keys", keys, typeof(List<string>));
+			info.AddValue("values", values, typeof(List<Value>));
+		}
+
+		#endregion
 	}
 }

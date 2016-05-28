@@ -25,13 +25,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// The current scope.
 		/// </summary>
-		public Scope Scope
-		{
-			get
-			{
-				return scope;
-			}
-		}
+		public Scope Scope { get { return scope; } }
 		private readonly Scope scope;
 
 		/// <summary>
@@ -290,6 +284,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
 			stack = (Stack<StackFrame>)info.GetValue("stack", typeof(Stack<StackFrame>));
+			scope = (Scope)info.GetValue("scope", typeof(Scope));
 
 			State = (RumorState)info.GetValue("state", typeof(RumorState));
 		}
@@ -298,6 +293,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			info.AddValue("nodes", nodes, typeof(List<Node>));
 			info.AddValue("stack", stack, typeof(Stack<StackFrame>));
+			info.AddValue("scope", scope, typeof(Scope));
 
 			info.AddValue("state", State, typeof(RumorState));
 		}
