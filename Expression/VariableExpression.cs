@@ -11,13 +11,7 @@ namespace Exodrifter.Rumor.Expressions
 		/// <summary>
 		/// The name of the variable
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
+		public string Name { get { return name; } }
 		private readonly string name;
 
 		public VariableExpression(string str)
@@ -25,7 +19,7 @@ namespace Exodrifter.Rumor.Expressions
 			name = str;
 		}
 
-		public override object Evaluate(Scope scope)
+		public override Value Evaluate(Scope scope)
 		{
 			return scope.GetVar(name);
 		}

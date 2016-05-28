@@ -18,27 +18,11 @@ namespace Exodrifter.Rumor.Expressions
 			this.right = right;
 		}
 
-		public override object Evaluate(Scope scope)
+		public override Value Evaluate(Scope scope)
 		{
 			var l = left.Evaluate(scope);
 			var r = right.Evaluate(scope);
-
-			if (l.GetType() == typeof(int) && r.GetType() == typeof(int)) {
-				return (int)l + (int)r;
-			}
-			if (l.GetType() == typeof(int) && r.GetType() == typeof(float)) {
-				return (int)l + (float)r;
-			}
-			if (l.GetType() == typeof(float) && r.GetType() == typeof(int)) {
-				return (float)l + (int)r;
-			}
-			if (l.GetType() == typeof(float) && r.GetType() == typeof(float)) {
-				return (float)l + (float)r;
-			}
-
-			throw new ArgumentException(
-				string.Format("Cannot add arguments of type {0} and {1}!",
-					l.GetType(), r.GetType()));
+			return l.Add(r);
 		}
 
 		public override string ToString()

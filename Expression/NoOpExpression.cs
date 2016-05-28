@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override object Evaluate(Scope scope)
+		public override Value Evaluate(Scope scope)
 		{
 			return null;
 		}

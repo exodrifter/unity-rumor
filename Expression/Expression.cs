@@ -12,6 +12,6 @@ namespace Exodrifter.Rumor.Expressions
 		/// </summary>
 		/// <param name="scope">The current execution scope.</param>
 		/// <returns>The result of this expression when evaluated.</returns>
-		public abstract object Evaluate(Scope scope);
+		public abstract Value Evaluate(Scope scope);
 	}
 }

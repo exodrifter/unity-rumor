@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Exodrifter.Rumor.Expressions;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Engine
@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// The variables in this scope.
 		/// </summary>
-		private Dictionary<string, object> vars;
+		private Dictionary<string, Value> vars;
 
 		/// <summary>
 		/// Creates a new scope.
@@ -27,7 +27,64 @@ namespace Exodrifter.Rumor.Engine
 		public Scope(Scope parent = null)
 		{
 			this.parent = parent;
-			vars = new Dictionary<string, object>();
+			vars = new Dictionary<string, Value>();
+		}
+
+		/// <summary>
+		/// Sets the value of one variable to an int.
+		/// </summary>
+		/// <param name="name">The name of the variable to set.</param>
+		/// <param name="value">The value of the variable to use.</param>
+		public void SetVar(string name, int @int)
+		{
+			var value = new IntValue(@int);
+			if (vars.ContainsKey(name)) {
+				vars[name] = value;
+				return;
+			}
+			if (parent != null && parent.HasVar(name)) {
+				parent.SetVar(name, value);
+				return;
+			}
+			vars[name] = value;
+		}
+
+		/// <summary>
+		/// Sets the value of one variable to a float.
+		/// </summary>
+		/// <param name="name">The name of the variable to set.</param>
+		/// <param name="value">The value of the variable to use.</param>
+		public void SetVar(string name, float @float)
+		{
+			var value = new FloatValue(@float);
+			if (vars.ContainsKey(name)) {
+				vars[name] = value;
+				return;
+			}
+			if (parent != null && parent.HasVar(name)) {
+				parent.SetVar(name, value);
+				return;
+			}
+			vars[name] = value;
+		}
+
+		/// <summary>
+		/// Sets the value of one variable to a string.
+		/// </summary>
+		/// <param name="name">The name of the variable to set.</param>
+		/// <param name="value">The value of the variable to use.</param>
+		public void SetVar(string name, string @string)
+		{
+			var value = new StringValue(@string);
+			if (vars.ContainsKey(name)) {
+				vars[name] = value;
+				return;
+			}
+			if (parent != null && parent.HasVar(name)) {
+				parent.SetVar(name, value);
+				return;
+			}
+			vars[name] = value;
 		}
 
 		/// <summary>
@@ -35,7 +92,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="name">The name of the variable to set.</param>
 		/// <param name="value">The value of the variable to use.</param>
-		public void SetVar(string name, object value)
+		public void SetVar(string name, Value value)
 		{
 			if (vars.ContainsKey(name)) {
 				vars[name] = value;
@@ -53,7 +110,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <returns>The value of the variable.</returns>
 		/// <param name="name">The name of the variable to get.</param>
-		public object GetVar(string name)
+		public Value GetVar(string name)
 		{
 			if (vars.ContainsKey(name)) {
 				return vars[name];

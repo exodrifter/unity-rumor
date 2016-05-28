@@ -8,24 +8,24 @@ namespace Exodrifter.Rumor.Expressions
 	/// </summary>
 	public class LiteralExpression : Expression, ISerializable
 	{
-		private readonly object value;
-
-		public LiteralExpression(string str)
-		{
-			value = str;
-		}
+		private readonly Value value;
 
 		public LiteralExpression(int num)
 		{
-			value = num;
+			value = new IntValue(num);
 		}
 
 		public LiteralExpression(float num)
 		{
-			value = num;
+			value = new FloatValue(num);
 		}
 
-		public override object Evaluate(Scope scope)
+		public LiteralExpression(string str)
+		{
+			value = new StringValue(str);
+		}
+
+		public override Value Evaluate(Scope scope)
 		{
 			return value;
 		}
@@ -41,12 +41,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public LiteralExpression(SerializationInfo info, StreamingContext context)
 		{
-			value = info.GetValue("value", typeof(object));
+			value = (Value)info.GetValue("value", typeof(Value));
 		}
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("value", value, typeof(object));
+			info.AddValue("value", value, typeof(Value));
 		}
 
 		#endregion

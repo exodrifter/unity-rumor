@@ -18,7 +18,7 @@ namespace Exodrifter.Rumor.Expressions
 			this.right = right;
 		}
 
-		public override object Evaluate(Scope scope)
+		public override Value Evaluate(Scope scope)
 		{
 			if (left.GetType() != typeof(VariableExpression)) {
 				throw new ArgumentException(
