@@ -94,8 +94,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Removes all of the variables from this scope.
 		/// </summary>
-		/// <param name="recursive">If true, clear parent scopes too.</param>
-		public void Clear(bool recursive)
+		public void Clear()
 		{
 			vars.Clear();
 		}
