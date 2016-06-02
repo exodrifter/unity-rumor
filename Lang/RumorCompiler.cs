@@ -264,9 +264,10 @@ namespace Exodrifter.Rumor.Lang
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
 		{
 			ExpectNoChildren(line, children);
-
-			string text = Quote(line, ref pos);
-			return new Say(text);
+			
+			var tokens = Slice(line.tokens, pos);
+			var expression = CompileExpression(tokens);
+			return new Say(expression);
 		}
 
 		private Node CompileStatement(LogicalLine line, ref int pos, List<Node> children)

@@ -178,6 +178,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeChoice()
 		{
+			var scope = new Scope();
 			var a = new Choice("choice", new List<Node>() {
 				new Say("say")
 			});
@@ -187,8 +188,8 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(1, a.Children.Count);
 			Assert.AreEqual(a.Children.Count, b.Children.Count);
 			Assert.AreEqual(
-				(a.Children[0] as Say).text,
-				(b.Children[0] as Say).text);
+				(a.Children[0] as Say).EvaluateText(scope),
+				(b.Children[0] as Say).EvaluateText(scope));
 		}
 
 		/// <summary>
@@ -209,6 +210,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeLabel()
 		{
+			var scope = new Scope();
 			var a = new Label("label", new List<Node>() {
 				new Say("say")
 			});
@@ -218,8 +220,8 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(1, a.Children.Count);
 			Assert.AreEqual(a.Children.Count, b.Children.Count);
 			Assert.AreEqual(
-				(a.Children[0] as Say).text,
-				(b.Children[0] as Say).text);
+				(a.Children[0] as Say).EvaluateText(scope),
+				(b.Children[0] as Say).EvaluateText(scope));
 		}
 
 		/// <summary>
@@ -250,10 +252,11 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeSay()
 		{
+			var scope = new Scope();
 			var a = new Say("say");
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.text, b.text);
+			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
 		}
 
 		#endregion
@@ -313,11 +316,11 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
-			Assert.AreEqual("Hello!", (rumor.Current as Say).text);
+			Assert.AreEqual("Hello!", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How are you?", (rumor.Current as Say).text);
+			Assert.AreEqual("How are you?", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
@@ -351,11 +354,11 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
-			Assert.AreEqual("Hello!", (rumor.Current as Say).text);
+			Assert.AreEqual("Hello!", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How are you?", (rumor.Current as Say).text);
+			Assert.AreEqual("How are you?", (rumor.Current as Say).EvaluateText(rumor));
 
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
@@ -366,11 +369,11 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
-			Assert.AreEqual("Good.", (rumor.Current as Say).text);
+			Assert.AreEqual("Good.", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("How about yourself?", (rumor.Current as Say).text);
+			Assert.AreEqual("How about yourself?", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
@@ -405,11 +408,11 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
-			Assert.AreEqual("a!", (rumor.Current as Say).text);
+			Assert.AreEqual("a!", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("b!", (rumor.Current as Say).text);
+			Assert.AreEqual("b!", (rumor.Current as Say).EvaluateText(rumor));
 
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
@@ -418,7 +421,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
-			Assert.AreEqual("c!", (rumor.Current as Say).text);
+			Assert.AreEqual("c!", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
@@ -446,6 +449,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeRumorStateChoice()
 		{
+			var scope = new Scope();
 			var a = new RumorState();
 			a.AddChoice("choice", new List<Node>() {
 				new Say("say"),
@@ -461,8 +465,8 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(1, a.Consequences[0].Count);
 			Assert.AreEqual(a.Consequences[0].Count, b.Consequences[0].Count);
 			Assert.AreEqual(
-				(a.Consequences[0][0] as Say).text,
-				(b.Consequences[0][0] as Say).text);
+				(a.Consequences[0][0] as Say).EvaluateText(scope),
+				(b.Consequences[0][0] as Say).EvaluateText(scope));
 		}
 
 		#endregion

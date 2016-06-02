@@ -42,15 +42,15 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Say).text);
+			Assert.AreEqual("a", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("b", (rumor.Current as Say).text);
+			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("b", (rumor.Current as Say).text);
+			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
@@ -82,7 +82,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Say).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -108,19 +108,19 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Say).text);
+			Assert.AreEqual("a", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Say).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("ab", (rumor.Current as Say).text);
+			Assert.AreEqual("ab", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("aa", (rumor.Current as Say).text);
+			Assert.AreEqual("aa", (rumor.Current as Say).EvaluateText(rumor));
 		}
 	}
 }

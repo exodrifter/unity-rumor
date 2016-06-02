@@ -24,7 +24,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Say).text);
+			Assert.AreEqual("a", (rumor.Current as Say).EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -45,15 +45,15 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("a", (rumor.Current as Say).text);
+			Assert.AreEqual("a", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("b", (rumor.Current as Say).text);
+			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("c", (rumor.Current as Say).text);
+			Assert.AreEqual("c", (rumor.Current as Say).EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -75,11 +75,11 @@ namespace Exodrifter.Rumor.Test.Nodes
 
 			var yield = rumor.Run();
 			yield.MoveNext();
-			Assert.AreEqual("1", (rumor.Current as Say).text);
+			Assert.AreEqual("1", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();
-			Assert.AreEqual("2", (rumor.Current as Say).text);
+			Assert.AreEqual("2", (rumor.Current as Say).EvaluateText(rumor));
 		}
 	}
 }

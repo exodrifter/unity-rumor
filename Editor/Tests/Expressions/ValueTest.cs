@@ -16,13 +16,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 		public void ValueConstructor()
 		{
 			var @int = new IntValue(1);
-			Assert.AreEqual(@int.Value, 1);
-			
+			Assert.AreEqual(@int.AsInt(), 1);
+
 			var @float = new FloatValue(1.0f);
-			Assert.AreEqual(@float.Value, 1.0f);
-			
+			Assert.AreEqual(@float.AsFloat(), 1.0f);
+
 			var @string = new StringValue("1");
-			Assert.AreEqual(@string.Value, "1");
+			Assert.AreEqual(@string.AsString(), "1");
 		}
 
 		/// <summary>
@@ -56,18 +56,18 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @int = new IntValue(1);
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
-			
-			Assert.AreEqual(@int.Add(@int), new IntValue(2));
-			Assert.AreEqual(@int.Add(@float), new FloatValue(2.0f));
-			Assert.AreEqual(@int.Add(@string), new StringValue("11"));
-			
-			Assert.AreEqual(@float.Add(@int), new FloatValue(2.0f));
-			Assert.AreEqual(@float.Add(@float), new FloatValue(2.0f));
-			Assert.AreEqual(@float.Add(@string), new StringValue("11"));
 
-			Assert.AreEqual(@string.Add(@int), new StringValue("11"));
-			Assert.AreEqual(@string.Add(@float), new StringValue("11"));
-			Assert.AreEqual(@string.Add(@string), new StringValue("11"));
+			Assert.AreEqual(@int.Add(@int).AsInt(), 2);
+			Assert.AreEqual(@int.Add(@float).AsFloat(), 2.0f);
+			Assert.AreEqual(@int.Add(@string).AsString(), "11");
+
+			Assert.AreEqual(@float.Add(@int).AsFloat(), 2.0f);
+			Assert.AreEqual(@float.Add(@float).AsFloat(), 2.0f);
+			Assert.AreEqual(@float.Add(@string).AsString(), "11");
+
+			Assert.AreEqual(@string.Add(@int).AsString(), "11");
+			Assert.AreEqual(@string.Add(@float).AsString(), "11");
+			Assert.AreEqual(@string.Add(@string).AsString(), "11");
 		}
 
 		/// <summary>
@@ -79,13 +79,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @int = new IntValue(1);
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
-			
-			Assert.AreEqual(@int.Subtract(@int), new IntValue(0));
-			Assert.AreEqual(@int.Subtract(@float), new FloatValue(0f));
+
+			Assert.AreEqual(@int.Subtract(@int).AsInt(), 0);
+			Assert.AreEqual(@int.Subtract(@float).AsFloat(), 0f);
 			Assert.Catch<InvalidOperationException>(() => @int.Subtract(@string));
-			
-			Assert.AreEqual(@float.Subtract(@int), new FloatValue(0f));
-			Assert.AreEqual(@float.Subtract(@float), new FloatValue(0f));
+
+			Assert.AreEqual(@float.Subtract(@int).AsFloat(), 0f);
+			Assert.AreEqual(@float.Subtract(@float).AsFloat(), 0f);
 			Assert.Catch<InvalidOperationException>(() => @float.Subtract(@string));
 
 			Assert.Catch<InvalidOperationException>(() => @string.Subtract(@int));
@@ -102,13 +102,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @int = new IntValue(1);
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
-			
-			Assert.AreEqual(@int.Multiply(@int), new IntValue(1));
-			Assert.AreEqual(@int.Multiply(@float), new FloatValue(1f));
+
+			Assert.AreEqual(@int.Multiply(@int).AsInt(), 1);
+			Assert.AreEqual(@int.Multiply(@float).AsFloat(), 1f);
 			Assert.Catch<InvalidOperationException>(() => @int.Multiply(@string));
-			
-			Assert.AreEqual(@float.Multiply(@int), new FloatValue(1f));
-			Assert.AreEqual(@float.Multiply(@float), new FloatValue(1f));
+
+			Assert.AreEqual(@float.Multiply(@int).AsFloat(), 1f);
+			Assert.AreEqual(@float.Multiply(@float).AsFloat(), 1f);
 			Assert.Catch<InvalidOperationException>(() => @float.Multiply(@string));
 
 			Assert.Catch<InvalidOperationException>(() => @string.Multiply(@int));
@@ -125,13 +125,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @int = new IntValue(1);
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
-			
-			Assert.AreEqual(@int.Divide(@int), new IntValue(1));
-			Assert.AreEqual(@int.Divide(@float), new FloatValue(1f));
+
+			Assert.AreEqual(@int.Divide(@int).AsInt(), 1);
+			Assert.AreEqual(@int.Divide(@float).AsFloat(), 1f);
 			Assert.Catch<InvalidOperationException>(() => @int.Divide(@string));
-			
-			Assert.AreEqual(@float.Divide(@int), new FloatValue(1f));
-			Assert.AreEqual(@float.Divide(@float), new FloatValue(1f));
+
+			Assert.AreEqual(@float.Divide(@int).AsFloat(), 1f);
+			Assert.AreEqual(@float.Divide(@float).AsFloat(), 1f);
 			Assert.Catch<InvalidOperationException>(() => @float.Divide(@string));
 
 			Assert.Catch<InvalidOperationException>(() => @string.Divide(@int));
