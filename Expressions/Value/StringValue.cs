@@ -26,6 +26,11 @@ namespace Exodrifter.Rumor.Expressions
 			return new StringValue(AsString() + @string.AsString());
 		}
 
+		public override Value Add(BoolValue @bool)
+		{
+			return new InvalidOperationException();
+		}
+
 		public override Value Subtract(IntValue @int)
 		{
 			throw new InvalidOperationException();
@@ -39,6 +44,11 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Subtract(StringValue @string)
 		{
 			throw new InvalidOperationException();
+		}
+
+		public override Value Subtract(BoolValue @bool)
+		{
+			return new InvalidOperationException();
 		}
 
 		public override Value Multiply(IntValue @int)
@@ -56,6 +66,11 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override Value Multiply(BoolValue @bool)
+		{
+			return new InvalidOperationException();
+		}
+
 		public override Value Divide(IntValue @int)
 		{
 			throw new InvalidOperationException();
@@ -69,6 +84,11 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(StringValue @string)
 		{
 			throw new InvalidOperationException();
+		}
+
+		public override Value Divide(BoolValue @bool)
+		{
+			return new InvalidOperationException();
 		}
 
 		public override string ToString()

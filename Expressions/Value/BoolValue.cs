@@ -4,26 +4,26 @@ using System.Runtime.Serialization;
 namespace Exodrifter.Rumor.Expressions
 {
 	[Serializable]
-	public class FloatValue : Value, ISerializable
+	public class BoolValue : Value, ISerializable
 	{
-		public FloatValue(float value)
+		public BoolValue(bool value)
 			: base(value)
 		{
 		}
 
 		public override Value Add(IntValue @int)
 		{
-			return new FloatValue(AsFloat() + @int.AsInt());
+			return new InvalidOperationException();
 		}
 
 		public override Value Add(FloatValue @float)
 		{
-			return new FloatValue(AsFloat() + @float.AsFloat());
+			return new InvalidOperationException();
 		}
 
 		public override Value Add(StringValue @string)
 		{
-			return new StringValue(AsFloat() + @string.AsString());
+			return new InvalidOperationException();
 		}
 
 		public override Value Add(BoolValue @bool)
@@ -33,12 +33,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Subtract(IntValue @int)
 		{
-			return new FloatValue(AsFloat() - @int.AsInt());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Subtract(FloatValue @float)
 		{
-			return new FloatValue(AsFloat() - @float.AsFloat());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Subtract(StringValue @string)
@@ -53,12 +53,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Multiply(IntValue @int)
 		{
-			return new FloatValue(AsFloat() * @int.AsInt());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Multiply(FloatValue @float)
 		{
-			return new FloatValue(AsFloat() * @float.AsFloat());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Multiply(StringValue @string)
@@ -73,12 +73,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Divide(IntValue @int)
 		{
-			return new FloatValue(AsFloat() / @int.AsInt());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Divide(FloatValue @float)
 		{
-			return new FloatValue(AsFloat() / @float.AsFloat());
+			throw new InvalidOperationException();
 		}
 
 		public override Value Divide(StringValue @string)
@@ -100,14 +100,14 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override bool Equals(object obj)
 		{
-			var other = obj as FloatValue;
+			var other = obj as BoolValue;
 			if (other == null) {
 				return false;
 			}
-			return other.AsFloat() == AsFloat();
+			return other.AsString() == AsString();
 		}
 
-		public bool Equals(FloatValue other)
+		public bool Equals(BoolValue other)
 		{
 			if (other == null) {
 				return false;
@@ -124,7 +124,7 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public FloatValue(SerializationInfo info, StreamingContext context)
+		public BoolValue(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

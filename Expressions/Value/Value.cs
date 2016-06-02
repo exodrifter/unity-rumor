@@ -20,6 +20,15 @@ namespace Exodrifter.Rumor.Expressions
 		#region Conversion
 
 		/// <summary>
+		/// Returns true if this value is a bool.
+		/// </summary>
+		/// <returns>True if this value is a bool.</returns>
+		public bool IsBool()
+		{
+			return value is bool;
+		}
+
+		/// <summary>
 		/// Returns true if this value is an integer.
 		/// </summary>
 		/// <returns>True if this value is an integer.</returns>
@@ -47,9 +56,23 @@ namespace Exodrifter.Rumor.Expressions
 		}
 
 		/// <summary>
+		/// Returns this value as a bool.
+		/// </summary>
+		/// <param name="val">
+		/// The bool to return if this value is not a bool.
+		/// </param>
+		/// <returns>This value as a bool.</returns>
+		public bool AsBool(bool val = false)
+		{
+			if (value is bool)
+				return (bool)value;
+			return val;
+		}
+
+		/// <summary>
 		/// Returns this value as an int.
 		/// </summary>
-		/// <param name="str">
+		/// <param name="num">
 		/// The int to return if this value is not an int.
 		/// </param>
 		/// <returns>This value as an int.</returns>
@@ -63,8 +86,8 @@ namespace Exodrifter.Rumor.Expressions
 		/// <summary>
 		/// Returns this value as a float.
 		/// </summary>
-		/// <param name="str">
-		/// The int to return if this value is not a float.
+		/// <param name="num">
+		/// The float to return if this value is not a float.
 		/// </param>
 		/// <returns>This value as a float.</returns>
 		public float AsFloat(float num = 0f)
@@ -103,12 +126,16 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.GetType() == typeof(StringValue)) {
 				return Add(value as StringValue);
 			}
+			if (value.GetType() == typeof(BoolValue)) {
+				return Add(value as BoolValue);
+			}
 			throw new InvalidOperationException();
 		}
 
 		public abstract Value Add(IntValue @int);
 		public abstract Value Add(FloatValue @float);
 		public abstract Value Add(StringValue @string);
+		public abstract Value Add(BoolValue @bool);
 
 		public Value Subtract(Value value)
 		{
@@ -121,12 +148,16 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.GetType() == typeof(StringValue)) {
 				return Subtract(value as StringValue);
 			}
+			if (value.GetType() == typeof(BoolValue)) {
+				return Subtract(value as BoolValue);
+			}
 			throw new InvalidOperationException();
 		}
 
 		public abstract Value Subtract(IntValue @int);
 		public abstract Value Subtract(FloatValue @float);
 		public abstract Value Subtract(StringValue @string);
+		public abstract Value Subtract(BoolValue @bool);
 
 		public Value Divide(Value value)
 		{
@@ -139,12 +170,16 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.GetType() == typeof(StringValue)) {
 				return Divide(value as StringValue);
 			}
+			if (value.GetType() == typeof(BoolValue)) {
+				return Divide(value as BoolValue);
+			}
 			throw new InvalidOperationException();
 		}
 
 		public abstract Value Divide(IntValue @int);
 		public abstract Value Divide(FloatValue @float);
 		public abstract Value Divide(StringValue @string);
+		public abstract Value Divide(BoolValue @bool);
 
 		public Value Multiply(Value value)
 		{
@@ -157,12 +192,16 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.GetType() == typeof(StringValue)) {
 				return Multiply(value as StringValue);
 			}
+			if (value.GetType() == typeof(BoolValue)) {
+				return Multiply(value as BoolValue);
+			}
 			throw new InvalidOperationException();
 		}
 
 		public abstract Value Multiply(IntValue @int);
 		public abstract Value Multiply(FloatValue @float);
 		public abstract Value Multiply(StringValue @string);
+		public abstract Value Multiply(BoolValue @bool);
 
 		#endregion
 
