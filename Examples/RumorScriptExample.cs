@@ -1,16 +1,15 @@
 ﻿using Exodrifter.Rumor.Engine;
-using Exodrifter.Rumor.Nodes;
-using System.Collections.Generic;
+using Exodrifter.Rumor.Lang;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Example.Exodrifter
 {
 	/// <summary>
-	/// This is an example of how a Rumor may be intialized using just code.
+	/// This is an example of how a Rumor may be intialized using a script.
 	/// </summary>
 	[AddComponentMenu("")]
-	public class RumorCodeExample : MonoBehaviour
+	public class RumorScriptExample : MonoBehaviour
 	{
 		private Rumor rumor;
 
@@ -18,22 +17,22 @@ namespace Example.Exodrifter
 
 		void Awake()
 		{
-			rumor = new Rumor(new List<Node>() {
-				new Label("start", new List<Node>() {
-					new Say("Hi!"),
-					new Say("Is this working?"),
-					new Choice("Yes!", new List<Node>() {
-						new Say("Great!"),
-					}),
-					new Choice("No.", new List<Node>() {
-						new Say("Darn..."),
-						new Pause(0.5f),
-						new Add("Maybe next time."),
-					}),
-				}),
-				new Say("Well, thanks for stopping by!"),
-				new Say("See you next time!"),
-			});
+			rumor = new Rumor(new RumorCompiler().Compile(@"
+label start:
+	$ x = ""This is a string"" + 8
+	say ""Hi!"" + 8
+	say ""Is this working?""
+
+	choice ""Yes!"":
+		say ""Great!""
+	choice ""No."":
+		say ""Darn...""
+		pause 0.5
+		add ""Maybe next time.""
+
+say ""Well, thanks for stopping by!""
+say ""See you next time!""
+"));
 
 			StartCoroutine(rumor.Run());
 		}

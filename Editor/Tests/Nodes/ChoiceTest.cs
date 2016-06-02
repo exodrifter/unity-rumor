@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Nodes
 {
 	/// <summary>
 	/// Ensure Choice nodes operate as expected.
@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void AddChoice()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Choice("1", new List<Node>()).Run(rumor).MoveNext();
 			new Choice("2", new List<Node>()).Run(rumor).MoveNext();
 			new Choice("3", new List<Node>()).Run(rumor).MoveNext();
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void AutoAddChoice()
 		{
-			var rumor = new Engine.Rumor(new List<Node>() {
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Choice("1", new List<Node>()),
 				new Choice("2", new List<Node>()),
 				new Choice("3", new List<Node>()),

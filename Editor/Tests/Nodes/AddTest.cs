@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Exodrifter.Rumor.Test
+namespace Exodrifter.Rumor.Test.Nodes
 {
 	/// <summary>
 	/// Ensure Add nodes operate as expected.
@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void AddNoneExisting()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Add("add").Run(rumor).MoveNext();
 			Assert.AreEqual("add", rumor.State.Dialog);
 		}
@@ -27,25 +27,25 @@ namespace Exodrifter.Rumor.Test
 		public void AddExisting()
 		{
 			// Auto-add a space if dialog doesn't end with whitespace
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
 			Assert.AreEqual("thing add", rumor.State.Dialog);
 			
 			// Don't add a space if dialog ends with a space
-			rumor = new Engine.Rumor(new List<Node>());
+			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing ").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
 			Assert.AreEqual("thing add", rumor.State.Dialog);
 
 			// Don't add a space if dialog ends with a tab
-			rumor = new Engine.Rumor(new List<Node>());
+			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing\t").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
 			Assert.AreEqual("thing\tadd", rumor.State.Dialog);
 
 			// Don't add a space if dialog ends with a newline
-			rumor = new Engine.Rumor(new List<Node>());
+			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing\n").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
 			Assert.AreEqual("thing\nadd", rumor.State.Dialog);
@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Test
 		[Test]
 		public void AddEmpty()
 		{
-			var rumor = new Engine.Rumor(new List<Node>());
+			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 
 			new Say("thing").Run(rumor).MoveNext();
 			new Add("").Run(rumor).MoveNext();
