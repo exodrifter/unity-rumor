@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
@@ -6,6 +7,7 @@ namespace Exodrifter.Rumor.Expressions
 	/// <summary>
 	/// Represents an expression that is a variable.
 	/// </summary>
+	[Serializable]
 	public class VariableExpression : Expression, ISerializable
 	{
 		/// <summary>
@@ -28,6 +30,32 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			return name;
 		}
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as VariableExpression;
+			if (other == null) {
+				return false;
+			}
+			return other.name == name;
+		}
+
+		public bool Equals(VariableExpression other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.name == name;
+		}
+
+		public override int GetHashCode()
+		{
+			return name.GetHashCode();
+		}
+
+		#endregion
 
 		#region Serialization
 

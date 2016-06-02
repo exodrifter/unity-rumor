@@ -5,18 +5,14 @@ using System.Runtime.Serialization;
 namespace Exodrifter.Rumor.Expressions
 {
 	/// <summary>
-	/// Represents a multiplication operator that is used to multiply two
-	/// arguments.
+	/// Represents an add operator that is used to add two arguments.
 	/// </summary>
-	public class MultiplyExpression : Expression, ISerializable
+	[Serializable]
+	public class MultiplyExpression : OpExpression
 	{
-		private readonly Expression left;
-		private readonly Expression right;
-
 		public MultiplyExpression(Expression left, Expression right)
+			: base(left, right)
 		{
-			this.left = left;
-			this.right = right;
 		}
 
 		public override Value Evaluate(Scope scope)
@@ -34,15 +30,8 @@ namespace Exodrifter.Rumor.Expressions
 		#region Serialization
 
 		public MultiplyExpression(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
-			left = (Expression)info.GetValue("left", typeof(Expression));
-			right = (Expression)info.GetValue("right", typeof(Expression));
-		}
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("left", left, typeof(Expression));
-			info.AddValue("right", right, typeof(Expression));
 		}
 
 		#endregion

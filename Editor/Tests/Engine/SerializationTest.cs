@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -13,6 +14,138 @@ namespace Exodrifter.Rumor.Test.Engine
 	/// </summary>
 	public class SerializationTest
 	{
+		#region Expressions
+
+		/// <summary>
+		/// Ensure Add expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeAddExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new AddExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Divide expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeDivideExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new DivideExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Literal expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeLiteralExpression()
+		{
+			var a = new LiteralExpression(1);
+			var b = Reserialize(a);
+			Assert.AreEqual(a, b);
+
+			a = new LiteralExpression(1f);
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
+
+			a = new LiteralExpression("1");
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Multiply expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeMultiplyExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new MultiplyExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure NoOp expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeNoOpExpression()
+		{
+			var a = new NoOpExpression();
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Set expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeSetExpression()
+		{
+			var left = new VariableExpression("x");
+			var right = new LiteralExpression(1);
+			var a = new SetExpression(left, right);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Subtract expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeSubtractExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new MultiplyExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Value expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeValue()
+		{
+			Value a = new IntValue(1);
+			Value b = Reserialize(a);
+			Assert.AreEqual(a, b);
+
+			a = new FloatValue(1.0f);
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
+
+			a = new StringValue("1");
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Variable expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeVariableExpression()
+		{
+			var a = new VariableExpression("x");
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		#endregion
+
 		#region Nodes
 
 		/// <summary>

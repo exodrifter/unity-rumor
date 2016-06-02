@@ -77,6 +77,30 @@ namespace Exodrifter.Rumor.Expressions
 		public abstract Value Multiply(IntValue @int);
 		public abstract Value Multiply(FloatValue @float);
 		public abstract Value Multiply(StringValue @string);
+
+		#region Equality
+
+		public abstract override bool Equals(object obj);
+
+		public abstract override int GetHashCode();
+
+		public static bool operator ==(Value l, Value r)
+		{
+			if (ReferenceEquals(l, r)) {
+				return true;
+			}
+			if ((object)l == null || (object)r == null) {
+				return false;
+			}
+			return l.Equals(r);
+		}
+
+		public static bool operator !=(Value a, Value b)
+		{
+			return !(a == b);
+		}
+
+		#endregion
 	}
 
 	[Serializable]
@@ -180,22 +204,6 @@ namespace Exodrifter.Rumor.Expressions
 		public override int GetHashCode()
 		{
 			return value.GetHashCode();
-		}
-
-		public static bool operator ==(IntValue l, IntValue r)
-		{
-			if (ReferenceEquals(l, r)) {
-				return true;
-			}
-			if ((object)l == null ^ (object)r == null) {
-				return false;
-			}
-			return l.value == r.value;
-		}
-
-		public static bool operator !=(IntValue a, IntValue b)
-		{
-			return !(a == b);
 		}
 
 		#endregion
@@ -318,22 +326,6 @@ namespace Exodrifter.Rumor.Expressions
 			return value.GetHashCode();
 		}
 
-		public static bool operator ==(FloatValue l, FloatValue r)
-		{
-			if (ReferenceEquals(l, r)) {
-				return true;
-			}
-			if ((object)l == null ^ (object)r == null) {
-				return false;
-			}
-			return l.value == r.value;
-		}
-
-		public static bool operator !=(FloatValue a, FloatValue b)
-		{
-			return !(a == b);
-		}
-
 		#endregion
 
 		#region Serialization
@@ -452,22 +444,6 @@ namespace Exodrifter.Rumor.Expressions
 		public override int GetHashCode()
 		{
 			return value.GetHashCode();
-		}
-
-		public static bool operator ==(StringValue l, StringValue r)
-		{
-			if (ReferenceEquals(l, r)) {
-				return true;
-			}
-			if ((object)l == null ^ (object)r == null) {
-				return false;
-			}
-			return l.value == r.value;
-		}
-
-		public static bool operator !=(StringValue a, StringValue b)
-		{
-			return !(a == b);
 		}
 
 		#endregion

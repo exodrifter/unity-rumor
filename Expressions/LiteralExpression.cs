@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
@@ -6,8 +7,13 @@ namespace Exodrifter.Rumor.Expressions
 	/// <summary>
 	/// Represents an expression that is a literal.
 	/// </summary>
+	[Serializable]
 	public class LiteralExpression : Expression, ISerializable
 	{
+		/// <summary>
+		/// The value of this literal.
+		/// </summary>
+		public Value Value { get { return value; } }
 		private readonly Value value;
 
 		public LiteralExpression(int num)
@@ -36,6 +42,32 @@ namespace Exodrifter.Rumor.Expressions
 				return value.ToString();
 			return "";
 		}
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as LiteralExpression;
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public bool Equals(LiteralExpression other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.value == value;
+		}
+
+		public override int GetHashCode()
+		{
+			return value.GetHashCode();
+		}
+
+		#endregion
 
 		#region Serialization
 
