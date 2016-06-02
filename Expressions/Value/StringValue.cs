@@ -11,89 +11,33 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Add(IntValue @int)
+		public override Value Add(Value value)
 		{
-			return new StringValue(AsString() + @int.AsInt());
+			if (value.IsInt()) {
+				return new StringValue(AsString() + value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new StringValue(AsString() + value.AsFloat());
+			}
+			if (value.IsString()) {
+				return new StringValue(AsString() + value.AsString());
+			}
+			throw new InvalidOperationException();
 		}
 
-		public override Value Add(FloatValue @float)
-		{
-			return new StringValue(AsString() + @float.AsFloat());
-		}
-
-		public override Value Add(StringValue @string)
-		{
-			return new StringValue(AsString() + @string.AsString());
-		}
-
-		public override Value Add(BoolValue @bool)
-		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Subtract(IntValue @int)
+		public override Value Subtract(Value value)
 		{
 			throw new InvalidOperationException();
 		}
 
-		public override Value Subtract(FloatValue @float)
+		public override Value Multiply(Value value)
 		{
 			throw new InvalidOperationException();
 		}
 
-		public override Value Subtract(StringValue @string)
+		public override Value Divide(Value value)
 		{
 			throw new InvalidOperationException();
-		}
-
-		public override Value Subtract(BoolValue @bool)
-		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Multiply(IntValue @int)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Multiply(FloatValue @float)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Multiply(StringValue @string)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Multiply(BoolValue @bool)
-		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Divide(IntValue @int)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Divide(FloatValue @float)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Divide(StringValue @string)
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override Value Divide(BoolValue @bool)
-		{
-			return new InvalidOperationException();
-		}
-
-		public override string ToString()
-		{
-			return value.ToString();
 		}
 
 		#region Equality

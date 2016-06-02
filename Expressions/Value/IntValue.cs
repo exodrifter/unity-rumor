@@ -11,89 +11,51 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Add(IntValue @int)
+		public override Value Add(Value value)
 		{
-			return new IntValue(AsInt() + @int.AsInt());
-		}
-
-		public override Value Add(FloatValue @float)
-		{
-			return new FloatValue(AsInt() + @float.AsFloat());
-		}
-
-		public override Value Add(StringValue @string)
-		{
-			return new StringValue(AsInt() + @string.AsString());
-		}
-
-		public override Value Add(BoolValue @bool)
-		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Subtract(IntValue @int)
-		{
-			return new IntValue(AsInt() - @int.AsInt());
-		}
-
-		public override Value Subtract(FloatValue @float)
-		{
-			return new FloatValue(AsInt() - @float.AsFloat());
-		}
-
-		public override Value Subtract(StringValue @string)
-		{
+			if (value.IsInt()) {
+				return new IntValue(AsInt() + value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new FloatValue(AsInt() + value.AsFloat());
+			}
+			if (value.IsString()) {
+				return new StringValue(AsInt() + value.AsString());
+			}
 			throw new InvalidOperationException();
 		}
 
-		public override Value Subtract(BoolValue @bool)
+		public override Value Subtract(Value value)
 		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Multiply(IntValue @int)
-		{
-			return new IntValue(AsInt() * @int.AsInt());
-		}
-
-		public override Value Multiply(FloatValue @float)
-		{
-			return new FloatValue(AsInt() * @float.AsFloat());
-		}
-
-		public override Value Multiply(StringValue @string)
-		{
+			if (value.IsInt()) {
+				return new IntValue(AsInt() - value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new FloatValue(AsInt() - value.AsFloat());
+			}
 			throw new InvalidOperationException();
 		}
 
-		public override Value Multiply(BoolValue @bool)
+		public override Value Multiply(Value value)
 		{
-			return new InvalidOperationException();
-		}
-
-		public override Value Divide(IntValue @int)
-		{
-			return new IntValue(AsInt() / @int.AsInt());
-		}
-
-		public override Value Divide(FloatValue @float)
-		{
-			return new FloatValue(AsInt() / @float.AsFloat());
-		}
-
-		public override Value Divide(StringValue @string)
-		{
+			if (value.IsInt()) {
+				return new IntValue(AsInt() * value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new FloatValue(AsInt() * value.AsFloat());
+			}
 			throw new InvalidOperationException();
 		}
 
-		public override Value Divide(BoolValue @bool)
+		public override Value Divide(Value value)
 		{
-			return new InvalidOperationException();
-		}
-
-		public override string ToString()
-		{
-			return value.ToString();
+			if (value.IsInt()) {
+				return new IntValue(AsInt() / value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new FloatValue(AsInt() / value.AsFloat());
+			}
+			throw new InvalidOperationException();
 		}
 
 		#region Equality

@@ -17,6 +17,11 @@ namespace Exodrifter.Rumor.Expressions
 			this.value = value;
 		}
 
+		public override string ToString()
+		{
+			return value.ToString();
+		}
+
 		#region Conversion
 
 		/// <summary>
@@ -115,93 +120,10 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Operators
 
-		public Value Add(Value value)
-		{
-			if (value.GetType() == typeof(IntValue)) {
-				return Add(value as IntValue);
-			}
-			if (value.GetType() == typeof(FloatValue)) {
-				return Add(value as FloatValue);
-			}
-			if (value.GetType() == typeof(StringValue)) {
-				return Add(value as StringValue);
-			}
-			if (value.GetType() == typeof(BoolValue)) {
-				return Add(value as BoolValue);
-			}
-			throw new InvalidOperationException();
-		}
-
-		public abstract Value Add(IntValue @int);
-		public abstract Value Add(FloatValue @float);
-		public abstract Value Add(StringValue @string);
-		public abstract Value Add(BoolValue @bool);
-
-		public Value Subtract(Value value)
-		{
-			if (value.GetType() == typeof(IntValue)) {
-				return Subtract(value as IntValue);
-			}
-			if (value.GetType() == typeof(FloatValue)) {
-				return Subtract(value as FloatValue);
-			}
-			if (value.GetType() == typeof(StringValue)) {
-				return Subtract(value as StringValue);
-			}
-			if (value.GetType() == typeof(BoolValue)) {
-				return Subtract(value as BoolValue);
-			}
-			throw new InvalidOperationException();
-		}
-
-		public abstract Value Subtract(IntValue @int);
-		public abstract Value Subtract(FloatValue @float);
-		public abstract Value Subtract(StringValue @string);
-		public abstract Value Subtract(BoolValue @bool);
-
-		public Value Divide(Value value)
-		{
-			if (value.GetType() == typeof(IntValue)) {
-				return Divide(value as IntValue);
-			}
-			if (value.GetType() == typeof(FloatValue)) {
-				return Divide(value as FloatValue);
-			}
-			if (value.GetType() == typeof(StringValue)) {
-				return Divide(value as StringValue);
-			}
-			if (value.GetType() == typeof(BoolValue)) {
-				return Divide(value as BoolValue);
-			}
-			throw new InvalidOperationException();
-		}
-
-		public abstract Value Divide(IntValue @int);
-		public abstract Value Divide(FloatValue @float);
-		public abstract Value Divide(StringValue @string);
-		public abstract Value Divide(BoolValue @bool);
-
-		public Value Multiply(Value value)
-		{
-			if (value.GetType() == typeof(IntValue)) {
-				return Multiply(value as IntValue);
-			}
-			if (value.GetType() == typeof(FloatValue)) {
-				return Multiply(value as FloatValue);
-			}
-			if (value.GetType() == typeof(StringValue)) {
-				return Multiply(value as StringValue);
-			}
-			if (value.GetType() == typeof(BoolValue)) {
-				return Multiply(value as BoolValue);
-			}
-			throw new InvalidOperationException();
-		}
-
-		public abstract Value Multiply(IntValue @int);
-		public abstract Value Multiply(FloatValue @float);
-		public abstract Value Multiply(StringValue @string);
-		public abstract Value Multiply(BoolValue @bool);
+		public abstract Value Add(Value value);
+		public abstract Value Subtract(Value value);
+		public abstract Value Multiply(Value value);
+		public abstract Value Divide(Value value);
 
 		#endregion
 
