@@ -60,6 +60,7 @@ namespace Exodrifter.Rumor.Lang
 			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
 			handlers["choice"] = CompileChoice;
+			handlers["jump"] = CompileJump;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
 			handlers["say"] = CompileSay;
@@ -241,6 +242,14 @@ namespace Exodrifter.Rumor.Lang
 			Expect(line, pos++, ":");
 
 			return new Choice(text, children);
+		}
+
+		private Node CompileJump(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+
+			var name = Expect(line, pos++);
+			return new Jump(name);
 		}
 
 		private Node CompileLabel(LogicalLine line, ref int pos, List<Node> children)
