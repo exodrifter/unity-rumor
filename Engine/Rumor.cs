@@ -115,7 +115,7 @@ namespace Exodrifter.Rumor.Engine
 					"The rumor has not finished execution yet.");
 			}
 
-			// If the stack is not empty, this is a saved game
+			// If the stack is empty, this is a new game
 			if (stack.Count == 0) {
 				stack.Push(new StackFrame(nodes));
 				State.Reset();
