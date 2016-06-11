@@ -133,8 +133,12 @@ namespace Exodrifter.Rumor.Lang
 				return new NoOpExpression();
 			}
 
-			var ops = new List<string>() { "=", "*", "/", "+", "-" };
-			int opValue = int.MaxValue; // operator's index in ops list
+			var ops = new List<string>() {
+				"*", "/", "+", "-",
+				"==", "!=",
+				"=",
+			};
+			int opValue = int.MinValue; // operator's index in ops list
 			int opIndex = -1; // operator's index in the token list
 			int parenthesis = 0;
 
@@ -144,8 +148,8 @@ namespace Exodrifter.Rumor.Lang
 				if (parenthesis == 0 && ops.Contains(token.text)) {
 					var newOpValue = ops.IndexOf(token.text);
 
-					// Token is an operator with a higher priority
-					if (newOpValue < opValue) {
+					// Token is an operator with a lower precedence
+					if (newOpValue > opValue) {
 						opValue = newOpValue;
 						opIndex = i;
 					}
@@ -168,7 +172,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			// Split on the operator, if there is one
-			if (opValue != int.MaxValue || opIndex != -1) {
+			if ((0 <= opValue && opValue < ops.Count)|| opIndex != -1) {
 				var left = CompileExpression(Slice(tokens, 0, opIndex));
 				var right = CompileExpression(Slice(tokens, opIndex + 1));
 				switch (ops[opValue]) {
@@ -182,6 +186,10 @@ namespace Exodrifter.Rumor.Lang
 						return new AddExpression(left, right);
 					case "-":
 						return new SubtractExpression(left, right);
+					case "==":
+						return new EqualsExpression(left, right);
+					case "!=":
+						return new NotEqualsExpression(left, right);
 				}
 			}
 
