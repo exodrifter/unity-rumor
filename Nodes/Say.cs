@@ -46,7 +46,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Engine.Rumor rumor)
 		{
-			return text.Evaluate(rumor.Scope).AsString();
+			return text.Evaluate(rumor.Scope).ToString();
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Scope scope)
 		{
-			return text.Evaluate(scope).AsString();
+			return text.Evaluate(scope).ToString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
