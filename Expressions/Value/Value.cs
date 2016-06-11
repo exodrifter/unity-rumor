@@ -129,9 +129,27 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Equality
 
-		public abstract override bool Equals(object obj);
+		public override bool Equals(object obj)
+		{
+			var other = obj as Value;
+			if (other == null) {
+				return false;
+			}
+			return other.value.Equals(value);
+		}
 
-		public abstract override int GetHashCode();
+		public bool Equals(Value other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.value.Equals(value);
+		}
+
+		public override int GetHashCode()
+		{
+			return value.GetHashCode();
+		}
 
 		public static bool operator ==(Value l, Value r)
 		{
@@ -144,9 +162,9 @@ namespace Exodrifter.Rumor.Expressions
 			return l.Equals(r);
 		}
 
-		public static bool operator !=(Value a, Value b)
+		public static bool operator !=(Value l, Value r)
 		{
-			return !(a == b);
+			return !(l == r);
 		}
 
 		#endregion

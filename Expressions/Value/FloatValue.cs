@@ -58,32 +58,6 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
-		#region Equality
-
-		public override bool Equals(object obj)
-		{
-			var other = obj as FloatValue;
-			if (other == null) {
-				return false;
-			}
-			return other.AsFloat() == AsFloat();
-		}
-
-		public bool Equals(FloatValue other)
-		{
-			if (other == null) {
-				return false;
-			}
-			return other.value == value;
-		}
-
-		public override int GetHashCode()
-		{
-			return value.GetHashCode();
-		}
-
-		#endregion
-
 		#region Serialization
 
 		public FloatValue(SerializationInfo info, StreamingContext context)

@@ -40,32 +40,6 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
-		#region Equality
-
-		public override bool Equals(object obj)
-		{
-			var other = obj as StringValue;
-			if (other == null) {
-				return false;
-			}
-			return other.AsString() == AsString();
-		}
-
-		public bool Equals(StringValue other)
-		{
-			if (other == null) {
-				return false;
-			}
-			return other.value == value;
-		}
-
-		public override int GetHashCode()
-		{
-			return value.GetHashCode();
-		}
-
-		#endregion
-
 		#region Serialization
 
 		public StringValue(SerializationInfo info, StreamingContext context)
