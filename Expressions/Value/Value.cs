@@ -125,6 +125,15 @@ namespace Exodrifter.Rumor.Expressions
 		public abstract Value Multiply(Value value);
 		public abstract Value Divide(Value value);
 
+		public abstract Value BoolAnd(Value value);
+		public abstract Value BoolOr(Value value);
+		public Value BoolXor(Value value)
+		{
+			var and = BoolAnd(value).AsBool();
+			var or = BoolOr(value).AsBool();
+			return new BoolValue(!and && or);
+		}
+
 		#endregion
 
 		#region Equality

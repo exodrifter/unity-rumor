@@ -31,6 +31,40 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override Value BoolAnd(Value value)
+		{
+			if (value.IsInt()) {
+				return new BoolValue(AsBool() && value.AsInt() != 0);
+			}
+			if (value.IsFloat()) {
+				return new BoolValue(AsBool() && value.AsFloat() != 0);
+			}
+			if (value.IsString()) {
+				return new BoolValue(AsBool() && value.AsString() != "");
+			}
+			if (value.IsBool()) {
+				return new BoolValue(AsBool() && value.AsBool());
+			}
+			throw new InvalidOperationException();
+		}
+
+		public override Value BoolOr(Value value)
+		{
+			if (value.IsInt()) {
+				return new BoolValue(AsBool() || value.AsInt() != 0);
+			}
+			if (value.IsFloat()) {
+				return new BoolValue(AsBool() || value.AsFloat() != 0);
+			}
+			if (value.IsString()) {
+				return new BoolValue(AsBool() || value.AsString() != "");
+			}
+			if (value.IsBool()) {
+				return new BoolValue(AsBool() || value.AsBool());
+			}
+			throw new InvalidOperationException();
+		}
+
 		#region Serialization
 
 		public BoolValue(SerializationInfo info, StreamingContext context)

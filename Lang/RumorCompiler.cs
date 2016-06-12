@@ -135,6 +135,7 @@ namespace Exodrifter.Rumor.Lang
 
 			var ops = new List<string>() {
 				"*", "/", "+", "-",
+				"and", "xor", "or",
 				"==", "!=",
 				"=",
 			};
@@ -190,6 +191,12 @@ namespace Exodrifter.Rumor.Lang
 						return new EqualsExpression(left, right);
 					case "!=":
 						return new NotEqualsExpression(left, right);
+					case "and":
+						return new BoolAndExpression(left, right);
+					case "xor":
+						return new BoolXorExpression(left, right);
+					case "or":
+						return new BoolOrExpression(left, right);
 				}
 			}
 
