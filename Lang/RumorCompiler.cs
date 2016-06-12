@@ -60,6 +60,7 @@ namespace Exodrifter.Rumor.Lang
 			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
 			handlers["choice"] = CompileChoice;
+			handlers["if"] = CompileIf;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
 			handlers["say"] = CompileSay;
@@ -258,6 +259,20 @@ namespace Exodrifter.Rumor.Lang
 			return new Choice(text, children);
 		}
 
+		private Node CompileIf(LogicalLine line, ref int pos, List<Node> children)
+		{
+			int end = Seek(line, pos, ":");
+
+			var tokens = Slice(line.tokens, pos, end);
+			var expression = CompileExpression(tokens);
+
+			pos = end;
+
+			Expect(line, pos++, ":");
+
+			return new If(expression, children);
+		}
+
 		private Node CompileLabel(LogicalLine line, ref int pos, List<Node> children)
 		{
 			var label = Expect(line, pos++);
@@ -297,6 +312,20 @@ namespace Exodrifter.Rumor.Lang
 		#endregion
 
 		#region Generic Lexer Functions
+
+		public int Seek(LogicalLine line, int pos, string text)
+		{
+			int startPos = pos;
+			while (pos < line.tokens.Count) {
+				if (line.tokens[pos].text == text) {
+					return pos;
+				}
+				pos++;
+			}
+
+			throw new CompilerError(line,
+				"Expected to find a token, but there is none!");
+		}
 
 		public string Expect(LogicalLine line, int pos)
 		{
