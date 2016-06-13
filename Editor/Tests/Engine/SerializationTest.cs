@@ -30,6 +30,45 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
+		/// Ensure BoolAnd expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeBoolAndExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new BoolAndExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure BoolOr expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeBoolOrExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new BoolOrExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure BoolXor expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeBoolXorExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new BoolXorExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
 		/// Ensure Divide expressions are serialized properly.
 		/// </summary>
 		[Test]
@@ -37,6 +76,19 @@ namespace Exodrifter.Rumor.Test.Engine
 		{
 			var num = new LiteralExpression(1);
 			var a = new DivideExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Equals expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeEqualsExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new EqualsExpression(num, num);
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a, b);
@@ -87,6 +139,19 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
+		/// Ensure NotEquals expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeNotEqualsExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new NotEqualsExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
 		/// Ensure Set expressions are serialized properly.
 		/// </summary>
 		[Test]
@@ -128,6 +193,10 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(a, b);
 
 			a = new StringValue("1");
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
+
+			a = new BoolValue(true);
 			b = Reserialize(a);
 			Assert.AreEqual(a, b);
 		}
