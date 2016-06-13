@@ -315,7 +315,6 @@ namespace Exodrifter.Rumor.Lang
 
 		public int Seek(LogicalLine line, int pos, string text)
 		{
-			int startPos = pos;
 			while (pos < line.tokens.Count) {
 				if (line.tokens[pos].text == text) {
 					return pos;
