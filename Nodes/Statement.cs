@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// A statement is a standalone expression which will be evaluated.
 	/// </summary>
 	[Serializable]
-	public sealed class Statement : Node, ISerializable
+	public sealed class Statement : Node
 	{
 		/// <summary>
 		/// The expression to evaluate.
@@ -37,12 +37,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Statement(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			expression = (Expression)info.GetValue("expression", typeof(Expression));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 			info.AddValue("expression", expression, typeof(Expression));
 		}
 

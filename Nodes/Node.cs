@@ -1,8 +1,11 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
+	[Serializable]
 	public abstract class Node : Block
 	{
 		/// <summary>
@@ -29,5 +32,14 @@ namespace Exodrifter.Rumor.Nodes
 		/// A IEnumerator that can be used to continue execution of the node.
 		/// </returns>
 		public abstract IEnumerator<RumorYield> Run(Engine.Rumor rumor);
+
+		#region Serialization
+
+		public Node(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		#endregion
 	}
 }

@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Conditional statement for entering a block.
 	/// </summary>
 	[Serializable]
-	public sealed class If : Node, ISerializable
+	public sealed class If : Node
 	{
 		/// <summary>
 		/// The text to append to the dialog.
@@ -46,14 +46,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public If(SerializationInfo info, StreamingContext context)
-			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
+			: base(info, context)
 		{
 			expression = (Expression)info.GetValue("expression", typeof(Expression));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", Children, typeof(List<Node>));
+			base.GetObjectData(info, context);
 			info.AddValue("expression", expression, typeof(Expression));
 		}
 

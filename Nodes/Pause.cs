@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Pauses execution for a certain amount of time.
 	/// </summary>
 	[Serializable]
-	public sealed class Pause : Node, ISerializable
+	public sealed class Pause : Node
 	{
 		/// <summary>
 		/// The number of seconds to pause for.
@@ -35,12 +35,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Pause(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			seconds = (float)info.GetValue("seconds", typeof(float));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 			info.AddValue("seconds", seconds, typeof(float));
 		}
 

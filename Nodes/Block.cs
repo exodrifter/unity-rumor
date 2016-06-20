@@ -1,12 +1,14 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
 	/// <summary>
 	/// A block is a structure that holds a reference to a list of blocks.
 	/// </summary>
-	public abstract class Block
+	[Serializable]
+	public abstract class Block : ISerializable
 	{
 		/// <summary>
 		/// The children of this block.
@@ -42,5 +44,19 @@ namespace Exodrifter.Rumor.Nodes
 				this.children = new List<Node>(children);
 			}
 		}
+
+		#region Serialization
+
+		public Block(SerializationInfo info, StreamingContext context)
+		{
+			children = (List<Node>)info.GetValue("children", typeof(List<Node>));
+		}
+
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("children", Children, typeof(List<Node>));
+		}
+
+		#endregion
 	}
 }

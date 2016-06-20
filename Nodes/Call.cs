@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Moves execution to a label in a script.
 	/// </summary>
 	[Serializable]
-	public sealed class Call : Node, ISerializable
+	public sealed class Call : Node
 	{
 		/// <summary>
 		/// The name of the label to move to.
@@ -36,12 +36,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Call(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			to = (string)info.GetValue("to", typeof(string));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 			info.AddValue("to", to, typeof(string));
 		}
 

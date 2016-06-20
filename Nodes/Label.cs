@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Specifies a location that can be jumped to.
 	/// </summary>
 	[Serializable]
-	public sealed class Label : Node, ISerializable
+	public sealed class Label : Node
 	{
 		/// <summary>
 		/// The name of the label.
@@ -36,14 +36,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Label(SerializationInfo info, StreamingContext context)
-			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
+			: base(info, context)
 		{
 			name = (string)info.GetValue("name", typeof(string));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", Children, typeof(List<Node>));
+			base.GetObjectData(info, context);
 			info.AddValue("name", name, typeof(string));
 		}
 
