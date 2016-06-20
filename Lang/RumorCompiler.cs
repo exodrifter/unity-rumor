@@ -270,7 +270,7 @@ namespace Exodrifter.Rumor.Lang
 
 			Expect(line, pos++, ":");
 
-			return new If(expression, children);
+			return new Condition(new If(expression, children));
 		}
 
 		private Node CompileLabel(LogicalLine line, ref int pos, List<Node> children)
