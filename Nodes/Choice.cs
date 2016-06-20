@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="children">
 		/// The children for this choice.
 		/// </param>
-		public Choice(string text, List<Node> children)
+		public Choice(string text, IEnumerable<Node> children)
 			: base(children)
 		{
 			this.text = text;
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.State.AddChoice(text, this.children);
+			rumor.State.AddChoice(text, this.Children);
 
 			// Wait for a choice to be made if we're done adding choices
 			if (!(rumor.Next is Choice)) {
@@ -51,7 +51,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", children, typeof(List<Node>));
+			info.AddValue("children", Children, typeof(List<Node>));
 			info.AddValue("text", text, typeof(string));
 		}
 

@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// </summary>
 		/// <param name="expression">The expression to evaluate.</param>
 		/// <param name="children">The children of the if.</param>
-		public If(Expression expression, List<Node> children)
+		public If(Expression expression, IEnumerable<Node> children)
 			: base(children)
 		{
 			this.expression = expression;
@@ -37,7 +37,7 @@ namespace Exodrifter.Rumor.Nodes
 				|| value.IsInt() && value.AsInt() != 0
 				|| value.IsString() && value.AsString() != "") {
 
-				rumor.EnterBlock(children);
+				rumor.EnterBlock(Children);
 			}
 
 			yield return null;
@@ -53,7 +53,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", children, typeof(List<Node>));
+			info.AddValue("children", Children, typeof(List<Node>));
 			info.AddValue("expression", expression, typeof(Expression));
 		}
 

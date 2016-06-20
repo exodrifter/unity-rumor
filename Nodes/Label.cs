@@ -21,7 +21,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// </summary>
 		/// <param name="name">The name of the label.</param>
 		/// <param name="children">The children of the label.</param>
-		public Label(string name, List<Node> children)
+		public Label(string name, IEnumerable<Node> children)
 			: base(children)
 		{
 			this.name = name;
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.EnterBlock(children);
+			rumor.EnterBlock(Children);
 			yield return null;
 		}
 
@@ -43,7 +43,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", children, typeof(List<Node>));
+			info.AddValue("children", Children, typeof(List<Node>));
 			info.AddValue("name", name, typeof(string));
 		}
 
