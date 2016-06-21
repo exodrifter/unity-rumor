@@ -74,20 +74,46 @@ namespace Exodrifter.Rumor.Lang
 			int pos = 0;
 			int index = 0;
 			var depth = SkipWhitespace(lines[0], ref pos);
-			return CompileBlock(lines, ref index, depth);
+			return CompileNodes(lines, ref index, depth);
 		}
 
-		private List<Node> CompileBlock
+		/// <summary>
+		/// Returns the keyword at the beginning of the logical line.
+		/// </summary>
+		/// <param name="line">
+		/// The logical line to parse.
+		/// </param>
+		/// <param name="pos">
+		/// The position of the next non-whitespace character after the keyword
+		/// at the beginning of the line.
+		/// </param>
+		/// <param name="depth">
+		/// The depth of the line.
+		/// </param>
+		/// <returns>
+		/// The key of the logical line.
+		/// </returns>
+		private string GetKey(LogicalLine line, out int pos, out int depth)
+		{
+			pos = 0;
+			depth = SkipWhitespace(line, ref pos);
+			var key = line.tokens[pos].text;
+
+			pos++;
+			SkipWhitespace(line, ref pos);
+
+			return key;
+		}
+
+		private List<Node> CompileNodes
 			(List<LogicalLine> lines, ref int index, int depth)
 		{
 			var nodes = new List<Node>();
 
 			for (; index < lines.Count; ++index) {
-				int pos = 0;
 				var line = lines[index];
-
-				// Calculate the depth of this line
-				var currentDepth = SkipWhitespace(line, ref pos);
+				int pos, currentDepth;
+				var key = GetKey(line, out pos, out currentDepth);
 
 				// Check if the line is at an exit depth
 				if (currentDepth < depth) {
@@ -99,25 +125,20 @@ namespace Exodrifter.Rumor.Lang
 					throw new CompilerError(line, "Unexpected block");
 				}
 
-				var key = line.tokens[pos].text;
 				if (!handlers.ContainsKey(key)) {
 					throw new CompilerError(line.tokens[pos],
 						string.Format("Unknown keyword \"{0}\"", key));
 				}
 
-				pos++;
-				SkipWhitespace(line, ref pos);
-
 				// Check for children on the next line
 				var children = new List<Node>();
 				if (index + 1 < lines.Count) {
-					int nextPos = 0;
-					var nextLine = lines[index + 1];
-					var nextDepth = SkipWhitespace(nextLine, ref nextPos);
+					int nextPos, nextDepth;
+					GetKey(lines[index + 1], out nextPos, out nextDepth);
 
 					if (nextDepth > depth) {
 						index++;
-						children = CompileBlock(lines, ref index, nextDepth);
+						children = CompileNodes(lines, ref index, nextDepth);
 					}
 				}
 
