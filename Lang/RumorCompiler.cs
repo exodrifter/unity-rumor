@@ -20,6 +20,11 @@ namespace Exodrifter.Rumor.Lang
 			(LogicalLine line, ref int pos, List<Node> children);
 		private readonly Dictionary<string, NodeParser> handlers;
 
+		private delegate Conditional ConditionalParser
+			(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth);
+		private readonly Dictionary<string, ConditionalParser> conditions;
+
 		/// <summary>
 		/// Creates a new Rumor compiler.
 		/// </summary>
@@ -60,10 +65,12 @@ namespace Exodrifter.Rumor.Lang
 			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
 			handlers["choice"] = CompileChoice;
-			handlers["if"] = CompileIf;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
 			handlers["say"] = CompileSay;
+
+			conditions = new Dictionary<string, ConditionalParser>();
+			conditions["if"] = CompileIf;
 		}
 
 		public IEnumerable<Node> Compile(string code)
@@ -105,6 +112,21 @@ namespace Exodrifter.Rumor.Lang
 			return key;
 		}
 
+		private List<Node> GetChildren(List<LogicalLine> lines, ref int index, int depth)
+		{
+			var children = new List<Node>();
+			if (index + 1 < lines.Count) {
+				int nextPos, nextDepth;
+				GetKey(lines[index + 1], out nextPos, out nextDepth);
+
+				if (nextDepth > depth) {
+					index++;
+					children = CompileNodes(lines, ref index, nextDepth);
+				}
+			}
+			return children;
+		}
+
 		private List<Node> CompileNodes
 			(List<LogicalLine> lines, ref int index, int depth)
 		{
@@ -125,27 +147,45 @@ namespace Exodrifter.Rumor.Lang
 					throw new CompilerError(line, "Unexpected block");
 				}
 
+				if (conditions.ContainsKey(key)) {
+					var conditional = CompileConditional(lines, ref index, depth);
+					nodes.Add(new Condition(conditional));
+					continue;
+				}
+
 				if (!handlers.ContainsKey(key)) {
 					throw new CompilerError(line.tokens[pos],
 						string.Format("Unknown keyword \"{0}\"", key));
 				}
 
-				// Check for children on the next line
-				var children = new List<Node>();
-				if (index + 1 < lines.Count) {
-					int nextPos, nextDepth;
-					GetKey(lines[index + 1], out nextPos, out nextDepth);
-
-					if (nextDepth > depth) {
-						index++;
-						children = CompileNodes(lines, ref index, nextDepth);
-					}
-				}
-
+				var children = GetChildren(lines, ref index, depth);
 				nodes.Add(handlers[key](line, ref pos, children));
 			}
 
 			return nodes;
+		}
+
+		public Conditional CompileConditional
+			(List<LogicalLine> lines, ref int index, int depth)
+		{
+			var line = lines[index];
+			int pos, currentDepth;
+			var key = GetKey(line, out pos, out currentDepth);
+
+			// Check if the line is at the same depth
+			if (currentDepth != depth) {
+				return null;
+			}
+
+			if (!conditions.ContainsKey(key)) {
+				throw new CompilerError(line.tokens[pos],
+					string.Format("Unknown keyword \"{0}\"", key));
+			}
+
+			var children = GetChildren(lines, ref index, depth);
+
+			return conditions[key](line, ref pos, children,
+				lines, ref index, depth);
 		}
 
 		public Expression CompileExpression(List<LogicalToken> tokens)
@@ -280,20 +320,6 @@ namespace Exodrifter.Rumor.Lang
 			return new Choice(text, children);
 		}
 
-		private Node CompileIf(LogicalLine line, ref int pos, List<Node> children)
-		{
-			int end = Seek(line, pos, ":");
-
-			var tokens = Slice(line.tokens, pos, end);
-			var expression = CompileExpression(tokens);
-
-			pos = end;
-
-			Expect(line, pos++, ":");
-
-			return new Condition(new If(expression, children));
-		}
-
 		private Node CompileLabel(LogicalLine line, ref int pos, List<Node> children)
 		{
 			var label = Expect(line, pos++);
@@ -328,6 +354,36 @@ namespace Exodrifter.Rumor.Lang
 			var tokens = Slice(line.tokens, pos);
 			var expression = CompileExpression(tokens);
 			return new Statement(expression);
+		}
+
+		#endregion
+
+		#region Conditional Compilation Functions
+
+		private Conditional CompileIf(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			int end = Seek(line, pos, ":");
+
+			var tokens = Slice(line.tokens, pos, end);
+			var expression = CompileExpression(tokens);
+
+			pos = end;
+
+			Expect(line, pos++, ":");
+
+			var condition = CompileConditional(lines, ref index, depth);
+			if (condition == null) {
+				return new If(expression, children);
+			} else if (condition is If) {
+				return new If(expression, children, (If)condition);
+			} else if (condition is Else) {
+				return new If(expression, children, (Else)condition);
+			} else {
+				throw new CompilerError(lines[index],
+					string.Format("Unexpected conditional of type \"{0}\"",
+						lines[index].GetType()));
+			}
 		}
 
 		#endregion
