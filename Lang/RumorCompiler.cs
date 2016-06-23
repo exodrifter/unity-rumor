@@ -235,6 +235,9 @@ namespace Exodrifter.Rumor.Lang
 							"Unexpected close parenthesis!");
 					}
 				}
+				else if (token.text == "\"") {
+					Quote(new LogicalLine(tokens), ref i);
+				}
 			}
 
 			if (parenthesis != 0) {
