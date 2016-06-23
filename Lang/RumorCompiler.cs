@@ -243,7 +243,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			// Split on the operator, if there is one
-			if ((0 <= opValue && opValue < ops.Count)|| opIndex != -1) {
+			if ((0 <= opValue && opValue < ops.Count) || opIndex != -1) {
 				var left = CompileExpression(Slice(tokens, 0, opIndex));
 				var right = CompileExpression(Slice(tokens, opIndex + 1));
 				switch (ops[opValue]) {
@@ -349,7 +349,7 @@ namespace Exodrifter.Rumor.Lang
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
 		{
 			ExpectNoChildren(line, children);
-			
+
 			var tokens = Slice(line.tokens, pos);
 			var expression = CompileExpression(tokens);
 			return new Say(expression);
@@ -391,9 +391,11 @@ namespace Exodrifter.Rumor.Lang
 			var nextCondition = CompileCondition(lines, ref index, depth);
 			if (nextCondition is Elif) {
 				return new If(expression, children, (Elif)nextCondition);
-			} else if (nextCondition is Else) {
+			}
+			else if (nextCondition is Else) {
 				return new If(expression, children, (Else)nextCondition);
 			}
+
 			index = tempIndex;
 			return new If(expression, children);
 		}
@@ -407,9 +409,11 @@ namespace Exodrifter.Rumor.Lang
 			var nextCondition = CompileCondition(lines, ref index, depth);
 			if (nextCondition is Elif) {
 				return new Elif(expression, children, (Elif)nextCondition);
-			} else if (nextCondition is Else) {
+			}
+			else if (nextCondition is Else) {
 				return new Elif(expression, children, (Else)nextCondition);
 			}
+
 			index = tempIndex;
 			return new Elif(expression, children);
 		}
