@@ -71,6 +71,8 @@ namespace Exodrifter.Rumor.Lang
 
 			conditions = new Dictionary<string, ConditionalParser>();
 			conditions["if"] = CompileIf;
+			conditions["elif"] = CompileElif;
+			conditions["else"] = CompileElse;
 		}
 
 		public IEnumerable<Node> Compile(string code)
@@ -148,7 +150,13 @@ namespace Exodrifter.Rumor.Lang
 				}
 
 				if (conditions.ContainsKey(key)) {
-					var conditional = CompileConditional(lines, ref index, depth);
+					var conditional = CompileCondition(lines, ref index, depth);
+					if (conditional is Elif || conditional is Else) {
+						throw new CompilerError(line,
+							string.Format(
+								"Unexpected conditional of type \"{0}\"",
+								conditional.GetType()));
+					}
 					nodes.Add(new Condition(conditional));
 					continue;
 				}
@@ -165,7 +173,7 @@ namespace Exodrifter.Rumor.Lang
 			return nodes;
 		}
 
-		public Conditional CompileConditional
+		public Conditional CompileCondition
 			(List<LogicalLine> lines, ref int index, int depth)
 		{
 			var line = lines[index];
@@ -360,8 +368,7 @@ namespace Exodrifter.Rumor.Lang
 
 		#region Conditional Compilation Functions
 
-		private Conditional CompileIf(LogicalLine line, ref int pos, List<Node> children,
-			List<LogicalLine> lines, ref int index, int depth)
+		private Expression CompileConditional(LogicalLine line, ref int pos, List<Node> children)
 		{
 			int end = Seek(line, pos, ":");
 
@@ -372,18 +379,46 @@ namespace Exodrifter.Rumor.Lang
 
 			Expect(line, pos++, ":");
 
-			var condition = CompileConditional(lines, ref index, depth);
-			if (condition == null) {
-				return new If(expression, children);
-			} else if (condition is If) {
-				return new If(expression, children, (If)condition);
-			} else if (condition is Else) {
-				return new If(expression, children, (Else)condition);
-			} else {
-				throw new CompilerError(lines[index],
-					string.Format("Unexpected conditional of type \"{0}\"",
-						lines[index].GetType()));
+			return expression;
+		}
+
+		private Conditional CompileIf(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			var expression = CompileConditional(line, ref pos, children);
+
+			int tempIndex = index++;
+			var nextCondition = CompileCondition(lines, ref index, depth);
+			if (nextCondition is Elif) {
+				return new If(expression, children, (Elif)nextCondition);
+			} else if (nextCondition is Else) {
+				return new If(expression, children, (Else)nextCondition);
 			}
+			index = tempIndex;
+			return new If(expression, children);
+		}
+
+		private Conditional CompileElif(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			var expression = CompileConditional(line, ref pos, children);
+
+			int tempIndex = index++;
+			var nextCondition = CompileCondition(lines, ref index, depth);
+			if (nextCondition is Elif) {
+				return new Elif(expression, children, (Elif)nextCondition);
+			} else if (nextCondition is Else) {
+				return new Elif(expression, children, (Else)nextCondition);
+			}
+			index = tempIndex;
+			return new Elif(expression, children);
+		}
+
+		private Conditional CompileElse(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			Expect(line, pos++, ":");
+			return new Else(children);
 		}
 
 		#endregion

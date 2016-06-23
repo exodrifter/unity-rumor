@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// An if conditional statement.
 	/// </summary>
 	[Serializable]
-	public sealed class If : Conditional
+	public class If : Conditional
 	{
 		/// <summary>
 		/// The chained conditional statement to evaluate if this statement
@@ -30,12 +30,12 @@ namespace Exodrifter.Rumor.Nodes
 		}
 
 		/// <summary>
-		/// Creates a new if block with a chained else if statement.
+		/// Creates a new if block with a chained elif statement.
 		/// </summary>
 		/// <param name="expression">The expression to evaluate.</param>
 		/// <param name="children">The children of the if.</param>
 		/// <param name="elif">The chained if statement.</param>
-		public If(Expression expression, IEnumerable<Node> children, If elif)
+		public If(Expression expression, IEnumerable<Node> children, Elif elif)
 			: base(expression, children)
 		{
 			this.elif = elif;
@@ -63,6 +63,14 @@ namespace Exodrifter.Rumor.Nodes
 				|| value.IsString() && value.AsString() != "") {
 
 				rumor.EnterBlock(Children);
+			}
+			else {
+				if (elif != null) {
+					var yield = elif.Exec(rumor);
+					while (yield.MoveNext()) {
+						yield return yield.Current;
+					}
+				}
 			}
 
 			yield return null;
