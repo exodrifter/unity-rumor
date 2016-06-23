@@ -11,6 +11,11 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
+		public override Value Not()
+		{
+			return new BoolValue(!AsBool());
+		}
+
 		public override Value Add(Value value)
 		{
 			throw new InvalidOperationException();

@@ -11,6 +11,11 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
+		public override Value Not()
+		{
+			return new BoolValue(!(AsFloat() != 0f));
+		}
+
 		public override Value Add(Value value)
 		{
 			if (value.IsInt()) {

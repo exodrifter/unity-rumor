@@ -119,6 +119,8 @@ namespace Exodrifter.Rumor.Expressions
 		#endregion
 
 		#region Operators
+		
+		public abstract Value Not();
 
 		public abstract Value Add(Value value);
 		public abstract Value Subtract(Value value);

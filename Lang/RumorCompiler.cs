@@ -204,6 +204,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			var ops = new List<string>() {
+				"!",
 				"*", "/", "+", "-",
 				"and", "xor", "or",
 				"==", "!=",
@@ -252,6 +253,12 @@ namespace Exodrifter.Rumor.Lang
 				switch (ops[opValue]) {
 					case "=":
 						return new SetExpression(left, right);
+					case "!":
+						if (left is NoOpExpression) {
+							return new NotExpression(right);
+						}
+						throw new CompilerError(tokens[opIndex],
+							"Not Operator can only have a right hand argument!");
 					case "*":
 						return new MultiplyExpression(left, right);
 					case "/":
