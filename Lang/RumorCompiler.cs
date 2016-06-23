@@ -157,7 +157,9 @@ namespace Exodrifter.Rumor.Lang
 								"Unexpected conditional of type \"{0}\"",
 								conditional.GetType()));
 					}
-					nodes.Add(new Condition(conditional));
+					if (conditional != null) {
+						nodes.Add(new Condition(conditional));
+					}
 					continue;
 				}
 
@@ -186,8 +188,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			if (!conditions.ContainsKey(key)) {
-				throw new CompilerError(line.tokens[pos],
-					string.Format("Unknown keyword \"{0}\"", key));
+				return null;
 			}
 
 			var children = GetChildren(lines, ref index, depth);
