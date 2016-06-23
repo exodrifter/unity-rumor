@@ -31,6 +31,11 @@ namespace Exodrifter.Rumor.Expressions
 			value = new StringValue(str);
 		}
 
+		public LiteralExpression(bool b)
+		{
+			value = new BoolValue(b);
+		}
+
 		public override Value Evaluate(Scope scope)
 		{
 			return value;

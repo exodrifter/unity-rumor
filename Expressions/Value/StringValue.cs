@@ -27,6 +27,10 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.IsString()) {
 				return new StringValue(AsString() + value.AsString());
 			}
+			if (value.IsBool()) {
+				var @bool = value.AsBool().ToString().ToLower();
+				return new StringValue(AsString() + @bool);
+			}
 			throw new InvalidOperationException();
 		}
 

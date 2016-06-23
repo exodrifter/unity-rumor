@@ -18,6 +18,10 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Add(Value value)
 		{
+			if (value.IsString()) {
+				var @bool = AsBool().ToString().ToLower();
+				return new StringValue(@bool + value.AsString());
+			}
 			throw new InvalidOperationException();
 		}
 
