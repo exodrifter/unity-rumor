@@ -111,6 +111,10 @@ namespace Exodrifter.Rumor.Test.Engine
 			a = new LiteralExpression("1");
 			b = Reserialize(a);
 			Assert.AreEqual(a, b);
+
+			a = new LiteralExpression(true);
+			b = Reserialize(a);
+			Assert.AreEqual(a, b);
 		}
 
 		/// <summary>
@@ -146,6 +150,19 @@ namespace Exodrifter.Rumor.Test.Engine
 		{
 			var num = new LiteralExpression(1);
 			var a = new NotEqualsExpression(num, num);
+			var b = Reserialize(a);
+
+			Assert.AreEqual(a, b);
+		}
+
+		/// <summary>
+		/// Ensure Not expressions are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeNotExpression()
+		{
+			var num = new LiteralExpression(1);
+			var a = new NotExpression(num);
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a, b);
@@ -328,6 +345,21 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
 		}
 
+		/// <summary>
+		/// Ensure Statement nodes are serialized properly.
+		/// </summary>
+		[Test]
+		public void SerializeStatement()
+		{
+			var scope = new Scope();
+			var a = new Statement(new LiteralExpression(1));
+			var b = Reserialize(a);
+
+			Assert.AreEqual(
+				a.expression.Evaluate(scope),
+				b.expression.Evaluate(scope));
+		}
+
 		#endregion
 
 		#region Rumor
@@ -357,11 +389,13 @@ namespace Exodrifter.Rumor.Test.Engine
 			a.Scope.SetVar("a", 1);
 			a.Scope.SetVar("b", 1f);
 			a.Scope.SetVar("c", "1");
+			a.Scope.SetVar("d", true);
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a.Scope.GetVar("a"), b.Scope.GetVar("a"));
 			Assert.AreEqual(a.Scope.GetVar("b"), b.Scope.GetVar("b"));
 			Assert.AreEqual(a.Scope.GetVar("c"), b.Scope.GetVar("c"));
+			Assert.AreEqual(a.Scope.GetVar("d"), b.Scope.GetVar("d"));
 		}
 
 		/// <summary>
