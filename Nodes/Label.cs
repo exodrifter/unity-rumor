@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Specifies a location that can be jumped to.
 	/// </summary>
 	[Serializable]
-	public sealed class Label : Node, ISerializable
+	public sealed class Label : Node
 	{
 		/// <summary>
 		/// The name of the label.
@@ -21,7 +21,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// </summary>
 		/// <param name="name">The name of the label.</param>
 		/// <param name="children">The children of the label.</param>
-		public Label(string name, List<Node> children)
+		public Label(string name, IEnumerable<Node> children)
 			: base(children)
 		{
 			this.name = name;
@@ -29,21 +29,21 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.EnterBlock(children);
+			rumor.EnterBlock(Children);
 			yield return null;
 		}
 
 		#region Serialization
 
 		public Label(SerializationInfo info, StreamingContext context)
-			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
+			: base(info, context)
 		{
 			name = (string)info.GetValue("name", typeof(string));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", children, typeof(List<Node>));
+			base.GetObjectData(info, context);
 			info.AddValue("name", name, typeof(string));
 		}
 

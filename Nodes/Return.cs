@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Exits the current block.
 	/// </summary>
 	[Serializable]
-	public sealed class Return : Node, ISerializable
+	public sealed class Return : Node
 	{
 		/// <summary>
 		/// Creates a new Return node.
@@ -25,11 +25,13 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Return(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 		}
 
 		#endregion

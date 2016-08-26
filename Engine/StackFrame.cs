@@ -111,7 +111,7 @@ namespace Exodrifter.Rumor.Engine
 				var yield = nodes[index].Run(rumor);
 
 				++index;
-				if (yield.MoveNext()) {
+				while (yield.MoveNext()) {
 					yield return yield.Current;
 				}
 			}

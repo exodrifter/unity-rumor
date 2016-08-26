@@ -1,46 +1,28 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Nodes
 {
-	public abstract class Node
+	[Serializable]
+	public abstract class Node : Block
 	{
-		/// <summary>
-		/// The children of this node.
-		/// </summary>
-		protected readonly List<Node> children;
-
-		/// <summary>
-		/// Returns a copy of the children in this node.
-		/// </summary>
-		public List<Node> Children
-		{
-			get
-			{
-				return new List<Node>(children);
-			}
-		}
-
 		/// <summary>
 		/// Creates a new node with no children.
 		/// </summary>
 		protected Node()
+			: base()
 		{
-			children = new List<Node>();
 		}
 
 		/// <summary>
 		/// Creates a new node with the specified children.
 		/// </summary>
 		/// <param name="children">The children of this node.</param>
-		protected Node(List<Node> children)
+		protected Node(IEnumerable<Node> children)
+			: base(children)
 		{
-			if (children == null) {
-				this.children = new List<Node>();
-			}
-			else {
-				this.children = new List<Node>(children);
-			}
 		}
 
 		/// <summary>
@@ -50,5 +32,14 @@ namespace Exodrifter.Rumor.Nodes
 		/// A IEnumerator that can be used to continue execution of the node.
 		/// </returns>
 		public abstract IEnumerator<RumorYield> Run(Engine.Rumor rumor);
+
+		#region Serialization
+
+		public Node(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		#endregion
 	}
 }

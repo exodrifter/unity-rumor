@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Appends additional dialog to the rumor state.
 	/// </summary>
 	[Serializable]
-	public sealed class Add : Node, ISerializable
+	public sealed class Add : Node
 	{
 		/// <summary>
 		/// The text to append to the dialog.
@@ -46,12 +46,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Add(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			text = (string)info.GetValue("text", typeof(string));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 			info.AddValue("text", text, typeof(string));
 		}
 

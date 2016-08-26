@@ -28,6 +28,16 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Sets the value of one variable to a bool.
+		/// </summary>
+		/// <param name="name">The name of the variable to set.</param>
+		/// <param name="value">The value of the variable to use.</param>
+		public void SetVar(string name, bool @bool)
+		{
+			vars[name] = new BoolValue(@bool);
+		}
+
+		/// <summary>
 		/// Sets the value of one variable to an int.
 		/// </summary>
 		/// <param name="name">The name of the variable to set.</param>

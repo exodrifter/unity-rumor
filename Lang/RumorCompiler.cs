@@ -20,6 +20,11 @@ namespace Exodrifter.Rumor.Lang
 			(LogicalLine line, ref int pos, List<Node> children);
 		private readonly Dictionary<string, NodeParser> handlers;
 
+		private delegate Conditional ConditionalParser
+			(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth);
+		private readonly Dictionary<string, ConditionalParser> conditions;
+
 		/// <summary>
 		/// Creates a new Rumor compiler.
 		/// </summary>
@@ -64,6 +69,11 @@ namespace Exodrifter.Rumor.Lang
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
 			handlers["say"] = CompileSay;
+
+			conditions = new Dictionary<string, ConditionalParser>();
+			conditions["if"] = CompileIf;
+			conditions["elif"] = CompileElif;
+			conditions["else"] = CompileElse;
 		}
 
 		public IEnumerable<Node> Compile(string code)
@@ -74,20 +84,61 @@ namespace Exodrifter.Rumor.Lang
 			int pos = 0;
 			int index = 0;
 			var depth = SkipWhitespace(lines[0], ref pos);
-			return CompileBlock(lines, ref index, depth);
+			return CompileNodes(lines, ref index, depth);
 		}
 
-		private List<Node> CompileBlock
+		/// <summary>
+		/// Returns the keyword at the beginning of the logical line.
+		/// </summary>
+		/// <param name="line">
+		/// The logical line to parse.
+		/// </param>
+		/// <param name="pos">
+		/// The position of the next non-whitespace character after the keyword
+		/// at the beginning of the line.
+		/// </param>
+		/// <param name="depth">
+		/// The depth of the line.
+		/// </param>
+		/// <returns>
+		/// The key of the logical line.
+		/// </returns>
+		private string GetKey(LogicalLine line, out int pos, out int depth)
+		{
+			pos = 0;
+			depth = SkipWhitespace(line, ref pos);
+			var key = line.tokens[pos].text;
+
+			pos++;
+			SkipWhitespace(line, ref pos);
+
+			return key;
+		}
+
+		private List<Node> GetChildren(List<LogicalLine> lines, ref int index, int depth)
+		{
+			var children = new List<Node>();
+			if (index + 1 < lines.Count) {
+				int nextPos, nextDepth;
+				GetKey(lines[index + 1], out nextPos, out nextDepth);
+
+				if (nextDepth > depth) {
+					index++;
+					children = CompileNodes(lines, ref index, nextDepth);
+				}
+			}
+			return children;
+		}
+
+		private List<Node> CompileNodes
 			(List<LogicalLine> lines, ref int index, int depth)
 		{
 			var nodes = new List<Node>();
 
 			for (; index < lines.Count; ++index) {
-				int pos = 0;
 				var line = lines[index];
-
-				// Calculate the depth of this line
-				var currentDepth = SkipWhitespace(line, ref pos);
+				int pos, currentDepth;
+				var key = GetKey(line, out pos, out currentDepth);
 
 				// Check if the line is at an exit depth
 				if (currentDepth < depth) {
@@ -99,32 +150,52 @@ namespace Exodrifter.Rumor.Lang
 					throw new CompilerError(line, "Unexpected block");
 				}
 
-				var key = line.tokens[pos].text;
+				if (conditions.ContainsKey(key)) {
+					var conditional = CompileCondition(lines, ref index, depth);
+					if (conditional is Elif || conditional is Else) {
+						throw new CompilerError(line,
+							string.Format(
+								"Unexpected conditional of type \"{0}\"",
+								conditional.GetType()));
+					}
+					if (conditional != null) {
+						nodes.Add(new Condition(conditional));
+					}
+					continue;
+				}
+
 				if (!handlers.ContainsKey(key)) {
 					throw new CompilerError(line.tokens[pos],
 						string.Format("Unknown keyword \"{0}\"", key));
 				}
 
-				pos++;
-				SkipWhitespace(line, ref pos);
-
-				// Check for children on the next line
-				var children = new List<Node>();
-				if (index + 1 < lines.Count) {
-					int nextPos = 0;
-					var nextLine = lines[index + 1];
-					var nextDepth = SkipWhitespace(nextLine, ref nextPos);
-
-					if (nextDepth > depth) {
-						index++;
-						children = CompileBlock(lines, ref index, nextDepth);
-					}
-				}
-
+				var children = GetChildren(lines, ref index, depth);
 				nodes.Add(handlers[key](line, ref pos, children));
 			}
 
 			return nodes;
+		}
+
+		public Conditional CompileCondition
+			(List<LogicalLine> lines, ref int index, int depth)
+		{
+			var line = lines[index];
+			int pos, currentDepth;
+			var key = GetKey(line, out pos, out currentDepth);
+
+			// Check if the line is at the same depth
+			if (currentDepth != depth) {
+				return null;
+			}
+
+			if (!conditions.ContainsKey(key)) {
+				return null;
+			}
+
+			var children = GetChildren(lines, ref index, depth);
+
+			return conditions[key](line, ref pos, children,
+				lines, ref index, depth);
 		}
 
 		public Expression CompileExpression(List<LogicalToken> tokens)
@@ -134,8 +205,14 @@ namespace Exodrifter.Rumor.Lang
 				return new NoOpExpression();
 			}
 
-			var ops = new List<string>() { "=", "*", "/", "+", "-" };
-			int opValue = int.MaxValue; // operator's index in ops list
+			var ops = new List<string>() {
+				"!",
+				"*", "/", "+", "-",
+				"and", "xor", "or",
+				"==", "!=",
+				"=",
+			};
+			int opValue = int.MinValue; // operator's index in ops list
 			int opIndex = -1; // operator's index in the token list
 			int parenthesis = 0;
 
@@ -145,8 +222,8 @@ namespace Exodrifter.Rumor.Lang
 				if (parenthesis == 0 && ops.Contains(token.text)) {
 					var newOpValue = ops.IndexOf(token.text);
 
-					// Token is an operator with a higher priority
-					if (newOpValue < opValue) {
+					// Token is an operator with a lower precedence
+					if (newOpValue > opValue) {
 						opValue = newOpValue;
 						opIndex = i;
 					}
@@ -161,6 +238,9 @@ namespace Exodrifter.Rumor.Lang
 							"Unexpected close parenthesis!");
 					}
 				}
+				else if (token.text == "\"") {
+					Quote(new LogicalLine(tokens), ref i);
+				}
 			}
 
 			if (parenthesis != 0) {
@@ -169,12 +249,18 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			// Split on the operator, if there is one
-			if (opValue != int.MaxValue || opIndex != -1) {
+			if ((0 <= opValue && opValue < ops.Count) || opIndex != -1) {
 				var left = CompileExpression(Slice(tokens, 0, opIndex));
 				var right = CompileExpression(Slice(tokens, opIndex + 1));
 				switch (ops[opValue]) {
 					case "=":
 						return new SetExpression(left, right);
+					case "!":
+						if (left is NoOpExpression) {
+							return new NotExpression(right);
+						}
+						throw new CompilerError(tokens[opIndex],
+							"Not Operator can only have a right hand argument!");
 					case "*":
 						return new MultiplyExpression(left, right);
 					case "/":
@@ -183,6 +269,16 @@ namespace Exodrifter.Rumor.Lang
 						return new AddExpression(left, right);
 					case "-":
 						return new SubtractExpression(left, right);
+					case "==":
+						return new EqualsExpression(left, right);
+					case "!=":
+						return new NotEqualsExpression(left, right);
+					case "and":
+						return new BoolAndExpression(left, right);
+					case "xor":
+						return new BoolXorExpression(left, right);
+					case "or":
+						return new BoolOrExpression(left, right);
 				}
 			}
 
@@ -273,7 +369,7 @@ namespace Exodrifter.Rumor.Lang
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
 		{
 			ExpectNoChildren(line, children);
-			
+
 			var tokens = Slice(line.tokens, pos);
 			var expression = CompileExpression(tokens);
 			return new Say(expression);
@@ -290,7 +386,81 @@ namespace Exodrifter.Rumor.Lang
 
 		#endregion
 
+		#region Conditional Compilation Functions
+
+		private Expression CompileConditional(LogicalLine line, ref int pos, List<Node> children)
+		{
+			int end = Seek(line, pos, ":");
+
+			var tokens = Slice(line.tokens, pos, end);
+			var expression = CompileExpression(tokens);
+
+			pos = end;
+
+			Expect(line, pos++, ":");
+
+			return expression;
+		}
+
+		private Conditional CompileIf(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			var expression = CompileConditional(line, ref pos, children);
+
+			int tempIndex = index++;
+			var nextCondition = CompileCondition(lines, ref index, depth);
+			if (nextCondition is Elif) {
+				return new If(expression, children, (Elif)nextCondition);
+			}
+			else if (nextCondition is Else) {
+				return new If(expression, children, (Else)nextCondition);
+			}
+
+			index = tempIndex;
+			return new If(expression, children);
+		}
+
+		private Conditional CompileElif(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			var expression = CompileConditional(line, ref pos, children);
+
+			int tempIndex = index++;
+			var nextCondition = CompileCondition(lines, ref index, depth);
+			if (nextCondition is Elif) {
+				return new Elif(expression, children, (Elif)nextCondition);
+			}
+			else if (nextCondition is Else) {
+				return new Elif(expression, children, (Else)nextCondition);
+			}
+
+			index = tempIndex;
+			return new Elif(expression, children);
+		}
+
+		private Conditional CompileElse(LogicalLine line, ref int pos, List<Node> children,
+			List<LogicalLine> lines, ref int index, int depth)
+		{
+			Expect(line, pos++, ":");
+			return new Else(children);
+		}
+
+		#endregion
+
 		#region Generic Lexer Functions
+
+		public int Seek(LogicalLine line, int pos, string text)
+		{
+			while (pos < line.tokens.Count) {
+				if (line.tokens[pos].text == text) {
+					return pos;
+				}
+				pos++;
+			}
+
+			throw new CompilerError(line,
+				"Expected to find a token, but there is none!");
+		}
 
 		public string Expect(LogicalLine line, int pos)
 		{

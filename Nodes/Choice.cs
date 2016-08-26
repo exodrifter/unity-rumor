@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Adds a choice to the rumor state.
 	/// </summary>
 	[Serializable]
-	public class Choice : Node, ISerializable
+	public class Choice : Node
 	{
 		/// <summary>
 		/// The text to display for this choice.
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="children">
 		/// The children for this choice.
 		/// </param>
-		public Choice(string text, List<Node> children)
+		public Choice(string text, IEnumerable<Node> children)
 			: base(children)
 		{
 			this.text = text;
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.State.AddChoice(text, this.children);
+			rumor.State.AddChoice(text, this.Children);
 
 			// Wait for a choice to be made if we're done adding choices
 			if (!(rumor.Next is Choice)) {
@@ -44,14 +44,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Choice(SerializationInfo info, StreamingContext context)
-			: base((List<Node>)info.GetValue("children", typeof(List<Node>)))
+			: base(info, context)
 		{
 			text = (string)info.GetValue("text", typeof(string));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", children, typeof(List<Node>));
+			base.GetObjectData(info, context);
 			info.AddValue("text", text, typeof(string));
 		}
 

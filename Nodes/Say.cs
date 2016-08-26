@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Nodes
 	/// Sets the dialog in the rumor state.
 	/// </summary>
 	[Serializable]
-	public sealed class Say : Node, ISerializable
+	public sealed class Say : Node
 	{
 		/// <summary>
 		/// The text to replace the dialog with.
@@ -46,7 +46,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Engine.Rumor rumor)
 		{
-			return text.Evaluate(rumor.Scope).AsString();
+			return text.Evaluate(rumor.Scope).ToString();
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Scope scope)
 		{
-			return text.Evaluate(scope).AsString();
+			return text.Evaluate(scope).ToString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
@@ -68,12 +68,14 @@ namespace Exodrifter.Rumor.Nodes
 		#region Serialization
 
 		public Say(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 			text = (Expression)info.GetValue("text", typeof(Expression));
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			base.GetObjectData(info, context);
 			info.AddValue("text", text, typeof(Expression));
 		}
 
