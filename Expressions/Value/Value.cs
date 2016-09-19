@@ -117,6 +117,15 @@ namespace Exodrifter.Rumor.Expressions
 			return str;
 		}
 
+		/// <summary>
+		/// Returns this value as an object.
+		/// </summary>
+		/// <returns>This value as an object.</returns>
+		public object AsObject()
+		{
+			return value;
+		}
+
 		#endregion
 
 		#region Operators

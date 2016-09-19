@@ -34,8 +34,16 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Evaluate(Scope scope)
 		{
-			// TODO: Call binding and return values properly
-			var result = Engine.Rumor.CallBinding(name);
+			var values = new List<object>(@params.Count);
+
+			for (int i = 0; i < @params.Count; ++i) {
+				var value = @params[i].Evaluate(scope);
+				values.Add(value.AsObject());
+			}
+
+			var result = Engine.Rumor.CallBinding(name, values.ToArray());
+
+			// TODO: Return results properly
 			return null;
 		}
 
