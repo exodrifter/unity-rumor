@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -37,13 +38,14 @@ namespace Exodrifter.Rumor.Nodes
 		public Condition(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			conditional = (Conditional)info.GetValue("conditional", typeof(Conditional));
+			conditional = info.GetValue<Conditional>("conditional");
 		}
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue("conditional", conditional, typeof(Conditional));
+			info.AddValue<Conditional>("conditional", conditional);
 		}
 
 		#endregion

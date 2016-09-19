@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exodrifter.Rumor.Util;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -49,12 +50,13 @@ namespace Exodrifter.Rumor.Nodes
 
 		public Block(SerializationInfo info, StreamingContext context)
 		{
-			children = (List<Node>)info.GetValue("children", typeof(List<Node>));
+			children = info.GetValue<List<Node>>("children");
 		}
 
-		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+		public virtual void GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("children", Children, typeof(List<Node>));
+			info.AddValue<List<Node>>("children", Children);
 		}
 
 		#endregion

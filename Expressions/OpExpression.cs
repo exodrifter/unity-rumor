@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using Exodrifter.Rumor.Util;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
 {
@@ -57,14 +58,15 @@ namespace Exodrifter.Rumor.Expressions
 
 		public OpExpression(SerializationInfo info, StreamingContext context)
 		{
-			left = (Expression)info.GetValue("left", typeof(Expression));
-			right = (Expression)info.GetValue("right", typeof(Expression));
+			left = info.GetValue<Expression>("left");
+			right = info.GetValue<Expression>("right");
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("left", left, typeof(Expression));
-			info.AddValue("right", right, typeof(Expression));
+			info.AddValue<Expression>("left", left);
+			info.AddValue<Expression>("right", right);
 		}
 
 		#endregion

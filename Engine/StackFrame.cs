@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -159,14 +160,15 @@ namespace Exodrifter.Rumor.Engine
 
 		public StackFrame(SerializationInfo info, StreamingContext context)
 		{
-			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
-			index = (int)info.GetValue("index", typeof(int));
+			nodes = info.GetValue<List<Node>>("nodes");
+			index = info.GetValue<int>("index");
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("nodes", nodes, typeof(List<Node>));
-			info.AddValue("index", index, typeof(int));
+			info.AddValue<List<Node>>("nodes", nodes);
+			info.AddValue<int>("index", index);
 		}
 
 		#endregion

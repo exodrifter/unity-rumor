@@ -30,7 +30,8 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public BoolAndExpression(SerializationInfo info, StreamingContext context)
+		public BoolAndExpression
+			(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

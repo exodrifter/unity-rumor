@@ -29,7 +29,8 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public MultiplyExpression(SerializationInfo info, StreamingContext context)
+		public MultiplyExpression
+			(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

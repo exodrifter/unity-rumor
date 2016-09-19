@@ -29,7 +29,8 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public DivideExpression(SerializationInfo info, StreamingContext context)
+		public DivideExpression
+			(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

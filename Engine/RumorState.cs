@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -94,16 +95,17 @@ namespace Exodrifter.Rumor.Engine
 
 		public RumorState(SerializationInfo info, StreamingContext context)
 		{
-			Dialog = (string)info.GetValue("dialog", typeof(string));
-			Choices = (List<string>)info.GetValue("choices", typeof(List<string>));
-			Consequences = (List<List<Node>>)info.GetValue("consequences", typeof(List<List<Node>>));
+			Dialog = info.GetValue<string>("dialog");
+			Choices = info.GetValue<List<string>>("choices");
+			Consequences = info.GetValue<List<List<Node>>>("consequences");
 		}
 
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("dialog", Dialog, typeof(string));
-			info.AddValue("choices", Choices, typeof(List<string>));
-			info.AddValue("consequences", Consequences, typeof(List<List<Node>>));
+			info.AddValue<string>("dialog", Dialog);
+			info.AddValue<List<string>>("choices", Choices);
+			info.AddValue<List<List<Node>>>("consequences", Consequences);
 		}
 
 		#endregion

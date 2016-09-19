@@ -29,7 +29,8 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public SubtractExpression(SerializationInfo info, StreamingContext context)
+		public SubtractExpression
+			(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

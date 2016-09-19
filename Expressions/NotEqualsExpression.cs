@@ -30,7 +30,8 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public NotEqualsExpression(SerializationInfo info, StreamingContext context)
+		public NotEqualsExpression
+			(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

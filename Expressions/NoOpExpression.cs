@@ -47,11 +47,13 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public NoOpExpression(SerializationInfo info, StreamingContext context)
+		public NoOpExpression
+			(SerializationInfo info, StreamingContext context)
 		{
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
 		}
 

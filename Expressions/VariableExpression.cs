@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Runtime.Serialization;
 
@@ -59,14 +60,16 @@ namespace Exodrifter.Rumor.Expressions
 
 		#region Serialization
 
-		public VariableExpression(SerializationInfo info, StreamingContext context)
+		public VariableExpression
+			(SerializationInfo info, StreamingContext context)
 		{
-			name = (string)info.GetValue("name", typeof(string));
+			name = info.GetValue<string>("name");
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("name", name, typeof(string));
+			info.AddValue<string>("name", name);
 		}
 
 		#endregion

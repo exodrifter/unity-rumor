@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -37,13 +38,14 @@ namespace Exodrifter.Rumor.Nodes
 		public Pause(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			seconds = (float)info.GetValue("seconds", typeof(float));
+			seconds = info.GetValue<float>("seconds");
 		}
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue("seconds", seconds, typeof(float));
+			info.AddValue<float>("seconds", seconds);
 		}
 
 		#endregion

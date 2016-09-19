@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -282,20 +283,21 @@ namespace Exodrifter.Rumor.Engine
 
 		public Rumor(SerializationInfo info, StreamingContext context)
 		{
-			nodes = (List<Node>)info.GetValue("nodes", typeof(List<Node>));
-			stack = (Stack<StackFrame>)info.GetValue("stack", typeof(Stack<StackFrame>));
-			scope = (Scope)info.GetValue("scope", typeof(Scope));
+			nodes = info.GetValue<List<Node>>("nodes");
+			stack = info.GetValue<Stack<StackFrame>>("stack");
+			scope = info.GetValue<Scope>("scope");
 
-			State = (RumorState)info.GetValue("state", typeof(RumorState));
+			State = info.GetValue<RumorState>("state");
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("nodes", nodes, typeof(List<Node>));
-			info.AddValue("stack", stack, typeof(Stack<StackFrame>));
-			info.AddValue("scope", scope, typeof(Scope));
+			info.AddValue<List<Node>>("nodes", nodes);
+			info.AddValue<Stack<StackFrame>>("stack", stack);
+			info.AddValue<Scope>("scope", scope);
 
-			info.AddValue("state", State, typeof(RumorState));
+			info.AddValue<RumorState>("state", State);
 		}
 
 		#endregion

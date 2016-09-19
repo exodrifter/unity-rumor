@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Expressions;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -113,8 +114,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public Scope(SerializationInfo info, StreamingContext context)
 		{
-			var keys = (List<string>)info.GetValue("keys", typeof(List<string>));
-			var values = (List<Value>)info.GetValue("values", typeof(List<Value>));
+			var keys = info.GetValue<List<string>>("keys");
+			var values = info.GetValue<List<Value>>("values");
 
 			vars = new Dictionary<string, Value>();
 			for (int i = 0; i < keys.Count; ++i) {
@@ -122,7 +123,8 @@ namespace Exodrifter.Rumor.Engine
 			}
 		}
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		void ISerializable.GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
 			var keys = new List<string>(vars.Count);
 			var values = new List<Value>(vars.Count);
@@ -132,8 +134,8 @@ namespace Exodrifter.Rumor.Engine
 				values.Add(kvp.Value);
 			}
 
-			info.AddValue("keys", keys, typeof(List<string>));
-			info.AddValue("values", values, typeof(List<Value>));
+			info.AddValue<List<string>>("keys", keys);
+			info.AddValue<List<Value>>("values", values);
 		}
 
 		#endregion

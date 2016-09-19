@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -38,13 +39,14 @@ namespace Exodrifter.Rumor.Nodes
 		public Label(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			name = (string)info.GetValue("name", typeof(string));
+			name = info.GetValue<string>("name");
 		}
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue("name", name, typeof(string));
+			info.AddValue<string>("name", name);
 		}
 
 		#endregion
