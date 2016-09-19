@@ -317,6 +317,35 @@ namespace Exodrifter.Rumor.Lang
 					throw new CompilerError(tokens[pos],
 						"Unexpected tokens after string!");
 				}
+				// Parse a function call
+				else if (parenthesisAtEnd) {
+					int i = 1;
+					for (; i < tokens.Count; ++i) {
+						if (!IsWhitespace(tokens[i])) {
+							break;
+						}
+					}
+					if (tokens[i].text == "(") {
+						var @params = new List<Expression>();
+
+						var start = i + 1;
+						var end = start;
+						for (; end < tokens.Count; ++end) {
+							var tk = tokens[end];
+							if (tk.text == "," || tk.text == ")") {
+								var exp = CompileExpression(
+									Slice(tokens, start, end));
+								@params.Add(exp);
+								start = end + 1;
+							}
+						}
+
+						return new FunctionExpression(tokens[0].text, @params);
+					}
+					throw new CompilerError(tokens[i], string.Format(
+						"Expected open parenthesis, but got \"{0}\" instead!",
+						tokens[i].text));
+				}
 				else {
 					throw new CompilerError(tokens[0],
 						"Could not parse expression!");
