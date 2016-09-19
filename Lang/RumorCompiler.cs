@@ -296,13 +296,13 @@ namespace Exodrifter.Rumor.Lang
 				// Parse the literal
 				else if (tokens.Count == 1) {
 					var str = tokens[0].text;
-					float @float;
-					if (float.TryParse(str, out @float)) {
-						return new LiteralExpression(@float);
-					}
 					int @int;
 					if (int.TryParse(str, out @int)) {
 						return new LiteralExpression(@int);
+					}
+					float @float;
+					if (float.TryParse(str, out @float)) {
+						return new LiteralExpression(@float);
 					}
 					// Assume the token is a variable
 					return new VariableExpression(str);
