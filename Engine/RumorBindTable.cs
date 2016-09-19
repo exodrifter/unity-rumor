@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using T = System.Object;
 
 namespace Exodrifter.Rumor.Engine
 {
@@ -163,101 +162,7 @@ namespace Exodrifter.Rumor.Engine
 					name));
 			}
 
-			var binding = bindings[name];
-			var type = binding.GetType();
-
-			if (typeof(Action).IsAssignableFrom(type)) {
-				if (p.Length != 0) {
-					throw new ArgumentException(string.Format(
-						"Expected 0 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Action)binding).Invoke();
-				return null;
-			}
-			if (typeof(Action<T>).IsAssignableFrom(type)) {
-				if (p.Length != 1) {
-					throw new ArgumentException(string.Format(
-						"Expected 1 parameter for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Action<T>)binding).Invoke(p[0]);
-				return null;
-			}
-			if (typeof(Action<T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 2) {
-					throw new ArgumentException(string.Format(
-						"Expected 2 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Action<T, T>)binding).Invoke(p[0], p[1]);
-				return null;
-			}
-			if (typeof(Action<T, T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 3) {
-					throw new ArgumentException(string.Format(
-						"Expected 3 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Action<T, T, T>)binding).Invoke(p[0], p[1], p[2]);
-				return null;
-			}
-			if (typeof(Action<T, T, T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 4) {
-					throw new ArgumentException(string.Format(
-						"Expected 4 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Action<T, T, T, T>)binding).Invoke(p[0], p[1], p[2], p[3]);
-				return null;
-			}
-
-			if (typeof(Func<T>).IsAssignableFrom(type)) {
-				if (p.Length != 0) {
-					throw new ArgumentException(string.Format(
-						"Expected 0 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				((Func<T>)binding).Invoke();
-				return null;
-			}
-			if (typeof(Func<T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 1) {
-					throw new ArgumentException(string.Format(
-						"Expected 1 parameter for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				return ((Func<T, T>)binding).Invoke(p[0]);
-			}
-			if (typeof(Func<T, T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 2) {
-					throw new ArgumentException(string.Format(
-						"Expected 2 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				return ((Func<T, T, T>)binding).Invoke(p[0], p[1]);
-			}
-			if (typeof(Func<T, T, T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 3) {
-					throw new ArgumentException(string.Format(
-						"Expected 3 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				return ((Func<T, T, T, T>)binding).Invoke(p[0], p[1], p[2]);
-			}
-			if (typeof(Func<T, T, T, T, T>).IsAssignableFrom(type)) {
-				if (p.Length != 4) {
-					throw new ArgumentException(string.Format(
-						"Expected 4 parameters for {0}, but got {1} instead",
-						name, p.Length));
-				}
-				return ((Func<T, T, T, T, T>)binding)
-					.Invoke(p[0], p[1], p[2], p[3]);
-			}
-
-			throw new InvalidOperationException(string.Format(
-				"A binding exists for {0}, but no legal cast was found!",
-				name));
+			return ((Delegate)bindings[name]).DynamicInvoke(p);
 		}
 	}
 }
