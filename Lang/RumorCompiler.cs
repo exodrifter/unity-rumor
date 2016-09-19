@@ -215,6 +215,7 @@ namespace Exodrifter.Rumor.Lang
 			int opValue = int.MinValue; // operator's index in ops list
 			int opIndex = -1; // operator's index in the token list
 			int parenthesis = 0;
+			int? firstParenthesis = null;
 
 			for (int i = 0; i < tokens.Count; ++i) {
 				var token = tokens[i];
@@ -230,6 +231,7 @@ namespace Exodrifter.Rumor.Lang
 				}
 				else if (token.text == "(") {
 					parenthesis++;
+					firstParenthesis = firstParenthesis ?? i;
 				}
 				else if (token.text == ")") {
 					parenthesis--;
@@ -240,12 +242,14 @@ namespace Exodrifter.Rumor.Lang
 				}
 				else if (token.text == "\"") {
 					Quote(new LogicalLine(tokens), ref i);
+					i--;
 				}
 			}
 
 			if (parenthesis != 0) {
-				throw new CompilerError(tokens[tokens.Count - 1],
-					"Expected close parenthesis, but there is none!");
+				throw new CompilerError(tokens[firstParenthesis.Value],
+					"Cannot find a close parenthesis for this open "
+					+ "parenthesis!");
 			}
 
 			// Split on the operator, if there is one
@@ -260,7 +264,7 @@ namespace Exodrifter.Rumor.Lang
 							return new NotExpression(right);
 						}
 						throw new CompilerError(tokens[opIndex],
-							"Not Operator can only have a right hand argument!");
+							"Not Operator cannot have a left hand argument!");
 					case "*":
 						return new MultiplyExpression(left, right);
 					case "/":
@@ -304,16 +308,18 @@ namespace Exodrifter.Rumor.Lang
 					return new VariableExpression(str);
 				}
 				// Parse a string
-				else {
+				else if (tokens[0].text == "\"") {
 					int pos = 0;
 					var str = Quote(new LogicalLine(tokens), ref pos);
 					if (str != null && pos == tokens.Count) {
 						return new LiteralExpression(str);
 					}
-					else {
-						throw new CompilerError(tokens[tokens.Count - 1],
-							"Unable to parse expression");
-					}
+					throw new CompilerError(tokens[pos],
+						"Unexpected tokens after string!");
+				}
+				else {
+					throw new CompilerError(tokens[0],
+						"Could not parse expression!");
 				}
 			}
 
