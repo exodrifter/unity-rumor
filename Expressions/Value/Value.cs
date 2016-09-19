@@ -126,6 +126,31 @@ namespace Exodrifter.Rumor.Expressions
 			return value;
 		}
 
+		/// <summary>
+		/// Converts an object into the best-matching value.
+		/// </summary>
+		/// <param name="value">The object to convert.</param>
+		/// <returns>This object as a value.</returns>
+		public static Value Covert(object value)
+		{
+			if (typeof(int) == value.GetType()) {
+				return new IntValue((int)value);
+			}
+			if (typeof(float) == value.GetType()) {
+				return new FloatValue((float)value);
+			}
+			if (typeof(double) == value.GetType()) {
+				return new FloatValue((float)value);
+			}
+			if (typeof(string) == value.GetType()) {
+				return new StringValue((string)value);
+			}
+			if (typeof(bool) == value.GetType()) {
+				return new BoolValue((bool)value);
+			}
+			return new ObjectValue(value);
+		}
+
 		#endregion
 
 		#region Operators

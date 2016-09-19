@@ -42,9 +42,7 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			var result = Engine.Rumor.CallBinding(name, values.ToArray());
-
-			// TODO: Return results properly
-			return null;
+			return Value.Covert(result);
 		}
 
 		public override string ToString()
