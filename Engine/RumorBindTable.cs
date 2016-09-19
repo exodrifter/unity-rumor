@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine
 		/// Stores functions, methods, or constructors.
 		/// </summary>
 		private static Dictionary<string, object> bindings;
-		
+
 		/// <summary>
 		/// Bind a <see cref="Action"/> to the Rumor metatable so it can be
 		/// called by scripts.
@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The action to bind.</param>
 		public static void Bind(string name, Action action)
 		{
-			Bind(name, action);
+			AddBinding(name, action);
 		}
 
 		/// <summary>
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The <see cref="Action{T}"/> to bind.</param>
 		public static void Bind<T1>(string name, Action<T1> action)
 		{
-			Bind(name, action);
+			AddBinding(name, action);
 		}
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public static void Bind<T1, T2>(string name, Action<T1, T2> action)
 		{
-			Bind(name, action);
+			AddBinding(name, action);
 		}
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Exodrifter.Rumor.Engine
 		public static void Bind<T1, T2, T3>
 			(string name, Action<T1, T2, T3> action)
 		{
-			Bind(name, action);
+			AddBinding(name, action);
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Engine
 		public static void Bind<T1, T2, T3, T4>
 			(string name, Action<T1, T2, T3, T4> action)
 		{
-			Bind(name, action);
+			AddBinding(name, action);
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public static void Bind<T1>(string name, Func<T1> func)
 		{
-			Bind(name, func);
+			AddBinding(name, func);
 		}
 
 		/// <summary>
@@ -100,7 +100,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public static void Bind<T1, T2>(string name, Func<T1, T2> func)
 		{
-			Bind(name, func);
+			AddBinding(name, func);
 		}
 
 		/// <summary>
@@ -113,7 +113,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public static void Bind<T1, T2, T3>(string name, Func<T1, T2, T3> func)
 		{
-			Bind(name, func);
+			AddBinding(name, func);
 		}
 
 		/// <summary>
@@ -127,7 +127,7 @@ namespace Exodrifter.Rumor.Engine
 		public static void Bind<T1, T2, T3, T4>
 			(string name, Func<T1, T2, T3, T4> func)
 		{
-			Bind(name, func);
+			AddBinding(name, func);
 		}
 
 		/// <summary>
@@ -141,10 +141,10 @@ namespace Exodrifter.Rumor.Engine
 		public static void Bind<T1, T2, T3, T4, T5>
 			(string name, Func<T1, T2, T3, T4, T5> func)
 		{
-			Bind(name, func);
+			AddBinding(name, func);
 		}
 
-		private static void Bind(string name, object binding)
+		private static void AddBinding(string name, object binding)
 		{
 			if (binding == null) {
 				throw new ArgumentNullException();
