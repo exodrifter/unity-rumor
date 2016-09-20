@@ -133,6 +133,10 @@ namespace Exodrifter.Rumor.Expressions
 		/// <returns>This object as a value.</returns>
 		public static Value Covert(object value)
 		{
+			if (value == null) {
+				return new ObjectValue(value);
+			}
+
 			if (typeof(int) == value.GetType()) {
 				return new IntValue((int)value);
 			}
