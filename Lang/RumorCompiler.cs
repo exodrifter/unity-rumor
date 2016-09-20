@@ -206,7 +206,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			var ops = new List<string>() {
-				"!",
+				".", "!",
 				"*", "/", "+", "-",
 				"and", "xor", "or",
 				"==", "!=",
@@ -257,6 +257,8 @@ namespace Exodrifter.Rumor.Lang
 				var left = CompileExpression(Slice(tokens, 0, opIndex));
 				var right = CompileExpression(Slice(tokens, opIndex + 1));
 				switch (ops[opValue]) {
+					case ".":
+						return new DotExpression(left, right);
 					case "=":
 						return new SetExpression(left, right);
 					case "!":

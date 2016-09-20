@@ -34,21 +34,33 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Evaluate(Scope scope)
 		{
-			var values = new List<object>(@params.Count);
+			return Invoke(null, scope);
+		}
+
+		public Value Invoke(object self, Scope scope)
+		{
+			var values = new object[@params.Count];
 
 			for (int i = 0; i < @params.Count; ++i) {
 				var value = @params[i].Evaluate(scope);
 
 				if (value == null) {
-					values.Add(null);
+					values[i] = null;
 				}
 				else {
-					values.Add(value.AsObject());
+					values[i] = value.AsObject();
 				}
 			}
 
-			var result = Engine.Rumor.CallBinding(name, values.ToArray());
-			return Value.Covert(result);
+			if (self == null) {
+				var result = Engine.Rumor.CallBinding(name, values);
+				return Value.Covert(result);
+			}
+			else {
+				var method = self.GetType().GetMethod(name);
+				var result = method.Invoke(self, values);
+				return Value.Covert(result);
+			}
 		}
 
 		public override string ToString()
