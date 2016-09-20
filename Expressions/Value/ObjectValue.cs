@@ -18,6 +18,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Add(Value value)
 		{
+			if (value.IsString()) {
+				return new StringValue(AsObject() + value.AsString());
+			}
 			throw new InvalidOperationException();
 		}
 
