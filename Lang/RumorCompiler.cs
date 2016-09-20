@@ -330,11 +330,19 @@ namespace Exodrifter.Rumor.Lang
 					if (tokens[i].text == "(") {
 						var @params = new List<Expression>();
 
+						var pd = 0;
 						var start = i + 1;
 						var end = start + 1;
 						for (; end < tokens.Count; ++end) {
 							var tk = tokens[end];
-							if (tk.text == "," || tk.text == ")") {
+
+							if (tk.text == "(") {
+								pd++;
+							}
+							else if (tk.text == ")" && pd > 0) {
+								pd--;
+							}
+							else if (pd == 0 && (tk.text == "," || tk.text == ")")) {
 								var exp = CompileExpression(
 									Slice(tokens, start, end));
 								@params.Add(exp);
