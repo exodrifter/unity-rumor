@@ -38,7 +38,13 @@ namespace Exodrifter.Rumor.Expressions
 
 			for (int i = 0; i < @params.Count; ++i) {
 				var value = @params[i].Evaluate(scope);
-				values.Add(value.AsObject());
+
+				if (value == null) {
+					values.Add(null);
+				}
+				else {
+					values.Add(value.AsObject());
+				}
 			}
 
 			var result = Engine.Rumor.CallBinding(name, values.ToArray());

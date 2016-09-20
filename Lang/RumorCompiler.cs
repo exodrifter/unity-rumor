@@ -329,7 +329,7 @@ namespace Exodrifter.Rumor.Lang
 						var @params = new List<Expression>();
 
 						var start = i + 1;
-						var end = start;
+						var end = start + 1;
 						for (; end < tokens.Count; ++end) {
 							var tk = tokens[end];
 							if (tk.text == "," || tk.text == ")") {
