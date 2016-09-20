@@ -25,7 +25,6 @@ namespace Exodrifter.Rumor.Expressions
 		public override string ToString()
 		{
 			return left + " and " + right;
-
 		}
 
 		#region Serialization
