@@ -224,7 +224,7 @@ namespace Exodrifter.Rumor.Lang
 					var newOpValue = ops.IndexOf(token.text);
 
 					// Token is an operator with a lower precedence
-					if (newOpValue > opValue) {
+					if (newOpValue >= opValue) {
 						opValue = newOpValue;
 						opIndex = i;
 					}
