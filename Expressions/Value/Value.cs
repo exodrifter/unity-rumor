@@ -185,7 +185,7 @@ namespace Exodrifter.Rumor.Expressions
 			if (other == null) {
 				return false;
 			}
-			return other.value.Equals(value);
+			return Equals(value, other.value);
 		}
 
 		public bool Equals(Value other)
@@ -193,7 +193,7 @@ namespace Exodrifter.Rumor.Expressions
 			if (other == null) {
 				return false;
 			}
-			return other.value.Equals(value);
+			return Equals(value, other.value);
 		}
 
 		public override int GetHashCode()
