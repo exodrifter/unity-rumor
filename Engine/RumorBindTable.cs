@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Stores functions, methods, or constructors.
 		/// </summary>
-		private static Dictionary<string, object> bindings;
+		private Dictionary<string, object> bindings;
 
 		/// <summary>
 		/// Bind a <see cref="Action"/> to the Rumor metatable so it can be
@@ -19,7 +19,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="name">The name to use for the binding.</param>
 		/// <param name="action">The action to bind.</param>
-		public static void Bind(string name, Action action)
+		public void Bind(string name, Action action)
 		{
 			AddBinding(name, action);
 		}
@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="name">The name to use for the binding.</param>
 		/// <param name="action">The <see cref="Action{T}"/> to bind.</param>
-		public static void Bind<T1>(string name, Action<T1> action)
+		public void Bind<T1>(string name, Action<T1> action)
 		{
 			AddBinding(name, action);
 		}
@@ -43,7 +43,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">
 		/// The <see cref="Action{T1, T2}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2>(string name, Action<T1, T2> action)
+		public void Bind<T1, T2>(string name, Action<T1, T2> action)
 		{
 			AddBinding(name, action);
 		}
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">
 		/// The <see cref="Action{T1, T2, T3}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2, T3>
+		public void Bind<T1, T2, T3>
 			(string name, Action<T1, T2, T3> action)
 		{
 			AddBinding(name, action);
@@ -70,7 +70,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">
 		/// The <see cref="Action{T1, T2, T3, T4}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2, T3, T4>
+		public void Bind<T1, T2, T3, T4>
 			(string name, Action<T1, T2, T3, T4> action)
 		{
 			AddBinding(name, action);
@@ -84,7 +84,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="func">
 		/// The <see cref="Func{T1}"/> to bind.
 		/// </param>
-		public static void Bind<T1>(string name, Func<T1> func)
+		public void Bind<T1>(string name, Func<T1> func)
 		{
 			AddBinding(name, func);
 		}
@@ -97,7 +97,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="func">
 		/// The <see cref="Func{T1, TResult}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2>(string name, Func<T1, T2> func)
+		public void Bind<T1, T2>(string name, Func<T1, T2> func)
 		{
 			AddBinding(name, func);
 		}
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="func">
 		/// The <see cref="Func{T1, T2, TResult}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2, T3>(string name, Func<T1, T2, T3> func)
+		public void Bind<T1, T2, T3>(string name, Func<T1, T2, T3> func)
 		{
 			AddBinding(name, func);
 		}
@@ -123,7 +123,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="func">
 		/// The <see cref="Func{T1, T2, T3, TResult}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2, T3, T4>
+		public void Bind<T1, T2, T3, T4>
 			(string name, Func<T1, T2, T3, T4> func)
 		{
 			AddBinding(name, func);
@@ -137,13 +137,13 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="func">
 		/// The <see cref="Func{T1, T2, T3, T4, TResult}"/> to bind.
 		/// </param>
-		public static void Bind<T1, T2, T3, T4, T5>
+		public void Bind<T1, T2, T3, T4, T5>
 			(string name, Func<T1, T2, T3, T4, T5> func)
 		{
 			AddBinding(name, func);
 		}
 
-		private static void AddBinding(string name, object binding)
+		private void AddBinding(string name, object binding)
 		{
 			if (binding == null) {
 				throw new ArgumentNullException();
@@ -153,7 +153,7 @@ namespace Exodrifter.Rumor.Engine
 			bindings.Add(name, binding);
 		}
 
-		public static object CallBinding(string name, params object[] p)
+		public object CallBinding(string name, params object[] p)
 		{
 			bindings = bindings ?? new Dictionary<string, object>();
 			if (!bindings.ContainsKey(name)) {
