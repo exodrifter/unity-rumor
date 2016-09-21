@@ -81,6 +81,16 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="name">The name of the variable to set.</param>
 		/// <param name="value">The value of the variable to use.</param>
+		public void SetVar(string name, object @object)
+		{
+			vars[name] = new ObjectValue(@object);
+		}
+
+		/// <summary>
+		/// Sets the value of one variable to another.
+		/// </summary>
+		/// <param name="name">The name of the variable to set.</param>
+		/// <param name="value">The value of the variable to use.</param>
 		public void SetVar(string name, Value value)
 		{
 			vars[name] = value;

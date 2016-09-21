@@ -58,6 +58,11 @@ namespace Exodrifter.Rumor.Expressions
 			}
 			else {
 				var method = self.GetType().GetMethod(name);
+				if (method == null) {
+					throw new InvalidOperationException(string.Format(
+						"\"{0}\" does not have function \"{1}\"",
+						self.GetType(), name));
+				}
 				var result = method.Invoke(self, values);
 				return Value.Covert(result);
 			}
