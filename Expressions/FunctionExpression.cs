@@ -53,7 +53,7 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			if (self == null) {
-				var result = Engine.Rumor.CallBinding(name, values);
+				var result = scope.CallBinding(name, values);
 				return Value.Covert(result);
 			}
 			else {

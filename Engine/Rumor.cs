@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			// Reset the state when we are finished
-			scope.Clear();
+			scope.ClearVars();
 			State.Reset();
 			Finished = true;
 		}
