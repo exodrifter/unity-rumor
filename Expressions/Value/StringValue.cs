@@ -18,6 +18,10 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Add(Value value)
 		{
+			if (value.IsBool()) {
+				var @bool = value.AsBool().ToString().ToLower();
+				return new StringValue(AsString() + @bool);
+			}
 			if (value.IsInt()) {
 				return new StringValue(AsString() + value.AsInt());
 			}
@@ -27,11 +31,10 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.IsString()) {
 				return new StringValue(AsString() + value.AsString());
 			}
-			if (value.IsBool()) {
-				var @bool = value.AsBool().ToString().ToLower();
-				return new StringValue(AsString() + @bool);
+			if (value.AsObject() != null) {
+				return new StringValue(AsString() + value.AsObject());
 			}
-			throw new InvalidOperationException();
+			return new StringValue(AsString());
 		}
 
 		public override Value Subtract(Value value)

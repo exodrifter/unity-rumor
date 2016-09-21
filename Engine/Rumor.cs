@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Engine
 	/// Runs and represents the state of a Rumor.
 	/// </summary>
 	[Serializable]
-	public sealed class Rumor : ISerializable
+	public sealed partial class Rumor : ISerializable
 	{
 		/// <summary>
 		/// The nodes in this Rumor.
@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			// Reset the state when we are finished
-			scope.Clear();
+			scope.ClearVars();
 			State.Reset();
 			Finished = true;
 		}

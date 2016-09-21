@@ -65,8 +65,10 @@ namespace Exodrifter.Rumor.Lang
 				var delims = delimiters.Where
 					(x => x.start == iter.Current.text);
 				if (delims.Count() > 0) {
+					var start = iter.Current;
 					var delim = delims.First();
 
+					var foundEnd = false;
 					while (iter.MoveNext()) {
 						tokenBuffer.Add(iter.Current);
 
@@ -76,8 +78,16 @@ namespace Exodrifter.Rumor.Lang
 						}
 
 						if (iter.Current.text == delim.end) {
+							foundEnd = true;
 							break;
 						}
+					}
+
+					if (!foundEnd) {
+						throw new CompilerError(start, string.Format(
+							"Could not find the closing delimiter for the "
+							+ "delimiter set {0}",
+							delim));
 					}
 					continue;
 				}
@@ -216,6 +226,11 @@ namespace Exodrifter.Rumor.Lang
 				this.start = start;
 				this.end = end;
 				this.escapes = new List<string>(escapes);
+			}
+
+			public override string ToString()
+			{
+				return string.Format("[\"{0}\", \"{1}\"]", start, end);
 			}
 		}
 	}

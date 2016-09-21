@@ -206,7 +206,7 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			var ops = new List<string>() {
-				"!",
+				".", "!",
 				"*", "/", "+", "-",
 				"and", "xor", "or",
 				"==", "!=",
@@ -215,6 +215,7 @@ namespace Exodrifter.Rumor.Lang
 			int opValue = int.MinValue; // operator's index in ops list
 			int opIndex = -1; // operator's index in the token list
 			int parenthesis = 0;
+			int? firstParenthesis = null;
 
 			for (int i = 0; i < tokens.Count; ++i) {
 				var token = tokens[i];
@@ -223,13 +224,14 @@ namespace Exodrifter.Rumor.Lang
 					var newOpValue = ops.IndexOf(token.text);
 
 					// Token is an operator with a lower precedence
-					if (newOpValue > opValue) {
+					if (newOpValue >= opValue) {
 						opValue = newOpValue;
 						opIndex = i;
 					}
 				}
 				else if (token.text == "(") {
 					parenthesis++;
+					firstParenthesis = firstParenthesis ?? i;
 				}
 				else if (token.text == ")") {
 					parenthesis--;
@@ -240,12 +242,14 @@ namespace Exodrifter.Rumor.Lang
 				}
 				else if (token.text == "\"") {
 					Quote(new LogicalLine(tokens), ref i);
+					i--;
 				}
 			}
 
 			if (parenthesis != 0) {
-				throw new CompilerError(tokens[tokens.Count - 1],
-					"Expected close parenthesis, but there is none!");
+				throw new CompilerError(tokens[firstParenthesis.Value],
+					"Cannot find a close parenthesis for this open "
+					+ "parenthesis!");
 			}
 
 			// Split on the operator, if there is one
@@ -253,6 +257,8 @@ namespace Exodrifter.Rumor.Lang
 				var left = CompileExpression(Slice(tokens, 0, opIndex));
 				var right = CompileExpression(Slice(tokens, opIndex + 1));
 				switch (ops[opValue]) {
+					case ".":
+						return new DotExpression(left, right);
 					case "=":
 						return new SetExpression(left, right);
 					case "!":
@@ -260,7 +266,7 @@ namespace Exodrifter.Rumor.Lang
 							return new NotExpression(right);
 						}
 						throw new CompilerError(tokens[opIndex],
-							"Not Operator can only have a right hand argument!");
+							"Not Operator cannot have a left hand argument!");
 					case "*":
 						return new MultiplyExpression(left, right);
 					case "/":
@@ -292,28 +298,67 @@ namespace Exodrifter.Rumor.Lang
 				// Parse the literal
 				else if (tokens.Count == 1) {
 					var str = tokens[0].text;
-					float @float;
-					if (float.TryParse(str, out @float)) {
-						return new LiteralExpression(@float);
-					}
 					int @int;
 					if (int.TryParse(str, out @int)) {
 						return new LiteralExpression(@int);
+					}
+					float @float;
+					if (float.TryParse(str, out @float)) {
+						return new LiteralExpression(@float);
 					}
 					// Assume the token is a variable
 					return new VariableExpression(str);
 				}
 				// Parse a string
-				else {
+				else if (tokens[0].text == "\"") {
 					int pos = 0;
 					var str = Quote(new LogicalLine(tokens), ref pos);
 					if (str != null && pos == tokens.Count) {
 						return new LiteralExpression(str);
 					}
-					else {
-						throw new CompilerError(tokens[tokens.Count - 1],
-							"Unable to parse expression");
+					throw new CompilerError(tokens[pos],
+						"Unexpected tokens after string!");
+				}
+				// Parse a function call
+				else if (parenthesisAtEnd) {
+					int i = 1;
+					for (; i < tokens.Count; ++i) {
+						if (!IsWhitespace(tokens[i])) {
+							break;
+						}
 					}
+					if (tokens[i].text == "(") {
+						var @params = new List<Expression>();
+
+						var pd = 0;
+						var start = i + 1;
+						var end = start + 1;
+						for (; end < tokens.Count; ++end) {
+							var tk = tokens[end];
+
+							if (tk.text == "(") {
+								pd++;
+							}
+							else if (tk.text == ")" && pd > 0) {
+								pd--;
+							}
+							else if (pd == 0 && (tk.text == "," || tk.text == ")")) {
+								var exp = CompileExpression(
+									Slice(tokens, start, end));
+								@params.Add(exp);
+								start = end + 1;
+							}
+						}
+
+						return new FunctionExpression(tokens[0].text, @params);
+					}
+					throw new CompilerError(tokens[i], string.Format(
+						"Expected open parenthesis, but got \"{0}\" instead!",
+						tokens[i].text));
+				}
+				else {
+					throw new CompilerError(tokens[0],
+						"Could not parse expression!");
 				}
 			}
 
