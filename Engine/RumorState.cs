@@ -12,10 +12,12 @@ namespace Exodrifter.Rumor.Engine
 	[Serializable]
 	public class RumorState : ISerializable
 	{
+		public const string NARRATOR = "_narrator";
+
 		/// <summary>
 		/// Returns the current dialog.
 		/// </summary>
-		public string Dialog { get; private set; }
+		public Dictionary<object, string> Dialog { get; private set; }
 
 		/// <summary>
 		/// Returns a list of choices.
@@ -40,27 +42,35 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void Reset()
 		{
-			Dialog = "";
+			Dialog = new Dictionary<object, string>();
 			Choices = new List<string>();
 			Consequences = new List<List<Node>>();
 		}
 
 		/// <summary>
-		/// Sets the dialog for the state.
+		/// Sets the dialog for the state. If the speaker is null, then the
+		/// <see cref="RumorState.NARRATOR"/> is used instead.
 		/// </summary>
+		/// <param name="speaker">The speaker of the dialog.</param>
 		/// <param name="dialog">The dialog to set.</param>
-		public void SetDialog(string dialog)
+		public void SetDialog(object speaker, string dialog)
 		{
-			Dialog = dialog ?? "";
+			Dialog.Clear();
+			Dialog[speaker ?? NARRATOR] = dialog;
 		}
 
 		/// <summary>
 		/// Adds to the dialog for the state.
 		/// </summary>
 		/// <param name="dialog">The dialog to add.</param>
-		public void AddDialog(string dialog)
+		public void AddDialog(object character, string dialog)
 		{
-			Dialog += dialog;
+			if (Dialog.ContainsKey(character)) {
+				Dialog[character ?? NARRATOR] += dialog;
+			}
+			else {
+				Dialog[character ?? NARRATOR] = dialog;
+			}
 		}
 
 		/// <summary>
@@ -95,7 +105,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public RumorState(SerializationInfo info, StreamingContext context)
 		{
-			Dialog = info.GetValue<string>("dialog");
+			Dialog = info.GetValue<Dictionary<object,string>>("dialog");
 			Choices = info.GetValue<List<string>>("choices");
 			Consequences = info.GetValue<List<List<Node>>>("consequences");
 		}
@@ -103,7 +113,7 @@ namespace Exodrifter.Rumor.Engine
 		public void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue<string>("dialog", Dialog);
+			info.AddValue<Dictionary<object,string>>("dialog", Dialog);
 			info.AddValue<List<string>>("choices", Choices);
 			info.AddValue<List<List<Node>>>("consequences", Consequences);
 		}

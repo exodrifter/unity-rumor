@@ -240,10 +240,11 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeAdd()
 		{
+			var scope = new Scope();
 			var a = new Add("add");
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.text, b.text);
+			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
 		}
 
 		/// <summary>
@@ -466,7 +467,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
 
-			Assert.AreEqual("How are you?", rumor.State.Dialog);
+			Assert.AreEqual("How are you?", rumor.State.Dialog[RumorState.NARRATOR]);
 
 			yield = rumor.Run();
 			yield.MoveNext();
@@ -543,7 +544,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		public void SerializeRumorStateDialog()
 		{
 			var a = new RumorState();
-			a.SetDialog("dialog");
+			a.SetDialog(null, "dialog");
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a.Dialog, b.Dialog);

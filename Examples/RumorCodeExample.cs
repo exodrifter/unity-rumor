@@ -54,8 +54,8 @@ namespace Example.Exodrifter
 					num++;
 				}
 			}
-			else {
-				text.text = rumor.State.Dialog;
+			else if (rumor.State.Dialog.ContainsKey(RumorState.NARRATOR)) {
+				text.text = rumor.State.Dialog[RumorState.NARRATOR];
 			}
 
 			rumor.Update(Time.deltaTime);

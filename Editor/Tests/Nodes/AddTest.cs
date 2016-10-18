@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
+using Exodrifter.Rumor.Engine;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 		{
 			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Add("add").Run(rumor).MoveNext();
-			Assert.AreEqual("add", rumor.State.Dialog);
+			Assert.AreEqual("add", rumor.State.Dialog[RumorState.NARRATOR]);
 		}
 
 		/// <summary>
@@ -30,25 +31,25 @@ namespace Exodrifter.Rumor.Test.Nodes
 			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
-			Assert.AreEqual("thing add", rumor.State.Dialog);
+			Assert.AreEqual("thing add", rumor.State.Dialog[RumorState.NARRATOR]);
 			
 			// Don't add a space if dialog ends with a space
 			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing ").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
-			Assert.AreEqual("thing add", rumor.State.Dialog);
+			Assert.AreEqual("thing add", rumor.State.Dialog[RumorState.NARRATOR]);
 
 			// Don't add a space if dialog ends with a tab
 			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing\t").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
-			Assert.AreEqual("thing\tadd", rumor.State.Dialog);
+			Assert.AreEqual("thing\tadd", rumor.State.Dialog[RumorState.NARRATOR]);
 
 			// Don't add a space if dialog ends with a newline
 			rumor = new Rumor.Engine.Rumor(new List<Node>());
 			new Say("thing\n").Run(rumor).MoveNext();
 			new Add("add").Run(rumor).MoveNext();
-			Assert.AreEqual("thing\nadd", rumor.State.Dialog);
+			Assert.AreEqual("thing\nadd", rumor.State.Dialog[RumorState.NARRATOR]);
 		}
 
 		/// <summary>
@@ -62,8 +63,8 @@ namespace Exodrifter.Rumor.Test.Nodes
 			new Say("thing").Run(rumor).MoveNext();
 			new Add("").Run(rumor).MoveNext();
 
-			// Adding to a say line should automatically add a space
-			Assert.AreEqual("thing", rumor.State.Dialog);
+			// Adding nothing to a say line should do nothing
+			Assert.AreEqual("thing", rumor.State.Dialog[RumorState.NARRATOR]);
 		}
 	}
 }

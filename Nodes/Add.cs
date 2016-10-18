@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
@@ -10,36 +11,62 @@ namespace Exodrifter.Rumor.Nodes
 	/// Appends additional dialog to the rumor state.
 	/// </summary>
 	[Serializable]
-	public sealed class Add : Node
+	public sealed class Add : Say
 	{
 		/// <summary>
-		/// The text to append to the dialog.
+		/// Creates a new Add node.
 		/// </summary>
-		public readonly string text;
+		/// <param name="text">
+		/// The text to append the dialog with.
+		/// </param>
+		public Add(string text) : base(text) {}
 
 		/// <summary>
 		/// Creates a new Add node.
 		/// </summary>
 		/// <param name="text">
-		/// The text to append to the dialog.
+		/// The expression to append the dialog with.
 		/// </param>
-		public Add(string text)
-		{
-			this.text = text;
-		}
+		public Add(Expression text) : base(text) {}
+
+		/// <summary>
+		/// Creates a new Add node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The text to append the dialog with.
+		/// </param>
+		public Add(object speaker, string text) : base(speaker, text) {}
+
+		/// <summary>
+		/// Creates a new Add node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The expression to append the dialog with.
+		/// </param>
+		public Add(object speaker, Expression text) : base(speaker, text) {}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			string dialog = rumor.State.Dialog;
-			if (string.IsNullOrEmpty(dialog)
-				|| dialog.EndsWith(" ")
-				|| dialog.EndsWith("\t")
-				|| dialog.EndsWith("\n")) {
+			var dialog = rumor.State.Dialog;
+			var speaker = this.speaker ?? RumorState.NARRATOR;
+			string text = EvaluateText(rumor);
 
-				rumor.State.AddDialog(text);
+			if (!dialog.ContainsKey(speaker)
+				|| string.IsNullOrEmpty(dialog[speaker])
+				|| dialog[speaker].EndsWith(" ")
+				|| dialog[speaker].EndsWith("\t")
+				|| dialog[speaker].EndsWith("\n")) {
+
+				rumor.State.AddDialog(speaker, text);
 			}
 			else if (!string.IsNullOrEmpty(text)) {
-				rumor.State.AddDialog(" " + text);
+				rumor.State.AddDialog(speaker, " " + text);
 			}
 			yield return new ForAdvance();
 		}
@@ -49,14 +76,12 @@ namespace Exodrifter.Rumor.Nodes
 		public Add(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			text = info.GetValue<string>("text");
 		}
 
 		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue<string>("text", text);
 		}
 
 		#endregion
