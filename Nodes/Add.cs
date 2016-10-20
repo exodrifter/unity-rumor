@@ -38,6 +38,28 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The text to append the dialog with.
 		/// </param>
+		public Add(Expression speaker, string text) : base(speaker, text) {}
+
+		/// <summary>
+		/// Creates a new Add node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The expression to append the dialog with.
+		/// </param>
+		public Add(Expression speaker, Expression text) : base(speaker, text) {}
+
+		/// <summary>
+		/// Creates a new Add node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The text to append the dialog with.
+		/// </param>
 		public Add(object speaker, string text) : base(speaker, text) {}
 
 		/// <summary>

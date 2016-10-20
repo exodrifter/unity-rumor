@@ -18,17 +18,18 @@ namespace Example.Exodrifter
 
 		void Awake()
 		{
+			var n = "Narrator";
 			rumor = new Rumor(new List<Node>() {
 				new Label("start", new List<Node>() {
-					new Say("Hi!"),
-					new Say("Is this working?"),
+					new Say(n, "Hi!"),
+					new Say(n, "Is this working?"),
 					new Choice("Yes!", new List<Node>() {
-						new Say("Great!"),
+						new Say(n, "Great!"),
 					}),
 					new Choice("No.", new List<Node>() {
-						new Say("Darn..."),
+						new Say(n, "Darn..."),
 						new Pause(0.5f),
-						new Add("Maybe next time."),
+						new Add(n, "Maybe next time."),
 					}),
 				}),
 				new Say("Well, thanks for stopping by!"),
@@ -55,7 +56,7 @@ namespace Example.Exodrifter
 				}
 			}
 			else {
-				text.text = rumor.State.Dialog[null];
+				text.text = rumor.State.Dialog["Narrator"];
 			}
 
 			rumor.Update(Time.deltaTime);

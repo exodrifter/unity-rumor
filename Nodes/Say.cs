@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <summary>
 		/// The speaker to associate with the dialog.
 		/// </summary>
-		public object speaker;
+		public Expression speaker;
 
 		/// <summary>
 		/// The text to replace the dialog with.
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The text to replace the dialog with.
 		/// </param>
-		public Say(object speaker, string text)
+		public Say(Expression speaker, string text)
 		{
 			this.speaker = speaker;
 			this.text = new LiteralExpression(text);
@@ -71,10 +71,66 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The expression to replace the dialog with.
 		/// </param>
-		public Say(object speaker, Expression text)
+		public Say(Expression speaker, Expression text)
 		{
 			this.speaker = speaker;
 			this.text = text;
+		}
+
+		/// <summary>
+		/// Creates a new Say node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The text to replace the dialog with.
+		/// </param>
+		public Say(object speaker, string text)
+		{
+			this.speaker = new LiteralExpression(speaker);
+			this.text = new LiteralExpression(text);
+		}
+
+		/// <summary>
+		/// Creates a new Say node.
+		/// </summary>
+		/// <param name="speaker">
+		/// The speaker to associate with the dialog.
+		/// </param>
+		/// <param name="text">
+		/// The expression to replace the dialog with.
+		/// </param>
+		public Say(object speaker, Expression text)
+		{
+			this.speaker = new LiteralExpression(speaker);
+			this.text = text;
+		}
+
+		/// <summary>
+		/// Evaluates the speaker of this node in the specified Rumor.
+		/// </summary>
+		/// <param name="rumor">The Rumor to evaluate against.</param>
+		/// <returns>The speaker.</returns>
+		public object EvaluateSpeaker(Engine.Rumor rumor)
+		{
+			if (speaker == null) {
+				return null;
+			}
+			return speaker.Evaluate(rumor.Scope).AsObject();
+		}
+		
+		/// <summary>
+		/// Evaluates the speaker of this node in the specified Scope.
+		/// </summary>
+		/// <param name="rumor">The Scope to evaluate against.</param>
+		/// <returns>The speaker.</returns>
+		public object EvaluateSpeaker(Scope scope)
+		{
+			if (speaker == null) {
+				return null;
+			}
+			return speaker.Evaluate(scope).AsObject();
 		}
 
 		/// <summary>
@@ -99,6 +155,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
+			var speaker = EvaluateSpeaker(rumor);
 			var text = EvaluateText(rumor);
 			rumor.State.SetDialog(speaker, text);
 			yield return new ForAdvance();
@@ -109,7 +166,7 @@ namespace Exodrifter.Rumor.Nodes
 		public Say(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			speaker = info.GetValue<object>("speaker");
+			speaker = info.GetValue<Expression>("speaker");
 			text = info.GetValue<Expression>("text");
 		}
 
@@ -117,7 +174,7 @@ namespace Exodrifter.Rumor.Nodes
 			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue<object>("speaker", speaker);
+			info.AddValue<Expression>("speaker", speaker);
 			info.AddValue<Expression>("text", text);
 		}
 

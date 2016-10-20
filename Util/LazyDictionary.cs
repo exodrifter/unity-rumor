@@ -10,10 +10,35 @@ namespace Exodrifter.Rumor.Util
 	/// </summary>
 	[Serializable]
 	public class LazyDictionary<K, V> : ISerializable
+		where K : class where V : class
 	{
 		private Dictionary<K, V> dictionary;
 
 		private V nullValue;
+
+		public List<K> Keys
+		{
+			get
+			{
+				var list = new List<K>(dictionary.Keys);
+				if (nullValue != null) {
+					list.Add(null);
+				}
+				return list;
+			}
+		}
+
+		public List<V> Values
+		{
+			get
+			{
+				var list = new List<V>(dictionary.Values);
+				if (nullValue != null) {
+					list.Add(nullValue);
+				}
+				return list;
+			}
+		}
 
 		public V this[K key]
 		{

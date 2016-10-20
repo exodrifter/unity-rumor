@@ -371,8 +371,20 @@ namespace Exodrifter.Rumor.Lang
 		{
 			ExpectNoChildren(line, children);
 
-			string text = Quote(line, ref pos);
-			return new Add(text);
+			var speaker = Expect(line, pos);
+			// TODO: Parse the speaker and expression properly
+			if (speaker == "\"") {
+				var tokens = Slice(line.tokens, pos);
+				var expression = CompileExpression(tokens);
+				return new Say(expression);
+			}
+			else {
+				pos++;
+
+				var tokens = Slice(line.tokens, pos);
+				var expression = CompileExpression(tokens);
+				return new Say(new VariableExpression(speaker), expression);
+			}
 		}
 
 		private Node CompileChoice(LogicalLine line, ref int pos, List<Node> children)
@@ -415,9 +427,20 @@ namespace Exodrifter.Rumor.Lang
 		{
 			ExpectNoChildren(line, children);
 
-			var tokens = Slice(line.tokens, pos);
-			var expression = CompileExpression(tokens);
-			return new Say(expression);
+			var speaker = Expect(line, pos);
+			// TODO: Parse the speaker and expression properly
+			if (speaker == "\"") {
+				var tokens = Slice(line.tokens, pos);
+				var expression = CompileExpression(tokens);
+				return new Say(expression);
+			}
+			else {
+				pos++;
+
+				var tokens = Slice(line.tokens, pos);
+				var expression = CompileExpression(tokens);
+				return new Say(new VariableExpression(speaker), expression);
+			}
 		}
 
 		private Node CompileStatement(LogicalLine line, ref int pos, List<Node> children)

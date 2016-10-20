@@ -18,19 +18,20 @@ namespace Example.Exodrifter
 		void Awake()
 		{
 			rumor = new Rumor(new RumorCompiler().Compile(@"
+$ n = ""Narrator""
 label start:
-	say ""Hi!""
-	say ""Is this working?""
+	say n ""Hi!""
+	say n ""Is this working?""
 
 	choice ""Yes!"":
-		say ""Great!""
+		say n ""Great!""
 	choice ""No."":
-		say ""Darn...""
+		say n ""Darn...""
 		pause 0.5
-		add ""Maybe next time.""
+		add n ""Maybe next time.""
 
-say ""Well, thanks for stopping by!""
-say ""See you next time!""
+say n ""Well, thanks for stopping by!""
+say n ""See you next time!""
 "));
 
 			StartCoroutine(rumor.Run());
@@ -53,7 +54,7 @@ say ""See you next time!""
 				}
 			}
 			else {
-				text.text = rumor.State.Dialog[null];
+				text.text = rumor.State.Dialog["Narrator"];
 			}
 
 			rumor.Update(Time.deltaTime);
