@@ -52,8 +52,8 @@ say ""See you next time!""
 					num++;
 				}
 			}
-			else if (rumor.State.Dialog.ContainsKey(RumorState.NARRATOR)) {
-				text.text = rumor.State.Dialog[RumorState.NARRATOR];
+			else {
+				text.text = rumor.State.Dialog[null];
 			}
 
 			rumor.Update(Time.deltaTime);

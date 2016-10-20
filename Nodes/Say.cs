@@ -99,7 +99,6 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			var speaker = this.speaker ?? RumorState.NARRATOR;
 			var text = EvaluateText(rumor);
 			rumor.State.SetDialog(speaker, text);
 			yield return new ForAdvance();

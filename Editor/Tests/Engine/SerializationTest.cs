@@ -467,7 +467,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
 
-			Assert.AreEqual("How are you?", rumor.State.Dialog[RumorState.NARRATOR]);
+			Assert.AreEqual("How are you?", rumor.State.Dialog[null]);
 
 			yield = rumor.Run();
 			yield.MoveNext();
@@ -547,7 +547,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			a.SetDialog(null, "dialog");
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.Dialog, b.Dialog);
+			Assert.AreEqual(a.Dialog[null], b.Dialog[null]);
 		}
 
 		[Test]

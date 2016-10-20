@@ -54,11 +54,9 @@ namespace Exodrifter.Rumor.Nodes
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			var dialog = rumor.State.Dialog;
-			var speaker = this.speaker ?? RumorState.NARRATOR;
 			string text = EvaluateText(rumor);
 
-			if (!dialog.ContainsKey(speaker)
-				|| string.IsNullOrEmpty(dialog[speaker])
+			if (string.IsNullOrEmpty(dialog[speaker])
 				|| dialog[speaker].EndsWith(" ")
 				|| dialog[speaker].EndsWith("\t")
 				|| dialog[speaker].EndsWith("\n")) {
