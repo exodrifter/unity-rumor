@@ -114,10 +114,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The speaker.</returns>
 		public object EvaluateSpeaker(Engine.Rumor rumor)
 		{
-			if (speaker == null) {
-				return null;
-			}
-			return speaker.Evaluate(rumor.Scope).AsObject();
+			return EvaluateSpeaker(rumor.Scope);
 		}
 		
 		/// <summary>
@@ -128,9 +125,9 @@ namespace Exodrifter.Rumor.Nodes
 		public object EvaluateSpeaker(Scope scope)
 		{
 			if (speaker == null) {
-				return null;
+				return scope.DefaultSpeaker;
 			}
-			return speaker.Evaluate(scope).AsObject();
+			return speaker.Evaluate(scope).AsObject() ?? scope.DefaultSpeaker;
 		}
 
 		/// <summary>

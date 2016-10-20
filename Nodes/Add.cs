@@ -76,6 +76,7 @@ namespace Exodrifter.Rumor.Nodes
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			var dialog = rumor.State.Dialog;
+			var speaker = EvaluateSpeaker(rumor);
 			string text = EvaluateText(rumor);
 
 			if (string.IsNullOrEmpty(dialog[speaker])
