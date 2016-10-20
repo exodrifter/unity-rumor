@@ -78,6 +78,11 @@ namespace Exodrifter.Rumor.Engine
 		public bool Finished { get; private set; }
 
 		/// <summary>
+		/// An event that is called right before a new node is executed.
+		/// </summary>
+		public event Action<Node> OnNextNode;
+
+		/// <summary>
 		/// Creates a new Rumor.
 		/// </summary>
 		/// <param name="nodes">The nodes to use in the rumor script.</param>
@@ -120,6 +125,11 @@ namespace Exodrifter.Rumor.Engine
 			if (stack.Count == 0) {
 				stack.Push(new StackFrame(nodes));
 				State.Reset();
+			}
+
+			// Attach listeners for OnNextNode
+			foreach (var stackFrame in stack) {
+				stackFrame.OnNextNode += OnNextNodeHandler;
 			}
 
 			Started = true;
@@ -221,6 +231,7 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
+			frame.OnNextNode += OnNextNodeHandler;
 			stack.Push(frame);
 		}
 
@@ -276,7 +287,16 @@ namespace Exodrifter.Rumor.Engine
 			var newFrame = new StackFrame(toCopy);
 			newFrame.Reset();
 			newFrame.JumpToLabel(label);
+
+			newFrame.OnNextNode += OnNextNodeHandler;
 			stack.Push(newFrame);
+		}
+
+		internal void OnNextNodeHandler(Node node)
+		{
+			if (OnNextNode != null && node != null) {
+				OnNextNode(node);
+			}
 		}
 
 		#region Serialization
