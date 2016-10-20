@@ -113,7 +113,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </returns>
 		internal IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			while (index < nodes.Count) {
+			if (index < nodes.Count) {
 				var yield = nodes[index].Run(rumor);
 
 				if (OnNextNode != null) {

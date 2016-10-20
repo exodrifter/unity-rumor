@@ -145,11 +145,10 @@ namespace Exodrifter.Rumor.Engine
 
 				// Execute the next statement
 				yield = stack.Peek().Run(this);
-				yield.MoveNext();
-
-				// Wait for the yield to complete
-				while (yield.Current != null && !yield.Current.Finished) {
-					yield return null;
+				while (yield.MoveNext()) {
+					while (yield.Current != null && !yield.Current.Finished) {
+						yield return null;
+					}
 				}
 			}
 
