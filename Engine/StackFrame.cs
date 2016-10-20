@@ -60,6 +60,11 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// An event that is called right before a new node is executed.
+		/// </summary>
+		public event Action<Node> OnNextNode;
+
+		/// <summary>
 		/// Creates a new stack frame.
 		/// </summary>
 		/// <param name="nodes">
@@ -108,8 +113,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </returns>
 		internal IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			while (index < nodes.Count) {
+			if (index < nodes.Count) {
 				var yield = nodes[index].Run(rumor);
+
+				if (OnNextNode != null) {
+					OnNextNode(nodes[index]);
+				}
 
 				++index;
 				while (yield.MoveNext()) {
