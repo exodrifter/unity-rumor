@@ -390,9 +390,13 @@ namespace Exodrifter.Rumor.Lang
 
 		private Node CompileChoice(LogicalLine line, ref int pos, List<Node> children)
 		{
-			string text = Quote(line, ref pos);
+			int end = Seek(line, pos, ":");
 
-			SkipWhitespace(line, ref pos);
+			var tokens = Slice(line.tokens, pos, end);
+			var text = CompileExpression(tokens);
+
+			pos = end;
+
 			Expect(line, pos++, ":");
 
 			return new Choice(text, children);

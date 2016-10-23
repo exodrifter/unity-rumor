@@ -271,7 +271,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			});
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.text, b.text);
+			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
 			Assert.AreEqual(1, a.Children.Count);
 			Assert.AreEqual(a.Children.Count, b.Children.Count);
 			Assert.AreEqual(
