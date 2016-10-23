@@ -65,10 +65,12 @@ namespace Exodrifter.Rumor.Lang
 			handlers = new Dictionary<string, NodeParser>();
 			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
+			handlers["call"] = CompileCall;
 			handlers["choice"] = CompileChoice;
 			handlers["jump"] = CompileJump;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
+			handlers["return"] = CompileReturn;
 			handlers["say"] = CompileSay;
 
 			conditions = new Dictionary<string, ConditionalParser>();
@@ -388,6 +390,14 @@ namespace Exodrifter.Rumor.Lang
 			}
 		}
 
+		private Node CompileCall(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+
+			var name = Expect(line, pos++);
+			return new Call(name);
+		}
+
 		private Node CompileChoice(LogicalLine line, ref int pos, List<Node> children)
 		{
 			int end = Seek(line, pos, ":");
@@ -427,6 +437,12 @@ namespace Exodrifter.Rumor.Lang
 			var tokens = Slice(line.tokens, pos);
 			var expression = CompileExpression(tokens);
 			return new Pause(expression);
+		}
+
+		private Node CompileReturn(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+			return new Return();
 		}
 
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
