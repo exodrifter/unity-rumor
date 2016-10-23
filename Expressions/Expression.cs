@@ -19,6 +19,18 @@ namespace Exodrifter.Rumor.Expressions
 		/// <returns>The result of this expression when evaluated.</returns>
 		public abstract Value Evaluate(Scope scope);
 
+		/// <summary>
+		/// Evaluates this expression.
+		/// </summary>
+		/// <param name="rumor">
+		/// The Rumor containing the scope to evaluate against.
+		/// </param>
+		/// <returns>The result of this expression when evaluated.</returns>
+		public Value Evaluate(Engine.Rumor rumor)
+		{
+			return Evaluate(rumor.Scope);
+		}
+
 		#region Equality
 
 		public abstract override bool Equals(object obj);

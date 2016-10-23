@@ -20,6 +20,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override string ToString()
 		{
+			if (value == null) {
+				return "<null>";
+			}
 			return value.ToString();
 		}
 
@@ -86,6 +89,8 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			if (value is int)
 				return (int)value;
+			if (value is float)
+				return (int)(float)value;
 			return num;
 		}
 
@@ -100,6 +105,8 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			if (value is float)
 				return (float)value;
+			if (value is int)
+				return (float)(int)value;
 			return num;
 		}
 

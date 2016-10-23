@@ -420,8 +420,9 @@ namespace Exodrifter.Rumor.Lang
 		{
 			ExpectNoChildren(line, children);
 
-			float seconds = Float(line, ref pos);
-			return new Pause(seconds);
+			var tokens = Slice(line.tokens, pos);
+			var expression = CompileExpression(tokens);
+			return new Pause(expression);
 		}
 
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
