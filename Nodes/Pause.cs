@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <summary>
 		/// The number of seconds to pause for.
 		/// </summary>
-		public readonly float seconds;
+		public readonly Expression seconds;
 
 		/// <summary>
 		/// Creates a new pause node.
@@ -25,12 +26,23 @@ namespace Exodrifter.Rumor.Nodes
 		/// </param>
 		public Pause(float seconds)
 		{
-			this.seconds = seconds;
+			this.seconds = new LiteralExpression(seconds);
+		}
+
+		/// <summary>
+		/// Creates a new pause node.
+		/// </summary>
+		/// <param name="seconds">
+		/// The number of seconds to pause for.
+		/// </param>
+		public Pause(Expression expression)
+		{
+			this.seconds = expression;
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			yield return new ForSeconds(seconds);
+			yield return new ForSeconds(seconds.Evaluate(rumor).AsFloat());
 		}
 
 		#region Serialization
@@ -38,14 +50,14 @@ namespace Exodrifter.Rumor.Nodes
 		public Pause(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			seconds = info.GetValue<float>("seconds");
+			seconds = info.GetValue<Expression>("seconds");
 		}
 
 		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue<float>("seconds", seconds);
+			info.AddValue<Expression>("seconds", seconds);
 		}
 
 		#endregion

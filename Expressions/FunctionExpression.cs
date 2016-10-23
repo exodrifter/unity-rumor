@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Expressions
 	/// Represents an expression that is a call to a function.
 	/// </summary>
 	[Serializable]
-	public class FunctionExpression : Expression, ISerializable
+	public class FunctionExpression : Expression
 	{
 		/// <summary>
 		/// The name of the function to call.
@@ -70,7 +70,7 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override string ToString()
 		{
-			return name;
+			return name + "()";
 		}
 
 		#region Equality
@@ -110,12 +110,13 @@ namespace Exodrifter.Rumor.Expressions
 
 		public FunctionExpression
 			(SerializationInfo info, StreamingContext context)
+			: base (info, context)
 		{
 			name = info.GetValue<string>("name");
 			@params = info.GetValue<List<Expression>>("params");
 		}
 
-		void ISerializable.GetObjectData
+		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<string>("name", name);

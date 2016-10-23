@@ -1,18 +1,35 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
 {
 	/// <summary>
 	/// An expression is a set of operations that returns a result.
 	/// </summary>
-	public abstract class Expression
+	[Serializable]
+	public abstract class Expression : ISerializable
 	{
+		public Expression() { }
+
 		/// <summary>
 		/// Evaluates this expression.
 		/// </summary>
 		/// <param name="scope">The current execution scope.</param>
 		/// <returns>The result of this expression when evaluated.</returns>
 		public abstract Value Evaluate(Scope scope);
+
+		/// <summary>
+		/// Evaluates this expression.
+		/// </summary>
+		/// <param name="rumor">
+		/// The Rumor containing the scope to evaluate against.
+		/// </param>
+		/// <returns>The result of this expression when evaluated.</returns>
+		public Value Evaluate(Engine.Rumor rumor)
+		{
+			return Evaluate(rumor.Scope);
+		}
 
 		#region Equality
 
@@ -35,6 +52,17 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			return !(a == b);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public Expression(SerializationInfo info, StreamingContext context)
+		{
+		}
+
+		public abstract void GetObjectData
+			(SerializationInfo info, StreamingContext context);
 
 		#endregion
 	}

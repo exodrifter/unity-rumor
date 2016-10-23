@@ -8,7 +8,7 @@ namespace Exodrifter.Rumor.Expressions
 	/// Represents an expression that does nothing.
 	/// </summary>
 	[Serializable]
-	public class NoOpExpression : Expression, ISerializable
+	public class NoOpExpression : Expression
 	{
 		public NoOpExpression()
 		{
@@ -52,7 +52,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		void ISerializable.GetObjectData
+		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 		}

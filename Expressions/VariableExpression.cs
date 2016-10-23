@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Expressions
 	/// Represents an expression that is a variable.
 	/// </summary>
 	[Serializable]
-	public class VariableExpression : Expression, ISerializable
+	public class VariableExpression : Expression
 	{
 		/// <summary>
 		/// The name of the variable
@@ -62,11 +62,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public VariableExpression
 			(SerializationInfo info, StreamingContext context)
+			: base (info, context)
 		{
 			name = info.GetValue<string>("name");
 		}
 
-		void ISerializable.GetObjectData
+		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<string>("name", name);

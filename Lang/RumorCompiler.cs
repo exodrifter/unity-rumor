@@ -2,6 +2,7 @@
 using Exodrifter.Rumor.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Exodrifter.Rumor.Lang
 {
@@ -64,10 +65,12 @@ namespace Exodrifter.Rumor.Lang
 			handlers = new Dictionary<string, NodeParser>();
 			handlers["$"] = CompileStatement;
 			handlers["add"] = CompileAdd;
+			handlers["call"] = CompileCall;
 			handlers["choice"] = CompileChoice;
 			handlers["jump"] = CompileJump;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
+			handlers["return"] = CompileReturn;
 			handlers["say"] = CompileSay;
 
 			conditions = new Dictionary<string, ConditionalParser>();
@@ -387,11 +390,23 @@ namespace Exodrifter.Rumor.Lang
 			}
 		}
 
+		private Node CompileCall(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+
+			var name = Expect(line, pos++);
+			return new Call(name);
+		}
+
 		private Node CompileChoice(LogicalLine line, ref int pos, List<Node> children)
 		{
-			string text = Quote(line, ref pos);
+			int end = Seek(line, pos, ":");
 
-			SkipWhitespace(line, ref pos);
+			var tokens = Slice(line.tokens, pos, end);
+			var text = CompileExpression(tokens);
+
+			pos = end;
+
 			Expect(line, pos++, ":");
 
 			return new Choice(text, children);
@@ -419,8 +434,15 @@ namespace Exodrifter.Rumor.Lang
 		{
 			ExpectNoChildren(line, children);
 
-			float seconds = Float(line, ref pos);
-			return new Pause(seconds);
+			var tokens = Slice(line.tokens, pos);
+			var expression = CompileExpression(tokens);
+			return new Pause(expression);
+		}
+
+		private Node CompileReturn(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+			return new Return();
 		}
 
 		private Node CompileSay(LogicalLine line, ref int pos, List<Node> children)
@@ -744,6 +766,10 @@ namespace Exodrifter.Rumor.Lang
 					break;
 				}
 			}
+
+			// Replace multiline whitespace with a single space
+			var re = new Regex(@"\n\s+");
+			quote = re.Replace(quote, " ");
 
 			return foundEndQuote ? quote : null;
 		}

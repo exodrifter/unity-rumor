@@ -1,4 +1,5 @@
 ﻿using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Util;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <summary>
 		/// The text to display for this choice.
 		/// </summary>
-		public readonly string text;
+		private readonly Expression text;
 
 		/// <summary>
 		/// Creates a new choice
@@ -29,12 +30,37 @@ namespace Exodrifter.Rumor.Nodes
 		public Choice(string text, IEnumerable<Node> children)
 			: base(children)
 		{
+			this.text = new LiteralExpression(text);
+		}
+
+		/// <summary>
+		/// Creates a new choice
+		/// </summary>
+		/// <param name="text">
+		/// The text to display for this choice.
+		/// </param>
+		/// <param name="children">
+		/// The children for this choice.
+		/// </param>
+		public Choice(Expression text, IEnumerable<Node> children)
+			: base(children)
+		{
 			this.text = text;
+		}
+
+		public string EvaluateText(Scope scope)
+		{
+			return text.Evaluate(scope).AsString();
+		}
+
+		public string EvaluateText(Engine.Rumor rumor)
+		{
+			return text.Evaluate(rumor).AsString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.State.AddChoice(text, this.Children);
+			rumor.State.AddChoice(EvaluateText(rumor), this.Children);
 
 			// Wait for a choice to be made if we're done adding choices
 			if (!(rumor.Next is Choice)) {
@@ -47,14 +73,14 @@ namespace Exodrifter.Rumor.Nodes
 		public Choice(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			text = info.GetValue<string>("text");
+			text = info.GetValue<Expression>("text");
 		}
 
 		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue<string>("text", text);
+			info.AddValue<Expression>("text", text);
 		}
 
 		#endregion

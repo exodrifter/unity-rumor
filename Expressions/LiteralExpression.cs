@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Expressions
 	/// Represents an expression that is a literal.
 	/// </summary>
 	[Serializable]
-	public class LiteralExpression : Expression, ISerializable
+	public class LiteralExpression : Expression
 	{
 		/// <summary>
 		/// The value of this literal.
@@ -51,7 +51,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			if (value != null)
 				return value.ToString();
-			return "";
+			return "<null>";
 		}
 
 		#region Equality
@@ -84,11 +84,12 @@ namespace Exodrifter.Rumor.Expressions
 
 		public LiteralExpression
 			(SerializationInfo info, StreamingContext context)
+			: base (info, context)
 		{
 			value = info.GetValue<Value>("value");
 		}
 
-		void ISerializable.GetObjectData
+		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<Value>("value", value);

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
 {
-	public abstract class OpExpression : Expression, ISerializable
+	public abstract class OpExpression : Expression
 	{
 		/// <summary>
 		/// The left-hand argument for this expression.
@@ -62,7 +62,7 @@ namespace Exodrifter.Rumor.Expressions
 			right = info.GetValue<Expression>("right");
 		}
 
-		void ISerializable.GetObjectData
+		public override void GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<Expression>("left", left);
