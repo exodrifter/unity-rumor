@@ -37,6 +37,11 @@ namespace Exodrifter.Rumor.Expressions
 			value = new BoolValue(b);
 		}
 
+		public LiteralExpression(object obj)
+		{
+			value = new ObjectValue(obj);
+		}
+
 		public override Value Evaluate(Scope scope)
 		{
 			return value;

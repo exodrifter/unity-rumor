@@ -32,6 +32,7 @@ label start:
 say ""Well, thanks for stopping by!""
 say ""See you next time!""
 "));
+			rumor.Scope.DefaultSpeaker = "Narrator";
 
 			StartCoroutine(rumor.Run());
 		}
@@ -53,7 +54,7 @@ say ""See you next time!""
 				}
 			}
 			else {
-				text.text = rumor.State.Dialog;
+				text.text = rumor.State.Dialog["Narrator"];
 			}
 
 			rumor.Update(Time.deltaTime);

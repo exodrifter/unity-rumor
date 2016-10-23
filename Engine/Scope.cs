@@ -24,6 +24,11 @@ namespace Exodrifter.Rumor.Engine
 		private readonly Dictionary<string, Value> vars;
 
 		/// <summary>
+		/// The default narrator for nodes to use.
+		/// </summary>
+		public object DefaultSpeaker { get; set; }
+
+		/// <summary>
 		/// Creates a new scope.
 		/// </summary>
 		/// <param name="parent">
@@ -325,6 +330,8 @@ namespace Exodrifter.Rumor.Engine
 			for (int i = 0; i < keys.Count; ++i) {
 				vars.Add(keys[i], values[i]);
 			}
+
+			DefaultSpeaker = info.GetValue<object>("defaultSpeaker");
 		}
 
 		void ISerializable.GetObjectData
@@ -340,6 +347,8 @@ namespace Exodrifter.Rumor.Engine
 
 			info.AddValue<List<string>>("keys", keys);
 			info.AddValue<List<Value>>("values", values);
+
+			info.AddValue<object>("defaultSpeaker", DefaultSpeaker);
 		}
 
 		#endregion

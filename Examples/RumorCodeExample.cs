@@ -34,6 +34,7 @@ namespace Example.Exodrifter
 				new Say("Well, thanks for stopping by!"),
 				new Say("See you next time!"),
 			});
+			rumor.Scope.DefaultSpeaker = "Narrator";
 
 			StartCoroutine(rumor.Run());
 		}
@@ -55,7 +56,7 @@ namespace Example.Exodrifter
 				}
 			}
 			else {
-				text.text = rumor.State.Dialog;
+				text.text = rumor.State.Dialog["Narrator"];
 			}
 
 			rumor.Update(Time.deltaTime);
