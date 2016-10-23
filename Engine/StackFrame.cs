@@ -165,6 +165,25 @@ namespace Exodrifter.Rumor.Engine
 			return false;
 		}
 
+		/// <summary>
+		/// Returns the children of the specified label. Returns an empty list
+		/// if the label does not exist.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the label to get the children of.
+		/// </param>
+		internal IEnumerable<Node> GetChildrenOfLabel(string name) {
+			for (int i = 0; i < nodes.Count; ++i) {
+				var label = nodes[i] as Label;
+
+				if (label != null && label.name == name) {
+					return label.Children;
+				}
+			}
+
+			return new List<Node>();
+		}
+
 		#region Serialization
 
 		public StackFrame(SerializationInfo info, StreamingContext context)

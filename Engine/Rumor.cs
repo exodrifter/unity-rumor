@@ -270,25 +270,20 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		internal void MoveToLabel(string label)
 		{
-			StackFrame toCopy = null;
+			StackFrame frameContainingLabel = null;
 			foreach (var frame in stack) {
 				if (frame.HasLabel(label)) {
-					toCopy = frame;
+					frameContainingLabel = frame;
 					break;
 				}
 			}
 
-			if (toCopy == null) {
+			if (frameContainingLabel == null) {
 				throw new InvalidOperationException(
 					"Label \"" + label + "\" cannot be found");
 			}
 
-			var newFrame = new StackFrame(toCopy);
-			newFrame.Reset();
-			newFrame.JumpToLabel(label);
-
-			newFrame.OnNextNode += OnNextNodeHandler;
-			stack.Push(newFrame);
+			EnterBlock(frameContainingLabel.GetChildrenOfLabel(label));
 		}
 
 		internal void OnNextNodeHandler(Node node)
