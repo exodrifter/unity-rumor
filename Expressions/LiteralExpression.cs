@@ -51,7 +51,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			if (value != null)
 				return value.ToString();
-			return "";
+			return "<null>";
 		}
 
 		#region Equality

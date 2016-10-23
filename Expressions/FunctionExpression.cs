@@ -70,7 +70,7 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override string ToString()
 		{
-			return name;
+			return name + "()";
 		}
 
 		#region Equality
