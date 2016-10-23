@@ -1,12 +1,17 @@
 ﻿using Exodrifter.Rumor.Engine;
+using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
 {
 	/// <summary>
 	/// An expression is a set of operations that returns a result.
 	/// </summary>
-	public abstract class Expression
+	[Serializable]
+	public abstract class Expression : ISerializable
 	{
+		public Expression() { }
+
 		/// <summary>
 		/// Evaluates this expression.
 		/// </summary>
@@ -35,6 +40,17 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			return !(a == b);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public Expression(SerializationInfo info, StreamingContext context)
+		{
+		}
+
+		public abstract void GetObjectData
+			(SerializationInfo info, StreamingContext context);
 
 		#endregion
 	}
