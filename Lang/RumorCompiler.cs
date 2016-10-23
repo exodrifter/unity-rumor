@@ -2,6 +2,7 @@
 using Exodrifter.Rumor.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Exodrifter.Rumor.Lang
 {
@@ -744,6 +745,10 @@ namespace Exodrifter.Rumor.Lang
 					break;
 				}
 			}
+
+			// Replace multiline whitespace with a single space
+			var re = new Regex(@"\n\s+");
+			quote = re.Replace(quote, " ");
 
 			return foundEndQuote ? quote : null;
 		}
