@@ -18,6 +18,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Add(Value value)
 		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
 			if (value.IsInt()) {
 				return new FloatValue(AsFloat() + value.AsInt());
 			}
@@ -32,6 +35,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Subtract(Value value)
 		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
 			if (value.IsInt()) {
 				return new FloatValue(AsFloat() - value.AsInt());
 			}
@@ -43,6 +49,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Multiply(Value value)
 		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
 			if (value.IsInt()) {
 				return new FloatValue(AsFloat() * value.AsInt());
 			}
@@ -54,6 +63,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Divide(Value value)
 		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
 			if (value.IsInt()) {
 				return new FloatValue(AsFloat() / value.AsInt());
 			}
@@ -65,6 +77,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value BoolAnd(Value value)
 		{
+			if (value == null) {
+				return new BoolValue(false);
+			}
 			if (value.IsInt()) {
 				return new BoolValue(AsFloat() != 0 && value.AsInt() != 0);
 			}
@@ -82,6 +97,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value BoolOr(Value value)
 		{
+			if (value == null) {
+				return new BoolValue(AsFloat() != 0);
+			}
 			if (value.IsInt()) {
 				return new BoolValue(AsFloat() != 0 || value.AsInt() != 0);
 			}
