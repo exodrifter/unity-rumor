@@ -26,8 +26,10 @@ The following actions are available in this initial release:
 - **Add** - Appends text to the end of the dialog in the current state.
 - **Choice** - Adds a choice and all following choices to the current state.
 - **Pause** - Pauses execution for a short amount of time.
-- **Jump** - Modifies the stack so that execution will continue at the specified label.
-- **Call** - Pushes a new stack frame onto the stack with the children nodes from the specified label.
+- **Jump** - Modifies the stack so that execution will continue at the
+  specified label.
+- **Call** - Pushes a new stack frame onto the stack with the children nodes
+  from the specified label.
 - **Return** - Exits the current stack frame.
 
 You can also:
