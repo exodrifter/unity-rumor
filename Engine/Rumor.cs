@@ -127,9 +127,7 @@ namespace Exodrifter.Rumor.Engine
 
 			// If the stack is empty, this is a new game
 			if (stack.Count == 0) {
-				stack.Push(new StackFrame(nodes));
-				scope.ClearVars();
-				State.Reset();
+				Init();
 			}
 
 			// Attach listeners for OnNextNode
@@ -160,6 +158,13 @@ namespace Exodrifter.Rumor.Engine
 			// Reset the state when we are finished
 			State.Reset();
 			Finished = true;
+		}
+
+		private void Init()
+		{
+			stack.Push(new StackFrame(nodes));
+			scope.ClearVars();
+			State.Reset();
 		}
 
 		/// <summary>
@@ -253,8 +258,12 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="label">
 		/// The name of the label to jump to.
 		/// </param>
-		internal void JumpToLabel(string label)
+		public void JumpToLabel(string label)
 		{
+			if (!Started || !Running) {
+				Init();
+			}
+
 			while (stack.Count > 0) {
 				if (stack.Peek().JumpToLabel(label)) {
 					return;
@@ -272,8 +281,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="label">move to.
 		/// </param>
-		internal void MoveToLabel(string label)
+		public void CallLabel(string label)
 		{
+			if (!Started || !Running) {
+				Init();
+			}
+
 			StackFrame frameContainingLabel = null;
 			foreach (var frame in stack) {
 				if (frame.HasLabel(label)) {

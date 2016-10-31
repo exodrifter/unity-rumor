@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - `Rumor.Run()` will restart the script instead of throwing an exception if it
   is already running
+- JumpToLabel and CallToLabel are now exposed publicly, and work even if the
+  Rumor has not been started yet.
 
 ### Removed
 - The RumorCodeExample has been removed as it's potentially
