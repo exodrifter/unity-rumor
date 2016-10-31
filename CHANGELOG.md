@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   is already running
 - JumpToLabel and CallToLabel are now exposed publicly, and work even if the
   Rumor has not been started yet
+- Rumor constructors now provide a convenience method that takes a string
+  directly.
+- You can now pass Rumor a scope to use.
 
 ### Removed
 - The RumorCodeExample has been removed as it's potentially

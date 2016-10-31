@@ -1,4 +1,5 @@
-﻿using Exodrifter.Rumor.Nodes;
+﻿using Exodrifter.Rumor.Lang;
+using Exodrifter.Rumor.Nodes;
 using Exodrifter.Rumor.Util;
 using System;
 using System.Collections;
@@ -97,20 +98,58 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public event Action OnFinish;
 
-		/// <summary>
-		/// Creates a new Rumor.
-		/// </summary>
-		/// <param name="nodes">The nodes to use in the rumor script.</param>
-		/// <param name="state">The state to store data in.</param>
-		public Rumor(IEnumerable<Node> nodes)
+		private Rumor()
 		{
-			this.nodes = new List<Node>(nodes);
 			this.stack = new Stack<StackFrame>();
 			this.scope = new Scope();
 
 			State = new RumorState();
 			Started = false;
 			Finished = false;
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="nodes">The nodes to use in the rumor.</param>
+		public Rumor(IEnumerable<Node> nodes)
+			: this()
+		{
+			this.nodes = new List<Node>(nodes);
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="nodes">The nodes to use in the rumor.</param>
+		/// <param name="scope">The scope to store data in.</param>
+		public Rumor(IEnumerable<Node> nodes, Scope scope)
+			: this()
+		{
+			this.nodes = new List<Node>(nodes);
+			this.scope = scope;
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="script">The script to use in the rumor.</param>
+		public Rumor(string script)
+			: this()
+		{
+			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="script">The script to use in the rumor.</param>
+		/// <param name="scope">The scope to store data in.</param>
+		public Rumor(string script, Scope scope)
+			: this()
+		{
+			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+			this.scope = scope;
 		}
 
 		/// <summary>
