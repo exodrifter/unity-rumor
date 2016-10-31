@@ -84,6 +84,11 @@ namespace Exodrifter.Rumor.Engine
 		public bool Running { get { return Started && !Finished; } }
 
 		/// <summary>
+		/// True if the script should automatically advance if it can.
+		/// </summary>
+		public bool AutoAdvance { get; set; }
+
+		/// <summary>
 		/// An event that is called right before a new node is executed.
 		/// </summary>
 		public event Action<Node> OnNextNode;
@@ -202,7 +207,13 @@ namespace Exodrifter.Rumor.Engine
 				// Execute the next statement
 				yield = stack.Peek().Run(this);
 				while (yield.MoveNext()) {
+					if (AutoAdvance) {
+						Advance();
+					}
 					while (yield.Current != null && !yield.Current.Finished) {
+						if (AutoAdvance) {
+							Advance();
+						}
 						yield return null;
 					}
 				}

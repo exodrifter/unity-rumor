@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+###
+- Added an `AutoAdvance` property to Rumor that causes it to automatically
+  advance if possible
+
 
 ## [0.1.1] - 2016-10-31
 
