@@ -76,22 +76,5 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.DoesNotThrow(rumor.Advance);
 			Assert.DoesNotThrow(() => rumor.Update(0));
 		}
-
-		/// <summary>
-		/// Ensure Rumor objects throw an exception when run is invoked before
-		/// the previous run has completed.
-		/// </summary>
-		[Test]
-		public void RumorDisallowMultipleRun()
-		{
-			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
-				new Say("a")
-			});
-
-			rumor.Run().MoveNext();
-			Assert.Throws<InvalidOperationException>(
-				() => rumor.Run().MoveNext()
-			);
-		}
 	}
 }
