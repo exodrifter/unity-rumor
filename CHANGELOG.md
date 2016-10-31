@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
-- A `Running` property has been added to Rumor
+- Added a `Running` property to Rumor
+- Added `OnStart` and `OnFinish` events to Rumor
 
 ### Changed
 - `Rumor.Run()` will restart the script instead of throwing an exception if it

@@ -88,6 +88,16 @@ namespace Exodrifter.Rumor.Engine
 		public event Action<Node> OnNextNode;
 
 		/// <summary>
+		/// An event that is called when the Rumor is starts executing.
+		/// </summary>
+		public event Action OnStart;
+
+		/// <summary>
+		/// An event that is called when the Rumor is finished executing.
+		/// </summary>
+		public event Action OnFinish;
+
+		/// <summary>
 		/// Creates a new Rumor.
 		/// </summary>
 		/// <param name="nodes">The nodes to use in the rumor script.</param>
@@ -138,6 +148,10 @@ namespace Exodrifter.Rumor.Engine
 			Started = true;
 			Finished = false;
 
+			if (OnStart != null) {
+				OnStart();
+			}
+
 			while (stack.Count > 0) {
 
 				// Check if the stack frame is exhausted
@@ -158,6 +172,10 @@ namespace Exodrifter.Rumor.Engine
 			// Reset the state when we are finished
 			State.Reset();
 			Finished = true;
+
+			if (OnFinish != null) {
+				OnFinish();
+			}
 		}
 
 		private void Init()
