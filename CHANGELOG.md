@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - JumpToLabel and CallToLabel are now exposed publicly, and work even if the
   Rumor has not been started yet
 - Rumor constructors now provide a convenience method that takes a string
-  directly.
-- You can now pass Rumor a scope to use.
+  directly
+- You can now pass Rumor a scope to use
 
 ### Removed
 - The RumorCodeExample has been removed as it's potentially
@@ -28,16 +28,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Initial release.
 
 The following actions are available in this initial release:
-- **Label** - Specifies a location.
-- **Say** - Replaces the dialog in the current state.
-- **Add** - Appends text to the end of the dialog in the current state.
-- **Choice** - Adds a choice and all following choices to the current state.
-- **Pause** - Pauses execution for a short amount of time.
+- **Label** - Specifies a location
+- **Say** - Replaces the dialog in the current state
+- **Add** - Appends text to the end of the dialog in the current state
+- **Choice** - Adds a choice and all following choices to the current state
+- **Pause** - Pauses execution for a short amount of time
 - **Jump** - Modifies the stack so that execution will continue at the
-  specified label.
+  specified label
 - **Call** - Pushes a new stack frame onto the stack with the children nodes
-  from the specified label.
-- **Return** - Exits the current stack frame.
+  from the specified label
+- **Return** - Exits the current stack frame
 
 You can also:
 - Bind methods to a Rumor's scope
