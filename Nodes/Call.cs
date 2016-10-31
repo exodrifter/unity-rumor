@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			rumor.MoveToLabel(to);
+			rumor.CallLabel(to);
 			yield return null;
 		}
 

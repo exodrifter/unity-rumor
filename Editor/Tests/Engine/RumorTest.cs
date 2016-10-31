@@ -1,6 +1,5 @@
 ﻿using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Test.Engine
@@ -78,20 +77,55 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 
 		/// <summary>
-		/// Ensure Rumor objects throw an exception when run is invoked before
-		/// the previous run has completed.
+		/// Ensure Rumor jump methods can be called if it has not yet been
+		/// started.
 		/// </summary>
 		[Test]
-		public void RumorDisallowMultipleRun()
+		public void RumorJumpWithoutStart()
 		{
 			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
-				new Say("a")
+				new Say("a"),
+				new Label("test", new List<Node> (){
+					new Say("b"),
+				}),
 			});
+			Assert.DoesNotThrow(() => rumor.JumpToLabel("test"));
+			Assert.IsFalse(rumor.Started);
+			Assert.IsFalse(rumor.Running);
+			Assert.IsFalse(rumor.Finished);
 
-			rumor.Run().MoveNext();
-			Assert.Throws<InvalidOperationException>(
-				() => rumor.Run().MoveNext()
-			);
+			var yield = rumor.Run();
+			yield.MoveNext();
+			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
+			Assert.IsTrue(rumor.Started);
+			Assert.IsTrue(rumor.Running);
+			Assert.IsFalse(rumor.Finished);
+		}
+
+		/// <summary>
+		/// Ensure Rumor call methods can be called if it has not yet been
+		/// started.
+		/// </summary>
+		[Test]
+		public void RumorCallWithoutStart()
+		{
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
+				new Say("a"),
+				new Label("test", new List<Node> (){
+					new Say("b"),
+				}),
+			});
+			Assert.DoesNotThrow(() => rumor.CallLabel("test"));
+			Assert.IsFalse(rumor.Started);
+			Assert.IsFalse(rumor.Running);
+			Assert.IsFalse(rumor.Finished);
+
+			var yield = rumor.Run();
+			yield.MoveNext();
+			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
+			Assert.IsTrue(rumor.Started);
+			Assert.IsTrue(rumor.Running);
+			Assert.IsFalse(rumor.Finished);
 		}
 	}
 }

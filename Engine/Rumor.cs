@@ -1,4 +1,5 @@
-﻿using Exodrifter.Rumor.Nodes;
+﻿using Exodrifter.Rumor.Lang;
+using Exodrifter.Rumor.Nodes;
 using Exodrifter.Rumor.Util;
 using System;
 using System.Collections;
@@ -78,18 +79,27 @@ namespace Exodrifter.Rumor.Engine
 		public bool Finished { get; private set; }
 
 		/// <summary>
+		/// True if the script is running.
+		/// </summary>
+		public bool Running { get { return Started && !Finished; } }
+
+		/// <summary>
 		/// An event that is called right before a new node is executed.
 		/// </summary>
 		public event Action<Node> OnNextNode;
 
 		/// <summary>
-		/// Creates a new Rumor.
+		/// An event that is called when the Rumor is starts executing.
 		/// </summary>
-		/// <param name="nodes">The nodes to use in the rumor script.</param>
-		/// <param name="state">The state to store data in.</param>
-		public Rumor(IEnumerable<Node> nodes)
+		public event Action OnStart;
+
+		/// <summary>
+		/// An event that is called when the Rumor is finished executing.
+		/// </summary>
+		public event Action OnFinish;
+
+		private Rumor()
 		{
-			this.nodes = new List<Node>(nodes);
 			this.stack = new Stack<StackFrame>();
 			this.scope = new Scope();
 
@@ -99,12 +109,56 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="nodes">The nodes to use in the rumor.</param>
+		public Rumor(IEnumerable<Node> nodes)
+			: this()
+		{
+			this.nodes = new List<Node>(nodes);
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="nodes">The nodes to use in the rumor.</param>
+		/// <param name="scope">The scope to store data in.</param>
+		public Rumor(IEnumerable<Node> nodes, Scope scope)
+			: this()
+		{
+			this.nodes = new List<Node>(nodes);
+			this.scope = scope;
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="script">The script to use in the rumor.</param>
+		public Rumor(string script)
+			: this()
+		{
+			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+		}
+
+		/// <summary>
+		/// Creates a new Rumor.
+		/// </summary>
+		/// <param name="script">The script to use in the rumor.</param>
+		/// <param name="scope">The scope to store data in.</param>
+		public Rumor(string script, Scope scope)
+			: this()
+		{
+			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+			this.scope = scope;
+		}
+
+		/// <summary>
 		/// Starts execution of the Rumor. Note that this does not actually
 		/// run the Rumor, but instead returns an IEnumerator that can be used
 		/// to continue execution. This method cannot be used to spawn
 		/// multiple instances of the same rumor script; create multiple
-		/// Rumor instances instead if that behaviour is desired. After
-		/// execution has finished, the Run method may be called again.
+		/// Rumor instances instead if that behaviour is desired. If execution
+		/// has not finished, the Run method will restart the script.
 		/// 
 		/// You can use this method in Unity by passing the return value to
 		/// the StartCoroutine method.
@@ -116,15 +170,13 @@ namespace Exodrifter.Rumor.Engine
 		/// </returns>
 		public IEnumerator Run()
 		{
-			if (Started && !Finished) {
-				throw new InvalidOperationException(
-					"The rumor has not finished execution yet.");
+			if (Running) {
+				stack.Clear();
 			}
 
 			// If the stack is empty, this is a new game
 			if (stack.Count == 0) {
-				stack.Push(new StackFrame(nodes));
-				State.Reset();
+				Init();
 			}
 
 			// Attach listeners for OnNextNode
@@ -134,6 +186,10 @@ namespace Exodrifter.Rumor.Engine
 
 			Started = true;
 			Finished = false;
+
+			if (OnStart != null) {
+				OnStart();
+			}
 
 			while (stack.Count > 0) {
 
@@ -153,9 +209,19 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			// Reset the state when we are finished
-			scope.ClearVars();
 			State.Reset();
 			Finished = true;
+
+			if (OnFinish != null) {
+				OnFinish();
+			}
+		}
+
+		private void Init()
+		{
+			stack.Push(new StackFrame(nodes));
+			scope.ClearVars();
+			State.Reset();
 		}
 
 		/// <summary>
@@ -249,8 +315,12 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="label">
 		/// The name of the label to jump to.
 		/// </param>
-		internal void JumpToLabel(string label)
+		public void JumpToLabel(string label)
 		{
+			if (!Started || !Running) {
+				Init();
+			}
+
 			while (stack.Count > 0) {
 				if (stack.Peek().JumpToLabel(label)) {
 					return;
@@ -268,8 +338,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		/// <param name="label">move to.
 		/// </param>
-		internal void MoveToLabel(string label)
+		public void CallLabel(string label)
 		{
+			if (!Started || !Running) {
+				Init();
+			}
+
 			StackFrame frameContainingLabel = null;
 			foreach (var frame in stack) {
 				if (frame.HasLabel(label)) {

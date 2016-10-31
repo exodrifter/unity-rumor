@@ -17,7 +17,7 @@ namespace Example.Exodrifter
 
 		void Awake()
 		{
-			rumor = new Rumor(new RumorCompiler().Compile(@"
+			rumor = new Rumor(@"
 label start:
 	say ""Hi!""
 	say ""Is this working?""
@@ -31,7 +31,7 @@ label start:
 
 say ""Well, thanks for stopping by!""
 say ""See you next time!""
-"));
+");
 			rumor.Scope.DefaultSpeaker = "Narrator";
 
 			StartCoroutine(rumor.Run());

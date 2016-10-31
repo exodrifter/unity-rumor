@@ -32,11 +32,13 @@ namespace Exodrifter.Rumor.Test.Nodes
 		{
 			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
 				new Call("a"),
-				new Label("b", null),
-				new Say("b"),
-				new Return(),
-				new Label("a", null),
-				new Say("a"),
+				new Label("b", new List<Node>() {
+					new Say("b"),
+					new Return(),
+				}),
+				new Label("a", new List<Node>() {
+					new Say("a"),
+				}),
 				new Call("b"),
 			});
 
@@ -47,6 +49,10 @@ namespace Exodrifter.Rumor.Test.Nodes
 			rumor.Advance();
 			yield.MoveNext();
 			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("a", (rumor.Current as Say).EvaluateText(rumor));
 
 			rumor.Advance();
 			yield.MoveNext();

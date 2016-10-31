@@ -6,18 +6,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Added a `Running` property to Rumor
+- Added `OnStart` and `OnFinish` events to Rumor
+- Added `OnVarSet` event to Scope
+
+### Changed
+- `Rumor.Run()` will restart the script instead of throwing an exception if it
+  is already running
+- JumpToLabel and CallToLabel are now exposed publicly, and work even if the
+  Rumor has not been started yet
+- Rumor constructors now provide a convenience method that takes a string
+  directly
+- You can now pass Rumor a scope to use
+
+### Removed
+- The RumorCodeExample has been removed as it's potentially
+  misleading/confusing
+
 ## [0.1.0] - 2016-10-23
 Initial release.
 
 The following actions are available in this initial release:
-- **Label** - Specifies a location.
-- **Say** - Replaces the dialog in the current state.
-- **Add** - Appends text to the end of the dialog in the current state.
-- **Choice** - Adds a choice and all following choices to the current state.
-- **Pause** - Pauses execution for a short amount of time.
-- **Jump** - Modifies the stack so that execution will continue at the specified label.
-- **Call** - Pushes a new stack frame onto the stack with the children nodes from the specified label.
-- **Return** - Exits the current stack frame.
+- **Label** - Specifies a location
+- **Say** - Replaces the dialog in the current state
+- **Add** - Appends text to the end of the dialog in the current state
+- **Choice** - Adds a choice and all following choices to the current state
+- **Pause** - Pauses execution for a short amount of time
+- **Jump** - Modifies the stack so that execution will continue at the
+  specified label
+- **Call** - Pushes a new stack frame onto the stack with the children nodes
+  from the specified label
+- **Return** - Exits the current stack frame
 
 You can also:
 - Bind methods to a Rumor's scope
