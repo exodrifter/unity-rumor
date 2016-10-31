@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `Rumor.Run()` will restart the script instead of throwing an exception if it
   is already running
 
+### Removed
+- The RumorCodeExample has been removed as it's potentially
+  misleading/confusing
+
 ## [0.1.0] - 2016-10-23
 Initial release.
 
