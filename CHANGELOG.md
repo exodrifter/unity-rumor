@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.1.1] - 2016-10-31
+
 ### Added
 - Added a `Running` property to Rumor
 - Added `OnStart` and `OnFinish` events to Rumor
@@ -23,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - The RumorCodeExample has been removed as it's potentially
   misleading/confusing
+
 
 ## [0.1.0] - 2016-10-23
 Initial release.
@@ -45,6 +49,7 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/exodrifter/unity-rumor/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/exodrifter/unity-rumor/compare/215489c...0.1.0
 
