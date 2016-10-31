@@ -78,6 +78,11 @@ namespace Exodrifter.Rumor.Engine
 		public bool Finished { get; private set; }
 
 		/// <summary>
+		/// True if the script is running.
+		/// </summary>
+		public bool Running { get { return Started && !Finished; } }
+
+		/// <summary>
 		/// An event that is called right before a new node is executed.
 		/// </summary>
 		public event Action<Node> OnNextNode;
@@ -103,8 +108,8 @@ namespace Exodrifter.Rumor.Engine
 		/// run the Rumor, but instead returns an IEnumerator that can be used
 		/// to continue execution. This method cannot be used to spawn
 		/// multiple instances of the same rumor script; create multiple
-		/// Rumor instances instead if that behaviour is desired. After
-		/// execution has finished, the Run method may be called again.
+		/// Rumor instances instead if that behaviour is desired. If execution
+		/// has not finished, the Run method will restart the script.
 		/// 
 		/// You can use this method in Unity by passing the return value to
 		/// the StartCoroutine method.
@@ -116,14 +121,14 @@ namespace Exodrifter.Rumor.Engine
 		/// </returns>
 		public IEnumerator Run()
 		{
-			if (Started && !Finished) {
-				throw new InvalidOperationException(
-					"The rumor has not finished execution yet.");
+			if (Running) {
+				stack.Clear();
 			}
 
 			// If the stack is empty, this is a new game
 			if (stack.Count == 0) {
 				stack.Push(new StackFrame(nodes));
+				scope.ClearVars();
 				State.Reset();
 			}
 
@@ -153,7 +158,6 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			// Reset the state when we are finished
-			scope.ClearVars();
 			State.Reset();
 			Finished = true;
 		}
