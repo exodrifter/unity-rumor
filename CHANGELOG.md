@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added a `Running` property to Rumor
 - Added `OnStart` and `OnFinish` events to Rumor
+- Added `OnVarSet` event to Scope
 
 ### Changed
 - `Rumor.Run()` will restart the script instead of throwing an exception if it
   is already running
 - JumpToLabel and CallToLabel are now exposed publicly, and work even if the
-  Rumor has not been started yet.
+  Rumor has not been started yet
 
 ### Removed
 - The RumorCodeExample has been removed as it's potentially

@@ -29,6 +29,11 @@ namespace Exodrifter.Rumor.Engine
 		public object DefaultSpeaker { get; set; }
 
 		/// <summary>
+		/// An event that is called when a variable is set.
+		/// </summary>
+		public event Action OnVarSet;
+
+		/// <summary>
 		/// Creates a new scope.
 		/// </summary>
 		/// <param name="parent">
@@ -49,6 +54,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, bool @bool)
 		{
 			vars[name] = new BoolValue(@bool);
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
@@ -59,6 +68,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, int @int)
 		{
 			vars[name] = new IntValue(@int);
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
@@ -69,6 +82,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, float @float)
 		{
 			vars[name] = new FloatValue(@float);
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
@@ -79,6 +96,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, string @string)
 		{
 			vars[name] = new StringValue(@string);
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
@@ -89,6 +110,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, object @object)
 		{
 			vars[name] = new ObjectValue(@object);
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
@@ -99,6 +124,10 @@ namespace Exodrifter.Rumor.Engine
 		public void SetVar(string name, Value value)
 		{
 			vars[name] = value;
+
+			if (OnVarSet != null) {
+				OnVarSet();
+			}
 		}
 
 		/// <summary>
