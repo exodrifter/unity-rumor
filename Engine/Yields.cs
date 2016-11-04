@@ -42,13 +42,59 @@
 	}
 
 	/// <summary>
-	/// Yields until a choice event occurs.
+	/// Yields until the correct number of choice event occurs.
 	/// </summary>
 	public class ForChoice : RumorYield
 	{
+		private int number;
+		private float seconds;
+		private float secondsLeft;
+		private int @default;
+		private bool doUpdate;
+
+		/// <summary>
+		/// The number of choices left to make.
+		/// </summary>
+		public int NumberLeft { get { return number; } }
+
+		/// <summary>
+		/// The number of seconds left to make a choice.
+		/// </summary>
+		public float SecondsLeft { get { return seconds; } }
+		public int Default { get { return @default; } }
+
+		public ForChoice(int number, float seconds, int @default)
+		{
+			this.number = number;
+			this.seconds = seconds;
+			this.secondsLeft = seconds;
+			this.@default = @default;
+			this.doUpdate = seconds > 0;
+		}
+
+		public override void OnUpdate(float delta)
+		{
+			if (!doUpdate || Finished) {
+				return;
+			}
+
+			if (secondsLeft > 0) {
+				secondsLeft -= delta;
+			}
+			Finished = secondsLeft <= 0;
+		}
+
 		public override void OnChoice()
 		{
-			Finished = true;
+			if (Finished) {
+				return;
+			}
+
+			number = number - 1;
+			Finished = number <= 0;
+
+			// Reset the timer
+			secondsLeft = seconds;
 		}
 	}
 
