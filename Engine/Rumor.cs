@@ -103,6 +103,21 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public event Action OnFinish;
 
+		/// <summary>
+		/// An event that is called when the Rumor is execution is cancelled.
+		/// </summary>
+		public event Action OnCancel;
+
+		/// <summary>
+		/// The number of times this rumor has been finished.
+		/// </summary>
+		public int FinishCount { get; set; }
+
+		/// <summary>
+		/// The number of times this rumor has been cancelled.
+		/// </summary>
+		public int CancelCount { get; set; }
+
 		private Rumor()
 		{
 			this.stack = new Stack<StackFrame>();
@@ -196,7 +211,7 @@ namespace Exodrifter.Rumor.Engine
 				OnStart();
 			}
 
-			while (stack.Count > 0) {
+			while (stack.Count > 0 && !Finished) {
 
 				// Check if the stack frame is exhausted
 				if (stack.Peek().Finished) {
@@ -206,11 +221,11 @@ namespace Exodrifter.Rumor.Engine
 
 				// Execute the next statement
 				yield = stack.Peek().Run(this);
-				while (yield.MoveNext()) {
+				while (yield.MoveNext() && !Finished) {
 					if (AutoAdvance) {
 						Advance();
 					}
-					while (yield.Current != null && !yield.Current.Finished) {
+					while (yield.Current != null && !yield.Current.Finished && !Finished) {
 						if (AutoAdvance) {
 							Advance();
 						}
@@ -219,13 +234,7 @@ namespace Exodrifter.Rumor.Engine
 				}
 			}
 
-			// Reset the state when we are finished
-			State.Reset();
-			Finished = true;
-
-			if (OnFinish != null) {
-				OnFinish();
-			}
+			Finish();
 		}
 
 		private void Init()
@@ -269,6 +278,44 @@ namespace Exodrifter.Rumor.Engine
 
 			if (null != yield.Current) {
 				yield.Current.OnAdvance();
+			}
+		}
+
+		/// <summary>
+		/// Forces the script to immediately finish.
+		/// </summary>
+		public void Finish()
+		{
+			if (!Running) {
+				return;
+			}
+
+			State.Reset();
+			Finished = true;
+
+			FinishCount++;
+
+			if (OnFinish != null) {
+				OnFinish();
+			}
+		}
+
+		/// <summary>
+		/// Cancels the rumor script, as if the user cancelled the dialog.
+		/// </summary>
+		public void Cancel()
+		{
+			if (!Running) {
+				return;
+			}
+
+			State.Reset();
+			Finished = true;
+
+			CancelCount++;
+
+			if (OnCancel != null) {
+				OnCancel();
 			}
 		}
 
@@ -387,6 +434,9 @@ namespace Exodrifter.Rumor.Engine
 			scope = info.GetValue<Scope>("scope");
 
 			State = info.GetValue<RumorState>("state");
+
+			FinishCount = info.GetValue<int>("finishCount");
+			CancelCount = info.GetValue<int>("cancelCount");
 		}
 
 		void ISerializable.GetObjectData
@@ -397,6 +447,9 @@ namespace Exodrifter.Rumor.Engine
 			info.AddValue<Scope>("scope", scope);
 
 			info.AddValue<RumorState>("state", State);
+
+			info.AddValue<int>("finishCount", FinishCount);
+			info.AddValue<int>("cancelCount", CancelCount);
 		}
 
 		#endregion
