@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added an `AutoAdvance` property to Rumor that causes it to automatically
   advance if possible
-- Added `Cancel` and `Finish` functions to Rumor
+- Added `Cancel` and `Finish` methods to Rumor
 - Added `CancelCount` and `FinishCount` properties to Rumor
 - Added `SetupDefaultBindings` convenience method to Rumor for common bindings
 
