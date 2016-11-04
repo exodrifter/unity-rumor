@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   advance if possible
 - Added `Cancel` and `Finish` functions to Rumor
 - Added `CancelCount` and `FinishCount` properties to Rumor
+- Added `SetupDefaultBindings` convenience method to Rumor for common bindings
 
 
 ## [0.1.1] - 2016-10-31
