@@ -9,9 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added an `AutoAdvance` property to Rumor that causes it to automatically
   advance if possible
-- Added functions to Rumor for cancelling or finishing
-- Added properties to Rumor that track the number of times it has been
-  cancelled and finished
+- Added `Cancel` and `Finish` functions to Rumor
+- Added `CancelCount` and `FinishCount` properties to Rumor
 
 
 ## [0.1.1] - 2016-10-31
