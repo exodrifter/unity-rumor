@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added `Cancel` and `Finish` methods to Rumor
 - Added `CancelCount` and `FinishCount` properties to Rumor
 - Added a `Choose` node
+- Added the ability to use one-line comments
 
 ### Changed
 - Added `SetupDefaultBindings` convenience method to Rumor for common bindings

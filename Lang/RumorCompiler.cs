@@ -82,6 +82,9 @@ namespace Exodrifter.Rumor.Lang
 
 		public IEnumerable<Node> Compile(string code)
 		{
+			var commentRegex = new Regex(@"^\s*#.*$", RegexOptions.Multiline);
+			code = commentRegex.Replace(code, "");
+
 			var tokens = cleaner.Clean(tokenizer.Tokenize(code));
 			var lines = new List<LogicalLine>(parser.Parse(tokens));
 
