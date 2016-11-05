@@ -17,9 +17,9 @@ To learn more about Rumor, check the official [wiki](https://github.com/exodrift
 
 Change Log
 ----------
-Please see the file named `CHANGELOG.md`.
+Please see the file named [`CHANGELOG.md`](CHANGELOG.md).
 
 Licensing
 ---------
-Please see the file named `LICENSE.md`.
+Please see the file named [`LICENSE.md`](LICENSE.md).
 
