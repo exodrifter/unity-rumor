@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// The current yield.
 		/// </summary>
-		private IEnumerator<RumorYield> yield;
+		private IEnumerator<RumorYield> iter;
 
 		/// <summary>
 		/// The current node.
@@ -70,10 +70,27 @@ namespace Exodrifter.Rumor.Engine
 		{
 			get
 			{
-				if (Current == null) {
+				if (iter.Current == null) {
 					return false;
 				}
-				return Current.GetType() == typeof(Choose);
+				return iter.Current.GetType() == typeof(ForChoice);
+			}
+		}
+
+		/// <summary>
+		/// Returns a float indicating the amount of time left in seconds the
+		/// user has to choose a choice. If the user has an unlimited amount of
+		/// time, this will return null.
+		/// </summary>
+		public float? SecondsLeftToChoose
+		{
+			get
+			{
+				var yield = iter.Current as ForChoice;
+				if (yield == null) {
+					return null;
+				}
+				return yield.SecondsLeft;
 			}
 		}
 
@@ -226,29 +243,63 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			while (stack.Count > 0 && !Finished) {
-
-				// Check if the stack frame is exhausted
-				if (stack.Peek().Finished) {
-					stack.Pop();
-					continue;
-				}
-
-				// Execute the next statement
-				yield = stack.Peek().Run(this);
+				var yield = ExecuteStack();
 				while (yield.MoveNext() && !Finished) {
-					if (AutoAdvance) {
-						Advance();
-					}
-					while (yield.Current != null && !yield.Current.Finished && !Finished) {
-						if (AutoAdvance) {
-							Advance();
-						}
+					if (yield.Current == true) {
 						yield return null;
 					}
 				}
 			}
 
 			Finish();
+		}
+
+		private IEnumerator<bool> ExecuteStack()
+		{
+			// Check if the stack frame is exhausted
+			if (stack.Peek().Finished) {
+				stack.Pop();
+				yield break;
+			}
+
+			// Execute the next statement
+			var origStack = stack.Peek();
+			var origIter = origStack.Run(this);
+			iter = origIter;
+			while (origIter.MoveNext() && !Finished) {
+				if (AutoAdvance) {
+					Advance();
+				}
+
+				var yield = origIter.Current;
+				while (yield != null && !Finished) {
+					if (AutoAdvance) {
+						Advance();
+					}
+
+					// Check for stack additions
+					while (stack.Peek() != origStack) {
+						var otherYield = ExecuteStack();
+						while (otherYield.MoveNext() && !Finished) {
+							if (otherYield.Current == true) {
+								yield return true;
+							}
+						}
+					}
+					iter = origIter;
+
+					// Check only after we finished executing the stack
+					if (yield.Finished) {
+						break;
+					}
+
+					yield return true;
+				}
+			}
+
+			if (stack.Count > 0 && stack.Peek().Finished) {
+				stack.Pop();
+			}
 		}
 
 		private void Init()
@@ -269,12 +320,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Update(float delta)
 		{
-			if (null == yield) {
+			if (null == iter) {
 				return;
 			}
 
-			if (null != yield.Current) {
-				yield.Current.OnUpdate(delta);
+			if (null != iter.Current) {
+				iter.Current.OnUpdate(this, delta);
 			}
 		}
 
@@ -286,12 +337,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void Advance()
 		{
-			if (null == yield) {
+			if (null == iter) {
 				return;
 			}
 
-			if (null != yield.Current) {
-				yield.Current.OnAdvance();
+			if (null != iter.Current) {
+				iter.Current.OnAdvance();
 			}
 		}
 
@@ -341,15 +392,15 @@ namespace Exodrifter.Rumor.Engine
 		{
 			if (0 <= index && index < State.Consequences.Count) {
 				EnterBlock(State.Consequences[index]);
-				State.ClearChoices();
+				State.RemoveChoice(index);
 			}
 
-			if (null == yield) {
+			if (null == iter) {
 				return;
 			}
 
-			if (null != yield.Current) {
-				yield.Current.OnChoice();
+			if (null != iter.Current) {
+				iter.Current.OnChoice();
 			}
 		}
 

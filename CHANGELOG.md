@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   advance if possible
 - Added `Cancel` and `Finish` functions to Rumor
 - Added `CancelCount` and `FinishCount` properties to Rumor
+- Added a `Choose` node
+
+### Changed
+- `Choice` nodes no longer automatically wait for a choice at the end of a
+  chain of choices. Instead, use the `Choose` node to wait for a choice
 
 
 ## [0.1.1] - 2016-10-31

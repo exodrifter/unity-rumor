@@ -17,7 +17,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			var yield = new ForAdvance();
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.False(yield.Finished);
 
 			yield.OnAdvance();
@@ -37,7 +37,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			var yield = new ForChoice(1, 0, 0);
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.False(yield.Finished);
 
 			yield.OnAdvance();
@@ -49,7 +49,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.OnChoice();
 			Assert.True(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.True(yield.Finished);
 
 			yield.OnAdvance();
@@ -59,7 +59,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield = new ForChoice(2, 0, 0);
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.False(yield.Finished);
 
 			yield.OnAdvance();
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.OnChoice();
 			Assert.True(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.True(yield.Finished);
 
 			yield.OnAdvance();
@@ -84,19 +84,16 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield = new ForChoice(2, 2, 0);
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(1);
+			yield.OnUpdate(null, 1);
 			Assert.False(yield.Finished);
 
 			yield.OnAdvance();
 			Assert.False(yield.Finished);
 
-			yield.OnChoice();
-			Assert.False(yield.Finished);
-
-			yield.OnUpdate(1);
+			yield.OnUpdate(null, 1);
 			Assert.True(yield.Finished);
 
-			yield.OnUpdate(1);
+			yield.OnUpdate(null, 1);
 			Assert.True(yield.Finished);
 
 			yield.OnAdvance();
@@ -121,13 +118,13 @@ namespace Exodrifter.Rumor.Test.Engine
 			yield.OnChoice();
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(0);
+			yield.OnUpdate(null, 0);
 			Assert.False(yield.Finished);
 
-			yield.OnUpdate(1);
+			yield.OnUpdate(null, 1);
 			Assert.True(yield.Finished);
 
-			yield.OnUpdate(1);
+			yield.OnUpdate(null, 1);
 			Assert.True(yield.Finished);
 		}
 	}

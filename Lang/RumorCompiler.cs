@@ -419,7 +419,7 @@ namespace Exodrifter.Rumor.Lang
 
 			SkipWhitespace(line, ref pos);
 			Expression number = new LiteralExpression(1);
-			if (line.tokens.Count != pos) {
+			if (line.tokens.Count != pos && line.tokens[pos].text != "in") {
 				int end = Seek(line, pos, "in", false);
 				var tokens = Slice(line.tokens, pos, end);
 				number = CompileExpression(tokens);

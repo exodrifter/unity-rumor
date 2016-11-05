@@ -152,6 +152,8 @@ namespace Exodrifter.Rumor.Nodes
 			int @default = EvaluateDefault(rumor);
 
 			yield return new ForChoice(number, time, @default);
+
+			rumor.State.ClearChoices();
 		}
 
 		#region Serialization
