@@ -204,6 +204,20 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Setup default bindings.
+		/// </summary>
+		public void SetupDefaultBindings()
+		{
+			Scope.Bind("_auto_advance", (bool enable) => { AutoAdvance = enable; });
+			Scope.Bind("_cancel_count", () => { return CancelCount; });
+			Scope.Bind("_finish_count", () => { return FinishCount; });
+
+			Scope.Bind("_set_default_speaker", (object speaker) => { Scope.DefaultSpeaker = speaker; });
+
+			Scope.Bind("_clear_stage", State.Reset);
+		}
+
+		/// <summary>
 		/// Starts execution of the Rumor. Note that this does not actually
 		/// run the Rumor, but instead returns an IEnumerator that can be used
 		/// to continue execution. This method cannot be used to spawn
