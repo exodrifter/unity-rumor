@@ -67,6 +67,7 @@ namespace Exodrifter.Rumor.Lang
 			handlers["add"] = CompileAdd;
 			handlers["call"] = CompileCall;
 			handlers["choice"] = CompileChoice;
+			handlers["choose"] = CompileChoose;
 			handlers["jump"] = CompileJump;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
@@ -412,6 +413,41 @@ namespace Exodrifter.Rumor.Lang
 			return new Choice(text, children);
 		}
 
+		private Node CompileChoose(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+
+			SkipWhitespace(line, ref pos);
+			Expression number = new LiteralExpression(1);
+			if (line.tokens.Count != pos) {
+				int end = Seek(line, pos, "in", false);
+				var tokens = Slice(line.tokens, pos, end);
+				number = CompileExpression(tokens);
+				pos = end;
+			}
+
+			SkipWhitespace(line, ref pos);
+			Expression seconds = new LiteralExpression(0);
+			if (line.tokens.Count != pos && line.tokens[pos].text == "in") {
+				Expect(line, pos++, "in");
+				int end = Seek(line, pos, "seconds");
+				var tokens = Slice(line.tokens, pos, end);
+				seconds = CompileExpression(tokens);
+				pos = end;
+				Expect(line, pos++, "seconds");
+			}
+
+			SkipWhitespace(line, ref pos);
+			Expression @default = new LiteralExpression(0);
+			if (line.tokens.Count != pos) {
+				Expect(line, pos++, "default");
+				var tokens = Slice(line.tokens, pos);
+				@default = CompileExpression(tokens);
+			}
+
+			return new Choose(number, seconds, @default, children);
+		}
+
 		private Node CompileJump(LogicalLine line, ref int pos, List<Node> children)
 		{
 			ExpectNoChildren(line, children);
@@ -539,7 +575,7 @@ namespace Exodrifter.Rumor.Lang
 
 		#region Generic Lexer Functions
 
-		public int Seek(LogicalLine line, int pos, string text)
+		public int Seek(LogicalLine line, int pos, string text, bool strict = true)
 		{
 			while (pos < line.tokens.Count) {
 				if (line.tokens[pos].text == text) {
@@ -548,8 +584,11 @@ namespace Exodrifter.Rumor.Lang
 				pos++;
 			}
 
-			throw new CompilerError(line,
-				"Expected to find a token, but there is none!");
+			if (strict) {
+				throw new CompilerError(line,
+					"Expected to find a token, but there is none!");
+			}
+			return pos;
 		}
 
 		public string Expect(LogicalLine line, int pos)
