@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   advance if possible
 - Added `Cancel` and `Finish` methods to Rumor
 - Added `CancelCount` and `FinishCount` properties to Rumor
+- Added a `Choose` node
+
+### Changed
 - Added `SetupDefaultBindings` convenience method to Rumor for common bindings
+- `Choice` nodes no longer automatically wait for a choice at the end of a
+  chain of choices. Instead, use the `Choose` node to wait for a choice
 
 
 ## [0.1.1] - 2016-10-31

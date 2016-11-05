@@ -61,11 +61,7 @@ namespace Exodrifter.Rumor.Nodes
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			rumor.State.AddChoice(EvaluateText(rumor), this.Children);
-
-			// Wait for a choice to be made if we're done adding choices
-			if (!(rumor.Next is Choice)) {
-				yield return new ForChoice();
-			}
+			yield return null;
 		}
 
 		#region Serialization

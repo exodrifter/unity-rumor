@@ -14,10 +14,13 @@
 		/// <summary>
 		/// Called when an update event occurs.
 		/// </summary>
+		/// <param name="rumor">
+		/// The rumor using this yield.
+		/// </param>
 		/// <param name="delta">
 		/// The amount of time in seconds since the last time this was called.
 		/// </param>
-		public virtual void OnUpdate(float delta) { }
+		public virtual void OnUpdate(Rumor rumor, float delta) { }
 
 		/// <summary>
 		/// Called when an advance event occurs.
@@ -42,13 +45,70 @@
 	}
 
 	/// <summary>
-	/// Yields until a choice event occurs.
+	/// Yields until the correct number of choice event occurs.
 	/// </summary>
 	public class ForChoice : RumorYield
 	{
+		private int number;
+		private float seconds;
+		private float secondsLeft;
+		private int @default;
+		private bool doUpdate;
+
+		/// <summary>
+		/// The number of choices left to make.
+		/// </summary>
+		public int NumberLeft { get { return number; } }
+
+		/// <summary>
+		/// The number of seconds left to make a choice.
+		/// </summary>
+		public float SecondsLeft { get { return secondsLeft; } }
+		public int Default { get { return @default; } }
+
+		public ForChoice(int number, float seconds, int @default)
+		{
+			this.number = number;
+			this.seconds = seconds;
+			this.secondsLeft = seconds;
+			this.@default = @default;
+			this.doUpdate = seconds > 0;
+		}
+
+		public override void OnUpdate(Rumor rumor, float delta)
+		{
+			// Return early if there are no choices left
+			if (rumor != null && rumor.State.Choices.Count == 0) {
+				Finished = true;
+			}
+
+			if (!doUpdate || Finished) {
+				return;
+			}
+
+			if (secondsLeft > 0) {
+				secondsLeft -= delta;
+			}
+
+			if (secondsLeft <= 0) {
+				if (rumor != null) {
+					rumor.Choose(@default);
+				}
+				Finished = true;
+			}
+		}
+
 		public override void OnChoice()
 		{
-			Finished = true;
+			if (Finished) {
+				return;
+			}
+
+			number = number - 1;
+			Finished = number <= 0;
+
+			// Reset the timer
+			secondsLeft = seconds;
 		}
 	}
 
@@ -64,7 +124,7 @@
 			this.seconds = seconds;
 		}
 
-		public override void OnUpdate(float delta)
+		public override void OnUpdate(Rumor rumor, float delta)
 		{
 			if (seconds > 0) {
 				seconds -= delta;

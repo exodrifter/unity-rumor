@@ -86,6 +86,16 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Removes the choice at the specified index.
+		/// </summary>
+		/// <param name="index">The index of the choice to remove.</param>
+		public void RemoveChoice(int index)
+		{
+			Choices.RemoveAt(index);
+			Consequences.RemoveAt(index);
+		}
+
+		/// <summary>
 		/// Removes all current choices.
 		/// </summary>
 		public void ClearChoices()
