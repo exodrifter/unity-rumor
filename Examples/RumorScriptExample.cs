@@ -28,6 +28,7 @@ label start:
 		say ""Darn...""
 		pause 0.5
 		add ""Maybe next time.""
+	choose
 
 say ""Well, thanks for stopping by!""
 say ""See you next time!""
@@ -44,7 +45,7 @@ say ""See you next time!""
 				return;
 			}
 
-			if (rumor.State.Choices.Count > 0) {
+			if (rumor.Choosing) {
 				int num = 1;
 				text.text = "";
 

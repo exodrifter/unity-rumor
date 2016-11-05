@@ -64,6 +64,20 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Returns true if we are currently on a choose node.
+		/// </summary>
+		public bool Choosing
+		{
+			get
+			{
+				if (Current == null) {
+					return false;
+				}
+				return Current.GetType() == typeof(Choose);
+			}
+		}
+
+		/// <summary>
 		/// The state of the script.
 		/// </summary>
 		public RumorState State { get; private set; }
