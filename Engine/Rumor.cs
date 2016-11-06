@@ -213,8 +213,6 @@ namespace Exodrifter.Rumor.Engine
 			Scope.Bind("_finish_count", () => { return FinishCount; });
 
 			Scope.Bind("_set_default_speaker", (object speaker) => { Scope.DefaultSpeaker = speaker; });
-
-			Scope.Bind("_clear_stage", State.Reset);
 		}
 
 		/// <summary>
@@ -320,7 +318,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			stack.Push(new StackFrame(nodes));
 			scope.ClearVars();
-			State.Reset();
+			State.Clear();
 		}
 
 		/// <summary>
@@ -369,7 +367,7 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Reset();
+			State.Clear();
 			Finished = true;
 
 			FinishCount++;
@@ -388,7 +386,7 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Reset();
+			State.Clear();
 			Finished = true;
 
 			CancelCount++;

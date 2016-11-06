@@ -68,6 +68,7 @@ namespace Exodrifter.Rumor.Lang
 			handlers["call"] = CompileCall;
 			handlers["choice"] = CompileChoice;
 			handlers["choose"] = CompileChoose;
+			handlers["clear"] = CompileClear;
 			handlers["jump"] = CompileJump;
 			handlers["label"] = CompileLabel;
 			handlers["pause"] = CompilePause;
@@ -449,6 +450,12 @@ namespace Exodrifter.Rumor.Lang
 			}
 
 			return new Choose(number, seconds, @default, children);
+		}
+
+		private Node CompileClear(LogicalLine line, ref int pos, List<Node> children)
+		{
+			ExpectNoChildren(line, children);
+			return new Clear();
 		}
 
 		private Node CompileJump(LogicalLine line, ref int pos, List<Node> children)

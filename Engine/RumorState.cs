@@ -38,21 +38,16 @@ namespace Exodrifter.Rumor.Engine
 		public event Action<object, string> OnSetDialog;
 
 		/// <summary>
+		/// An event for when the state is cleared.
+		/// </summary>
+		public event Action OnClear;
+
+		/// <summary>
 		/// Creates a new Rumor state.
 		/// </summary>
 		public RumorState()
 		{
-			Reset();
-		}
-
-		/// <summary>
-		/// Resets the state.
-		/// </summary>
-		public void Reset()
-		{
-			Dialog = new LazyDictionary<object, string>();
-			Choices = new List<string>();
-			Consequences = new List<List<Node>>();
+			Clear();
 		}
 
 		/// <summary>
@@ -114,12 +109,26 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
-		/// Removes all current choices.
+		/// Clears the state.
+		/// </summary>
+		public void Clear()
+		{
+			Dialog = new LazyDictionary<object, string>();
+			Choices = new List<string>();
+			Consequences = new List<List<Node>>();
+
+			if (OnClear != null) {
+				OnClear();
+			}
+		}
+
+		/// <summary>
+		/// Clears the choices.
 		/// </summary>
 		public void ClearChoices()
 		{
-			Choices.Clear();
-			Consequences.Clear();
+			Choices = new List<string>();
+			Consequences = new List<List<Node>>();
 		}
 
 		#region Serialization
