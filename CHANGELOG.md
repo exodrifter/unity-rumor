@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added the Clear command
 - Add an `OnChoose` event to Rumor
 
+### Changed
+- AutoAdvance is now a time instead of a toggle, which indicates the amount of
+  time before the Rumor will attempt to automatically advance.
+
 
 ## [0.2.0] - 2016-11-05
 

@@ -115,9 +115,10 @@ namespace Exodrifter.Rumor.Engine
 		public bool Running { get { return Started && !Finished; } }
 
 		/// <summary>
-		/// True if the script should automatically advance if it can.
+		/// If positive, the amount of time in seconds before the script should
+		/// attempt to automatically advance.
 		/// </summary>
-		public bool AutoAdvance { get; set; }
+		public float AutoAdvance { get; set; }
 
 		/// <summary>
 		/// An event that is called right before a new node is executed.
@@ -128,6 +129,11 @@ namespace Exodrifter.Rumor.Engine
 		/// An event for when a choice needs to be made.
 		/// </summary>
 		public event Action<List<string>, float?> OnChoose;
+
+		/// <summary>
+		/// An event for when an advance needs to be made.
+		/// </summary>
+		public event Action OnAdvance;
 
 		/// <summary>
 		/// An event that is called when the Rumor is starts executing.
@@ -162,6 +168,7 @@ namespace Exodrifter.Rumor.Engine
 			State = new RumorState();
 			Started = false;
 			Finished = false;
+			AutoAdvance = -1;
 		}
 
 		/// <summary>
@@ -213,7 +220,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void SetupDefaultBindings()
 		{
-			Scope.Bind("_auto_advance", (bool enable) => { AutoAdvance = enable; });
+			Scope.Bind("_auto_advance", (float seconds) => { AutoAdvance = seconds; });
 			Scope.Bind("_cancel_count", () => { return CancelCount; });
 			Scope.Bind("_finish_count", () => { return FinishCount; });
 
@@ -284,14 +291,10 @@ namespace Exodrifter.Rumor.Engine
 			var origIter = origStack.Run(this);
 			iter = origIter;
 			while (origIter.MoveNext() && !Finished) {
-				if (AutoAdvance) {
-					Advance();
-				}
-
 				var trigger = true;
 				var yield = origIter.Current;
 				while (yield != null && !Finished) {
-					if (AutoAdvance) {
+					if (AutoAdvance <= yield.Elapsed) {
 						Advance();
 					}
 
@@ -299,6 +302,12 @@ namespace Exodrifter.Rumor.Engine
 					if (trigger) {
 						if (yield is ForChoice && OnChoose != null) {
 							OnChoose(State.Choices, SecondsLeftToChoose);
+						}
+						if (yield is ForAdvance && OnAdvance != null) {
+							// We might have just auto-advanced
+							if (!yield.Finished) {
+								OnAdvance();
+							}
 						}
 						trigger = false;
 					}
