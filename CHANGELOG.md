@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Added an `OnDialogAdd` and `OnDialogSet` events to RumorState
+
 
 ## [0.2.0] - 2016-11-05
 

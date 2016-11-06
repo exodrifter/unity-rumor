@@ -28,6 +28,16 @@ namespace Exodrifter.Rumor.Engine
 		public List<List<Node>> Consequences { get; private set; }
 
 		/// <summary>
+		/// An event for when dialog is added to the state.
+		/// </summary>
+		public event Action<object, string> OnAddDialog;
+
+		/// <summary>
+		/// An event for when dialog is set in the state.
+		/// </summary>
+		public event Action<object, string> OnSetDialog;
+
+		/// <summary>
 		/// Creates a new Rumor state.
 		/// </summary>
 		public RumorState()
@@ -54,6 +64,10 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Dialog.Clear();
 			Dialog[speaker] = dialog;
+
+			if (OnSetDialog != null) {
+				OnSetDialog(speaker, dialog);
+			}
 		}
 
 		/// <summary>
@@ -64,6 +78,10 @@ namespace Exodrifter.Rumor.Engine
 		public void AddDialog(object speaker, string dialog)
 		{
 			Dialog[speaker] += dialog;
+
+			if (OnAddDialog != null) {
+				OnAddDialog(speaker, dialog);
+			}
 		}
 
 		/// <summary>
