@@ -125,6 +125,11 @@ namespace Exodrifter.Rumor.Engine
 		public event Action<Node> OnNextNode;
 
 		/// <summary>
+		/// An event for when a choice needs to be made.
+		/// </summary>
+		public event Action<List<string>, float?> OnChoose;
+
+		/// <summary>
 		/// An event that is called when the Rumor is starts executing.
 		/// </summary>
 		public event Action OnStart;
@@ -283,14 +288,24 @@ namespace Exodrifter.Rumor.Engine
 					Advance();
 				}
 
+				var trigger = true;
 				var yield = origIter.Current;
 				while (yield != null && !Finished) {
 					if (AutoAdvance) {
 						Advance();
 					}
 
+					// Check if we need to retrigger any events
+					if (trigger) {
+						if (yield is ForChoice && OnChoose != null) {
+							OnChoose(State.Choices, SecondsLeftToChoose);
+						}
+						trigger = false;
+					}
+
 					// Check for stack additions
 					while (stack.Peek() != origStack) {
+						trigger = true;
 						var otherYield = ExecuteStack();
 						while (otherYield.MoveNext() && !Finished) {
 							if (otherYield.Current == true) {

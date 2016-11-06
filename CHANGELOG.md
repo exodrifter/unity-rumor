@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added an `OnDialogAdd` and `OnDialogSet` events to RumorState
 - Added the Clear command
+- Add an `OnChoose` event to Rumor
 
 
 ## [0.2.0] - 2016-11-05
