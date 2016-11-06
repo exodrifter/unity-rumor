@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
-- Added an `OnDialogAdd` and `OnDialogSet` events to RumorState
+- Added an `OnDialogAdd`, `OnDialogSet`, and `OnClear` events to RumorState
 - Added the Clear command
-- Add an `OnWaitForAdvance` and `OnWaitForChoose` event to Rumor
-- Add a `Cancelled` property to Rumor
+- Added an `OnWaitForAdvance` and `OnWaitForChoose` event to Rumor
+- Added a `Cancelled` property to Rumor
 
 ### Changed
 - AutoAdvance is now a time instead of a toggle, which indicates the amount of
