@@ -110,9 +110,14 @@ namespace Exodrifter.Rumor.Engine
 		public bool Finished { get; private set; }
 
 		/// <summary>
+		/// True if the script was cancelled.
+		/// </summary>
+		public bool Cancelled { get; private set; }
+
+		/// <summary>
 		/// True if the script is running.
 		/// </summary>
-		public bool Running { get { return Started && !Finished; } }
+		public bool Running { get { return Started && !(Finished || Cancelled); } }
 
 		/// <summary>
 		/// If positive, the amount of time in seconds before the script should
@@ -168,6 +173,7 @@ namespace Exodrifter.Rumor.Engine
 			State = new RumorState();
 			Started = false;
 			Finished = false;
+			Cancelled = false;
 			AutoAdvance = -1;
 		}
 
@@ -261,14 +267,15 @@ namespace Exodrifter.Rumor.Engine
 
 			Started = true;
 			Finished = false;
+			Cancelled = false;
 
 			if (OnStart != null) {
 				OnStart();
 			}
 
-			while (stack.Count > 0 && !Finished) {
+			while (stack.Count > 0 && !(Finished || Cancelled)) {
 				var yield = ExecuteStack();
-				while (yield.MoveNext() && !Finished) {
+				while (yield.MoveNext() && !(Finished || Cancelled)) {
 					if (yield.Current == true) {
 						yield return null;
 					}
@@ -290,10 +297,10 @@ namespace Exodrifter.Rumor.Engine
 			var origStack = stack.Peek();
 			var origIter = origStack.Run(this);
 			iter = origIter;
-			while (origIter.MoveNext() && !Finished) {
+			while (origIter.MoveNext() && !(Finished || Cancelled)) {
 				var trigger = true;
 				var yield = origIter.Current;
-				while (yield != null && !Finished) {
+				while (yield != null && !(Finished || Cancelled)) {
 					if (AutoAdvance <= yield.Elapsed) {
 						Advance();
 					}
@@ -316,7 +323,7 @@ namespace Exodrifter.Rumor.Engine
 					while (stack.Peek() != origStack) {
 						trigger = true;
 						var otherYield = ExecuteStack();
-						while (otherYield.MoveNext() && !Finished) {
+						while (otherYield.MoveNext() && !(Finished || Cancelled)) {
 							if (otherYield.Current == true) {
 								yield return true;
 							}
@@ -411,7 +418,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			State.Clear();
-			Finished = true;
+			Cancelled = true;
 
 			CancelCount++;
 
