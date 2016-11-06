@@ -12,6 +12,11 @@
 		public bool Finished { get; protected set; }
 
 		/// <summary>
+		/// The total amount of time spent on this yield.
+		/// </summary>
+		public float Elapsed { get; protected set; }
+
+		/// <summary>
 		/// Called when an update event occurs.
 		/// </summary>
 		/// <param name="rumor">
@@ -20,7 +25,10 @@
 		/// <param name="delta">
 		/// The amount of time in seconds since the last time this was called.
 		/// </param>
-		public virtual void OnUpdate(Rumor rumor, float delta) { }
+		public virtual void OnUpdate(Rumor rumor, float delta)
+		{
+			Elapsed += delta;
+		}
 
 		/// <summary>
 		/// Called when an advance event occurs.
@@ -77,6 +85,8 @@
 
 		public override void OnUpdate(Rumor rumor, float delta)
 		{
+			base.OnUpdate(rumor, delta);
+
 			// Return early if there are no choices left
 			if (rumor != null && rumor.State.Choices.Count == 0) {
 				Finished = true;
@@ -126,10 +136,8 @@
 
 		public override void OnUpdate(Rumor rumor, float delta)
 		{
-			if (seconds > 0) {
-				seconds -= delta;
-			}
-			Finished = seconds <= 0;
+			base.OnUpdate(rumor, delta);
+			Finished = seconds <= Elapsed;
 		}
 	}
 }

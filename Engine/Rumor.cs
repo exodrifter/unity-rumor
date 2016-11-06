@@ -110,19 +110,35 @@ namespace Exodrifter.Rumor.Engine
 		public bool Finished { get; private set; }
 
 		/// <summary>
-		/// True if the script is running.
+		/// True if the script was cancelled.
 		/// </summary>
-		public bool Running { get { return Started && !Finished; } }
+		public bool Cancelled { get; private set; }
 
 		/// <summary>
-		/// True if the script should automatically advance if it can.
+		/// True if the script is running.
 		/// </summary>
-		public bool AutoAdvance { get; set; }
+		public bool Running { get { return Started && !(Finished || Cancelled); } }
+
+		/// <summary>
+		/// If positive, the amount of time in seconds before the script should
+		/// attempt to automatically advance.
+		/// </summary>
+		public float AutoAdvance { get; set; }
 
 		/// <summary>
 		/// An event that is called right before a new node is executed.
 		/// </summary>
 		public event Action<Node> OnNextNode;
+
+		/// <summary>
+		/// An event for when a choice needs to be made.
+		/// </summary>
+		public event Action<List<string>, float?> OnWaitForChoose;
+
+		/// <summary>
+		/// An event for when an advance needs to be made.
+		/// </summary>
+		public event Action OnWaitForAdvance;
 
 		/// <summary>
 		/// An event that is called when the Rumor is starts executing.
@@ -157,6 +173,8 @@ namespace Exodrifter.Rumor.Engine
 			State = new RumorState();
 			Started = false;
 			Finished = false;
+			Cancelled = false;
+			AutoAdvance = -1;
 		}
 
 		/// <summary>
@@ -208,13 +226,11 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void SetupDefaultBindings()
 		{
-			Scope.Bind("_auto_advance", (bool enable) => { AutoAdvance = enable; });
+			Scope.Bind("_auto_advance", (float seconds) => { AutoAdvance = seconds; });
 			Scope.Bind("_cancel_count", () => { return CancelCount; });
 			Scope.Bind("_finish_count", () => { return FinishCount; });
 
 			Scope.Bind("_set_default_speaker", (object speaker) => { Scope.DefaultSpeaker = speaker; });
-
-			Scope.Bind("_clear_stage", State.Reset);
 		}
 
 		/// <summary>
@@ -251,14 +267,15 @@ namespace Exodrifter.Rumor.Engine
 
 			Started = true;
 			Finished = false;
+			Cancelled = false;
 
 			if (OnStart != null) {
 				OnStart();
 			}
 
-			while (stack.Count > 0 && !Finished) {
+			while (stack.Count > 0 && !(Finished || Cancelled)) {
 				var yield = ExecuteStack();
-				while (yield.MoveNext() && !Finished) {
+				while (yield.MoveNext() && !(Finished || Cancelled)) {
 					if (yield.Current == true) {
 						yield return null;
 					}
@@ -280,21 +297,33 @@ namespace Exodrifter.Rumor.Engine
 			var origStack = stack.Peek();
 			var origIter = origStack.Run(this);
 			iter = origIter;
-			while (origIter.MoveNext() && !Finished) {
-				if (AutoAdvance) {
-					Advance();
-				}
-
+			while (origIter.MoveNext() && !(Finished || Cancelled)) {
+				var trigger = true;
 				var yield = origIter.Current;
-				while (yield != null && !Finished) {
-					if (AutoAdvance) {
+				while (yield != null && !(Finished || Cancelled)) {
+					if (AutoAdvance <= yield.Elapsed) {
 						Advance();
+					}
+
+					// Check if we need to retrigger any events
+					if (trigger) {
+						if (yield is ForChoice && OnWaitForChoose != null) {
+							OnWaitForChoose(State.Choices, SecondsLeftToChoose);
+						}
+						if (yield is ForAdvance && OnWaitForAdvance != null) {
+							// We might have just auto-advanced
+							if (!yield.Finished) {
+								OnWaitForAdvance();
+							}
+						}
+						trigger = false;
 					}
 
 					// Check for stack additions
 					while (stack.Peek() != origStack) {
+						trigger = true;
 						var otherYield = ExecuteStack();
-						while (otherYield.MoveNext() && !Finished) {
+						while (otherYield.MoveNext() && !(Finished || Cancelled)) {
 							if (otherYield.Current == true) {
 								yield return true;
 							}
@@ -320,7 +349,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			stack.Push(new StackFrame(nodes));
 			scope.ClearVars();
-			State.Reset();
+			State.Clear();
 		}
 
 		/// <summary>
@@ -369,7 +398,7 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Reset();
+			State.Clear();
 			Finished = true;
 
 			FinishCount++;
@@ -388,8 +417,8 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Reset();
-			Finished = true;
+			State.Clear();
+			Cancelled = true;
 
 			CancelCount++;
 
