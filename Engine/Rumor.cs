@@ -128,12 +128,12 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// An event for when a choice needs to be made.
 		/// </summary>
-		public event Action<List<string>, float?> OnChoose;
+		public event Action<List<string>, float?> OnWaitForChoose;
 
 		/// <summary>
 		/// An event for when an advance needs to be made.
 		/// </summary>
-		public event Action OnAdvance;
+		public event Action OnWaitForAdvance;
 
 		/// <summary>
 		/// An event that is called when the Rumor is starts executing.
@@ -300,13 +300,13 @@ namespace Exodrifter.Rumor.Engine
 
 					// Check if we need to retrigger any events
 					if (trigger) {
-						if (yield is ForChoice && OnChoose != null) {
-							OnChoose(State.Choices, SecondsLeftToChoose);
+						if (yield is ForChoice && OnWaitForChoose != null) {
+							OnWaitForChoose(State.Choices, SecondsLeftToChoose);
 						}
-						if (yield is ForAdvance && OnAdvance != null) {
+						if (yield is ForAdvance && OnWaitForAdvance != null) {
 							// We might have just auto-advanced
 							if (!yield.Finished) {
-								OnAdvance();
+								OnWaitForAdvance();
 							}
 						}
 						trigger = false;
