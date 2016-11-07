@@ -15,21 +15,21 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Member()
 		{
-			var scope = new Rumor.Engine.Scope();
-			scope.SetVar("o", new Test(1, 2));
+			var rumor = new Rumor.Engine.Rumor("return");
+			rumor.Scope.SetVar("o", new Test(1, 2));
 
 			var exp = new DotExpression(
 				new VariableExpression("o"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(1, exp.Evaluate(scope).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
 
 			exp = new DotExpression(
 				new VariableExpression("o"),
 				new VariableExpression("b")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 		}
 
@@ -39,21 +39,21 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Function()
 		{
-			var scope = new Rumor.Engine.Scope();
-			scope.SetVar("o", new Test(1, 2));
+			var rumor = new Rumor.Engine.Rumor("return");
+			rumor.Scope.SetVar("o", new Test(1, 2));
 
 			var exp = new DotExpression(
 				new VariableExpression("o"),
 				new FunctionExpression("foo")
 			);
-			Assert.AreEqual(1, exp.Evaluate(scope).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
 
 			exp = new DotExpression(
 				new VariableExpression("o"),
 				new FunctionExpression("bar")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 		}
 
@@ -63,11 +63,11 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Invalid()
 		{
-			var scope = new Rumor.Engine.Scope();
-			scope.SetVar("bool", true);
-			scope.SetVar("int", 1);
-			scope.SetVar("float", 1f);
-			scope.SetVar("string", "str");
+			var rumor = new Rumor.Engine.Rumor("return");
+			rumor.Scope.SetVar("bool", true);
+			rumor.Scope.SetVar("int", 1);
+			rumor.Scope.SetVar("float", 1f);
+			rumor.Scope.SetVar("string", "str");
 
 			// Member access
 			var exp = new DotExpression(
@@ -75,7 +75,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -83,7 +83,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -91,7 +91,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -99,7 +99,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			// Function access
@@ -108,7 +108,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -116,7 +116,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -124,7 +124,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 
 			exp = new DotExpression(
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope)
+				() => exp.Evaluate(rumor)
 			);
 		}
 	}

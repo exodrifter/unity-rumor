@@ -240,11 +240,11 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeAdd()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new Add("add");
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
+			Assert.AreEqual(a.EvaluateText(rumor), b.EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -265,18 +265,18 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeChoice()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new Choice("choice", new List<Node>() {
 				new Say("say")
 			});
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
+			Assert.AreEqual(a.EvaluateText(rumor), b.EvaluateText(rumor));
 			Assert.AreEqual(1, a.Children.Count);
 			Assert.AreEqual(a.Children.Count, b.Children.Count);
 			Assert.AreEqual(
-				(a.Children[0] as Say).EvaluateText(scope),
-				(b.Children[0] as Say).EvaluateText(scope));
+				(a.Children[0] as Say).EvaluateText(rumor),
+				(b.Children[0] as Say).EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -297,7 +297,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeLabel()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new Label("label", new List<Node>() {
 				new Say("say")
 			});
@@ -307,8 +307,8 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(1, a.Children.Count);
 			Assert.AreEqual(a.Children.Count, b.Children.Count);
 			Assert.AreEqual(
-				(a.Children[0] as Say).EvaluateText(scope),
-				(b.Children[0] as Say).EvaluateText(scope));
+				(a.Children[0] as Say).EvaluateText(rumor),
+				(b.Children[0] as Say).EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -339,11 +339,11 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeSay()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new Say("say");
 			var b = Reserialize(a);
 
-			Assert.AreEqual(a.EvaluateText(scope), b.EvaluateText(scope));
+			Assert.AreEqual(a.EvaluateText(rumor), b.EvaluateText(rumor));
 		}
 
 		/// <summary>
@@ -352,13 +352,13 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeStatement()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new Statement(new LiteralExpression(1));
 			var b = Reserialize(a);
 
 			Assert.AreEqual(
-				a.expression.Evaluate(scope),
-				b.expression.Evaluate(scope));
+				a.expression.Evaluate(rumor),
+				b.expression.Evaluate(rumor));
 		}
 
 		#endregion
@@ -553,7 +553,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializeRumorStateChoice()
 		{
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			var a = new RumorState();
 			a.AddChoice("choice", new List<Node>() {
 				new Say("say"),
@@ -569,8 +569,8 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.AreEqual(1, a.Consequences[0].Count);
 			Assert.AreEqual(a.Consequences[0].Count, b.Consequences[0].Count);
 			Assert.AreEqual(
-				(a.Consequences[0][0] as Say).EvaluateText(scope),
-				(b.Consequences[0][0] as Say).EvaluateText(scope));
+				(a.Consequences[0][0] as Say).EvaluateText(rumor),
+				(b.Consequences[0][0] as Say).EvaluateText(rumor));
 		}
 
 		#endregion

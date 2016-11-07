@@ -15,9 +15,9 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Scope scope)
+		public override Value Evaluate(Engine.Rumor rumor)
 		{
-			var r = right.Evaluate(scope);
+			var r = right.Evaluate(rumor);
 			if (r == null) {
 				return new BoolValue(true);
 			}

@@ -48,11 +48,6 @@ namespace Exodrifter.Rumor.Nodes
 			this.text = text;
 		}
 
-		public string EvaluateText(Scope scope)
-		{
-			return text.Evaluate(scope).AsString();
-		}
-
 		public string EvaluateText(Engine.Rumor rumor)
 		{
 			return text.Evaluate(rumor).AsString();

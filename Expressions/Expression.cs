@@ -15,21 +15,11 @@ namespace Exodrifter.Rumor.Expressions
 		/// <summary>
 		/// Evaluates this expression.
 		/// </summary>
-		/// <param name="scope">The current execution scope.</param>
-		/// <returns>The result of this expression when evaluated.</returns>
-		public abstract Value Evaluate(Scope scope);
-
-		/// <summary>
-		/// Evaluates this expression.
-		/// </summary>
 		/// <param name="rumor">
-		/// The Rumor containing the scope to evaluate against.
+		/// The Rumor containing the scope and bindings to evaluate against.
 		/// </param>
 		/// <returns>The result of this expression when evaluated.</returns>
-		public Value Evaluate(Engine.Rumor rumor)
-		{
-			return Evaluate(rumor.Scope);
-		}
+		public abstract Value Evaluate(Engine.Rumor rumor);
 
 		#region Equality
 

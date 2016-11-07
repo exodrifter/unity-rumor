@@ -32,17 +32,17 @@ namespace Exodrifter.Rumor.Expressions
 			this.@params = new List<Expression>(@params);
 		}
 
-		public override Value Evaluate(Scope scope)
+		public override Value Evaluate(Engine.Rumor rumor)
 		{
-			return Invoke(null, scope);
+			return Invoke(null, rumor);
 		}
 
-		public Value Invoke(object self, Scope scope)
+		public Value Invoke(object self, Engine.Rumor rumor)
 		{
 			var values = new object[@params.Count];
 
 			for (int i = 0; i < @params.Count; ++i) {
-				var value = @params[i].Evaluate(scope);
+				var value = @params[i].Evaluate(rumor);
 
 				if (value == null) {
 					values[i] = null;
@@ -53,7 +53,7 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			if (self == null) {
-				var result = scope.CallBinding(name, values);
+				var result = rumor.CallBinding(name, values);
 				return Value.Covert(result);
 			}
 			else {
