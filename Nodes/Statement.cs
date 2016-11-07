@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Nodes
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
-			expression.Evaluate(rumor.Scope);
+			expression.Evaluate(rumor);
 			yield return null;
 		}
 

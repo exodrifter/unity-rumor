@@ -114,20 +114,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The speaker.</returns>
 		public object EvaluateSpeaker(Engine.Rumor rumor)
 		{
-			return EvaluateSpeaker(rumor.Scope);
-		}
-		
-		/// <summary>
-		/// Evaluates the speaker of this node in the specified Scope.
-		/// </summary>
-		/// <param name="rumor">The Scope to evaluate against.</param>
-		/// <returns>The speaker.</returns>
-		public object EvaluateSpeaker(Scope scope)
-		{
 			if (speaker == null) {
-				return scope.DefaultSpeaker;
+				return rumor.Scope.DefaultSpeaker;
 			}
-			return speaker.Evaluate(scope).AsObject() ?? scope.DefaultSpeaker;
+			var ret = speaker.Evaluate(rumor).AsObject();
+			return ret ?? rumor.Scope.DefaultSpeaker;
 		}
 
 		/// <summary>
@@ -137,17 +128,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Engine.Rumor rumor)
 		{
-			return text.Evaluate(rumor.Scope).ToString();
-		}
-
-		/// <summary>
-		/// Evaluates the text of this node in the specified Scope.
-		/// </summary>
-		/// <param name="rumor">The Scope to evaluate against.</param>
-		/// <returns>The text.</returns>
-		public string EvaluateText(Scope scope)
-		{
-			return text.Evaluate(scope).ToString();
+			return text.Evaluate(rumor).ToString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)

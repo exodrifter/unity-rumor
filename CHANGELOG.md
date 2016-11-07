@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - AutoAdvance is now a time instead of a toggle, which indicates the amount of
   time before the Rumor will attempt to automatically advance.
+- Bindings are now stored in the Rumor instead of the Scope
 
 
 ## [0.2.0] - 2016-11-05

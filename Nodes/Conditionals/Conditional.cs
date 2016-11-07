@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The value of the expression.</returns>
 		protected Value Evaluate(Engine.Rumor rumor)
 		{
-			return expression.Evaluate(rumor.Scope);
+			return expression.Evaluate(rumor);
 		}
 		
 		/// <summary>

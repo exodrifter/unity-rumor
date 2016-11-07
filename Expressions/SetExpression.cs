@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Scope scope)
+		public override Value Evaluate(Engine.Rumor rumor)
 		{
 			if (left.GetType() != typeof(VariableExpression)) {
 				throw new ArgumentException(
@@ -24,8 +24,8 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			var l = left as VariableExpression;
-			var r = right.Evaluate(scope);
-			scope.SetVar(l.Name, r);
+			var r = right.Evaluate(rumor);
+			rumor.Scope.SetVar(l.Name, r);
 			return r;
 		}
 

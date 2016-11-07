@@ -16,10 +16,10 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Scope scope)
+		public override Value Evaluate(Engine.Rumor rumor)
 		{
-			var l = left.Evaluate(scope);
-			var r = right.Evaluate(scope);
+			var l = left.Evaluate(rumor);
+			var r = right.Evaluate(rumor);
 			return new BoolValue(l.Equals(r));
 		}
 

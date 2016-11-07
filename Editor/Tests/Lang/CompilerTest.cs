@@ -14,9 +14,9 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "say \"This is a multiline\n      string.\"";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(scope), "This is a multiline string.");
+			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
 		}
 
 		[Test]
@@ -25,9 +25,9 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "say \"This is a multiline\n\tstring.\"";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(scope), "This is a multiline string.");
+			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
 		}
 
 		[Test]
@@ -36,9 +36,9 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "say \"This is a multiline\n  \t  \tstring.\"";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(scope), "This is a multiline string.");
+			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
 		}
 
 		[Test]
@@ -47,9 +47,9 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "say \"This  is  a  multiline\n\tstring.\"";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(scope), "This  is  a  multiline string.");
+			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This  is  a  multiline string.");
 		}
 
 		[Test]
@@ -58,30 +58,30 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "pause 0";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
+			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 0f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0f);
 
 			str = "pause .5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
-
-			scope = new Scope();
+			
+			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 0.5f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0.5f);
 
 			str = "pause 0.5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			scope = new Scope();
+			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 0.5f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0.5f);
 
 			str = "pause 1";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			scope = new Scope();
+			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 1f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 1f);
 		}
 
 		[Test]
@@ -90,17 +90,17 @@ namespace Exodrifter.Rumor.Test.Lang
 			var str = "pause foo()";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			var scope = new Scope();
-			scope.Bind("foo", () => { return 1f; });
+			var rumor = new Rumor.Engine.Rumor("return");
+			rumor.Bind("foo", () => { return 1f; });
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 1f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 1f);
 
 			str = "pause 8.0 * 3.0";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
-			scope = new Scope();
+			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(scope).AsFloat(), 24f);
+			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 24f);
 		}
 	}
 }

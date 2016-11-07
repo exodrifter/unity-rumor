@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Expressions
 			value = new ObjectValue(obj);
 		}
 
-		public override Value Evaluate(Scope scope)
+		public override Value Evaluate(Engine.Rumor rumor)
 		{
 			return value;
 		}
