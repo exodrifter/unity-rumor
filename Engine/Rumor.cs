@@ -301,7 +301,7 @@ namespace Exodrifter.Rumor.Engine
 				var trigger = true;
 				var yield = origIter.Current;
 				while (yield != null && !(Finished || Cancelled)) {
-					if (AutoAdvance <= yield.Elapsed) {
+					if (AutoAdvance >= 0 && AutoAdvance <= yield.Elapsed) {
 						Advance();
 					}
 
@@ -732,6 +732,8 @@ namespace Exodrifter.Rumor.Engine
 
 			State = info.GetValue<RumorState>("state");
 
+			AutoAdvance = info.GetValue<float>("autoAdvance");
+
 			FinishCount = info.GetValue<int>("finishCount");
 			CancelCount = info.GetValue<int>("cancelCount");
 		}
@@ -744,6 +746,8 @@ namespace Exodrifter.Rumor.Engine
 			info.AddValue<Scope>("scope", scope);
 
 			info.AddValue<RumorState>("state", State);
+
+			info.AddValue<float>("autoAdvance", AutoAdvance);
 
 			info.AddValue<int>("finishCount", FinishCount);
 			info.AddValue<int>("cancelCount", CancelCount);
