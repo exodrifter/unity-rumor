@@ -117,8 +117,8 @@ namespace Exodrifter.Rumor.Nodes
 			if (speaker == null) {
 				return rumor.Scope.DefaultSpeaker;
 			}
-			var ret = speaker.Evaluate(rumor).AsObject();
-			return ret ?? rumor.Scope.DefaultSpeaker;
+			var ret = speaker.Evaluate(rumor) ?? new ObjectValue(null);
+			return ret.AsObject() ?? rumor.Scope.DefaultSpeaker;
 		}
 
 		/// <summary>
@@ -128,7 +128,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <returns>The text.</returns>
 		public string EvaluateText(Engine.Rumor rumor)
 		{
-			return text.Evaluate(rumor).ToString();
+			if (text == null) {
+				return "";
+			}
+			var value = text.Evaluate(rumor) ?? new ObjectValue(null);
+			return (value.AsObject() ?? "").ToString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
