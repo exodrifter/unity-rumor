@@ -57,10 +57,12 @@ namespace Exodrifter.Rumor.Nodes
 		{
 			var value = Evaluate(rumor);
 
-			if (value.IsBool() && value.AsBool()
+			if (value != null
+				&& (value.IsBool() && value.AsBool()
 				|| value.IsFloat() && value.AsFloat() != 0
 				|| value.IsInt() && value.AsInt() != 0
-				|| value.IsString() && value.AsString() != "") {
+				|| value.IsString() && value.AsString() != ""
+				|| value.AsObject() != null)) {
 
 				rumor.EnterBlock(Children);
 			}
