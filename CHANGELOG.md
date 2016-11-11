@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bindings are now stored in the Rumor instead of the Scope
 
 ### Fixed
-- Fix bug where null variables are not handled properly in expressions
+- Fix null variables not handled properly in expressions
+- Fix no boolean literals parsing in `RumorCompiler`
 
 
 ## [0.2.0] - 2016-11-05

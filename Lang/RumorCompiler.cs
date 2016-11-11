@@ -314,6 +314,10 @@ namespace Exodrifter.Rumor.Lang
 					if (float.TryParse(str, out @float)) {
 						return new LiteralExpression(@float);
 					}
+					bool @bool;
+					if (bool.TryParse(str, out @bool)) {
+						return new LiteralExpression(@bool);
+					}
 					// Assume the token is a variable
 					return new VariableExpression(str);
 				}
