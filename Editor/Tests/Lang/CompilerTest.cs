@@ -15,8 +15,8 @@ namespace Exodrifter.Rumor.Test.Lang
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			var rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual("This is a multiline string.", (nodes[0] as Say).EvaluateText(rumor));
 		}
 
 		[Test]
@@ -26,8 +26,8 @@ namespace Exodrifter.Rumor.Test.Lang
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			var rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual("This is a multiline string.", (nodes[0] as Say).EvaluateText(rumor));
 		}
 
 		[Test]
@@ -37,8 +37,8 @@ namespace Exodrifter.Rumor.Test.Lang
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			var rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This is a multiline string.");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual("This is a multiline string.", (nodes[0] as Say).EvaluateText(rumor));
 		}
 
 		[Test]
@@ -48,8 +48,8 @@ namespace Exodrifter.Rumor.Test.Lang
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			var rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Say).EvaluateText(rumor), "This  is  a  multiline string.");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual("This  is  a  multiline string.", (nodes[0] as Say).EvaluateText(rumor));
 		}
 
 		[Test]
@@ -59,29 +59,29 @@ namespace Exodrifter.Rumor.Test.Lang
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			var rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(0f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause .5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 			
 			rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0.5f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(0.5f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause 0.5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 0.5f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(0.5f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause 1";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 1f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(1f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 		}
 
 		[Test]
@@ -92,15 +92,15 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var rumor = new Rumor.Engine.Rumor("return");
 			rumor.Bind("foo", () => { return 1f; });
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 1f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(1f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause 8.0 * 3.0";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
 
 			rumor = new Rumor.Engine.Rumor("return");
-			Assert.AreEqual(nodes.Count, 1);
-			Assert.AreEqual((nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat(), 24f);
+			Assert.AreEqual(1, nodes.Count);
+			Assert.AreEqual(24f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 		}
 	}
 }

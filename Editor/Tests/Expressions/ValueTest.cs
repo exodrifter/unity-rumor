@@ -24,19 +24,19 @@ namespace Exodrifter.Rumor.Test.Expressions
 		public void ValueConstructor()
 		{
 			var @int = new IntValue(1);
-			Assert.AreEqual(@int.AsInt(), 1);
+			Assert.AreEqual(1, @int.AsInt());
 
 			var @float = new FloatValue(1.0f);
-			Assert.AreEqual(@float.AsFloat(), 1.0f);
+			Assert.AreEqual(1.0f, @float.AsFloat());
 
 			var @string = new StringValue("1");
-			Assert.AreEqual(@string.AsString(), "1");
+			Assert.AreEqual("1", @string.AsString());
 
 			var @bool = new BoolValue(true);
-			Assert.AreEqual(@bool.AsBool(), true);
+			Assert.AreEqual(true, @bool.AsBool());
 
 			var @obj = new ObjectValue(null);
-			Assert.AreEqual(@obj.AsObject(), null);
+			Assert.AreEqual(null, @obj.AsObject());
 		}
 
 		/// <summary>
@@ -84,10 +84,10 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(true);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.Not().AsBool(), false);
-			Assert.AreEqual(@float.Not().AsBool(), false);
-			Assert.AreEqual(@string.Not().AsBool(), false);
-			Assert.AreEqual(@bool.Not().AsBool(), false);
+			Assert.AreEqual(false, @int.Not().AsBool());
+			Assert.AreEqual(false, @float.Not().AsBool());
+			Assert.AreEqual(false, @string.Not().AsBool());
+			Assert.AreEqual(false, @bool.Not().AsBool());
 			Assert.Catch<InvalidOperationException>(() => @obj.Not());
 		}
 
@@ -103,33 +103,33 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(true);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.Add(@int).AsInt(), 2);
-			Assert.AreEqual(@int.Add(@float).AsFloat(), 2.0f);
-			Assert.AreEqual(@int.Add(@string).AsString(), "11");
+			Assert.AreEqual(2, @int.Add(@int).AsInt());
+			Assert.AreEqual(2.0f, @int.Add(@float).AsFloat());
+			Assert.AreEqual("11", @int.Add(@string).AsString());
 			Assert.Catch<InvalidOperationException>(() => @int.Add(@bool));
 			Assert.Catch<InvalidOperationException>(() => @int.Add(@obj));
 
-			Assert.AreEqual(@float.Add(@int).AsFloat(), 2.0f);
-			Assert.AreEqual(@float.Add(@float).AsFloat(), 2.0f);
-			Assert.AreEqual(@float.Add(@string).AsString(), "11");
+			Assert.AreEqual(2.0f, @float.Add(@int).AsFloat());
+			Assert.AreEqual(2.0f, @float.Add(@float).AsFloat(), 2.0f);
+			Assert.AreEqual("11", @float.Add(@string).AsString(), "11");
 			Assert.Catch<InvalidOperationException>(() => @float.Add(@bool));
 			Assert.Catch<InvalidOperationException>(() => @float.Add(@obj));
 
-			Assert.AreEqual(@string.Add(@int).AsString(), "11");
-			Assert.AreEqual(@string.Add(@float).AsString(), "11");
-			Assert.AreEqual(@string.Add(@string).AsString(), "11");
-			Assert.AreEqual(@string.Add(@bool).AsString(), "1true");
-			Assert.AreEqual(@string.Add(@obj).AsString(), "1");
+			Assert.AreEqual("11", @string.Add(@int).AsString());
+			Assert.AreEqual("11", @string.Add(@float).AsString());
+			Assert.AreEqual("11", @string.Add(@string).AsString());
+			Assert.AreEqual("1true", @string.Add(@bool).AsString());
+			Assert.AreEqual("1", @string.Add(@obj).AsString());
 
 			Assert.Catch<InvalidOperationException>(() => @bool.Add(@int));
 			Assert.Catch<InvalidOperationException>(() => @bool.Add(@float));
-			Assert.AreEqual(@bool.Add(@string).AsString(), "true1");
+			Assert.AreEqual("true1", @bool.Add(@string).AsString());
 			Assert.Catch<InvalidOperationException>(() => @bool.Add(@bool));
 			Assert.Catch<InvalidOperationException>(() => @bool.Add(@obj));
 
 			Assert.Catch<InvalidOperationException>(() => @obj.Add(@int));
 			Assert.Catch<InvalidOperationException>(() => @obj.Add(@float));
-			Assert.AreEqual(@obj.Add(@string).AsString(), "1");
+			Assert.AreEqual("1", @obj.Add(@string).AsString());
 			Assert.Catch<InvalidOperationException>(() => @obj.Add(@bool));
 			Assert.Catch<InvalidOperationException>(() => @obj.Add(@obj));
 		}
@@ -146,14 +146,14 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(true);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.Subtract(@int).AsInt(), 0);
-			Assert.AreEqual(@int.Subtract(@float).AsFloat(), 0f);
+			Assert.AreEqual(0, @int.Subtract(@int).AsInt());
+			Assert.AreEqual(0f, @int.Subtract(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @int.Subtract(@string));
 			Assert.Catch<InvalidOperationException>(() => @int.Subtract(@bool));
 			Assert.Catch<InvalidOperationException>(() => @int.Subtract(@obj));
 
-			Assert.AreEqual(@float.Subtract(@int).AsFloat(), 0f);
-			Assert.AreEqual(@float.Subtract(@float).AsFloat(), 0f);
+			Assert.AreEqual(0f, @float.Subtract(@int).AsFloat());
+			Assert.AreEqual(0f, @float.Subtract(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @float.Subtract(@string));
 			Assert.Catch<InvalidOperationException>(() => @float.Subtract(@bool));
 			Assert.Catch<InvalidOperationException>(() => @float.Subtract(@obj));
@@ -189,14 +189,14 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(true);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.Multiply(@int).AsInt(), 1);
-			Assert.AreEqual(@int.Multiply(@float).AsFloat(), 1f);
+			Assert.AreEqual(1, @int.Multiply(@int).AsInt());
+			Assert.AreEqual(1f, @int.Multiply(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @int.Multiply(@string));
 			Assert.Catch<InvalidOperationException>(() => @int.Multiply(@bool));
 			Assert.Catch<InvalidOperationException>(() => @int.Multiply(@obj));
 
-			Assert.AreEqual(@float.Multiply(@int).AsFloat(), 1f);
-			Assert.AreEqual(@float.Multiply(@float).AsFloat(), 1f);
+			Assert.AreEqual(1f, @float.Multiply(@int).AsFloat());
+			Assert.AreEqual(1f, @float.Multiply(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @float.Multiply(@string));
 			Assert.Catch<InvalidOperationException>(() => @float.Multiply(@bool));
 			Assert.Catch<InvalidOperationException>(() => @float.Multiply(@obj));
@@ -232,14 +232,14 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(true);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.Divide(@int).AsInt(), 1);
-			Assert.AreEqual(@int.Divide(@float).AsFloat(), 1f);
+			Assert.AreEqual(1, @int.Divide(@int).AsInt());
+			Assert.AreEqual(1f, @int.Divide(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @int.Divide(@string));
 			Assert.Catch<InvalidOperationException>(() => @int.Divide(@bool));
 			Assert.Catch<InvalidOperationException>(() => @int.Divide(@obj));
 
-			Assert.AreEqual(@float.Divide(@int).AsFloat(), 1f);
-			Assert.AreEqual(@float.Divide(@float).AsFloat(), 1f);
+			Assert.AreEqual(1f, @float.Divide(@int).AsFloat());
+			Assert.AreEqual(1f, @float.Divide(@float).AsFloat());
 			Assert.Catch<InvalidOperationException>(() => @float.Divide(@string));
 			Assert.Catch<InvalidOperationException>(() => @float.Divide(@bool));
 			Assert.Catch<InvalidOperationException>(() => @float.Divide(@obj));
@@ -275,28 +275,28 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(false);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.BoolAnd(@int).AsBool(), true);
-			Assert.AreEqual(@int.BoolAnd(@float).AsBool(), true);
-			Assert.AreEqual(@int.BoolAnd(@string).AsBool(), true);
-			Assert.AreEqual(@int.BoolAnd(@bool).AsBool(), false);
+			Assert.AreEqual(true, @int.BoolAnd(@int).AsBool());
+			Assert.AreEqual(true, @int.BoolAnd(@float).AsBool());
+			Assert.AreEqual(true, @int.BoolAnd(@string).AsBool());
+			Assert.AreEqual(false, @int.BoolAnd(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @int.BoolAnd(@obj));
 
-			Assert.AreEqual(@float.BoolAnd(@int).AsBool(), true);
-			Assert.AreEqual(@float.BoolAnd(@float).AsBool(), true);
-			Assert.AreEqual(@float.BoolAnd(@string).AsBool(), true);
-			Assert.AreEqual(@float.BoolAnd(@bool).AsBool(), false);
+			Assert.AreEqual(true, @float.BoolAnd(@int).AsBool());
+			Assert.AreEqual(true, @float.BoolAnd(@float).AsBool());
+			Assert.AreEqual(true, @float.BoolAnd(@string).AsBool());
+			Assert.AreEqual(false, @float.BoolAnd(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @float.BoolAnd(@obj));
 
-			Assert.AreEqual(@string.BoolAnd(@int).AsBool(), true);
-			Assert.AreEqual(@string.BoolAnd(@float).AsBool(), true);
-			Assert.AreEqual(@string.BoolAnd(@string).AsBool(), true);
-			Assert.AreEqual(@string.BoolAnd(@bool).AsBool(), false);
+			Assert.AreEqual(true, @string.BoolAnd(@int).AsBool());
+			Assert.AreEqual(true, @string.BoolAnd(@float).AsBool());
+			Assert.AreEqual(true, @string.BoolAnd(@string).AsBool());
+			Assert.AreEqual(false, @string.BoolAnd(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @string.BoolAnd(@obj));
 
-			Assert.AreEqual(@bool.BoolAnd(@int).AsBool(), false);
-			Assert.AreEqual(@bool.BoolAnd(@float).AsBool(), false);
-			Assert.AreEqual(@bool.BoolAnd(@string).AsBool(), false);
-			Assert.AreEqual(@bool.BoolAnd(@bool).AsBool(), false);
+			Assert.AreEqual(false, @bool.BoolAnd(@int).AsBool());
+			Assert.AreEqual(false, @bool.BoolAnd(@float).AsBool());
+			Assert.AreEqual(false, @bool.BoolAnd(@string).AsBool());
+			Assert.AreEqual(false, @bool.BoolAnd(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @bool.BoolAnd(@obj));
 
 			Assert.Catch<InvalidOperationException>(() => @obj.BoolAnd(@int));
@@ -318,28 +318,28 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(false);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.BoolOr(@int).AsBool(), true);
-			Assert.AreEqual(@int.BoolOr(@float).AsBool(), true);
-			Assert.AreEqual(@int.BoolOr(@string).AsBool(), true);
-			Assert.AreEqual(@int.BoolOr(@bool).AsBool(), true);
+			Assert.AreEqual(true, @int.BoolOr(@int).AsBool());
+			Assert.AreEqual(true, @int.BoolOr(@float).AsBool());
+			Assert.AreEqual(true, @int.BoolOr(@string).AsBool());
+			Assert.AreEqual(true, @int.BoolOr(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @int.BoolAnd(@obj));
 
-			Assert.AreEqual(@float.BoolOr(@int).AsBool(), true);
-			Assert.AreEqual(@float.BoolOr(@float).AsBool(), true);
-			Assert.AreEqual(@float.BoolOr(@string).AsBool(), true);
-			Assert.AreEqual(@float.BoolOr(@bool).AsBool(), true);
+			Assert.AreEqual(true, @float.BoolOr(@int).AsBool());
+			Assert.AreEqual(true, @float.BoolOr(@float).AsBool());
+			Assert.AreEqual(true, @float.BoolOr(@string).AsBool());
+			Assert.AreEqual(true, @float.BoolOr(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @float.BoolAnd(@obj));
 
-			Assert.AreEqual(@string.BoolOr(@int).AsBool(), true);
-			Assert.AreEqual(@string.BoolOr(@float).AsBool(), true);
-			Assert.AreEqual(@string.BoolOr(@string).AsBool(), true);
-			Assert.AreEqual(@string.BoolOr(@bool).AsBool(), true);
+			Assert.AreEqual(true, @string.BoolOr(@int).AsBool());
+			Assert.AreEqual(true, @string.BoolOr(@float).AsBool());
+			Assert.AreEqual(true, @string.BoolOr(@string).AsBool());
+			Assert.AreEqual(true, @string.BoolOr(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @string.BoolAnd(@obj));
 
-			Assert.AreEqual(@bool.BoolOr(@int).AsBool(), true);
-			Assert.AreEqual(@bool.BoolOr(@float).AsBool(), true);
-			Assert.AreEqual(@bool.BoolOr(@string).AsBool(), true);
-			Assert.AreEqual(@bool.BoolOr(@bool).AsBool(), false);
+			Assert.AreEqual(true, @bool.BoolOr(@int).AsBool());
+			Assert.AreEqual(true, @bool.BoolOr(@float).AsBool());
+			Assert.AreEqual(true, @bool.BoolOr(@string).AsBool());
+			Assert.AreEqual(false, @bool.BoolOr(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @bool.BoolAnd(@obj));
 
 			Assert.Catch<InvalidOperationException>(() => @obj.BoolOr(@int));
@@ -361,28 +361,28 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @bool = new BoolValue(false);
 			var @obj = new ObjectValue(new Foo());
 
-			Assert.AreEqual(@int.BoolXor(@int).AsBool(), false);
-			Assert.AreEqual(@int.BoolXor(@float).AsBool(), false);
-			Assert.AreEqual(@int.BoolXor(@string).AsBool(), false);
-			Assert.AreEqual(@int.BoolXor(@bool).AsBool(), true);
+			Assert.AreEqual(false, @int.BoolXor(@int).AsBool());
+			Assert.AreEqual(false, @int.BoolXor(@float).AsBool());
+			Assert.AreEqual(false, @int.BoolXor(@string).AsBool());
+			Assert.AreEqual(true, @int.BoolXor(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @int.BoolAnd(@obj));
 
-			Assert.AreEqual(@float.BoolXor(@int).AsBool(), false);
-			Assert.AreEqual(@float.BoolXor(@float).AsBool(), false);
-			Assert.AreEqual(@float.BoolXor(@string).AsBool(), false);
-			Assert.AreEqual(@float.BoolXor(@bool).AsBool(), true);
+			Assert.AreEqual(false, @float.BoolXor(@int).AsBool());
+			Assert.AreEqual(false, @float.BoolXor(@float).AsBool());
+			Assert.AreEqual(false, @float.BoolXor(@string).AsBool());
+			Assert.AreEqual(true, @float.BoolXor(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @float.BoolAnd(@obj));
 
-			Assert.AreEqual(@string.BoolXor(@int).AsBool(), false);
-			Assert.AreEqual(@string.BoolXor(@float).AsBool(), false);
-			Assert.AreEqual(@string.BoolXor(@string).AsBool(), false);
-			Assert.AreEqual(@string.BoolXor(@bool).AsBool(), true);
+			Assert.AreEqual(false, @string.BoolXor(@int).AsBool());
+			Assert.AreEqual(false, @string.BoolXor(@float).AsBool());
+			Assert.AreEqual(false, @string.BoolXor(@string).AsBool());
+			Assert.AreEqual(true, @string.BoolXor(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @string.BoolAnd(@obj));
 
-			Assert.AreEqual(@bool.BoolXor(@int).AsBool(), true);
-			Assert.AreEqual(@bool.BoolXor(@float).AsBool(), true);
-			Assert.AreEqual(@bool.BoolXor(@string).AsBool(), true);
-			Assert.AreEqual(@bool.BoolXor(@bool).AsBool(), false);
+			Assert.AreEqual(true, @bool.BoolXor(@int).AsBool());
+			Assert.AreEqual(true, @bool.BoolXor(@float).AsBool());
+			Assert.AreEqual(true, @bool.BoolXor(@string).AsBool());
+			Assert.AreEqual(false, @bool.BoolXor(@bool).AsBool());
 			Assert.Catch<InvalidOperationException>(() => @bool.BoolAnd(@obj));
 
 			Assert.Catch<InvalidOperationException>(() => @obj.BoolXor(@int));
