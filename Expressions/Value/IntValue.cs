@@ -19,7 +19,10 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Add(Value value)
 		{
 			if (value == null) {
-				throw new InvalidOperationException();
+				return new IntValue(AsInt());
+			}
+			if (value.IsObject() && value.AsObject() == null) {
+				return new IntValue(AsInt());
 			}
 			if (value.IsInt()) {
 				return new IntValue(AsInt() + value.AsInt());
@@ -36,7 +39,10 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Subtract(Value value)
 		{
 			if (value == null) {
-				throw new InvalidOperationException();
+				return new IntValue(AsInt());
+			}
+			if (value.IsObject() && value.AsObject() == null) {
+				return new IntValue(AsInt());
 			}
 			if (value.IsInt()) {
 				return new IntValue(AsInt() - value.AsInt());
@@ -50,7 +56,10 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Multiply(Value value)
 		{
 			if (value == null) {
-				throw new InvalidOperationException();
+				return new IntValue(0);
+			}
+			if (value.IsObject() && value.AsObject() == null) {
+				return new IntValue(0);
 			}
 			if (value.IsInt()) {
 				return new IntValue(AsInt() * value.AsInt());
@@ -64,7 +73,10 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(Value value)
 		{
 			if (value == null) {
-				throw new InvalidOperationException();
+				return new IntValue(0);
+			}
+			if (value.IsObject() && value.AsObject() == null) {
+				return new IntValue(0);
 			}
 			if (value.IsInt()) {
 				return new IntValue(AsInt() / value.AsInt());
@@ -78,6 +90,9 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value BoolAnd(Value value)
 		{
 			if (value == null) {
+				return new BoolValue(false);
+			}
+			if (value.IsObject() && value.AsObject() == null) {
 				return new BoolValue(false);
 			}
 			if (value.IsInt()) {
@@ -98,6 +113,9 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value BoolOr(Value value)
 		{
 			if (value == null) {
+				return new BoolValue(AsInt() != 0);
+			}
+			if (value.IsObject() && value.AsObject() == null) {
 				return new BoolValue(AsInt() != 0);
 			}
 			if (value.IsInt()) {

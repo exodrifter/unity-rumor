@@ -65,6 +65,18 @@ namespace Exodrifter.Rumor.Expressions
 		}
 
 		/// <summary>
+		/// Returns true if this value is not a boolean, integer, float, or
+		/// string.
+		/// </summary>
+		/// <returns>
+		/// True if this value is not a boolean, integer, float, or string.
+		/// </returns>
+		public bool IsObject()
+		{
+			return !IsBool() && !IsInt() && !IsFloat() && !IsString();
+		}
+
+		/// <summary>
 		/// Returns this value as a bool.
 		/// </summary>
 		/// <param name="val">
