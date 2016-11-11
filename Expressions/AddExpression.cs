@@ -17,8 +17,9 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value Evaluate(Engine.Rumor rumor)
 		{
-			var l = left.Evaluate(rumor);
-			var r = right.Evaluate(rumor);
+			var l = left.Evaluate(rumor) ?? new ObjectValue(null);
+			var r = right.Evaluate(rumor) ?? new ObjectValue(null);
+
 			return l.Add(r);
 		}
 

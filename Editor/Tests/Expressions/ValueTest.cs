@@ -9,6 +9,14 @@ namespace Exodrifter.Rumor.Test.Expressions
 	/// </summary>
 	public class ValueTest
 	{
+		class Foo
+		{
+			public override string ToString ()
+			{
+				return "";
+			}
+		}
+
 		/// <summary>
 		/// Check the constructors of Values.
 		/// </summary>
@@ -42,7 +50,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var c = new FloatValue(1.0f);
 			var d = new StringValue("1");
 			var e = new BoolValue(true);
-			var f = new ObjectValue(null);
+			var f = new ObjectValue(new Foo());
 
 			Assert.AreEqual(a, a);
 			Assert.AreEqual(b, b);
@@ -74,7 +82,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(true);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.Not().AsBool(), false);
 			Assert.AreEqual(@float.Not().AsBool(), false);
@@ -93,7 +101,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(true);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.Add(@int).AsInt(), 2);
 			Assert.AreEqual(@int.Add(@float).AsFloat(), 2.0f);
@@ -136,7 +144,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(true);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.Subtract(@int).AsInt(), 0);
 			Assert.AreEqual(@int.Subtract(@float).AsFloat(), 0f);
@@ -179,7 +187,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(true);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.Multiply(@int).AsInt(), 1);
 			Assert.AreEqual(@int.Multiply(@float).AsFloat(), 1f);
@@ -222,7 +230,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(true);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.Divide(@int).AsInt(), 1);
 			Assert.AreEqual(@int.Divide(@float).AsFloat(), 1f);
@@ -265,7 +273,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(false);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.BoolAnd(@int).AsBool(), true);
 			Assert.AreEqual(@int.BoolAnd(@float).AsBool(), true);
@@ -308,7 +316,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(false);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.BoolOr(@int).AsBool(), true);
 			Assert.AreEqual(@int.BoolOr(@float).AsBool(), true);
@@ -351,7 +359,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 			var @float = new FloatValue(1.0f);
 			var @string = new StringValue("1");
 			var @bool = new BoolValue(false);
-			var @obj = new ObjectValue(null);
+			var @obj = new ObjectValue(new Foo());
 
 			Assert.AreEqual(@int.BoolXor(@int).AsBool(), false);
 			Assert.AreEqual(@int.BoolXor(@float).AsBool(), false);

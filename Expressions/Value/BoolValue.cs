@@ -19,7 +19,7 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Add(Value value)
 		{
 			if (value == null) {
-				return new BoolValue(AsBool());
+				throw new InvalidOperationException();
 			}
 			if (value.IsString()) {
 				var @bool = AsBool().ToString().ToLower();
@@ -48,6 +48,9 @@ namespace Exodrifter.Rumor.Expressions
 			if (value == null) {
 				return new BoolValue(false);
 			}
+			if (value.IsObject() && value.AsObject() == null) {
+				return new BoolValue(false);
+			}
 			if (value.IsInt()) {
 				return new BoolValue(AsBool() && value.AsInt() != 0);
 			}
@@ -66,6 +69,9 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value BoolOr(Value value)
 		{
 			if (value == null) {
+				return new BoolValue(AsBool());
+			}
+			if (value.IsObject() && value.AsObject() == null) {
 				return new BoolValue(AsBool());
 			}
 			if (value.IsInt()) {
