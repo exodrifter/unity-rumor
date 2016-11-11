@@ -50,7 +50,11 @@ namespace Exodrifter.Rumor.Nodes
 
 		public string EvaluateText(Engine.Rumor rumor)
 		{
-			return text.Evaluate(rumor).AsString();
+			if (text == null) {
+				return "";
+			}
+			var value = text.Evaluate(rumor) ?? new ObjectValue(null);
+			return (value.AsObject() ?? "").ToString();
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)

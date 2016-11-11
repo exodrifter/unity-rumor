@@ -132,17 +132,17 @@ namespace Exodrifter.Rumor.Nodes
 
 		public int EvaluateNumber(Engine.Rumor rumor)
 		{
-			return number.Evaluate(rumor).AsInt(1);
+			return (number.Evaluate(rumor) ?? new IntValue(1)).AsInt(1);
 		}
 
 		public float EvaluateTime(Engine.Rumor rumor)
 		{
-			return seconds.Evaluate(rumor).AsFloat(0);
+			return (seconds.Evaluate(rumor) ?? new FloatValue(0)).AsFloat(0);
 		}
 
 		public int EvaluateDefault(Engine.Rumor rumor)
 		{
-			return @default.Evaluate(rumor).AsInt(0);
+			return (@default.Evaluate(rumor) ?? new IntValue(0)).AsInt(0);
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
