@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix null variables not handled properly in expressions
 - Fix no boolean literals parsing in `RumorCompiler`
 - Fix nodes not checking for null values
+- Fix `If` conditional not checking for null values
 
 
 ## [0.2.0] - 2016-11-05
