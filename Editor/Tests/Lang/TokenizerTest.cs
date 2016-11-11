@@ -22,13 +22,13 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = " \r\n   ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 6);
-			Assert.AreEqual(tokens[0], " ");
-			Assert.AreEqual(tokens[1], "\r");
-			Assert.AreEqual(tokens[2], "\n");
-			Assert.AreEqual(tokens[3], " ");
-			Assert.AreEqual(tokens[4], " ");
-			Assert.AreEqual(tokens[5], " ");
+			Assert.AreEqual(6, tokens.Count);
+			Assert.AreEqual(" ", tokens[0]);
+			Assert.AreEqual("\r", tokens[1]);
+			Assert.AreEqual("\n", tokens[2]);
+			Assert.AreEqual(" ", tokens[3]);
+			Assert.AreEqual(" ", tokens[4]);
+			Assert.AreEqual(" ", tokens[5]);
 		}
 
 		/// <summary>
@@ -47,11 +47,11 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = " \r\n\r\t";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 4);
-			Assert.AreEqual(tokens[0], " ");
-			Assert.AreEqual(tokens[1], "\r\n");
-			Assert.AreEqual(tokens[2], "\r");
-			Assert.AreEqual(tokens[3], "\t");
+			Assert.AreEqual(4, tokens.Count);
+			Assert.AreEqual(" ", tokens[0]);
+			Assert.AreEqual("\r\n", tokens[1]);
+			Assert.AreEqual("\r", tokens[2]);
+			Assert.AreEqual("\t", tokens[3]);
 		}
 
 		/// <summary>
@@ -70,11 +70,11 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = " \r\n\r\t";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 4);
-			Assert.AreEqual(tokens[0], " ");
-			Assert.AreEqual(tokens[1], "\r\n");
-			Assert.AreEqual(tokens[2], "\r");
-			Assert.AreEqual(tokens[3], "\t");
+			Assert.AreEqual(4, tokens.Count);
+			Assert.AreEqual(" ", tokens[0]);
+			Assert.AreEqual("\r\n", tokens[1]);
+			Assert.AreEqual("\r", tokens[2]);
+			Assert.AreEqual("\t", tokens[3]);
 		}
 
 		/// <summary>
@@ -93,11 +93,11 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = "    ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 4);
-			Assert.AreEqual(tokens[0], " ");
-			Assert.AreEqual(tokens[1], " ");
-			Assert.AreEqual(tokens[2], " ");
-			Assert.AreEqual(tokens[3], " ");
+			Assert.AreEqual(4, tokens.Count);
+			Assert.AreEqual(" ", tokens[0]);
+			Assert.AreEqual(" ", tokens[1]);
+			Assert.AreEqual(" ", tokens[2]);
+			Assert.AreEqual(" ", tokens[3]);
 		}
 
 		/// <summary>
@@ -116,10 +116,10 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = "     ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 3);
-			Assert.AreEqual(tokens[0], "  ");
-			Assert.AreEqual(tokens[1], "  ");
-			Assert.AreEqual(tokens[2], " ");
+			Assert.AreEqual(3, tokens.Count);
+			Assert.AreEqual("  ", tokens[0]);
+			Assert.AreEqual("  ", tokens[1]);
+			Assert.AreEqual(" ", tokens[2]);
 		}
 
 		/// <summary>
@@ -137,10 +137,10 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = "Hello, world!";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 3);
-			Assert.AreEqual(tokens[0], "Hello,");
-			Assert.AreEqual(tokens[1], " ");
-			Assert.AreEqual(tokens[2], "world!");
+			Assert.AreEqual(3, tokens.Count);
+			Assert.AreEqual("Hello,", tokens[0]);
+			Assert.AreEqual(" ", tokens[1]);
+			Assert.AreEqual("world!", tokens[2]);
 		}
 
 		/// <summary>
@@ -159,12 +159,12 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = "Hello, world!";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 5);
-			Assert.AreEqual(tokens[0], "Hello");
-			Assert.AreEqual(tokens[1], ",");
-			Assert.AreEqual(tokens[2], " ");
-			Assert.AreEqual(tokens[3], "world");
-			Assert.AreEqual(tokens[4], "!");
+			Assert.AreEqual(5, tokens.Count);
+			Assert.AreEqual("Hello", tokens[0]);
+			Assert.AreEqual(",", tokens[1]);
+			Assert.AreEqual(" ", tokens[2]);
+			Assert.AreEqual("world", tokens[3]);
+			Assert.AreEqual("!", tokens[4]);
 		}
 
 		/// <summary>
@@ -183,16 +183,16 @@ namespace Exodrifter.Rumor.Test.Lang
 			var input = "float a -> float b";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
 
-			Assert.AreEqual(tokens.Count, 9);
-			Assert.AreEqual(tokens[0], "float");
-			Assert.AreEqual(tokens[1], " ");
-			Assert.AreEqual(tokens[2], "a");
-			Assert.AreEqual(tokens[3], " ");
-			Assert.AreEqual(tokens[4], "->");
-			Assert.AreEqual(tokens[5], " ");
-			Assert.AreEqual(tokens[6], "float");
-			Assert.AreEqual(tokens[7], " ");
-			Assert.AreEqual(tokens[8], "b");
+			Assert.AreEqual(9, tokens.Count);
+			Assert.AreEqual("float", tokens[0]);
+			Assert.AreEqual(" ", tokens[1]);
+			Assert.AreEqual("a", tokens[2]);
+			Assert.AreEqual(" ", tokens[3]);
+			Assert.AreEqual("->", tokens[4]);
+			Assert.AreEqual(" ", tokens[5]);
+			Assert.AreEqual("float", tokens[6]);
+			Assert.AreEqual(" ", tokens[7]);
+			Assert.AreEqual("b", tokens[8]);
 		}
 	}
 }

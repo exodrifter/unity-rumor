@@ -26,15 +26,15 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 2);
+			Assert.AreEqual(2, tokens.Count);
 
-			Assert.AreEqual(tokens[0].text, "a");
-			Assert.AreEqual(tokens[0].row, 0);
-			Assert.AreEqual(tokens[0].col, 0);
+			Assert.AreEqual("a", tokens[0].text);
+			Assert.AreEqual(0, tokens[0].row);
+			Assert.AreEqual(0, tokens[0].col);
 
-			Assert.AreEqual(tokens[1].text, "c");
-			Assert.AreEqual(tokens[1].row, 0);
-			Assert.AreEqual(tokens[1].col, 2);
+			Assert.AreEqual("c", tokens[1].text);
+			Assert.AreEqual(0, tokens[1].row);
+			Assert.AreEqual(2, tokens[1].col);
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 0);
+			Assert.AreEqual(0, tokens.Count);
 		}
 
 		/// <summary>
@@ -81,11 +81,11 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 1);
+			Assert.AreEqual(1, tokens.Count);
 
-			Assert.AreEqual(tokens[0].text, "\n");
-			Assert.AreEqual(tokens[0].row, 0);
-			Assert.AreEqual(tokens[0].col, 0);
+			Assert.AreEqual("\n", tokens[0].text);
+			Assert.AreEqual(0, tokens[0].row);
+			Assert.AreEqual(0, tokens[0].col);
 		}
 
 		/// <summary>
@@ -108,19 +108,19 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 3);
+			Assert.AreEqual(3, tokens.Count);
 
-			Assert.AreEqual(tokens[0].text, "\n");
-			Assert.AreEqual(tokens[0].row, 0);
-			Assert.AreEqual(tokens[0].col, 0);
+			Assert.AreEqual("\n", tokens[0].text);
+			Assert.AreEqual(0, tokens[0].row);
+			Assert.AreEqual(0, tokens[0].col);
 
-			Assert.AreEqual(tokens[1].text, "\n");
-			Assert.AreEqual(tokens[1].row, 1);
-			Assert.AreEqual(tokens[1].col, 0);
+			Assert.AreEqual("\n", tokens[1].text);
+			Assert.AreEqual(1, tokens[1].row);
+			Assert.AreEqual(0, tokens[1].col);
 
-			Assert.AreEqual(tokens[2].text, "\n");
-			Assert.AreEqual(tokens[2].row, 2);
-			Assert.AreEqual(tokens[2].col, 0);
+			Assert.AreEqual("\n", tokens[2].text);
+			Assert.AreEqual(2, tokens[2].row);
+			Assert.AreEqual(0, tokens[2].col);
 		}
 
 		/// <summary>
@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 0);
+			Assert.AreEqual(0, tokens.Count);
 		}
 
 		/// <summary>
@@ -170,11 +170,11 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			var tokens = new List<LogicalToken>(cleaner.Clean(input));
 
-			Assert.AreEqual(tokens.Count, 1);
+			Assert.AreEqual(1, tokens.Count);
 
-			Assert.AreEqual(tokens[0].text, "b");
-			Assert.AreEqual(tokens[0].row, 6);
-			Assert.AreEqual(tokens[0].col, 0);
+			Assert.AreEqual("b", tokens[0].text);
+			Assert.AreEqual(6, tokens[0].row);
+			Assert.AreEqual(0, tokens[0].col);
 		}
 	}
 }

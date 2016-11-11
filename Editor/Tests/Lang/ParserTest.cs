@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			var lTokens = tokens.Select(x => new LogicalToken(x));
 			var lines = new List<LogicalLine>(parser.Parse(lTokens));
 
-			Assert.AreEqual(lines.Count, 4);
+			Assert.AreEqual(4, lines.Count);
 		}
 
 		[Test]
@@ -45,8 +45,8 @@ namespace Exodrifter.Rumor.Test.Lang
 			var lTokens = tokens.Select(x => new LogicalToken(x));
 			var lines = new List<LogicalLine>(parser.Parse(lTokens));
 
-			Assert.AreEqual(lines.Count, 1);
-			Assert.AreEqual(lines[0].tokens.Count, tokens.Count);
+			Assert.AreEqual(1, lines.Count);
+			Assert.AreEqual(tokens.Count, lines[0].tokens.Count);
 		}
 	}
 }
