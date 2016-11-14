@@ -62,7 +62,7 @@ namespace Exodrifter.Rumor.Nodes
 				|| value.IsFloat() && value.AsFloat() != 0
 				|| value.IsInt() && value.AsInt() != 0
 				|| value.IsString() && value.AsString() != ""
-				|| value.AsObject() != null)) {
+				|| value.IsObject() && value.AsObject() != null)) {
 
 				rumor.EnterBlock(Children);
 			}
