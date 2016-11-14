@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.2.1] - 2016-11-14
+
 ### Added
 - Added an `OnDialogAdd`, `OnDialogSet`, and `OnClear` events to RumorState
 - Added the Clear command
@@ -82,7 +85,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/0.2.1...HEAD
+[0.2.1]: https://github.com/exodrifter/unity-rumor/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/exodrifter/unity-rumor/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/exodrifter/unity-rumor/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/exodrifter/unity-rumor/compare/215489c...0.1.0
