@@ -459,7 +459,20 @@ namespace Exodrifter.Rumor.Lang
 		private Node CompileClear(LogicalLine line, ref int pos, List<Node> children)
 		{
 			ExpectNoChildren(line, children);
-			return new Clear();
+
+			var type = ClearType.ALL;
+
+			SkipWhitespace(line, ref pos);
+			if (pos + 1 < line.tokens.Count) {
+				var arg = Expect(line, pos++);
+				if (arg.ToLower().Equals("choices")) {
+					type = ClearType.CHOICES;
+				} else if (arg.ToLower().Equals("dialog")) {
+					type = ClearType.DIALOG;
+				}
+			}
+
+			return new Clear(type);
 		}
 
 		private Node CompileJump(LogicalLine line, ref int pos, List<Node> children)
