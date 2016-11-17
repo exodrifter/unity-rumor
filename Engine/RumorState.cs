@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// An event for when the state is cleared.
 		/// </summary>
-		public event Action OnClear;
+		public event Action<ClearType> OnClear;
 
 		/// <summary>
 		/// Creates a new Rumor state.
@@ -118,7 +118,7 @@ namespace Exodrifter.Rumor.Engine
 			Consequences = new List<List<Node>>();
 
 			if (OnClear != null) {
-				OnClear();
+				OnClear(ClearType.ALL);
 			}
 		}
 
@@ -129,6 +129,22 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Choices = new List<string>();
 			Consequences = new List<List<Node>>();
+
+			if (OnClear != null) {
+				OnClear(ClearType.CHOICES);
+			}
+		}
+
+		/// <summary>
+		/// Clears the dialog.
+		/// </summary>
+		public void ClearDialog()
+		{
+			Dialog = new LazyDictionary<object, string>();
+
+			if (OnClear != null) {
+				OnClear(ClearType.DIALOG);
+			}
 		}
 
 		#region Serialization
