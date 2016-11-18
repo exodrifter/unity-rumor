@@ -43,7 +43,13 @@ namespace Exodrifter.Rumor.Nodes
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{
 			var value = seconds.Evaluate(rumor) ?? new ObjectValue(null);
-			yield return new ForSeconds(value.AsFloat());
+
+			if (value.AsFloat() > 0) {
+				yield return new ForSeconds(value.AsFloat());
+			}
+			else {
+				yield return new ForAdvance();
+			}
 		}
 
 		#region Serialization
