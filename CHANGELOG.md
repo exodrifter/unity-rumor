@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Added the ability to specify a clear for just dialog or just choices
+
+### Changed
+- The `OnClear` event in RumorState has been changed to use a `ClearType` enum,
+  which specifies if everything, just choices, or just dialog was cleared
+
 
 ## [0.2.1] - 2016-11-14
 
