@@ -218,6 +218,7 @@ namespace Exodrifter.Rumor.Lang
 				"*", "/", "+", "-",
 				"and", "xor", "or",
 				"==", "!=",
+				"*=", "/=", "+=", "-=",
 				"=",
 			};
 			int opValue = int.MinValue; // operator's index in ops list
@@ -269,6 +270,14 @@ namespace Exodrifter.Rumor.Lang
 						return new DotExpression(left, right);
 					case "=":
 						return new SetExpression(left, right);
+					case "*=":
+						return new SetMultiplyExpression(left, right);
+					case "/=":
+						return new SetDivideExpression(left, right);
+					case "+=":
+						return new SetAddExpression(left, right);
+					case "-=":
+						return new SetSubtractExpression(left, right);
 					case "!":
 						if (left is NoOpExpression) {
 							return new NotExpression(right);

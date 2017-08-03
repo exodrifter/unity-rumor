@@ -4,38 +4,41 @@ using System.Runtime.Serialization;
 namespace Exodrifter.Rumor.Expressions
 {
 	/// <summary>
-	/// Represents an set operator that is used to assign a variable.
+	/// Represents an subtraction set operator that is used to assign a
+	/// variable.
 	/// </summary>
 	[Serializable]
-	public class SetExpression : OpExpression
+	public class SetDivideExpression : OpExpression
 	{
-		public SetExpression(Expression left, Expression right)
+		public SetDivideExpression(Expression left, Expression right)
 			: base(left, right)
 		{
 		}
 
 		public override Value Evaluate(Engine.Rumor rumor)
 		{
-			if (left.GetType() != typeof(VariableExpression)) {
+			if (left.GetType() != typeof(VariableExpression))
+			{
 				throw new ArgumentException(
 					string.Format("Cannot assign values to type {0}!",
 						left.GetType()));
 			}
 
-			var l = left as VariableExpression;
+			var variable = left as VariableExpression;
+			var l = left.Evaluate(rumor);
 			var r = right.Evaluate(rumor);
-			rumor.Scope.SetVar(l.Name, r);
+			rumor.Scope.SetVar(variable.Name, l.Divide(r));
 			return r;
 		}
 
 		public override string ToString()
 		{
-			return left + "=" + right;
+			return left + "/=" + right;
 		}
 
 		#region Serialization
 
-		public SetExpression(SerializationInfo info, StreamingContext context)
+		public SetDivideExpression(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

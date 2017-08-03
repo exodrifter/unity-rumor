@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added the ability to specify a clear for just dialog or just choices
 - Added the default binding `_choice`, which returns the contents of the
   last chosen choice
+- Added the `-=`, `+=`, `/=`, and `*=` assignment operators
 
 ### Changed
 - The `OnClear` event in RumorState has been changed to use a `ClearType` enum,
