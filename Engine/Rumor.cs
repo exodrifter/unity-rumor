@@ -64,6 +64,12 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Returns the contents of the last choice that was chosen. Returns
+		/// null if no choices have been chosen yet.
+		/// </summary>
+		public string LastChoice { get; set; }
+
+		/// <summary>
 		/// Returns true if we are currently on a choose node.
 		/// </summary>
 		public bool Choosing
@@ -229,6 +235,7 @@ namespace Exodrifter.Rumor.Engine
 			Bind("_auto_advance", (float seconds) => { AutoAdvance = seconds; });
 			Bind("_cancel_count", () => { return CancelCount; });
 			Bind("_finish_count", () => { return FinishCount; });
+			Bind("_choice", () => { return LastChoice; });
 
 			Bind("_set_default_speaker", (object speaker) => { Scope.DefaultSpeaker = speaker; });
 		}
@@ -435,6 +442,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			if (0 <= index && index < State.Consequences.Count) {
 				EnterBlock(State.Consequences[index]);
+				LastChoice = State.Choices[index];
 				State.RemoveChoice(index);
 			}
 
