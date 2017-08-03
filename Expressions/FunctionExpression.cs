@@ -37,12 +37,18 @@ namespace Exodrifter.Rumor.Expressions
 			return Invoke(null, rumor);
 		}
 
-		public Value Invoke(object self, Engine.Rumor rumor)
+		public Value Invoke
+			(object self, Engine.Rumor rumor, Expression inject = null)
 		{
-			var values = new object[@params.Count];
+			var p = new List<Expression>(@params);
+			if (inject != null) {
+				p.Insert(0, inject);
+			}
 
-			for (int i = 0; i < @params.Count; ++i) {
-				var value = @params[i].Evaluate(rumor);
+			var values = new object[p.Count];
+
+			for (int i = 0; i < p.Count; ++i) {
+				var value = p[i].Evaluate(rumor);
 
 				if (value == null) {
 					values[i] = null;
