@@ -1,3 +1,7 @@
+<p align="center">
+	<img src="https://raw.githubusercontent.com/wiki/exodrifter/unity-rumor/Images/Logo.png">
+</p>
+
 Rumor
 =====
 Rumor is a free, open source narrative content framework meant to be integrated
