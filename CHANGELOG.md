@@ -16,7 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The `OnClear` event in RumorState has been changed to use a `ClearType` enum,
   which specifies if everything, just choices, or just dialog was cleared
 - The Pause command will now wait for an advance if the time is less than or
-  equal to 0.
+  equal to 0
+- Multiple methods of the same name can be binded as long as they have a
+  different number of input parameters
 
 
 ## [0.2.1] - 2016-11-14
