@@ -217,6 +217,7 @@ namespace Exodrifter.Rumor.Lang
 				".", "!",
 				"*", "/", "+", "-",
 				"and", "xor", "or",
+				"|",
 				"==", "!=",
 				"*=", "/=", "+=", "-=",
 				"=",
@@ -292,6 +293,14 @@ namespace Exodrifter.Rumor.Lang
 						return new AddExpression(left, right);
 					case "-":
 						return new SubtractExpression(left, right);
+					case "|":
+						if (right is FunctionExpression)
+						{
+							return new FilterExpression(
+								left, (FunctionExpression)right);
+						}
+						throw new CompilerError(tokens[opIndex],
+							"Filter must have a right hand expression of type function!");
 					case "==":
 						return new EqualsExpression(left, right);
 					case "!=":
