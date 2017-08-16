@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2017-08-16
+
 ### Added
 - Added the ability to specify a clear for just dialog or just choices
 - Added the default binding `_choice`, which returns the contents of the
@@ -100,7 +102,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/exodrifter/unity-rumor/compare/0.2.1...1.0.0
 [0.2.1]: https://github.com/exodrifter/unity-rumor/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/exodrifter/unity-rumor/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/exodrifter/unity-rumor/compare/0.1.0...0.1.1
