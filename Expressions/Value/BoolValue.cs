@@ -38,6 +38,16 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override Value LessThan(Value value)
+		{
+			throw new InvalidOperationException();
+		}
+
+		public override Value GreaterThan(Value value)
+		{
+			throw new InvalidOperationException();
+		}
+
 		public override Value Divide(Value value)
 		{
 			throw new InvalidOperationException();
