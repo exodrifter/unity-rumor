@@ -87,6 +87,34 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override Value LessThan(Value value)
+		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
+			if (value.IsInt()) {
+				return new BoolValue(AsInt() < value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new BoolValue(AsInt() < value.AsFloat());
+			}
+			throw new InvalidOperationException();
+		}
+
+		public override Value GreaterThan(Value value)
+		{
+			if (value == null) {
+				throw new InvalidOperationException();
+			}
+			if (value.IsInt()) {
+				return new BoolValue(AsInt() > value.AsInt());
+			}
+			if (value.IsFloat()) {
+				return new BoolValue(AsInt() > value.AsFloat());
+			}
+			throw new InvalidOperationException();
+		}
+
 		public override Value BoolAnd(Value value)
 		{
 			if (value == null) {

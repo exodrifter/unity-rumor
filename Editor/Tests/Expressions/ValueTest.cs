@@ -264,6 +264,112 @@ namespace Exodrifter.Rumor.Test.Expressions
 		}
 
 		/// <summary>
+		/// Check Less Than.
+		/// </summary>
+		[Test]
+		public void ValueLessThan()
+		{
+			var @int = new IntValue(1);
+			var @int2 = new IntValue(2);
+			var @float = new FloatValue(1.0f);
+			var @float2 = new FloatValue(2.0f);
+			var @string = new StringValue("1");
+			var @bool = new BoolValue(false);
+			var @obj = new ObjectValue(new Foo());
+
+			Assert.AreEqual(false, @int.LessThan(@int).AsBool());
+			Assert.AreEqual(false, @int.LessThan(@float).AsBool());
+			Assert.AreEqual(true, @int.LessThan(@int2).AsBool());
+			Assert.AreEqual(true, @int.LessThan(@float2).AsBool());
+			Assert.AreEqual(false, @int2.LessThan(@int).AsBool());
+			Assert.AreEqual(false, @int2.LessThan(@float).AsBool());
+			Assert.Catch<InvalidOperationException>(() => @int.LessThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @int.LessThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @int.LessThan(@obj));
+
+			Assert.AreEqual(false, @float.LessThan(@int).AsBool());
+			Assert.AreEqual(false, @float.LessThan(@float).AsBool());
+			Assert.AreEqual(true, @float.LessThan(@int2).AsBool());
+			Assert.AreEqual(true, @float.LessThan(@float2).AsBool());
+			Assert.AreEqual(false, @float2.LessThan(@int).AsBool());
+			Assert.AreEqual(false, @float2.LessThan(@float).AsBool());
+			Assert.Catch<InvalidOperationException>(() => @float.LessThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @float.LessThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @float.LessThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @string.LessThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @string.LessThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @string.LessThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @string.LessThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @string.LessThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @bool.LessThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @bool.LessThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @bool.LessThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @bool.LessThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @bool.LessThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @obj.LessThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @obj.LessThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @obj.LessThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @obj.LessThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @obj.LessThan(@obj));
+		}
+
+		/// <summary>
+		/// Check Less Than.
+		/// </summary>
+		[Test]
+		public void ValueGreaterThan()
+		{
+			var @int = new IntValue(1);
+			var @int2 = new IntValue(2);
+			var @float = new FloatValue(1.0f);
+			var @float2 = new FloatValue(2.0f);
+			var @string = new StringValue("1");
+			var @bool = new BoolValue(false);
+			var @obj = new ObjectValue(new Foo());
+
+			Assert.AreEqual(false, @int.GreaterThan(@int).AsBool());
+			Assert.AreEqual(false, @int.GreaterThan(@float).AsBool());
+			Assert.AreEqual(false, @int.GreaterThan(@int2).AsBool());
+			Assert.AreEqual(false, @int.GreaterThan(@float2).AsBool());
+			Assert.AreEqual(true, @int2.GreaterThan(@int).AsBool());
+			Assert.AreEqual(true, @int2.GreaterThan(@float).AsBool());
+			Assert.Catch<InvalidOperationException>(() => @int.GreaterThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @int.GreaterThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @int.GreaterThan(@obj));
+
+			Assert.AreEqual(false, @float.GreaterThan(@int).AsBool());
+			Assert.AreEqual(false, @float.GreaterThan(@float).AsBool());
+			Assert.AreEqual(false, @float.GreaterThan(@int2).AsBool());
+			Assert.AreEqual(false, @float.GreaterThan(@float2).AsBool());
+			Assert.AreEqual(true, @float2.GreaterThan(@int).AsBool());
+			Assert.AreEqual(true, @float2.GreaterThan(@float).AsBool());
+			Assert.Catch<InvalidOperationException>(() => @float.GreaterThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @float.GreaterThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @float.GreaterThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @string.GreaterThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @string.GreaterThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @string.GreaterThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @string.GreaterThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @string.GreaterThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @bool.GreaterThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @bool.GreaterThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @bool.GreaterThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @bool.GreaterThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @bool.GreaterThan(@obj));
+
+			Assert.Catch<InvalidOperationException>(() => @obj.GreaterThan(@int));
+			Assert.Catch<InvalidOperationException>(() => @obj.GreaterThan(@float));
+			Assert.Catch<InvalidOperationException>(() => @obj.GreaterThan(@string));
+			Assert.Catch<InvalidOperationException>(() => @obj.GreaterThan(@bool));
+			Assert.Catch<InvalidOperationException>(() => @obj.GreaterThan(@obj));
+		}
+
+		/// <summary>
 		/// Check Boolean And.
 		/// </summary>
 		[Test]

@@ -185,6 +185,9 @@ namespace Exodrifter.Rumor.Expressions
 		public abstract Value Multiply(Value value);
 		public abstract Value Divide(Value value);
 
+		public abstract Value LessThan(Value value);
+		public abstract Value GreaterThan(Value value);
+
 		public abstract Value BoolAnd(Value value);
 		public abstract Value BoolOr(Value value);
 		public Value BoolXor(Value value)
