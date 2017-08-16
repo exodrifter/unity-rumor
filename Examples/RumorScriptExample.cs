@@ -1,5 +1,4 @@
 ﻿using Exodrifter.Rumor.Engine;
-using Exodrifter.Rumor.Lang;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,12 +27,45 @@ label start:
 		say ""Darn...""
 		pause 0.5
 		add ""Maybe next time.""
+		jump end
 	choose
 
-say ""Well, thanks for stopping by!""
-say ""See you next time!""
+$ apples = get_apples()
+$ pears = get_pears()
+
+if apples == pears:
+	$ pears += 1
+
+say ""I have "" + apples + "" apples.""
+say ""You have "" + pears + "" pears.""
+say ""Who has more fruits?""
+
+choice ""I do."":
+	if apples < pears:
+		jump correct
+	jump incorrect
+choice ""You do."":
+	if apples > pears:
+		jump correct
+	jump incorrect
+choose
+
+label correct:
+	say ""That's right!""
+	jump end
+
+label incorrect:
+	say ""That's wrong!""
+	jump end
+
+label end:
+	say ""Well, thanks for stopping by!""
+	say ""See you next time!""
 ");
 			rumor.Scope.DefaultSpeaker = "Narrator";
+
+			rumor.Bind("get_apples", () => { return Random.Range(2, 6); });
+			rumor.Bind("get_pears", () => { return Random.Range(2, 6); });
 
 			StartCoroutine(rumor.Run());
 		}
