@@ -202,7 +202,7 @@ namespace Exodrifter.Rumor.Engine
 			: this()
 		{
 			this.nodes = new List<Node>(nodes);
-			this.scope = scope;
+			this.scope = scope ?? new Scope();
 		}
 
 		/// <summary>
