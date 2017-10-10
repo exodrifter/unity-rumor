@@ -76,7 +76,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			get
 			{
-				if (iter.Current == null) {
+				if (iter == null || iter.Current == null) {
 					return false;
 				}
 				return iter.Current.GetType() == typeof(ForChoice);
