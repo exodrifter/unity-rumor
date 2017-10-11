@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix `Rumor.Choosing` throwing an error if Rumor has not been started
+- Fix scope not being initialized when passed as null when constructing Rumor
+
+
 ## [1.0.0] - 2017-08-16
 
 ### Added
