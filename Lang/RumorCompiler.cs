@@ -406,14 +406,14 @@ namespace Exodrifter.Rumor.Lang
 			if (speaker == "\"") {
 				var tokens = Slice(line.tokens, pos);
 				var expression = CompileExpression(tokens);
-				return new Say(expression);
+				return new Add(expression);
 			}
 			else {
 				pos++;
 
 				var tokens = Slice(line.tokens, pos);
 				var expression = CompileExpression(tokens);
-				return new Say(new VariableExpression(speaker), expression);
+				return new Add(new VariableExpression(speaker), expression);
 			}
 		}
 
