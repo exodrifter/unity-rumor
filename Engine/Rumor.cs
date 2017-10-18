@@ -541,6 +541,11 @@ namespace Exodrifter.Rumor.Engine
 			}
 		}
 
+		public void Inject(IEnumerable<Node> nodes)
+		{
+			stack.Push(new StackFrame(nodes));
+		}
+
 		#region Bindings
 
 		/// <summary>
