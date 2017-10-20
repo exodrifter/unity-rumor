@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Rumor no longer clears the scope when starting
+
 ### Fixed
 - Fix `Rumor.Choosing` throwing an error if Rumor has not been started
 - Fix scope not being initialized when passed as null when constructing Rumor

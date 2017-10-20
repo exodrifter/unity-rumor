@@ -355,7 +355,6 @@ namespace Exodrifter.Rumor.Engine
 		private void Init()
 		{
 			stack.Push(new StackFrame(nodes));
-			scope.ClearVars();
 			State.Clear();
 		}
 
