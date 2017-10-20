@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix Add statements behaving like Say statements
 - Fix null pointer exception in Equals expression
 - Fix incorrect equality checking
+- Fix improper deserialization of values caused by wrapper types (Json.NET will
+  wrap object values in its own type, JValue, which causes logic to fail)
 
 
 ## [1.0.0] - 2017-08-16

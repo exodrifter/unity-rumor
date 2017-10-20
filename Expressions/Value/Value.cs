@@ -247,11 +247,16 @@ namespace Exodrifter.Rumor.Expressions
 		public Value(SerializationInfo info, StreamingContext context)
 		{
 			value = info.GetValue<object>("value");
+			var type = info.GetValue<Type>("type");
+
+			// Make sure the type is set correctly
+			value = Convert.ChangeType(value, type);
 		}
 
 		void ISerializable.GetObjectData
 			(SerializationInfo info, StreamingContext context)
 		{
+			info.AddValue<Type>("type", value.GetType());
 			info.AddValue<object>("value", value);
 		}
 
