@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix scope not being initialized when passed as null when constructing Rumor
 - Fix Add statements behaving like Say statements
 - Fix null pointer exception in Equals expression
+- Fix incorrect equality checking
 
 
 ## [1.0.0] - 2017-08-16

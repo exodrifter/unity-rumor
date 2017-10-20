@@ -108,10 +108,53 @@ namespace Exodrifter.Rumor.Expressions
 			throw new InvalidOperationException();
 		}
 
+		public override Value EqualTo(Value value)
+		{
+			if (value == null) {
+				return new BoolValue(AsObject() == null);
+			}
+			if (value.IsBool()) {
+				return new BoolValue((AsObject() != null) == value.AsBool());
+			}
+			else if (value.IsInt()) {
+				return new BoolValue((AsObject() != null) == (value.AsInt() != 0));
+			}
+			else if (value.IsFloat()) {
+				return new BoolValue((AsObject() != null) == (value.AsFloat() != 0));
+			}
+			else if (value.IsString()) {
+				return new BoolValue((AsObject() != null) == (value.AsString() != ""));
+			}
+			else if (value.IsObject()) {
+				return new BoolValue((AsObject() != null) == (value.AsObject() != null));
+			}
+			throw new InvalidOperationException();
+		}
+
 		public override Value BoolAnd(Value value)
 		{
 			if (AsObject() == null) {
 				return new BoolValue(false);
+			}
+			else {
+				if (value == null) {
+					return new BoolValue(false);
+				}
+				if (value.IsBool()) {
+					return new BoolValue(value.AsBool());
+				}
+				else if (value.IsInt()) {
+					return new BoolValue(value.AsInt() != 0);
+				}
+				else if (value.IsFloat()) {
+					return new BoolValue(value.AsFloat() != 0);
+				}
+				else if (value.IsString()) {
+					return new BoolValue(value.AsString() != "");
+				}
+				else if (value.IsObject()) {
+					return new BoolValue(value.AsObject() != null);
+				}
 			}
 			throw new InvalidOperationException();
 		}
@@ -134,9 +177,12 @@ namespace Exodrifter.Rumor.Expressions
 				else if (value.IsString()) {
 					return new BoolValue(value.AsString() != "");
 				}
-				else if (value.AsObject() == null) {
-					return new BoolValue(false);
+				else if (value.IsObject()) {
+					return new BoolValue(value.AsObject() != null);
 				}
+			}
+			else {
+				return new BoolValue(true);
 			}
 			throw new InvalidOperationException();
 		}

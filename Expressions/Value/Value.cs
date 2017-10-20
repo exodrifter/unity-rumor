@@ -187,6 +187,7 @@ namespace Exodrifter.Rumor.Expressions
 
 		public abstract Value LessThan(Value value);
 		public abstract Value GreaterThan(Value value);
+		public abstract Value EqualTo(Value value);
 
 		public abstract Value BoolAnd(Value value);
 		public abstract Value BoolOr(Value value);

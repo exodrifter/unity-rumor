@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			var l = left.Evaluate(rumor) ?? new ObjectValue(null);
 			var r = right.Evaluate(rumor) ?? new ObjectValue(null);
-			return new BoolValue(l.Equals(r));
+			return new BoolValue(l.EqualTo(r).AsBool());
 		}
 
 		public override string ToString()
