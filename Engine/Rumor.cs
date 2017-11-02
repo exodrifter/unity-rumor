@@ -550,7 +550,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Stores functions, methods, or constructors.
 		/// </summary>
-		private Dictionary<string, object> bindings;
+		private Dictionary<string, RumorBinding> bindings;
 
 		/// <summary>
 		/// Bind a <see cref="Action"/> to the Rumor metatable so it can be
@@ -560,7 +560,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The action to bind.</param>
 		public void Bind(string name, Action action)
 		{
-			AddBinding(name, 0, action);
+			AddBinding(name, 0, new BindingAction(action));
 		}
 
 		/// <summary>
@@ -571,7 +571,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The <see cref="Action{T}"/> to bind.</param>
 		public void Bind<T1>(string name, Action<T1> action)
 		{
-			AddBinding(name, 1, action);
+			AddBinding(name, 1, new BindingAction<T1>(action));
 		}
 
 		/// <summary>
@@ -584,7 +584,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<T1, T2>(string name, Action<T1, T2> action)
 		{
-			AddBinding(name, 2, action);
+			AddBinding(name, 2, new BindingAction<T1, T2>(action));
 		}
 
 		/// <summary>
@@ -598,7 +598,7 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3>
 			(string name, Action<T1, T2, T3> action)
 		{
-			AddBinding(name, 3, action);
+			AddBinding(name, 3, new BindingAction<T1, T2, T3>(action));
 		}
 
 		/// <summary>
@@ -612,7 +612,7 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, T4>
 			(string name, Action<T1, T2, T3, T4> action)
 		{
-			AddBinding(name, 4, action);
+			AddBinding(name, 4, new BindingAction<T1, T2, T3, T4>(action));
 		}
 
 		/// <summary>
@@ -625,7 +625,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<TResult>(string name, Func<TResult> func)
 		{
-			AddBinding(name, 0, func);
+			AddBinding(name, 0, new BindingFunc<TResult>(func));
 		}
 
 		/// <summary>
@@ -638,7 +638,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<T1, TResult>(string name, Func<T1, TResult> func)
 		{
-			AddBinding(name, 1, func);
+			AddBinding(name, 1, new BindingFunc<T1, TResult>(func));
 		}
 
 		/// <summary>
@@ -652,7 +652,7 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, TResult>
 			(string name, Func<T1, T2, TResult> func)
 		{
-			AddBinding(name, 2, func);
+			AddBinding(name, 2, new BindingFunc<T1, T2, TResult>(func));
 		}
 
 		/// <summary>
@@ -666,7 +666,7 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, TResult>
 			(string name, Func<T1, T2, T3, TResult> func)
 		{
-			AddBinding(name, 3, func);
+			AddBinding(name, 3, new BindingFunc<T1, T2, T3, TResult>(func));
 		}
 
 		/// <summary>
@@ -680,7 +680,7 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, T4, TResult>
 			(string name, Func<T1, T2, T3, T4, TResult> func)
 		{
-			AddBinding(name, 4, func);
+			AddBinding(name, 4, new BindingFunc<T1, T2, T3, T4, TResult>(func));
 		}
 
 		/// <summary>
@@ -691,13 +691,13 @@ namespace Exodrifter.Rumor.Engine
 		/// The number of parameters in the binding.
 		/// </param>
 		/// <param name="binding">The binding to use.</param>
-		private void AddBinding(string name, int paramCount, object binding)
+		private void AddBinding(string name, int paramCount, RumorBinding binding)
 		{
 			if (binding == null) {
 				throw new ArgumentNullException();
 			}
 
-			bindings = bindings ?? new Dictionary<string, object>();
+			bindings = bindings ?? new Dictionary<string, RumorBinding>();
 
 			var mungedName = MungeName(name, paramCount);
 			if (bindings.ContainsKey(mungedName))
@@ -720,7 +720,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <returns>The result of calling the binding.</returns>
 		public object CallBinding(string name, params object[] p)
 		{
-			bindings = bindings ?? new Dictionary<string, object>();
+			bindings = bindings ?? new Dictionary<string, RumorBinding>();
 
 			var mungedName = MungeName(name, p.Length);
 			if (!bindings.ContainsKey(mungedName))
@@ -732,7 +732,7 @@ namespace Exodrifter.Rumor.Engine
 					name, p.Length, paramStr));
 			}
 
-			return ((Delegate)bindings[mungedName]).DynamicInvoke(p);
+			return bindings[mungedName].Invoke(p);
 		}
 
 		/// <summary>
