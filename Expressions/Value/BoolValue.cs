@@ -54,9 +54,9 @@ namespace Exodrifter.Rumor.Expressions
 			{
 				return new BoolValue(!AsBool());
 			}
-			if (value.IsObject() && value.AsObject() == null)
+			if (value.IsObject())
 			{
-				return new BoolValue(!AsBool());
+				return new BoolValue(AsBool() == (value.AsObject() != null));
 			}
 			if (value.IsInt())
 			{
@@ -87,8 +87,8 @@ namespace Exodrifter.Rumor.Expressions
 			if (value == null) {
 				return new BoolValue(false);
 			}
-			if (value.IsObject() && value.AsObject() == null) {
-				return new BoolValue(false);
+			if (value.IsObject()) {
+				return new BoolValue(AsBool() && value.AsObject() != null);
 			}
 			if (value.IsInt()) {
 				return new BoolValue(AsBool() && value.AsInt() != 0);
@@ -110,8 +110,8 @@ namespace Exodrifter.Rumor.Expressions
 			if (value == null) {
 				return new BoolValue(AsBool());
 			}
-			if (value.IsObject() && value.AsObject() == null) {
-				return new BoolValue(AsBool());
+			if (value.IsObject()) {
+				return new BoolValue(AsBool() || value.AsObject() != null);
 			}
 			if (value.IsInt()) {
 				return new BoolValue(AsBool() || value.AsInt() != 0);

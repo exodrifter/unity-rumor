@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Rumor no longer clears the scope when starting
 - `Rumor.CallBinding` no longer calls DynamicInvoke and is much faster
+- Null ObjectValues are now treated the same as an uninitialized (null)
+  variable
 
 ### Fixed
 - Fix `Rumor.Choosing` throwing an error if Rumor has not been started
