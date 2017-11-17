@@ -19,6 +19,7 @@ namespace Exodrifter.Rumor.Lang
 		/// </summary>
 		List<string> keywords;
 		HashSet<string> keywordsHashset;
+		int longestKeywordLength;
 
 		/// <summary>
 		/// Creates a new tokenizer. Any sequence of characters that is not
@@ -30,6 +31,15 @@ namespace Exodrifter.Rumor.Lang
 		{
 			this.keywords = new List<string>(keywords.OrderByDescending(w => w.Length));
 			keywordsHashset = new HashSet<string>(keywords);
+
+			longestKeywordLength = 0;
+			foreach (var keyword in keywords)
+			{
+				if (keyword.Length > longestKeywordLength)
+				{
+					longestKeywordLength = keyword.Length;
+				}
+			}
 		}
 
 		/// <summary>
@@ -39,11 +49,12 @@ namespace Exodrifter.Rumor.Lang
 		/// <returns>The tokens.</returns>
 		public IEnumerable<string> Tokenize(string input)
 		{
-			var tokenBuffer = new List<string>() { input };
+			var tokenBuffer = new LinkedList<string>();
+			tokenBuffer.AddLast(input);
 
 			foreach (var keyword in keywords) {
 
-				var currentBuffer = new List<string>();
+				var currentBuffer = new LinkedList<string>();
 				var separator = new string[] { keyword };
 				var splitOption = StringSplitOptions.None;
 
@@ -51,8 +62,8 @@ namespace Exodrifter.Rumor.Lang
 				foreach (var token in tokenBuffer) {
 
 					// If the item is a keyword, ignore it
-					if (keywordsHashset.Contains(token)) {
-						currentBuffer.Add(token);
+					if (token.Length <= longestKeywordLength && keywordsHashset.Contains(token)) {
+						currentBuffer.AddLast(token);
 						continue;
 					}
 
@@ -60,11 +71,11 @@ namespace Exodrifter.Rumor.Lang
 					string[] parts = token.Split(separator, splitOption);
 					foreach (var part in parts) {
 						if (part != "") {
-							currentBuffer.Add(part);
+							currentBuffer.AddLast(part);
 						}
-						currentBuffer.Add(keyword);
+						currentBuffer.AddLast(keyword);
 					}
-					currentBuffer.RemoveAt(currentBuffer.Count - 1);
+					currentBuffer.RemoveLast();
 				}
 
 				// Update the token buffer
