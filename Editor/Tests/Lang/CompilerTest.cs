@@ -55,31 +55,25 @@ namespace Exodrifter.Rumor.Test.Lang
 		[Test]
 		public void PauseAcceptsFloat()
 		{
+			var rumor = new Rumor.Engine.Rumor("return");
+
 			var str = "pause 0";
 			var nodes = new List<Node>(new RumorCompiler().Compile(str));
-
-			var rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.AreEqual(0f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause .5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
-			
-			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.AreEqual(0.5f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause 0.5";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
-
-			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.AreEqual(0.5f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 
 			str = "pause 1";
 			nodes = new List<Node>(new RumorCompiler().Compile(str));
-
-			rumor = new Rumor.Engine.Rumor("return");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.AreEqual(1f, (nodes[0] as Pause).seconds.Evaluate(rumor).AsFloat());
 		}

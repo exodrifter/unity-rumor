@@ -45,9 +45,6 @@ namespace Exodrifter.Rumor.Lang
 					"\"", "\'", "\\",
 					"(", ")", "{", "}",
 					":", ".",
-				},
-				new List<string>() {
-					"([-+]?(?:(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][0-9]+)?))",
 				}
 			);
 
@@ -86,7 +83,66 @@ namespace Exodrifter.Rumor.Lang
 			var commentRegex = new Regex(@"^\s*#.*$", RegexOptions.Multiline);
 			code = commentRegex.Replace(code, "");
 
-			var tokens = cleaner.Clean(tokenizer.Tokenize(code));
+			var strings = new List<string>(tokenizer.Tokenize(code));
+
+			// Stitch floats
+			var stitched = new List<string>();
+			var current = new List<string>();
+			bool foundSign = false;
+			bool foundDot = false;
+			bool foundInt = false;
+			foreach (var s in strings)
+			{
+				int temp;
+				if (!foundSign && (s == "+" || s == "-"))
+				{
+					current.Add(s);
+					foundSign = true;
+				}
+				else if (!foundDot && s == ".")
+				{
+					current.Add(s);
+					foundDot = true;
+				}
+				else if (int.TryParse(s, out temp))
+				{
+					current.Add(s);
+					foundInt = true;
+				}
+				else
+				{
+					if (current.Count > 0)
+					{
+						if (foundInt)
+						{
+							stitched.Add(string.Join(String.Empty, current.ToArray()));
+						}
+						else
+						{
+							stitched.AddRange(current);
+						}
+						current.Clear();
+
+						foundDot = false;
+						foundSign = false;
+						foundInt = false;
+					}
+					stitched.Add(s);
+				}
+			}
+			if (current.Count > 0)
+			{
+				if (foundInt)
+				{
+					stitched.Add(string.Join(String.Empty, current.ToArray()));
+				}
+				else
+				{
+					stitched.AddRange(current);
+				}
+			}
+
+			var tokens = cleaner.Clean(stitched);
 			var lines = new List<LogicalLine>(parser.Parse(tokens));
 
 			int pos = 0;
