@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `Rumor.CallBinding` no longer calls DynamicInvoke and is much faster
 - Null ObjectValues are now treated the same as an uninitialized (null)
   variable
+- Tokenize step of compilation is much faster
 
 ### Fixed
 - Fix `Rumor.Choosing` throwing an error if Rumor has not been started
