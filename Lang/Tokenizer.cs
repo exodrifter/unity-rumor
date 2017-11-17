@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Exodrifter.Rumor.Lang
 {
@@ -18,12 +17,8 @@ namespace Exodrifter.Rumor.Lang
 		/// <summary>
 		/// The keywords to treat as tokens.
 		/// </summary>
-		IEnumerable<string> keywords;
-
-		/// <summary>
-		/// The regex matches to treat as tokens.
-		/// </summary>
-		IEnumerable<string> regex;
+		List<string> keywords;
+		HashSet<string> keywordsHashset;
 
 		/// <summary>
 		/// Creates a new tokenizer. Any sequence of characters that is not
@@ -31,10 +26,10 @@ namespace Exodrifter.Rumor.Lang
 		/// </summary>
 		/// <param name="keywords">The keywords to treat as tokens.</param>
 		/// <param name="regex">The regex matches to treat as tokens.</param>
-		public Tokenizer(IEnumerable<string> keywords, IEnumerable<string> regex)
+		public Tokenizer(IEnumerable<string> keywords)
 		{
-			this.keywords = keywords.OrderByDescending(w => w.Length);
-			this.regex = regex;
+			this.keywords = new List<string>(keywords.OrderByDescending(w => w.Length));
+			keywordsHashset = new HashSet<string>(keywords);
 		}
 
 		/// <summary>
@@ -46,22 +41,6 @@ namespace Exodrifter.Rumor.Lang
 		{
 			var tokenBuffer = new List<string>() { input };
 
-			// Tokenize based on regex
-			foreach (var r in regex) {
-
-				var currentBuffer = new List<string>();
-				var reg = new Regex(r);
-
-				// Try to split each item in our token buffer
-				foreach (var token in tokenBuffer) {
-					currentBuffer.AddRange(reg.Split(token));
-				}
-
-				// Update the token buffer
-				tokenBuffer = currentBuffer;
-			}
-
-			// Tokenize based on keywords
 			foreach (var keyword in keywords) {
 
 				var currentBuffer = new List<string>();
@@ -72,21 +51,8 @@ namespace Exodrifter.Rumor.Lang
 				foreach (var token in tokenBuffer) {
 
 					// If the item is a keyword, ignore it
-					if (keywords.Contains(token)) {
+					if (keywordsHashset.Contains(token)) {
 						currentBuffer.Add(token);
-						continue;
-					}
-
-					// If the item is a regex match, ignore it
-					bool regexMatched = false;
-					foreach (var r in regex) {
-						if (new Regex(r).IsMatch(token)) {
-							currentBuffer.Add(token);
-							regexMatched = true;
-							break;
-						}
-					}
-					if (regexMatched) {
 						continue;
 					}
 

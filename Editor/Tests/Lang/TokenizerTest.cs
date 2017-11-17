@@ -17,7 +17,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				"\n", " ", " ", " ", " ",
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = " \r\n   ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				"\r\n", "\n", "\r", "\t", " ",
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = " \r\n\r\t";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -65,7 +65,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ", "\t", "\r", "\n", "\r\n",
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = " \r\n\r\t";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -88,7 +88,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ",
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = "    ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -111,7 +111,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ", "  "
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = "     ";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ",
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = "Hello, world!";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -154,7 +154,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ", ",", "!"
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = "Hello, world!";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
@@ -178,7 +178,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			{
 				" ", "->", "float"
 			};
-			var tokenizer = new Tokenizer(keywords, new List<string>());
+			var tokenizer = new Tokenizer(keywords);
 
 			var input = "float a -> float b";
 			var tokens = new List<string>(tokenizer.Tokenize(input));
