@@ -21,18 +21,18 @@ namespace Exodrifter.Rumor.Lang
 		/// <summary>
 		/// A list of tokens that should be removed.
 		/// </summary>
-		private readonly List<string> removes;
+		private readonly HashSet<string> removes;
 
 		/// <summary>
 		/// A list of tokens that should be replaced with one instance of
 		/// itself if it appears in a consecutive sequence of tokens.
 		/// </summary>
-		private readonly List<string> duplicates;
+		private readonly HashSet<string> duplicates;
 
 		/// <summary>
 		/// A list of tokens that should be treated as the newline character.
 		/// </summary>
-		private readonly List<string> newlines;
+		private readonly HashSet<string> newlines;
 
 		/// <summary>
 		/// Creates a new Cleaner.
@@ -43,15 +43,15 @@ namespace Exodrifter.Rumor.Lang
 		private Cleaner(
 			bool discardEmptyLines,
 			Dictionary<string, string> replaces,
-			List<string> removes,
-			List<string> duplicates,
-			List<string> newlines)
+			IEnumerable<string> removes,
+			IEnumerable<string> duplicates,
+			IEnumerable<string> newlines)
 		{
 			this.discardEmptyLines = discardEmptyLines;
 			this.replaces = new Dictionary<string, string>(replaces);
-			this.removes = new List<string>(removes);
-			this.duplicates = new List<string>(duplicates);
-			this.newlines = new List<string>(newlines);
+			this.removes = new HashSet<string>(removes);
+			this.duplicates = new HashSet<string>(duplicates);
+			this.newlines = new HashSet<string>(newlines);
 		}
 
 		/// <summary>
@@ -84,7 +84,6 @@ namespace Exodrifter.Rumor.Lang
 				if (duplicates.Contains(token) && logicalTokens.Count > 0) {
 					var last = logicalTokens[logicalTokens.Count - 1].text;
 					if (token == last) {
-
 						if (newlines.Contains(token)) {
 							row++;
 							col = 0;
@@ -109,7 +108,7 @@ namespace Exodrifter.Rumor.Lang
 							continue;
 						}
 
-						// ...or if the previous token was wa newline
+						// ...or if the previous token was a newline
 						var last = logicalTokens[logicalTokens.Count - 1].text;
 						if (newlines.Contains(last)) {
 							row++;
