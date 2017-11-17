@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Lang
 {
@@ -17,7 +15,6 @@ namespace Exodrifter.Rumor.Lang
 		/// <summary>
 		/// The keywords to treat as tokens.
 		/// </summary>
-		List<string> keywords;
 		HashSet<string> keywordsHashset;
 		int longestKeywordLength;
 
@@ -29,7 +26,6 @@ namespace Exodrifter.Rumor.Lang
 		/// <param name="regex">The regex matches to treat as tokens.</param>
 		public Tokenizer(IEnumerable<string> keywords)
 		{
-			this.keywords = new List<string>(keywords.OrderByDescending(w => w.Length));
 			keywordsHashset = new HashSet<string>(keywords);
 
 			longestKeywordLength = 0;
@@ -49,37 +45,46 @@ namespace Exodrifter.Rumor.Lang
 		/// <returns>The tokens.</returns>
 		public IEnumerable<string> Tokenize(string input)
 		{
-			var tokenBuffer = new LinkedList<string>();
-			tokenBuffer.AddLast(input);
+			var tokenBuffer = new List<string>();
 
-			foreach (var keyword in keywords) {
-
-				var currentBuffer = new LinkedList<string>();
-				var separator = new string[] { keyword };
-				var splitOption = StringSplitOptions.None;
-
-				// For each item in our token buffer...
-				foreach (var token in tokenBuffer) {
-
-					// If the item is a keyword, ignore it
-					if (token.Length <= longestKeywordLength && keywordsHashset.Contains(token)) {
-						currentBuffer.AddLast(token);
-						continue;
-					}
-
-					// Otherwise, try to split it into pieces
-					string[] parts = token.Split(separator, splitOption);
-					foreach (var part in parts) {
-						if (part != "") {
-							currentBuffer.AddLast(part);
+			string current = "";
+			int length = 1;
+			for (int pos = 1; pos <= input.Length; ++pos)
+			{
+				bool foundToken = false;
+				for (int l = length; l > 0; --l)
+				{
+					var token = input.Substring(pos - l, l);
+					if (keywordsHashset.Contains(token))
+					{
+						var pre = current + input.Substring(pos - length, length - l);
+						if (!string.IsNullOrEmpty(pre))
+						{
+							tokenBuffer.Add(pre);
 						}
-						currentBuffer.AddLast(keyword);
+
+						tokenBuffer.Add(token);
+						current = "";
+						foundToken = true;
+						break;
 					}
-					currentBuffer.RemoveLast();
 				}
 
-				// Update the token buffer
-				tokenBuffer = currentBuffer;
+				if (foundToken)
+				{
+					length = 1;
+				}
+				else
+				{
+					if (length == longestKeywordLength)
+					{
+						current += input[pos - longestKeywordLength];
+					}
+					else
+					{
+						length++;
+					}
+				}
 			}
 
 			return tokenBuffer;
