@@ -104,7 +104,14 @@ namespace Exodrifter.Rumor.Engine
 		public int AddChoice(string choice, IEnumerable<Node> nodes)
 		{
 			Choices.Add(choice);
-			Consequences.Add(new List<Node>(nodes));
+			if (nodes == null)
+			{
+				Consequences.Add(new List<Node>());
+			}
+			else
+			{
+				Consequences.Add(new List<Node>(nodes));
+			}
 
 			var index = Choices.Count - 1;
 			if (OnAddChoice != null) {
