@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix unit test failures caused by Tokenize performance optimization code
+
 ## [1.0.1] - 2017-12-19
 
 ### Changed
