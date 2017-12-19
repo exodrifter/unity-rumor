@@ -38,6 +38,16 @@ namespace Exodrifter.Rumor.Engine
 		public event Action<object, string> OnSetDialog;
 
 		/// <summary>
+		/// An event for when a choice is added to the state.
+		/// </summary>
+		public event Action<int, string> OnAddChoice;
+		
+		/// <summary>
+		/// An event for when a choice is removed from the state.
+		/// </summary>
+		public event Action<int, string> OnRemoveChoice;
+
+		/// <summary>
 		/// An event for when the state is cleared.
 		/// </summary>
 		public event Action<ClearType> OnClear;
@@ -95,7 +105,12 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Choices.Add(choice);
 			Consequences.Add(new List<Node>(nodes));
-			return Choices.Count - 1;
+
+			var index = Choices.Count - 1;
+			if (OnAddChoice != null) {
+				OnAddChoice(index, choice);
+			}
+			return index;
 		}
 
 		/// <summary>
@@ -104,8 +119,13 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="index">The index of the choice to remove.</param>
 		public void RemoveChoice(int index)
 		{
+			var choice = Choices[index];
 			Choices.RemoveAt(index);
 			Consequences.RemoveAt(index);
+
+			if (OnRemoveChoice != null) {
+				OnRemoveChoice(index, choice);
+			}
 		}
 
 		/// <summary>
