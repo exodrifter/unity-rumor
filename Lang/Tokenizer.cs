@@ -72,7 +72,7 @@ namespace Exodrifter.Rumor.Lang
 				// Add the token
 				if (foundToken)
 				{
-					// Add string before this token
+					// Add non-token string before this token
 					if (!string.IsNullOrEmpty(current))
 					{
 						tokenBuffer.Add(current);
@@ -82,7 +82,7 @@ namespace Exodrifter.Rumor.Lang
 					tokenBuffer.Add(token);
 					pos += token.Length;
 				}
-				// This character is not part of a token
+				// This character is not part of a non-token string
 				else
 				{
 					current += input[pos];
@@ -90,6 +90,7 @@ namespace Exodrifter.Rumor.Lang
 				}
 			}
 
+			// Add remaining non-token string
 			if (!string.IsNullOrEmpty(current))
 			{
 				tokenBuffer.Add(current);
