@@ -6,11 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.1] - 2017-12-19
+
 ### Changed
-- Rumor no longer clears the scope when starting
 - `Rumor.CallBinding` no longer calls DynamicInvoke and is much faster
-- Null ObjectValues are now treated the same as an uninitialized (null)
-  variable
 - Tokenize step of compilation is much faster
 
 ### Fixed
@@ -21,6 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix incorrect equality checking
 - Fix improper deserialization of values caused by wrapper types (Json.NET will
   wrap object values in its own type, JValue, which causes logic to fail)
+- Rumor no longer clears the scope when starting
+- Null ObjectValues are now treated the same as an uninitialized (null)
+  variable
 
 
 ## [1.0.0] - 2017-08-16
@@ -119,7 +121,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/1.0.1...HEAD
+[1.0.0]: https://github.com/exodrifter/unity-rumor/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/exodrifter/unity-rumor/compare/0.2.1...1.0.0
 [0.2.1]: https://github.com/exodrifter/unity-rumor/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/exodrifter/unity-rumor/compare/0.1.1...0.2.0
