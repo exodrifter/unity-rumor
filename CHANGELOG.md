@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Added `OnAddChoice` and `OnRemoveChoice` events to RumorState
+
 ### Fixed
 - Fix unit test failures caused by Tokenize performance optimization code
 - Fix Rumor bindings no longer attempting to convert arguments
