@@ -48,45 +48,53 @@ namespace Exodrifter.Rumor.Lang
 			var tokenBuffer = new List<string>();
 
 			string current = "";
-			int length = 1;
-			for (int pos = 1; pos <= input.Length; ++pos)
+			for (int pos = 0; pos < input.Length;)
 			{
 				bool foundToken = false;
-				for (int l = length; l > 0; --l)
+
+				// Find the longest token starting at this position
+				string token = null;
+				for (int len = longestKeywordLength; len >= 0; --len)
 				{
-					var token = input.Substring(pos - l, l);
+					if (pos + len > input.Length)
+					{
+						continue;
+					}
+
+					token = input.Substring(pos, len);
 					if (keywordsHashset.Contains(token))
 					{
-						var pre = current + input.Substring(pos - length, length - l);
-						if (!string.IsNullOrEmpty(pre))
-						{
-							tokenBuffer.Add(pre);
-						}
-
-						tokenBuffer.Add(token);
-						current = "";
 						foundToken = true;
 						break;
 					}
 				}
 
+				// Add the token
 				if (foundToken)
 				{
-					length = 1;
+					// Add non-token string before this token
+					if (!string.IsNullOrEmpty(current))
+					{
+						tokenBuffer.Add(current);
+						current = "";
+					}
+
+					tokenBuffer.Add(token);
+					pos += token.Length;
 				}
+				// This character is not part of a non-token string
 				else
 				{
-					if (length == longestKeywordLength)
-					{
-						current += input[pos - longestKeywordLength];
-					}
-					else
-					{
-						length++;
-					}
+					current += input[pos];
+					pos++;
 				}
 			}
 
+			// Add remaining non-token string
+			if (!string.IsNullOrEmpty(current))
+			{
+				tokenBuffer.Add(current);
+			}
 			return tokenBuffer;
 		}
 	}
