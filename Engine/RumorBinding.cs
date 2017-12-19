@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Exodrifter.Rumor.Engine
 {
@@ -37,14 +34,16 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			Convert()(args[0]);
+			Bind()(args[0]);
 			return null;
 		}
 
-		private Action<object> Convert()
+		private Action<object> Bind()
 		{
 			return new Action<object>(
-				(a) => { action((T1)a); }
+				(a) => { action(
+					(T1)Convert.ChangeType(a, typeof(T1))
+				);}
 			);
 		}
 	}
@@ -60,14 +59,17 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			Convert()(args[0], args[1]);
+			Bind()(args[0], args[1]);
 			return null;
 		}
 
-		private Action<object, object> Convert()
+		private Action<object, object> Bind()
 		{
 			return new Action<object, object>(
-				(a, b) => { action((T1)a, (T2)b); }
+				(a, b) => { action(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2))
+				);}
 			);
 		}
 	}
@@ -83,14 +85,18 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			Convert()(args[0], args[1], args[2]);
+			Bind()(args[0], args[1], args[2]);
 			return null;
 		}
 
-		private Action<object, object, object> Convert()
+		private Action<object, object, object> Bind()
 		{
 			return new Action<object, object, object>(
-				(a, b, c) => { action((T1)a, (T2)b, (T3)c); }
+				(a, b, c) => { action(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2)),
+					(T3)Convert.ChangeType(c, typeof(T3))
+				);}
 			);
 		}
 	}
@@ -106,14 +112,19 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			Convert()(args[0], args[1], args[2], args[3]);
+			Bind()(args[0], args[1], args[2], args[3]);
 			return null;
 		}
 
-		private Action<object, object, object, object> Convert()
+		private Action<object, object, object, object> Bind()
 		{
 			return new Action<object, object, object, object>(
-				(a, b, c, d) => { action((T1)a, (T2)b, (T3)c, (T4)d); }
+				(a, b, c, d) => { action(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2)),
+					(T3)Convert.ChangeType(c, typeof(T3)),
+					(T4)Convert.ChangeType(d, typeof(T4))
+				);}
 			);
 		}
 	}
@@ -144,13 +155,15 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			return Convert()(args[0]);
+			return Bind()(args[0]);
 		}
 
-		private Func<object, object> Convert()
+		private Func<object, object> Bind()
 		{
 			return new Func<object, object>(
-				(a) => { return func((T1)a); }
+				(a) => { return func(
+					(T1)Convert.ChangeType(a, typeof(T1))
+				);}
 			);
 		}
 	}
@@ -166,13 +179,16 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			return Convert()(args[0], args[1]);
+			return Bind()(args[0], args[1]);
 		}
 
-		private Func<object, object, object> Convert()
+		private Func<object, object, object> Bind()
 		{
 			return new Func<object, object, object>(
-				(a, b) => { return func((T1)a, (T2)b); }
+				(a, b) => { return func(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2))
+				);}
 			);
 		}
 	}
@@ -188,13 +204,17 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			return Convert()(args[0], args[1], args[2]);
+			return Bind()(args[0], args[1], args[2]);
 		}
 
-		private Func<object, object, object, object> Convert()
+		private Func<object, object, object, object> Bind()
 		{
 			return new Func<object, object, object, object>(
-				(a, b, c) => { return func((T1)a, (T2)b, (T3)c); }
+				(a, b, c) => { return func(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2)),
+					(T3)Convert.ChangeType(c, typeof(T3))
+				);}
 			);
 		}
 	}
@@ -210,13 +230,18 @@ namespace Exodrifter.Rumor.Engine
 
 		public override object Invoke(object[] args)
 		{
-			return Convert()(args[0], args[1], args[2], args[3]);
+			return Bind()(args[0], args[1], args[2], args[3]);
 		}
 
-		private Func<object, object, object, object, object> Convert()
+		private Func<object, object, object, object, object> Bind()
 		{
 			return new Func<object, object, object, object, object>(
-				(a, b, c, d) => { return func((T1)a, (T2)b, (T3)c, (T4)d); }
+				(a, b, c, d) => { return func(
+					(T1)Convert.ChangeType(a, typeof(T1)),
+					(T2)Convert.ChangeType(b, typeof(T2)),
+					(T3)Convert.ChangeType(c, typeof(T3)),
+					(T4)Convert.ChangeType(d, typeof(T4))
+				);}
 			);
 		}
 	}
