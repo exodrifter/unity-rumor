@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Full Unity scene example
+
 ### Fixed
 - Fix `+=`, `-=`, `*=`, `/=` operators not working
+- Fix exception when script execution finishes in some cases
 
 ## [1.1.0] - 2017-12-19
 

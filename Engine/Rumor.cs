@@ -327,7 +327,7 @@ namespace Exodrifter.Rumor.Engine
 					}
 
 					// Check for stack additions
-					while (stack.Peek() != origStack) {
+					while (stack.Count != 0 && stack.Peek() != origStack) {
 						trigger = true;
 						var otherYield = ExecuteStack();
 						while (otherYield.MoveNext() && !(Finished || Cancelled)) {
