@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- If conditional statements no longer require a following else or elif
+  statement
+
+
 ## [1.1.1] - 2017-12-23
 
 ### Added
@@ -24,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fix unit test failures caused by Tokenize performance optimization code
 - Fix Rumor bindings no longer attempting to convert arguments
+
 
 ## [1.0.1] - 2017-12-19
 

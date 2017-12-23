@@ -636,13 +636,17 @@ namespace Exodrifter.Rumor.Lang
 			var expression = CompileConditional(line, ref pos, children);
 
 			int tempIndex = index++;
-			var nextCondition = CompileCondition(lines, ref index, depth);
-			if (nextCondition is Elif) {
-				return new If(expression, children, (Elif)nextCondition);
+			try
+			{
+				var nextCondition = CompileCondition(lines, ref index, depth);
+				if (nextCondition is Elif) {
+					return new If(expression, children, (Elif)nextCondition);
+				}
+				else if (nextCondition is Else) {
+					return new If(expression, children, (Else)nextCondition);
+				}
 			}
-			else if (nextCondition is Else) {
-				return new If(expression, children, (Else)nextCondition);
-			}
+			catch (Exception) { }
 
 			index = tempIndex;
 			return new If(expression, children);
