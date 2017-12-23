@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- More descriptive error for tokens after string
+
 ### Fixed
 - If conditional statements no longer require a following else or elif
   statement

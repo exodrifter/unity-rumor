@@ -403,8 +403,10 @@ namespace Exodrifter.Rumor.Lang
 					if (str != null && pos == tokens.Count) {
 						return new LiteralExpression(str);
 					}
-					throw new CompilerError(tokens[pos],
-						"Unexpected tokens after string!");
+					throw new CompilerError(tokens[pos], string.Format(
+						"Unexpected token '{0}' after string!",
+						tokens[pos].text
+					));
 				}
 				// Parse a function call
 				else if (parenthesisAtEnd) {
