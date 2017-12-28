@@ -39,7 +39,26 @@ namespace Exodrifter.Rumor.Expressions
 
 		public LiteralExpression(object obj)
 		{
-			value = new ObjectValue(obj);
+			if (obj is int)
+			{
+				value = new IntValue((int)obj);
+			}
+			else if (obj is float)
+			{
+				value = new FloatValue((float)obj);
+			}
+			else if (obj is string)
+			{
+				value = new StringValue((string)obj);
+			}
+			else if (obj is bool)
+			{
+				value = new BoolValue((bool)obj);
+			}
+			else
+			{
+				value = new ObjectValue(obj);
+			}
 		}
 
 		public override Value Evaluate(Engine.Rumor rumor)

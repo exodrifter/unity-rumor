@@ -1,4 +1,4 @@
-﻿using Exodrifter.Rumor.Lang;
+﻿using Exodrifter.Rumor.Language;
 using Exodrifter.Rumor.Nodes;
 using Exodrifter.Rumor.Util;
 using System;
@@ -212,7 +212,7 @@ namespace Exodrifter.Rumor.Engine
 		public Rumor(string script)
 			: this()
 		{
-			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+			this.nodes = new List<Node>(Compiler.Compile(script));
 		}
 
 		/// <summary>
@@ -223,7 +223,7 @@ namespace Exodrifter.Rumor.Engine
 		public Rumor(string script, Scope scope)
 			: this()
 		{
-			this.nodes = new List<Node>(new RumorCompiler().Compile(script));
+			this.nodes = new List<Node>(Compiler.Compile(script));
 			this.scope = scope;
 		}
 

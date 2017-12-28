@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+* The compiler no longer uses a tokenizer except when parsing expressions
+* Compiler errors are more specific and descriptive
+* The `Exodrifter.Rumor.Lang` namespace has been renamed to
+  `Exodrifter.Rumor.Language`
+
+
 ## [1.1.2] - 2017-12-23
 
 ### Changed
