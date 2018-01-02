@@ -9,23 +9,37 @@ namespace Exodrifter.Rumor.Test.Lang
 {
 	internal sealed class CompilerTest
 	{
+		#region Add
+
 		/// <summary>
-		/// Checks if add statements compile.
+		/// Checks if add statements with only dialog compile.
 		/// </summary>
 		[Test]
-		public void CompileAdd()
+		public void CompileAddDialog()
 		{
-			var nodes = Compiler.Compile("add bar");
+			var nodes = Compiler.Compile("add \"Hello world\"");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Add>(nodes[0]);
 			Assert.IsNull((nodes[0] as Add).speaker);
 
-			nodes = Compiler.Compile("add \"Hello world\"");
+			nodes = Compiler.Compile("add bar");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Add>(nodes[0]);
 			Assert.IsNull((nodes[0] as Add).speaker);
+		}
 
-			nodes = Compiler.Compile("add \"foo\" \"Hello world\"");
+		/// <summary>
+		/// Checks if add statements with speaker and dialog compile.
+		/// </summary>
+		[Test]
+		public void CompileAddSpeakerDialog()
+		{
+			var nodes = Compiler.Compile("add \"foo\" \"Hello world\"");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Add>(nodes[0]);
+			Assert.IsNotNull((nodes[0] as Add).speaker);
+
+			nodes = Compiler.Compile("add foo \"Hello world\"");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Add>(nodes[0]);
 			Assert.IsNotNull((nodes[0] as Add).speaker);
@@ -34,8 +48,15 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Add>(nodes[0]);
 			Assert.IsNotNull((nodes[0] as Add).speaker);
+		}
 
-			nodes = Compiler.Compile("add bar # comment");
+		/// <summary>
+		/// Checks if add statements compile with a trailing comment.
+		/// </summary>
+		[Test]
+		public void CompileAddComment()
+		{
+			var nodes = Compiler.Compile("add bar # comment");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Add>(nodes[0]);
 			Assert.IsNull((nodes[0] as Add).speaker);
@@ -47,22 +68,55 @@ namespace Exodrifter.Rumor.Test.Lang
 		}
 
 		/// <summary>
-		/// Checks if say statements compile.
+		/// Checks if add statements compile with trailing whitespace.
 		/// </summary>
 		[Test]
-		public void CompileSay()
+		public void CompileAddWhitespace()
 		{
-			var nodes = Compiler.Compile("say bar");
+			var nodes = Compiler.Compile("add bar  ");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Add>(nodes[0]);
+			Assert.IsNull((nodes[0] as Add).speaker);
+
+			nodes = Compiler.Compile("add foo bar\t\t");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Add>(nodes[0]);
+			Assert.IsNotNull((nodes[0] as Add).speaker);
+		}
+
+		#endregion
+
+		#region Say
+
+		/// <summary>
+		/// Checks if say statements with only dialog compile.
+		/// </summary>
+		[Test]
+		public void CompileSayDialog()
+		{
+			var nodes = Compiler.Compile("say \"Hello world\"");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNull((nodes[0] as Say).speaker);
 
-			nodes = Compiler.Compile("say \"Hello world\"");
+			nodes = Compiler.Compile("say bar");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNull((nodes[0] as Say).speaker);
+		}
 
-			nodes = Compiler.Compile("say \"foo\" \"Hello world\"");
+		/// <summary>
+		/// Checks if say statements with speaker and dialog compile.
+		/// </summary>
+		[Test]
+		public void CompileSaySpeakerDialog()
+		{
+			var nodes = Compiler.Compile("say \"foo\" \"Hello world\"");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Say>(nodes[0]);
+			Assert.IsNotNull((nodes[0] as Say).speaker);
+
+			nodes = Compiler.Compile("say foo \"Hello world\"");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNotNull((nodes[0] as Say).speaker);
@@ -71,8 +125,15 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNotNull((nodes[0] as Say).speaker);
+		}
 
-			nodes = Compiler.Compile("say bar # comment");
+		/// <summary>
+		/// Checks if say statements compile with a trailing comment.
+		/// </summary>
+		[Test]
+		public void CompileSayComment()
+		{
+			var nodes = Compiler.Compile("say bar # comment");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNull((nodes[0] as Say).speaker);
@@ -82,6 +143,25 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.IsAssignableFrom<Say>(nodes[0]);
 			Assert.IsNotNull((nodes[0] as Say).speaker);
 		}
+
+		/// <summary>
+		/// Checks if say statements compile with trailing whitespace.
+		/// </summary>
+		[Test]
+		public void CompileSayWhitespace()
+		{
+			var nodes = Compiler.Compile("say bar  ");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Say>(nodes[0]);
+			Assert.IsNull((nodes[0] as Say).speaker);
+
+			nodes = Compiler.Compile("say foo bar\t\t");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Say>(nodes[0]);
+			Assert.IsNotNull((nodes[0] as Say).speaker);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Checks if '$' statements compile.

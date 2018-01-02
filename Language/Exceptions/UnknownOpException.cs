@@ -21,7 +21,8 @@ namespace Exodrifter.Rumor.Language
 		#region Get Message
 
 		private const string message =
-			"Found invalid operator \"{0}\"at line {1}, column {2} (index {3})";
+			"Found invalid operator \"{0}\" at line {1}, column {2}"
+			+ " (index {3})";
 
 		/// <summary>
 		/// Creates an error message using the current state of a reader.
