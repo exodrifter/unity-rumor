@@ -70,17 +70,10 @@ namespace Exodrifter.Rumor.Language
 		public List<Node> Compile(Reader reader, int? targetDepth = null)
 		{
 			var nodes = new List<Node>();
-			Reader temp = null;
+			var temp = new Reader(reader);
 
-			while (!reader.EOF)
+			while (!temp.EOF)
 			{
-				// Catch up reader
-				if (temp != null)
-				{
-					reader.Read(temp.Index - reader.Index);
-				}
-				temp = new Reader(reader);
-
 				// Indentation level
 				var depth = temp.Skip();
 				if (temp.EOF)
@@ -168,7 +161,9 @@ namespace Exodrifter.Rumor.Language
 						break;
 				}
 
-				temp = GetTempOnNextLine(temp);
+				// Catch up reader
+				reader.Read(temp.Index - reader.Index);
+				temp = GetTempOnNextLine(reader);
 			}
 
 			return nodes;
@@ -252,6 +247,8 @@ namespace Exodrifter.Rumor.Language
 		private Choice CompileChoice(Reader reader, int depth)
 		{
 			var text = CompileExpression(reader);
+			reader.Skip();
+			reader.Expect(':');
 			return new Choice(text, CompileChildren(reader, depth));
 		}
 
@@ -301,6 +298,8 @@ namespace Exodrifter.Rumor.Language
 		private Condition CompileIf(Reader reader, int depth)
 		{
 			var exp = CompileExpression(reader);
+			reader.Skip();
+			reader.Expect(':');
 			var children = CompileChildren(reader, depth);
 
 			var temp = GetTempOnNextLine(reader);
@@ -315,7 +314,7 @@ namespace Exodrifter.Rumor.Language
 					// Catch up reader
 					reader.Read(temp.Index - reader.Index);
 
-					var elif = CompileElif(temp, depth);
+					var elif = CompileElif(reader, depth);
 					return new Condition(new If(exp, children, elif));
 				}
 				else if (temp.HasMatch("else"))
@@ -326,13 +325,10 @@ namespace Exodrifter.Rumor.Language
 					// Catch up reader
 					reader.Read(temp.Index - reader.Index);
 
-					var @else = CompileElse(temp, depth);
+					var @else = CompileElse(reader, depth);
 					return new Condition(new If(exp, children, @else));
 				}
 			}
-
-			// Catch up reader
-			reader.Read(temp.Index - reader.Index);
 
 			return new Condition(new If(exp, children));
 		}
@@ -340,6 +336,8 @@ namespace Exodrifter.Rumor.Language
 		private Elif CompileElif(Reader reader, int depth)
 		{
 			var exp = CompileExpression(reader);
+			reader.Skip();
+			reader.Expect(':');
 			var children = CompileChildren(reader, depth);
 
 			var temp = GetTempOnNextLine(reader);
@@ -354,7 +352,7 @@ namespace Exodrifter.Rumor.Language
 					// Catch up reader
 					reader.Read(temp.Index - reader.Index);
 
-					var elif = CompileElif(temp, depth);
+					var elif = CompileElif(reader, depth);
 					return new Elif(exp, children, elif);
 				}
 				else if (temp.HasMatch("else"))
@@ -365,13 +363,10 @@ namespace Exodrifter.Rumor.Language
 					// Catch up reader
 					reader.Read(temp.Index - reader.Index);
 
-					var @else = CompileElse(temp, depth);
+					var @else = CompileElse(reader, depth);
 					return new Elif(exp, children, @else);
 				}
 			}
-
-			// Catch up reader
-			reader.Read(temp.Index - reader.Index);
 
 			return new Elif(exp, children);
 		}
@@ -391,6 +386,8 @@ namespace Exodrifter.Rumor.Language
 		private Label CompileLabel(Reader reader, int depth)
 		{
 			var name = ParseVariable(reader);
+			reader.Skip();
+			reader.Expect(':');
 			return new Label(name, CompileChildren(reader, depth));
 		}
 
@@ -760,21 +757,29 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				// Check for operators
+				string potentialOp = "";
 				if (addOp)
 				{
 					foreach (var op in ops.Keys)
 					{
 						if (temp.HasMatch(op))
 						{
-							tokens.Add(new Token(temp, op.Length));
-							temp.Read(op.Length);
-
-							addOp = false;
-							addElement = true;
-							success = true;
-							break;
+							// Get the longest operator
+							if (potentialOp.Length < op.Length)
+							{
+								potentialOp = op;
+							}
 						}
 					}
+				}
+				if (!string.IsNullOrEmpty(potentialOp))
+				{
+					tokens.Add(new Token(temp, potentialOp.Length));
+					temp.Read(potentialOp.Length);
+
+					addOp = false;
+					addElement = true;
+					success = true;
 				}
 
 				if (success)

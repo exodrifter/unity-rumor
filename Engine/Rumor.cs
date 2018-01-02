@@ -212,7 +212,7 @@ namespace Exodrifter.Rumor.Engine
 		public Rumor(string script)
 			: this()
 		{
-			this.nodes = new List<Node>(Compiler.Compile(script));
+			this.nodes = Compiler.Compile(script);
 		}
 
 		/// <summary>
