@@ -394,7 +394,17 @@ namespace Exodrifter.Rumor.Language
 		private Pause CompilePause(Reader reader)
 		{
 			var exp = CompileExpression(reader);
-			return new Pause(exp);
+
+			// Check for cant_skip argument
+			bool cantSkip = false;
+			reader.Skip();
+			if (reader.HasMatch("cant_skip"))
+			{
+				reader.Read("cant_skip".Length);
+				cantSkip = true;
+			}
+
+			return new Pause(exp, cantSkip);
 		}
 
 		private Return CompileReturn(Reader reader)

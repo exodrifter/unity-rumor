@@ -319,10 +319,17 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializePause()
 		{
-			var a = new Pause(1);
+			var a = new Pause(1, true);
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a.seconds, b.seconds);
+			Assert.AreEqual(a.cantSkip, b.cantSkip);
+
+			a = new Pause(2, false);
+			b = Reserialize(a);
+
+			Assert.AreEqual(a.seconds, b.seconds);
+			Assert.AreEqual(a.cantSkip, b.cantSkip);
 		}
 
 		/// <summary>

@@ -128,16 +128,26 @@
 	public class ForSeconds : RumorYield
 	{
 		private float seconds;
+		private bool cantSkip;
 
-		public ForSeconds(float seconds)
+		public ForSeconds(float seconds, bool cantSkip)
 		{
 			this.seconds = seconds;
+			this.cantSkip = cantSkip;
+		}
+
+		public override void OnAdvance()
+		{
+			if (!cantSkip)
+			{
+				Finished = true;
+			}
 		}
 
 		public override void OnUpdate(Rumor rumor, float delta)
 		{
 			base.OnUpdate(rumor, delta);
-			Finished = seconds <= Elapsed;
+			Finished = Finished || seconds <= Elapsed;
 		}
 	}
 }

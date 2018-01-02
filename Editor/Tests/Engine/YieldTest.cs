@@ -111,7 +111,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void YieldSeconds()
 		{
-			var yield = new ForSeconds(1);
+			var yield = new ForSeconds(1, true);
 			Assert.False(yield.Finished);
 
 			yield.OnAdvance();
@@ -127,6 +127,18 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.True(yield.Finished);
 
 			yield.OnUpdate(null, 1);
+			Assert.True(yield.Finished);
+
+			yield = new ForSeconds(1, false);
+			Assert.False(yield.Finished);
+
+			yield.OnAdvance();
+			Assert.True(yield.Finished);
+
+			yield.OnUpdate(null, 0.5f);
+			Assert.True(yield.Finished);
+
+			yield.OnUpdate(null, 1f);
 			Assert.True(yield.Finished);
 		}
 	}

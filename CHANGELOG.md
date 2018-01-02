@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+* You can now add the enum argument `cant_skip` to the end of a pause statement
+  to ignore advances until the pause ends
+
 ### Changed
 * The compiler no longer uses a tokenizer except when parsing expressions
 * Compiler errors are more specific and descriptive

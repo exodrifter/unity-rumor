@@ -19,14 +19,23 @@ namespace Exodrifter.Rumor.Nodes
 		public readonly Expression seconds;
 
 		/// <summary>
+		/// If true, ignore advances until the pause is over.
+		/// </summary>
+		public readonly bool cantSkip;
+
+		/// <summary>
 		/// Creates a new pause node.
 		/// </summary>
 		/// <param name="seconds">
 		/// The number of seconds to pause for.
 		/// </param>
-		public Pause(float seconds)
+		/// <param name="canSkip">
+		/// True if an advance will NOT skip the pause.
+		/// </param>
+		public Pause(float seconds, bool cantSkip)
 		{
 			this.seconds = new LiteralExpression(seconds);
+			this.cantSkip = cantSkip;
 		}
 
 		/// <summary>
@@ -35,9 +44,10 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="seconds">
 		/// The number of seconds to pause for.
 		/// </param>
-		public Pause(Expression expression)
+		public Pause(Expression expression, bool cantSkip)
 		{
 			this.seconds = expression;
+			this.cantSkip = cantSkip;
 		}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
@@ -45,7 +55,7 @@ namespace Exodrifter.Rumor.Nodes
 			var value = seconds.Evaluate(rumor) ?? new ObjectValue(null);
 
 			if (value.AsFloat() > 0) {
-				yield return new ForSeconds(value.AsFloat());
+				yield return new ForSeconds(value.AsFloat(), cantSkip);
 			}
 			else {
 				yield return new ForAdvance();
@@ -58,6 +68,7 @@ namespace Exodrifter.Rumor.Nodes
 			: base(info, context)
 		{
 			seconds = info.GetValue<Expression>("seconds");
+			cantSkip = info.GetValue<bool>("cantSkip");
 		}
 
 		public override void GetObjectData
@@ -65,6 +76,7 @@ namespace Exodrifter.Rumor.Nodes
 		{
 			base.GetObjectData(info, context);
 			info.AddValue<Expression>("seconds", seconds);
+			info.AddValue<bool>("cantSkip", cantSkip);
 		}
 
 		#endregion
