@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Language
 		/// </summary>
 		public static List<Node> Compile(string script)
 		{
-			throw new System.NotImplementedException();
+			return new Parser().Compile(new Reader(script));
 		}
 	}
 }

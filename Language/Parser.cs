@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Exodrifter.Rumor.Expressions;
+using Exodrifter.Rumor.Nodes;
 
 namespace Exodrifter.Rumor.Language
 {
@@ -66,56 +67,161 @@ namespace Exodrifter.Rumor.Language
 
 		#region Compile
 
-		public void Compile(Reader reader)
+		public List<Node> Compile(Reader reader, int? targetDepth = null)
 		{
+			var nodes = new List<Node>();
+			Reader temp = null;
+
 			while (!reader.EOF)
 			{
+				// Catch up reader
+				if (temp != null)
+				{
+					reader.Read(temp.Index - reader.Index);
+				}
+				temp = new Reader(reader);
+
 				// Indentation level
-				var depth = reader.Skip();
-				var next = reader.Peek();
+				var depth = temp.Skip();
+				if (temp.EOF)
+				{
+					break;
+				}
 
 				// Ignore
+				var next = temp.Peek();
 				if (next == '\n')
 				{
-					reader.NextLine();
+					temp.NextLine();
 					continue;
 				}
 				else if (next == '#')
 				{
-					reader.NextLine();
+					temp.NextLine();
 					continue;
+				}
+
+				// Validate block
+				targetDepth = targetDepth ?? depth;
+				if (depth < targetDepth)
+				{
+					break; // Block has ended
+				}
+				if (depth > targetDepth)
+				{
+					throw new ParseException(temp, "Unexpected block");
 				}
 
 				// Parse the command
-				var errorLocation = new Reader(reader);
-				var command = ParseCommand(reader);
+				var command = ParseCommand(temp);
 				switch (command)
 				{
 					default:
-						throw new UnknownCommandException(reader, command);
+						throw new UnknownCommandException(temp, command);
+
+					case "$":
+						nodes.Add(CompileStatement(temp));
+						break;
+
+					case "add":
+						nodes.Add(CompileAdd(temp));
+						break;
+
+					case "call":
+						nodes.Add(CompileCall(temp));
+						break;
+
+					case "choice":
+						nodes.Add(CompileChoice(temp, depth));
+						break;
+
+					case "choose":
+						nodes.Add(CompileChoose(temp));
+						break;
+
+					case "clear":
+						nodes.Add(CompileClear(temp));
+						break;
+
+					case "jump":
+						nodes.Add(CompileCall(temp));
+						break;
+
+					case "label":
+						nodes.Add(CompileLabel(temp, depth));
+						break;
+
+					case "pause":
+						nodes.Add(CompilePause(temp));
+						break;
+
+					case "return":
+						nodes.Add(CompileReturn(temp));
+						break;
+
+					case "say":
+						nodes.Add(CompileSay(temp));
+						break;
 				}
 
 				// Skip blank space after command
-				reader.Skip();
-				next = reader.Peek();
+				temp.Skip();
 
 				// Ignore
-				if (next == '#')
+				if (!temp.EOF && temp.Peek() == '#')
 				{
-					reader.NextLine();
+					temp.NextLine();
 					continue;
 				}
 
-				// Unused characters after command
-				errorLocation = new Reader(reader);
-				var unused = reader.ReadUntil('\n').Trim();
+				// Check for unused characters after command
+				var errorLocation = new Reader(temp);
+				var unused = temp.ReadUntil('\n').Trim();
 				if (!string.IsNullOrEmpty(unused))
 				{
 					throw new UnusedException(errorLocation, unused);
 				}
 
-				reader.NextLine();
+				temp.NextLine();
 			}
+
+			return nodes;
+		}
+
+		private List<Node> CompileChildren(Reader reader, int currentDepth)
+		{
+			var temp = new Reader(reader);
+
+			// Skip blank space after command
+			temp.Skip();
+
+			// Ignore
+			if (!temp.EOF && temp.Peek() == '#')
+			{
+				temp.NextLine();
+			}
+			else
+			{
+				// Check for unused characters after command
+				var errorLocation = new Reader(temp);
+				var unused = temp.ReadUntil('\n').Trim();
+				if (!string.IsNullOrEmpty(unused))
+				{
+					throw new UnusedException(errorLocation, unused);
+				}
+
+				temp.NextLine();
+			}
+
+			// Check the depth
+			var nextDepth = temp.Skip();
+			if (nextDepth > currentDepth)
+			{
+				return Compile(reader);
+			}
+
+			// No children
+			return new List<Node>();
 		}
 
 		#endregion
@@ -127,6 +233,119 @@ namespace Exodrifter.Rumor.Language
 			var command = reader.ReadUntil(' ', '\t', '\n');
 			reader.Skip();
 			return command.Trim();
+		}
+
+		private Add CompileAdd(Reader reader)
+		{
+			var first = CompileExpression(reader);
+			var second = CompileExpression(reader);
+
+			if (second is NoOpExpression)
+			{
+				return new Add(first);
+			}
+			else
+			{
+				return new Add(first, second);
+			}
+		}
+
+		private Call CompileCall(Reader reader)
+		{
+			var name = ParseVariable(reader);
+			return new Call(name);
+		}
+
+		private Choice CompileChoice(Reader reader, int depth)
+		{
+			var text = CompileExpression(reader);
+			return new Choice(text, CompileChildren(reader, depth));
+		}
+
+		private Choose CompileChoose(Reader reader)
+		{
+			var number = CompileExpression(reader);
+			if (number is NoOpExpression)
+			{
+				number = new LiteralExpression(1);
+			}
+
+			Expression seconds = new LiteralExpression(0);
+			reader.Skip();
+			if (reader.HasMatch("in"))
+			{
+				reader.Read("in".Length);
+				seconds = CompileExpression(reader);
+			}
+
+			Expression @default = new LiteralExpression(0);
+			reader.Skip();
+			if (reader.HasMatch("default"))
+			{
+				reader.Read("default".Length);
+				@default = CompileExpression(reader);
+			}
+
+			return new Choose(number, seconds, @default);
+		}
+
+		private Clear CompileClear(Reader reader)
+		{
+			var type = ClearType.ALL;
+
+			if (reader.HasMatch("choices"))
+			{
+				type = ClearType.CHOICES;
+			}
+			else if (reader.HasMatch("dialog"))
+			{
+				type = ClearType.DIALOG;
+			}
+
+			return new Clear(type);
+		}
+
+		private Jump CompileJump(Reader reader)
+		{
+			var name = ParseVariable(reader);
+			return new Jump(name);
+		}
+
+		private Label CompileLabel(Reader reader, int depth)
+		{
+			var name = ParseVariable(reader);
+			return new Label(name, CompileChildren(reader, depth));
+		}
+
+		private Pause CompilePause(Reader reader)
+		{
+			var exp = CompileExpression(reader);
+			return new Pause(exp);
+		}
+
+		private Return CompileReturn(Reader reader)
+		{
+			return new Return();
+		}
+
+		private Say CompileSay(Reader reader)
+		{
+			var first = CompileExpression(reader);
+			var second = CompileExpression(reader);
+
+			if (second is NoOpExpression)
+			{
+				return new Say(first);
+			}
+			else
+			{
+				return new Say(first, second);
+			}
+		}
+
+		private Statement CompileStatement(Reader reader)
+		{
+			return new Statement(CompileExpression(reader));
 		}
 
 		#endregion
@@ -378,7 +597,7 @@ namespace Exodrifter.Rumor.Language
 			// Sanity Check
 			if (reader.EOF)
 			{
-				throw new ReadException(reader);
+				return new List<Token>();
 			}
 
 			Reader temp = null;
@@ -397,6 +616,11 @@ namespace Exodrifter.Rumor.Language
 
 				// Skip whitespace
 				temp.Skip();
+				if (!temp.EOF && temp.Peek() == '\n')
+				{
+					temp.NextLine();
+					temp.Skip();
+				}
 
 				// Expression has ended
 				if (temp.EOF)
@@ -503,8 +727,24 @@ namespace Exodrifter.Rumor.Language
 					// Variable
 					else if (VALID_VAR_CHARS.Contains(next))
 					{
-						var name = ParseVariable(temp);
-						expression = new VariableExpression(name);
+						// Check for keywords
+						bool isKeyword = false;
+						foreach (var keyword in new List<string>() {
+							"add", "call", "choice", "choose", "clear", "jump",
+							"label", "pause", "return", "say"})
+						{
+							if (temp.HasMatch(keyword))
+							{
+								isKeyword = true;
+								break;
+							}
+						}
+
+						if (!isKeyword)
+						{
+							var name = ParseVariable(temp);
+							expression = new VariableExpression(name);
+						}
 					}
 
 					if (expression != null)
