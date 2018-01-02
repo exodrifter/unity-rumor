@@ -141,7 +141,7 @@ namespace Exodrifter.Rumor.Language
 						break;
 
 					case "jump":
-						nodes.Add(CompileCall(temp));
+						nodes.Add(CompileJump(temp));
 						break;
 
 					case "label":
