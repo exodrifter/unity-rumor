@@ -544,7 +544,12 @@ namespace Exodrifter.Rumor.Language
 			var builder = new StringBuilder();
 			while (!reader.EOF)
 			{
-				builder.Append(reader.ReadUntil('\\', '"', ' ', '\t', '\n'));
+				var toAppend = reader.ReadUntil('\\', '"', ' ', '\t', '\n');
+				builder.Append(toAppend);
+				if (toAppend.Length > 0)
+				{
+					whitespace = false;
+				}
 
 				// Did not find end quote
 				if (reader.EOF)
