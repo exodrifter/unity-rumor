@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Expressions;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Expressions;
 using NUnit.Framework;
 using System;
 
@@ -148,3 +150,5 @@ namespace Exodrifter.Rumor.Test.Expressions
 		private int bar() { return b; }
 	}
 }
+
+#endif

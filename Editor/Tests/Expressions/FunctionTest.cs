@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_EDITOR
+
+using NUnit.Framework;
 using System;
 
 namespace Exodrifter.Rumor.Test.Expressions
@@ -97,3 +99,5 @@ namespace Exodrifter.Rumor.Test.Expressions
 		}
 	}
 }
+
+#endif

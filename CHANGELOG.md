@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Compiler errors are more specific and descriptive
 * The `Exodrifter.Rumor.Lang` namespace has been renamed to
   `Exodrifter.Rumor.Language`
+* All unit tests and examples are wrapped in a `UNITY_EDITOR` ifdef to make
+  it easier to use this repository as a submodule in non-unity project
 
 
 ## [1.1.2] - 2017-12-23

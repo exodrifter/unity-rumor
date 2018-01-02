@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
 using NUnit.Framework;
 
 namespace Exodrifter.Rumor.Test.Engine
@@ -265,3 +267,5 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 	}
 }
+
+#endif

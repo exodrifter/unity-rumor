@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Nodes;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -114,3 +116,5 @@ namespace Exodrifter.Rumor.Test.Nodes
 		}
 	}
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -106,3 +108,5 @@ label end:
 		}
 	}
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
@@ -613,3 +615,5 @@ namespace Exodrifter.Rumor.Test.Engine
 		#endregion
 	}
 }
+
+#endif
