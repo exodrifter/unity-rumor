@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Language
 		private static string GetMessage(ITextPosition position, string unused)
 		{
 			return string.Format(message,
-				DescribeChar(unused),
+				DescribeString(unused),
 				position.Line,
 				position.Column,
 				position.Index

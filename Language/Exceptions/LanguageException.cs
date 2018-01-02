@@ -59,6 +59,23 @@ namespace Exodrifter.Rumor.Language
 		#region Util
 
 		/// <summary>
+		/// Returns a human-readable string that describes a string.
+		/// <summary>
+		protected static string DescribeString(string str)
+		{
+			var builder = new StringBuilder();
+
+			builder.Append("\"");
+			foreach (var ch in str)
+			{
+				builder.Append(EscapeChar(ch));
+			}
+			builder.Append("\"");
+
+			return builder.ToString();
+		}
+
+		/// <summary>
 		/// Returns a human-readable string that describes an array of
 		/// characters that compose a string.
 		/// <summary>
@@ -92,7 +109,7 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				builder.Append("'");
-				builder.Append(chs[i]);
+				builder.Append(EscapeChar(chs[i]));
 				builder.Append("'");
 			}
 
@@ -100,8 +117,7 @@ namespace Exodrifter.Rumor.Language
 		}
 
 		/// <summary>
-		/// Escapes characters that would normally otherwise be unreadable, such
-		/// as tabs or newlines.
+		/// Escapes characters as if they were in a C# string.
 		/// </summary>
 		/// <returns>A string representing the character.</returns>
 		private static string EscapeChar(char ch)
@@ -117,6 +133,8 @@ namespace Exodrifter.Rumor.Language
 					return "\\n";
 				case '\t':
 					return "\\t";
+				case '\"':
+					return "\\\"";
 			}
 		}
 
