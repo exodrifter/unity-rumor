@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   to ignore advances until the pause ends
 * You can now add the enum argument `no_wait` to the end of an add or say
   statement to auto advance the dialog
+* Variable substitution with `{` and `}` in strings is now supported
 
 ### Changed
 * The compiler no longer uses a tokenizer except when parsing expressions

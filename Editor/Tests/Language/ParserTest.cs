@@ -263,7 +263,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			var parser = new Parser();
 
 			var reader = new Reader("\"Hello world\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader(" \"Hello world\"");
 			Assert.Throws<ReadException>(() => parser.ParseString(reader));
@@ -278,16 +278,16 @@ namespace Exodrifter.Rumor.Test.Lang
 			var parser = new Parser();
 
 			var reader = new Reader("\"Hello \\\\ world\"");
-			Assert.AreEqual("Hello \\ world", parser.ParseString(reader));
+			AssertString("Hello \\ world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello \\\" world\"");
-			Assert.AreEqual("Hello \" world", parser.ParseString(reader));
+			AssertString("Hello \" world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello \\t world\"");
-			Assert.AreEqual("Hello \t world", parser.ParseString(reader));
+			AssertString("Hello \t world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello \\n world\"");
-			Assert.AreEqual("Hello \n world", parser.ParseString(reader));
+			AssertString("Hello \n world", parser.ParseString(reader));
 		}
 
 		/// <summary>
@@ -300,11 +300,11 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			// Uppercase
 			var reader = new Reader("\"\\u4F60\\u597D\"");
-			Assert.AreEqual("\u4F60\u597D", parser.ParseString(reader));
+			AssertString("\u4F60\u597D", parser.ParseString(reader));
 
 			// Lowercase
 			reader = new Reader("\"\\u4f60\\u597d\"");
-			Assert.AreEqual("\u4F60\u597D", parser.ParseString(reader));
+			AssertString("\u4F60\u597D", parser.ParseString(reader));
 		}
 
 		/// <summary>
@@ -316,34 +316,34 @@ namespace Exodrifter.Rumor.Test.Lang
 			var parser = new Parser();
 
 			var reader = new Reader("\"Hello world\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello\tworld\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello\nworld\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello\n\n\nworld\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello\n\t\nworld\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello \t \n \t world\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\" Hello world\"");
-			Assert.AreEqual(" Hello world", parser.ParseString(reader));
+			AssertString(" Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\" \tHello world\"");
-			Assert.AreEqual(" Hello world", parser.ParseString(reader));
+			AssertString(" Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello world \"");
-			Assert.AreEqual("Hello world ", parser.ParseString(reader));
+			AssertString("Hello world ", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello world \t\"");
-			Assert.AreEqual("Hello world ", parser.ParseString(reader));
+			AssertString("Hello world ", parser.ParseString(reader));
 		}
 
 		/// <summary>
@@ -355,16 +355,28 @@ namespace Exodrifter.Rumor.Test.Lang
 			var parser = new Parser();
 
 			var reader = new Reader("\"Hello world\"abcd");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello world\"\"");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello world\" ");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
 
 			reader = new Reader("\"Hello world\"\t\t ");
-			Assert.AreEqual("Hello world", parser.ParseString(reader));
+			AssertString("Hello world", parser.ParseString(reader));
+		}
+
+		/// <summary>
+		/// Utility method for asserting the value of an expression that is
+		/// just a literal string value
+		/// </summary>
+		private void AssertString(string expected, Expression actual)
+		{
+			Assert.IsAssignableFrom<LiteralExpression>(actual);
+			var value = ((LiteralExpression)actual).Value;
+			Assert.IsTrue(value.IsString());
+			Assert.AreEqual(expected, value.AsString());
 		}
 
 		#endregion

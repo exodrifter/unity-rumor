@@ -587,15 +587,18 @@ namespace Exodrifter.Rumor.Language
 
 		#region String
 
-		public string ParseString(Reader reader)
+		public Expression ParseString(Reader reader)
 		{
+			var expressions = new List<Expression>();
+
 			reader.Expect('\"');
 
 			var whitespace = false;
 			var builder = new StringBuilder();
 			while (!reader.EOF)
 			{
-				var toAppend = reader.ReadUntil('\\', '"', ' ', '\t', '\n');
+				var toAppend = reader.ReadUntil(
+					'{', '\\', '"', ' ', '\t', '\n');
 				builder.Append(toAppend);
 				if (toAppend.Length > 0)
 				{
@@ -625,7 +628,39 @@ namespace Exodrifter.Rumor.Language
 					// End Quotes
 					case '\"':
 						reader.Read();
-						return builder.ToString();
+						var str = builder.ToString();
+						if (!string.IsNullOrEmpty(str))
+						{
+							expressions.Add(new LiteralExpression(str));
+						}
+
+						// Build expression
+						Expression exp = null;
+						for (int i = 0; i < expressions.Count; ++i)
+						{
+							if (exp != null)
+							{
+								exp = new AddExpression(exp, expressions[i]);
+							}
+							else
+							{
+								exp = expressions[i];
+							}
+						}
+						return exp;
+
+					// Substitution
+					case '{':
+						var str2 = builder.ToString();
+						if (!string.IsNullOrEmpty(str2))
+						{
+							expressions.Add(new LiteralExpression(str2));
+						}
+						builder = new StringBuilder();
+
+						expressions.Add(CompileExpression(reader));
+						whitespace = false;
+						break;
 
 					// Whitespace
 					case ' ':
@@ -662,6 +697,10 @@ namespace Exodrifter.Rumor.Language
 
 				// Escaped backslash
 				case '\\':
+					return '\\';
+
+				// Escaped substitution
+				case '{':
 					return '\\';
 
 				// Escaped newline
@@ -725,6 +764,7 @@ namespace Exodrifter.Rumor.Language
 		/// <summary>
 		/// Tokenizes an expression.
 		/// </summary>
+		/// <param name="reader">The reader to tokenize.</param>
 		public List<Token> TokenizeExpression(Reader reader)
 		{
 			// Sanity Check
@@ -738,6 +778,7 @@ namespace Exodrifter.Rumor.Language
 			var addOp = true;
 			var addElement = true;
 			var parenthesis = new List<Reader>();
+			var isSubstitution = false;
 			while (true)
 			{
 				// Catch up the reader
@@ -765,6 +806,34 @@ namespace Exodrifter.Rumor.Language
 				var success = false;
 				switch (temp.Peek())
 				{
+					case '{':
+						if (tokens.Count > 0)
+						{
+							addOp = false;
+							addElement = false;
+							success = false;
+							break;
+						}
+						isSubstitution = true;
+						temp.Read();
+
+						addOp = true;
+						addElement = true;
+						success = true;
+						break;
+
+					case '}':
+						if (!isSubstitution)
+						{
+							throw new CloseSubstitutionException(temp);
+						}
+						temp.Read();
+
+						addOp = false;
+						addElement = false;
+						success = true;
+						break;
+
 					case '(':
 						tokens.Add(new Token(temp, 1));
 						parenthesis.Add(new Reader(temp));
@@ -850,8 +919,7 @@ namespace Exodrifter.Rumor.Language
 					var next = temp.Peek();
 					if ('"' == next)
 					{
-						var str = ParseString(temp);
-						expression = new LiteralExpression(str);
+						expression = ParseString(temp);
 					}
 					// Number Literal
 					else if ("1234567890+-.".Contains(next))
