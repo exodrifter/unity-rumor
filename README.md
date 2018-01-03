@@ -46,7 +46,7 @@ if apples == pears:
     $ pears += 1
 
 say "I have " + apples + " apples."
-say "You have " + pears + " pears."
+say "You have { pears } pears."
 say "Who has more fruits?"
 
 choice "I do.":
