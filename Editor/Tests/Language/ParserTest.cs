@@ -562,6 +562,29 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.AreEqual(")", tokens[4].Text);
 		}
 
+		/// <summary>
+		/// Check if expression tokenization works across newlines.
+		/// </summary>
+		[Test]
+		public void TokenizeExpressionNewline()
+		{
+			var parser = new Parser();
+
+			var reader = new Reader("4\n+\n3");
+			var tokens = parser.TokenizeExpression(reader);
+			Assert.AreEqual(3, tokens.Count);
+			Assert.AreEqual("4", tokens[0].Text);
+			Assert.AreEqual("+", tokens[1].Text);
+			Assert.AreEqual("3", tokens[2].Text);
+
+			reader = new Reader("4\n+\n3\n5 + 2");
+			tokens = parser.TokenizeExpression(reader);
+			Assert.AreEqual(3, tokens.Count);
+			Assert.AreEqual("4", tokens[0].Text);
+			Assert.AreEqual("+", tokens[1].Text);
+			Assert.AreEqual("3", tokens[2].Text);
+		}
+
 		#endregion
 
 		#region Expression Compilation
@@ -574,23 +597,26 @@ namespace Exodrifter.Rumor.Test.Lang
 		{
 			var parser = new Parser();
 
-			var reader = new Reader("4 * 3.0");
-			var exp = parser.CompileExpression(reader);
+			var exp = parser.CompileExpression("4 * 3.0");
 			Assert.IsAssignableFrom<MultiplyExpression>(exp);
-			Assert.IsAssignableFrom<LiteralExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<LiteralExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<LiteralExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<LiteralExpression>(
+				(exp as OpExpression).Right);
 
-			reader = new Reader("foo.bar");
-			exp = parser.CompileExpression(reader);
+			exp = parser.CompileExpression("foo.bar");
 			Assert.IsAssignableFrom<DotExpression>(exp);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Right);
 
-			reader = new Reader("foo.bar()");
-			exp = parser.CompileExpression(reader);
+			exp = parser.CompileExpression("foo.bar()");
 			Assert.IsAssignableFrom<DotExpression>(exp);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<FunctionExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<FunctionExpression>(
+				(exp as OpExpression).Right);
 		}
 
 		/// <summary>
@@ -601,23 +627,26 @@ namespace Exodrifter.Rumor.Test.Lang
 		{
 			var parser = new Parser();
 
-			var reader = new Reader("4 * 3.0 foobar");
-			var exp = parser.CompileExpression(reader);
+			var exp = parser.CompileExpression("4 * 3.0 foobar");
 			Assert.IsAssignableFrom<MultiplyExpression>(exp);
-			Assert.IsAssignableFrom<LiteralExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<LiteralExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<LiteralExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<LiteralExpression>(
+				(exp as OpExpression).Right);
 
-			reader = new Reader("foo.bar 4");
-			exp = parser.CompileExpression(reader);
+			exp = parser.CompileExpression("foo.bar 4");
 			Assert.IsAssignableFrom<DotExpression>(exp);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Right);
 
-			reader = new Reader("foo.bar() 3.0");
-			exp = parser.CompileExpression(reader);
+			exp = parser.CompileExpression("foo.bar() 3.0");
 			Assert.IsAssignableFrom<DotExpression>(exp);
-			Assert.IsAssignableFrom<VariableExpression>((exp as OpExpression).Left);
-			Assert.IsAssignableFrom<FunctionExpression>((exp as OpExpression).Right);
+			Assert.IsAssignableFrom<VariableExpression>(
+				(exp as OpExpression).Left);
+			Assert.IsAssignableFrom<FunctionExpression>(
+				(exp as OpExpression).Right);
 		}
 
 		#endregion

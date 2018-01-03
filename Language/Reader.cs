@@ -63,6 +63,8 @@ namespace Exodrifter.Rumor.Language
 			get { return index >= script.Length; }
 		}
 
+		public const int DEFAULT_TAB_SIZE = 4;
+
 		#endregion
 
 		#region Constructor
@@ -76,7 +78,7 @@ namespace Exodrifter.Rumor.Language
 		/// <param name="tabSize">
 		/// The number of spaces to treat each tab as.
 		/// </param>
-		public Reader(string script, int tabSize = 4)
+		public Reader(string script, int tabSize = DEFAULT_TAB_SIZE)
 		{
 			if (tabSize < 0)
 			{

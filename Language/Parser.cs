@@ -106,7 +106,8 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				// Parse the command
-				var command = ParseCommand(temp);
+				var command = temp.ReadUntil(' ', '\t', '\n').Trim();
+				temp.Skip();
 				switch (command)
 				{
 					default:
@@ -214,14 +215,7 @@ namespace Exodrifter.Rumor.Language
 
 		#endregion
 
-		#region Parse
-
-		private string ParseCommand(Reader reader)
-		{
-			var command = reader.ReadUntil(' ', '\t', '\n');
-			reader.Skip();
-			return command.Trim();
-		}
+		#region Compile Commands
 
 		private Add CompileAdd(Reader reader)
 		{
@@ -981,6 +975,13 @@ namespace Exodrifter.Rumor.Language
 			}
 
 			return tokens;
+		}
+
+		public Expression CompileExpression(
+			string expression, int tabSize = Reader.DEFAULT_TAB_SIZE)
+		{
+			var reader = new Reader(expression, tabSize);
+			return CompileExpression(TokenizeExpression(reader));
 		}
 
 		public Expression CompileExpression(Reader reader)
