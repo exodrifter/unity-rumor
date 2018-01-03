@@ -24,15 +24,24 @@ namespace Exodrifter.Rumor.Nodes
 		private readonly Expression text;
 
 		/// <summary>
+		/// True if the dialog should auto-advance itself.
+		/// </summary>
+		private readonly bool noWait;
+
+		/// <summary>
 		/// Creates a new Say node.
 		/// </summary>
 		/// <param name="text">
 		/// The text to replace the dialog with.
 		/// </param>
-		public Say(string text)
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Say(string text, bool noWait = false)
 		{
 			this.speaker = null;
 			this.text = new LiteralExpression(text);
+			this.noWait = noWait;
 		}
 
 		/// <summary>
@@ -41,10 +50,14 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The expression to replace the dialog with.
 		/// </param>
-		public Say(Expression text)
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Say(Expression text, bool noWait = false)
 		{
 			this.speaker = null;
 			this.text = text;
+			this.noWait = noWait;
 		}
 
 		/// <summary>
@@ -56,10 +69,14 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The text to replace the dialog with.
 		/// </param>
-		public Say(Expression speaker, string text)
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Say(object speaker, string text, bool noWait = false)
 		{
-			this.speaker = speaker;
+			this.speaker = new LiteralExpression(speaker);
 			this.text = new LiteralExpression(text);
+			this.noWait = noWait;
 		}
 
 		/// <summary>
@@ -71,40 +88,14 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The expression to replace the dialog with.
 		/// </param>
-		public Say(Expression speaker, Expression text)
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Say(Expression speaker, Expression text, bool noWait = false)
 		{
 			this.speaker = speaker;
 			this.text = text;
-		}
-
-		/// <summary>
-		/// Creates a new Say node.
-		/// </summary>
-		/// <param name="speaker">
-		/// The speaker to associate with the dialog.
-		/// </param>
-		/// <param name="text">
-		/// The text to replace the dialog with.
-		/// </param>
-		public Say(object speaker, string text)
-		{
-			this.speaker = new LiteralExpression(speaker);
-			this.text = new LiteralExpression(text);
-		}
-
-		/// <summary>
-		/// Creates a new Say node.
-		/// </summary>
-		/// <param name="speaker">
-		/// The speaker to associate with the dialog.
-		/// </param>
-		/// <param name="text">
-		/// The expression to replace the dialog with.
-		/// </param>
-		public Say(object speaker, Expression text)
-		{
-			this.speaker = new LiteralExpression(speaker);
-			this.text = text;
+			this.noWait = noWait;
 		}
 
 		/// <summary>
@@ -140,7 +131,11 @@ namespace Exodrifter.Rumor.Nodes
 			var speaker = EvaluateSpeaker(rumor);
 			var text = EvaluateText(rumor);
 			rumor.State.SetDialog(speaker, text);
-			yield return new ForAdvance();
+
+			if (!noWait)
+			{
+				yield return new ForAdvance();
+			}
 		}
 
 		#region Serialization

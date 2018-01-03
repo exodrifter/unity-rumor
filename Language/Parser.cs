@@ -228,13 +228,35 @@ namespace Exodrifter.Rumor.Language
 			var first = CompileExpression(reader);
 			var second = CompileExpression(reader);
 
+			// Check for no_wait as second parameter
+			bool noWait = false;
+			if (second is VariableExpression)
+			{
+				if ((second as VariableExpression).Name == "no_wait")
+				{
+					second = new NoOpExpression();
+					noWait = true;
+				}
+			}
+
+			// Check for no_wait at end of line
+			if (!noWait)
+			{
+				reader.Skip();
+				if (reader.HasMatch("no_wait"))
+				{
+					reader.Read("no_wait".Length);
+					noWait = true;
+				}
+			}
+
 			if (second is NoOpExpression)
 			{
-				return new Add(first);
+				return new Add(first, noWait);
 			}
 			else
 			{
-				return new Add(first, second);
+				return new Add(first, second, noWait);
 			}
 		}
 
@@ -417,13 +439,35 @@ namespace Exodrifter.Rumor.Language
 			var first = CompileExpression(reader);
 			var second = CompileExpression(reader);
 
+			// Check for no_wait as second parameter
+			bool noWait = false;
+			if (second is VariableExpression)
+			{
+				if ((second as VariableExpression).Name == "no_wait")
+				{
+					second = new NoOpExpression();
+					noWait = true;
+				}
+			}
+
+			// Check for no_wait at end of line
+			if (!noWait)
+			{
+				reader.Skip();
+				if (reader.HasMatch("no_wait"))
+				{
+					reader.Read("no_wait".Length);
+					noWait = true;
+				}
+			}
+
 			if (second is NoOpExpression)
 			{
-				return new Say(first);
+				return new Say(first, noWait);
 			}
 			else
 			{
-				return new Say(first, second);
+				return new Say(first, second, noWait);
 			}
 		}
 
