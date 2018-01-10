@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - If conditional statements no longer require a following else or elif
   statement
+- Compiler tokenizes commas correctly now
 
 
 ## [1.1.1] - 2017-12-23
