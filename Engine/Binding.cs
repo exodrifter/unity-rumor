@@ -2,12 +2,12 @@
 
 namespace Exodrifter.Rumor.Engine
 {
-	public abstract class RumorBinding
+	public abstract class Binding
 	{
 		public abstract object Invoke(object[] args);
 	}
 
-	public class BindingAction : RumorBinding
+	public class BindingAction : Binding
 	{
 		private Action action;
 
@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingAction<T1> : RumorBinding
+	public class BindingAction<T1> : Binding
 	{
 		private Action<T1> action;
 
@@ -48,7 +48,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingAction<T1, T2> : RumorBinding
+	public class BindingAction<T1, T2> : Binding
 	{
 		private Action<T1, T2> action;
 
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingAction<T1, T2, T3> : RumorBinding
+	public class BindingAction<T1, T2, T3> : Binding
 	{
 		private Action<T1, T2, T3> action;
 
@@ -101,7 +101,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingAction<T1, T2, T3, T4> : RumorBinding
+	public class BindingAction<T1, T2, T3, T4> : Binding
 	{
 		private Action<T1, T2, T3, T4> action;
 
@@ -129,7 +129,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingFunc<TResult> : RumorBinding
+	public class BindingFunc<TResult> : Binding
 	{
 		private Func<TResult> func;
 
@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingFunc<T1, TResult> : RumorBinding
+	public class BindingFunc<T1, TResult> : Binding
 	{
 		private Func<T1, TResult> func;
 
@@ -168,7 +168,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingFunc<T1, T2, TResult> : RumorBinding
+	public class BindingFunc<T1, T2, TResult> : Binding
 	{
 		private Func<T1, T2, TResult> func;
 
@@ -193,7 +193,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingFunc<T1, T2, T3, TResult> : RumorBinding
+	public class BindingFunc<T1, T2, T3, TResult> : Binding
 	{
 		private Func<T1, T2, T3, TResult> func;
 
@@ -219,7 +219,7 @@ namespace Exodrifter.Rumor.Engine
 		}
 	}
 
-	public class BindingFunc<T1, T2, T3, T4, TResult> : RumorBinding
+	public class BindingFunc<T1, T2, T3, T4, TResult> : Binding
 	{
 		private Func<T1, T2, T3, T4, TResult> func;
 
