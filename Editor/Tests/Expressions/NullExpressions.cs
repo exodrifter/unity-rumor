@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 
+using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Expressions;
 using NUnit.Framework;
 using System;
@@ -17,74 +18,83 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void NullAndBool()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("a", true);
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("a", true);
 
 			Expression exp = new AddExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new AddExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new SubtractExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new SubtractExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new MultiplyExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new MultiplyExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new DivideExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new DivideExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new BoolAndExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolAndExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 
 			exp = new BoolOrExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolOrExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 		}
 
 		/// <summary>
@@ -93,74 +103,75 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void NullAndInt()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("a", 1);
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("a", 1);
 
 			Expression exp = new AddExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
 			exp = new AddExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
 
 			exp = new SubtractExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
 			exp = new SubtractExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(-1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(-1, exp.Evaluate(scope, bindings).AsInt());
 
 			exp = new MultiplyExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(0, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(0, exp.Evaluate(scope, bindings).AsInt());
 			exp = new MultiplyExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(0, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(0, exp.Evaluate(scope, bindings).AsInt());
 
 			exp = new DivideExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(0, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(0, exp.Evaluate(scope, bindings).AsInt());
 			exp = new DivideExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(0, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(0, exp.Evaluate(scope, bindings).AsInt());
 
 			exp = new BoolAndExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolAndExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 
 			exp = new BoolOrExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolOrExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 		}
 
 		/// <summary>
@@ -169,74 +180,75 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void NullAndFloat()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("a", 1f);
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("a", 1f);
 
 			Expression exp = new AddExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(1f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(1f, exp.Evaluate(scope, bindings).AsFloat());
 			exp = new AddExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(1f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(1f, exp.Evaluate(scope, bindings).AsFloat());
 
 			exp = new SubtractExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(1f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(1f, exp.Evaluate(scope, bindings).AsFloat());
 			exp = new SubtractExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(-1f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(-1f, exp.Evaluate(scope, bindings).AsFloat());
 
 			exp = new MultiplyExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(0f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(0f, exp.Evaluate(scope, bindings).AsFloat());
 			exp = new MultiplyExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(0f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(0f, exp.Evaluate(scope, bindings).AsFloat());
 
 			exp = new DivideExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(0f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(0f, exp.Evaluate(scope, bindings).AsFloat());
 			exp = new DivideExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(0f, exp.Evaluate(rumor).AsFloat());
+			Assert.AreEqual(0f, exp.Evaluate(scope, bindings).AsFloat());
 
 			exp = new BoolAndExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolAndExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 
 			exp = new BoolOrExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolOrExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 		}
 
 		/// <summary>
@@ -245,74 +257,81 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void NullAndString()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("a", "1");
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("a", "1");
 
 			Expression exp = new AddExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual("1", exp.Evaluate(rumor).AsString());
+			Assert.AreEqual("1", exp.Evaluate(scope, bindings).AsString());
 			exp = new AddExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual("1", exp.Evaluate(rumor).AsString());
+			Assert.AreEqual("1", exp.Evaluate(scope, bindings).AsString());
 
 			exp = new SubtractExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new SubtractExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new MultiplyExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new MultiplyExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new DivideExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 			exp = new DivideExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.Throws<InvalidOperationException>(() => exp.Evaluate(rumor).AsString());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings).AsString());
 
 			exp = new BoolAndExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolAndExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(false, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(false, exp.Evaluate(scope, bindings).AsBool());
 
 			exp = new BoolOrExpression(
 				new VariableExpression("a"),
 				new VariableExpression("b")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 			exp = new BoolOrExpression(
 				new VariableExpression("b"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(true, exp.Evaluate(rumor).AsBool());
+			Assert.AreEqual(true, exp.Evaluate(scope, bindings).AsBool());
 		}
 	}
 }

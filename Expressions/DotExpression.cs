@@ -16,9 +16,9 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Engine.Rumor rumor)
+		public override Value Evaluate(Scope scope, Bindings bindings)
 		{
-			var l = left.Evaluate(rumor);
+			var l = left.Evaluate(scope, bindings);
 
 			if (l == null || l.AsObject() == null) {
 				throw new NullReferenceException(
@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Expressions
 
 			if (right is FunctionExpression) {
 				var fn = (FunctionExpression)right;
-				return fn.Invoke(l.AsObject(), rumor);
+				return fn.Invoke(l.AsObject(), scope, bindings);
 			}
 			if (right is VariableExpression) {
 				var v = (VariableExpression)right;

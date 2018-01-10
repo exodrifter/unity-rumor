@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `Exodrifter.Rumor.Language`
 * All unit tests and examples are wrapped in a `UNITY_EDITOR` ifdef to make
   it easier to use this repository as a submodule in non-unity project
+* Bindings are no longer stored in `Rumor`; instead, it is now stored in
+  `Bindings`
 
 
 ## [1.1.2] - 2017-12-23
