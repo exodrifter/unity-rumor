@@ -21,7 +21,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				new Return()
 			});
 
-			rumor.Run().MoveNext();
+			rumor.Start().MoveNext();
 			Assert.IsTrue(rumor.Finished);
 		}
 
@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				}),
 			});
 			
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			rumor.Advance();
 			yield.MoveNext();
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				}),
 			});
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			rumor.Advance();
 			yield.MoveNext();

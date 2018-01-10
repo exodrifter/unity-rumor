@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   it easier to use this repository as a submodule in non-unity project
 * Bindings are no longer stored in `Rumor`; instead, it is now stored in
   `Bindings`
+* `Rumor.Run` has been renamed to `Rumor.Start` in order to match the language
+  used in C# `Thread.Start` and Unity's `StartCoroutine` method to improve
+  consistency
 
 
 ## [1.1.2] - 2017-12-23

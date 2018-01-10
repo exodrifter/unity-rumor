@@ -39,7 +39,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				new Choice("4", new List<Node>()),
 			});
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.AreEqual(3, rumor.State.Choices.Count);
 		}

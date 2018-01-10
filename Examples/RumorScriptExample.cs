@@ -69,7 +69,7 @@ label end:
 			rumor.Bindings.Bind("get_apples", () => { return Random.Range(2, 6); });
 			rumor.Bindings.Bind("get_pears", () => { return Random.Range(2, 6); });
 
-			StartCoroutine(rumor.Run());
+			StartCoroutine(rumor.Start());
 		}
 
 		void Update()

@@ -236,7 +236,7 @@ namespace Exodrifter.Rumor.Engine
 		/// to continue execution. This method cannot be used to spawn
 		/// multiple instances of the same rumor script; create multiple
 		/// Rumor instances instead if that behaviour is desired. If execution
-		/// has not finished, the Run method will restart the script.
+		/// has not finished, the Start method will restart the script.
 		/// 
 		/// You can use this method in Unity by passing the return value to
 		/// the StartCoroutine method.
@@ -246,7 +246,7 @@ namespace Exodrifter.Rumor.Engine
 		/// IEnumerator will return true for MoveNext until the Rumor has
 		/// terminated.
 		/// </returns>
-		public IEnumerator Run()
+		public IEnumerator Start()
 		{
 			if (Running) {
 				stack.Clear();

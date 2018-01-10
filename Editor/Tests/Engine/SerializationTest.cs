@@ -387,7 +387,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			rumor.Run().MoveNext();
+			rumor.Start().MoveNext();
 			Assert.True(rumor.Started);
 			Assert.True(rumor.Finished);
 		}
@@ -425,7 +425,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -463,7 +463,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -478,7 +478,7 @@ namespace Exodrifter.Rumor.Test.Engine
 
 			Assert.AreEqual("How are you?", rumor.State.Dialog[null]);
 
-			yield = rumor.Run();
+			yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -517,7 +517,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -530,7 +530,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
 
-			yield = rumor.Run();
+			yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
