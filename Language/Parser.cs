@@ -106,7 +106,15 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				// Parse the command
-				var command = temp.ReadUntil(' ', '\t', '\n').Trim();
+				string command;
+				if (temp.Peek() == '$')
+				{
+					command = "" + temp.Read();
+				}
+				else
+				{
+					command = temp.ReadUntil(' ', '\t', '\n').Trim();
+				}
 				temp.Skip();
 				switch (command)
 				{
