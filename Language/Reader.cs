@@ -331,6 +331,10 @@ namespace Exodrifter.Rumor.Language
 						col += delta;
 						skipped += delta;
 						continue;
+
+					case '\r':
+						index++;
+						continue;
 				}
 
 				break;
