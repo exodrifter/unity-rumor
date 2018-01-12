@@ -703,7 +703,7 @@ namespace Exodrifter.Rumor.Language
 
 				// Escaped substitution
 				case '{':
-					return '\\';
+					return '{';
 
 				// Escaped newline
 				case 'n':

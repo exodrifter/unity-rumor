@@ -288,6 +288,9 @@ namespace Exodrifter.Rumor.Test.Lang
 
 			reader = new Reader("\"Hello \\n world\"");
 			AssertString("Hello \n world", parser.ParseString(reader));
+
+			reader = new Reader("\"\\{Hello world}\"");
+			AssertString("{Hello world}", parser.ParseString(reader));
 		}
 
 		/// <summary>
