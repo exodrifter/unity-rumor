@@ -467,11 +467,10 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.AreEqual("3", tokens[2].Text);
 
 			tokens = parser.TokenizeExpression(new Reader("+4 * +3"));
-			Assert.AreEqual(4, tokens.Count);
-			Assert.AreEqual("+", tokens[0].Text);
-			Assert.AreEqual("4", tokens[1].Text);
-			Assert.AreEqual("*", tokens[2].Text);
-			Assert.AreEqual("+3", tokens[3].Text);
+			Assert.AreEqual(3, tokens.Count);
+			Assert.AreEqual("+4", tokens[0].Text);
+			Assert.AreEqual("*", tokens[1].Text);
+			Assert.AreEqual("+3", tokens[2].Text);
 
 			tokens = parser.TokenizeExpression(new Reader("!foo"));
 			Assert.AreEqual(2, tokens.Count);
@@ -650,6 +649,35 @@ namespace Exodrifter.Rumor.Test.Lang
 				(exp as OpExpression).Left);
 			Assert.IsAssignableFrom<FunctionExpression>(
 				(exp as OpExpression).Right);
+		}
+
+		/// <summary>
+		/// Check if expression compilation with floats works.
+		/// </summary>
+		[Test]
+		public void CompileExpressionFloat()
+		{
+			var parser = new Parser();
+
+			var exp = parser.CompileExpression("foo(.6)");
+			Assert.IsAssignableFrom<FunctionExpression>(exp);
+			Assert.AreEqual("foo", (exp as FunctionExpression).Name);
+
+			var @params = (exp as FunctionExpression).Params;
+			Assert.AreEqual(1, @params.Count);
+			Assert.IsAssignableFrom<LiteralExpression>(@params[0]);
+			Assert.IsTrue((@params[0] as LiteralExpression).Value.IsFloat());
+			Assert.AreEqual(0.6f, (@params[0] as LiteralExpression).Value.AsFloat());
+
+			exp = parser.CompileExpression("foo(.06)");
+			Assert.IsAssignableFrom<FunctionExpression>(exp);
+			Assert.AreEqual("foo", (exp as FunctionExpression).Name);
+
+			@params = (exp as FunctionExpression).Params;
+			Assert.AreEqual(1, @params.Count);
+			Assert.IsAssignableFrom<LiteralExpression>(@params[0]);
+			Assert.IsTrue((@params[0] as LiteralExpression).Value.IsFloat());
+			Assert.AreEqual(0.06f, (@params[0] as LiteralExpression).Value.AsFloat());
 		}
 
 		#endregion

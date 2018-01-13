@@ -18,6 +18,10 @@ namespace Exodrifter.Rumor.Expressions
 		public string Name { get { return name; } }
 		private readonly string name;
 
+		/// <summary>
+		/// The list of parameters to call the function with.
+		/// </summary>
+		public List<Expression> Params { get { return @params; } }
 		private readonly List<Expression> @params;
 
 		public FunctionExpression(string name)

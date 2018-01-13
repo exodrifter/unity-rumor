@@ -881,37 +881,6 @@ namespace Exodrifter.Rumor.Language
 					continue;
 				}
 
-				// Check for operators
-				string potentialOp = "";
-				if (addOp)
-				{
-					foreach (var op in ops.Keys)
-					{
-						if (temp.HasMatch(op))
-						{
-							// Get the longest operator
-							if (potentialOp.Length < op.Length)
-							{
-								potentialOp = op;
-							}
-						}
-					}
-				}
-				if (!string.IsNullOrEmpty(potentialOp))
-				{
-					tokens.Add(new Token(temp, potentialOp.Length));
-					temp.Read(potentialOp.Length);
-
-					addOp = false;
-					addElement = true;
-					success = true;
-				}
-
-				if (success)
-				{
-					continue;
-				}
-
 				// Check for expression elements
 				if (addElement)
 				{
@@ -966,6 +935,37 @@ namespace Exodrifter.Rumor.Language
 						addElement = false;
 						success = true;
 					}
+				}
+
+				if (success)
+				{
+					continue;
+				}
+
+				// Check for operators
+				string potentialOp = "";
+				if (addOp)
+				{
+					foreach (var op in ops.Keys)
+					{
+						if (temp.HasMatch(op))
+						{
+							// Get the longest operator
+							if (potentialOp.Length < op.Length)
+							{
+								potentialOp = op;
+							}
+						}
+					}
+				}
+				if (!string.IsNullOrEmpty(potentialOp))
+				{
+					tokens.Add(new Token(temp, potentialOp.Length));
+					temp.Read(potentialOp.Length);
+
+					addOp = false;
+					addElement = true;
+					success = true;
 				}
 
 				// Stop if the expression has ended
