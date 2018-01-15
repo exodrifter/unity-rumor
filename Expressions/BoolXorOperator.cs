@@ -15,10 +15,10 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Engine.Rumor rumor)
+		public override Value Evaluate(Scope scope, Bindings bindings)
 		{
-			var l = left.Evaluate(rumor) ?? new ObjectValue(null);
-			var r = right.Evaluate(rumor) ?? new ObjectValue(null);
+			var l = left.Evaluate(scope, bindings) ?? new ObjectValue(null);
+			var r = right.Evaluate(scope, bindings) ?? new ObjectValue(null);
 			return l.BoolXor(r);
 		}
 

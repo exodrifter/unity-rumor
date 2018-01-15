@@ -46,7 +46,7 @@ if apples == pears:
     $ pears += 1
 
 say "I have " + apples + " apples."
-say "You have " + pears + " pears."
+say "You have { pears } pears."
 say "Who has more fruits?"
 
 choice "I do.":
@@ -89,10 +89,10 @@ public class RumorScriptExample : MonoBehaviour
         rumor = new Rumor(File.ReadAllText("Example.txt"));
         rumor.Scope.DefaultSpeaker = "Narrator";
 
-        rumor.Bind("get_apples", () => { return Random.Range(2, 6); });
-        rumor.Bind("get_pears", () => { return Random.Range(2, 6); });
+        rumor.Bindings.Bind("get_apples", () => { return Random.Range(2, 6); });
+        rumor.Bindings.Bind("get_pears", () => { return Random.Range(2, 6); });
 
-        StartCoroutine(rumor.Run());
+        StartCoroutine(rumor.Start());
     }
 
     void Update()

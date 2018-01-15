@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+* You can now add the enum argument `cant_skip` to the end of a pause statement
+  to ignore advances until the pause ends
+* You can now add the enum argument `no_wait` to the end of an add or say
+  statement to auto advance the dialog
+* Variable substitution with `{` and `}` in strings is now supported
+
+### Changed
+* The compiler no longer uses a tokenizer except when parsing expressions
+* Compiler errors are more specific and descriptive
+* The `Exodrifter.Rumor.Lang` namespace has been renamed to
+  `Exodrifter.Rumor.Language`
+* All unit tests and examples are wrapped in a `UNITY_EDITOR` ifdef to make
+  it easier to use this repository as a submodule in non-unity project
+* Bindings are no longer stored in `Rumor`; instead, it is now stored in
+  `Bindings`
+* `Rumor.Run` has been renamed to `Rumor.Start` in order to match the language
+  used in C# `Thread.Start` and Unity's `StartCoroutine` method to improve
+  consistency
+
+
 ## [1.1.2] - 2017-12-23
 
 ### Changed

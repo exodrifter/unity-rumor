@@ -1,4 +1,7 @@
-﻿using Exodrifter.Rumor.Expressions;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Expressions;
 using NUnit.Framework;
 using System;
 
@@ -15,21 +18,24 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Member()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("o", new Test(1, 2));
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("o", new Test(1, 2));
 
+			// Public
 			var exp = new DotExpression(
 				new VariableExpression("o"),
 				new VariableExpression("a")
 			);
-			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
 
+			// Private
 			exp = new DotExpression(
 				new VariableExpression("o"),
 				new VariableExpression("b")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 		}
 
@@ -39,21 +45,24 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Function()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("o", new Test(1, 2));
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("o", new Test(1, 2));
 
+			// Public
 			var exp = new DotExpression(
 				new VariableExpression("o"),
 				new FunctionExpression("foo")
 			);
-			Assert.AreEqual(1, exp.Evaluate(rumor).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
 
+			// Private
 			exp = new DotExpression(
 				new VariableExpression("o"),
 				new FunctionExpression("bar")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 		}
 
@@ -63,11 +72,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void Invalid()
 		{
-			var rumor = new Rumor.Engine.Rumor("return");
-			rumor.Scope.SetVar("bool", true);
-			rumor.Scope.SetVar("int", 1);
-			rumor.Scope.SetVar("float", 1f);
-			rumor.Scope.SetVar("string", "str");
+			var scope = new Scope();
+			var bindings = new Bindings();
+			scope.SetVar("o", new Test(1, 2));
+			scope.SetVar("bool", true);
+			scope.SetVar("int", 1);
+			scope.SetVar("float", 1f);
+			scope.SetVar("string", "str");
 
 			// Member access
 			var exp = new DotExpression(
@@ -75,7 +86,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -83,7 +94,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -91,7 +102,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -99,7 +110,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			// Function access
@@ -108,7 +119,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -116,7 +127,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -124,7 +135,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 
 			exp = new DotExpression(
@@ -132,7 +143,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new FunctionExpression("foo")
 			);
 			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(rumor)
+				() => exp.Evaluate(scope, bindings)
 			);
 		}
 	}
@@ -148,3 +159,5 @@ namespace Exodrifter.Rumor.Test.Expressions
 		private int bar() { return b; }
 	}
 }
+
+#endif

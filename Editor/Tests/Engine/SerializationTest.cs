@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
@@ -317,10 +319,17 @@ namespace Exodrifter.Rumor.Test.Engine
 		[Test]
 		public void SerializePause()
 		{
-			var a = new Pause(1);
+			var a = new Pause(1, true);
 			var b = Reserialize(a);
 
 			Assert.AreEqual(a.seconds, b.seconds);
+			Assert.AreEqual(a.cantSkip, b.cantSkip);
+
+			a = new Pause(2, false);
+			b = Reserialize(a);
+
+			Assert.AreEqual(a.seconds, b.seconds);
+			Assert.AreEqual(a.cantSkip, b.cantSkip);
 		}
 
 		/// <summary>
@@ -378,7 +387,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			rumor.Run().MoveNext();
+			rumor.Start().MoveNext();
 			Assert.True(rumor.Started);
 			Assert.True(rumor.Finished);
 		}
@@ -416,7 +425,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -454,7 +463,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -469,7 +478,7 @@ namespace Exodrifter.Rumor.Test.Engine
 
 			Assert.AreEqual("How are you?", rumor.State.Dialog[null]);
 
-			yield = rumor.Run();
+			yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -508,7 +517,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -521,7 +530,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			// Check to see if serializing during execution works
 			rumor = Reserialize(rumor);
 
-			yield = rumor.Run();
+			yield = rumor.Start();
 			yield.MoveNext();
 			Assert.True(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -613,3 +622,5 @@ namespace Exodrifter.Rumor.Test.Engine
 		#endregion
 	}
 }
+
+#endif

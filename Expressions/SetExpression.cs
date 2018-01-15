@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exodrifter.Rumor.Engine;
+using System;
 using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Expressions
@@ -14,7 +15,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 		}
 
-		public override Value Evaluate(Engine.Rumor rumor)
+		public override Value Evaluate(Scope scope, Bindings bindings)
 		{
 			if (left.GetType() != typeof(VariableExpression)) {
 				throw new ArgumentException(
@@ -23,8 +24,8 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			var l = left as VariableExpression;
-			var r = right.Evaluate(rumor);
-			rumor.Scope.SetVar(l.Name, r);
+			var r = right.Evaluate(scope, bindings);
+			scope.SetVar(l.Name, r);
 			return r;
 		}
 

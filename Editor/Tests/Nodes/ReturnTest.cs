@@ -1,6 +1,7 @@
-﻿using Exodrifter.Rumor.Nodes;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Test.Nodes
@@ -20,7 +21,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				new Return()
 			});
 
-			rumor.Run().MoveNext();
+			rumor.Start().MoveNext();
 			Assert.IsTrue(rumor.Finished);
 		}
 
@@ -41,7 +42,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				}),
 			});
 			
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			rumor.Advance();
 			yield.MoveNext();
@@ -65,7 +66,7 @@ namespace Exodrifter.Rumor.Test.Nodes
 				}),
 			});
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			rumor.Advance();
 			yield.MoveNext();
@@ -73,3 +74,5 @@ namespace Exodrifter.Rumor.Test.Nodes
 		}
 	}
 }
+
+#endif

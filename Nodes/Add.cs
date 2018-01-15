@@ -19,7 +19,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The text to append the dialog with.
 		/// </param>
-		public Add(string text) : base(text) {}
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Add(string text, bool noWait = false)
+			: base(text, noWait) {}
 
 		/// <summary>
 		/// Creates a new Add node.
@@ -27,7 +31,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The expression to append the dialog with.
 		/// </param>
-		public Add(Expression text) : base(text) {}
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Add(Expression text, bool noWait = false)
+			: base(text, noWait) {}
 
 		/// <summary>
 		/// Creates a new Add node.
@@ -38,7 +46,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The text to append the dialog with.
 		/// </param>
-		public Add(Expression speaker, string text) : base(speaker, text) {}
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
+		/// </param>
+		public Add(object speaker, string text, bool noWait = false)
+			: base(speaker, text, noWait) {}
 
 		/// <summary>
 		/// Creates a new Add node.
@@ -49,29 +61,11 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="text">
 		/// The expression to append the dialog with.
 		/// </param>
-		public Add(Expression speaker, Expression text) : base(speaker, text) {}
-
-		/// <summary>
-		/// Creates a new Add node.
-		/// </summary>
-		/// <param name="speaker">
-		/// The speaker to associate with the dialog.
+		/// <param name="noWait">
+		/// True if the dialog should auto-advance itself.
 		/// </param>
-		/// <param name="text">
-		/// The text to append the dialog with.
-		/// </param>
-		public Add(object speaker, string text) : base(speaker, text) {}
-
-		/// <summary>
-		/// Creates a new Add node.
-		/// </summary>
-		/// <param name="speaker">
-		/// The speaker to associate with the dialog.
-		/// </param>
-		/// <param name="text">
-		/// The expression to append the dialog with.
-		/// </param>
-		public Add(object speaker, Expression text) : base(speaker, text) {}
+		public Add(Expression speaker, Expression text, bool noWait = false)
+			: base(speaker, text, noWait) {}
 
 		public override IEnumerator<RumorYield> Run(Engine.Rumor rumor)
 		{

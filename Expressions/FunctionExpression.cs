@@ -18,6 +18,10 @@ namespace Exodrifter.Rumor.Expressions
 		public string Name { get { return name; } }
 		private readonly string name;
 
+		/// <summary>
+		/// The list of parameters to call the function with.
+		/// </summary>
+		public List<Expression> Params { get { return @params; } }
 		private readonly List<Expression> @params;
 
 		public FunctionExpression(string name)
@@ -32,17 +36,17 @@ namespace Exodrifter.Rumor.Expressions
 			this.@params = new List<Expression>(@params);
 		}
 
-		public override Value Evaluate(Engine.Rumor rumor)
+		public override Value Evaluate(Scope scope, Bindings bindings)
 		{
-			return Invoke(null, rumor);
+			return Invoke(null, scope, bindings);
 		}
 
-		public Value Invoke(object self, Engine.Rumor rumor)
+		public Value Invoke(object self, Scope scope, Bindings bindings)
 		{
 			var values = new object[@params.Count];
 
 			for (int i = 0; i < @params.Count; ++i) {
-				var value = @params[i].Evaluate(rumor);
+				var value = @params[i].Evaluate(scope, bindings);
 
 				if (value == null) {
 					values[i] = null;
@@ -53,7 +57,7 @@ namespace Exodrifter.Rumor.Expressions
 			}
 
 			if (self == null) {
-				var result = rumor.CallBinding(name, values);
+				var result = bindings.CallBinding(name, values);
 				return Value.Covert(result);
 			}
 			else {

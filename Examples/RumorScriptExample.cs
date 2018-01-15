@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Engine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,7 +39,7 @@ if apples == pears:
 	$ pears += 1
 
 say ""I have "" + apples + "" apples.""
-say ""You have "" + pears + "" pears.""
+say ""You have {pears} pears.""
 say ""Who has more fruits?""
 
 choice ""I do."":
@@ -64,10 +66,10 @@ label end:
 ");
 			rumor.Scope.DefaultSpeaker = "Narrator";
 
-			rumor.Bind("get_apples", () => { return Random.Range(2, 6); });
-			rumor.Bind("get_pears", () => { return Random.Range(2, 6); });
+			rumor.Bindings.Bind("get_apples", () => { return Random.Range(2, 6); });
+			rumor.Bindings.Bind("get_pears", () => { return Random.Range(2, 6); });
 
-			StartCoroutine(rumor.Run());
+			StartCoroutine(rumor.Start());
 		}
 
 		void Update()
@@ -106,3 +108,5 @@ label end:
 		}
 	}
 }
+
+#endif

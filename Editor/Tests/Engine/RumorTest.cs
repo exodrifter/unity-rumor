@@ -1,4 +1,6 @@
-﻿using Exodrifter.Rumor.Nodes;
+﻿#if UNITY_EDITOR
+
+using Exodrifter.Rumor.Nodes;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -17,7 +19,7 @@ namespace Exodrifter.Rumor.Test.Engine
 		{
 			var rumor = new Rumor.Engine.Rumor(new List<Node>());
 
-			var iter = rumor.Run();
+			var iter = rumor.Start();
 			iter.MoveNext();
 
 			Assert.True(rumor.Started);
@@ -38,7 +40,7 @@ namespace Exodrifter.Rumor.Test.Engine
 				new Say("b"),
 			});
 
-			var iter = rumor.Run();
+			var iter = rumor.Start();
 
 			Assert.False(rumor.Started);
 			Assert.False(rumor.Finished);
@@ -94,7 +96,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.IsFalse(rumor.Running);
 			Assert.IsFalse(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
 			Assert.IsTrue(rumor.Started);
@@ -120,7 +122,7 @@ namespace Exodrifter.Rumor.Test.Engine
 			Assert.IsFalse(rumor.Running);
 			Assert.IsFalse(rumor.Finished);
 
-			var yield = rumor.Run();
+			var yield = rumor.Start();
 			yield.MoveNext();
 			Assert.AreEqual("b", (rumor.Current as Say).EvaluateText(rumor));
 			Assert.IsTrue(rumor.Started);
@@ -129,3 +131,5 @@ namespace Exodrifter.Rumor.Test.Engine
 		}
 	}
 }
+
+#endif

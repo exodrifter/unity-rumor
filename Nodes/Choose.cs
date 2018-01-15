@@ -33,14 +33,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <summary>
 		/// Creates a new choose.
 		/// </summary>
-		/// <param name="number">
-		/// The number of choices to pick.
-		/// </param>
-		/// <param name="children">
-		/// The children for this choose.
-		/// </param>
-		public Choose(IEnumerable<Node> children)
-			: base(children)
+		public Choose()
 		{
 			this.number = new LiteralExpression(1);
 			this.seconds = new LiteralExpression(0);
@@ -53,11 +46,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="number">
 		/// The number of choices to pick.
 		/// </param>
-		/// <param name="children">
-		/// The children for this choose.
-		/// </param>
-		public Choose(int number, IEnumerable<Node> children)
-			: base(children)
+		public Choose(int number)
 		{
 			this.number = new LiteralExpression(number);
 			this.seconds = new LiteralExpression(0);
@@ -73,11 +62,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="seconds">
 		/// The amount of time in seconds to make each choice.
 		/// </param>
-		/// <param name="children">
-		/// The children for this choose.
-		/// </param>
-		public Choose(int number, float seconds, IEnumerable<Node> children)
-			: base(children)
+		public Choose(int number, float seconds)
 		{
 			this.number = new LiteralExpression(number);
 			this.seconds = new LiteralExpression(seconds);
@@ -96,15 +81,37 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="@default">
 		/// The index of the choice to pick when time runs out.
 		/// </param>
-		/// <param name="children">
-		/// The children for this choose.
-		/// </param>
-		public Choose(int number, float seconds, int @default, IEnumerable<Node> children)
-			: base(children)
+		public Choose(int number, float seconds, int @default)
 		{
 			this.number = new LiteralExpression(number);
 			this.seconds = new LiteralExpression(seconds);
 			this.@default = new LiteralExpression(@default);
+		}
+
+		/// <summary>
+		/// Creates a new choose.
+		/// </summary>
+		/// <param name="number">
+		/// The number of choices to pick.
+		/// </param>
+		public Choose(Expression number)
+		{
+			this.number = number;
+		}
+
+		/// <summary>
+		/// Creates a new choose.
+		/// </summary>
+		/// <param name="number">
+		/// The number of choices to pick.
+		/// </param>
+		/// <param name="number">
+		/// The amount of time in seconds to make each choice.
+		/// </param>
+		public Choose(Expression number, Expression seconds)
+		{
+			this.number = number;
+			this.seconds = seconds;
 		}
 
 		/// <summary>
@@ -119,11 +126,7 @@ namespace Exodrifter.Rumor.Nodes
 		/// <param name="@default">
 		/// The index of the choice to pick when time runs out.
 		/// </param>
-		/// <param name="children">
-		/// The children for this choose.
-		/// </param>
-		public Choose(Expression number, Expression seconds, Expression @default, IEnumerable<Node> children)
-			: base(children)
+		public Choose(Expression number, Expression seconds, Expression @default)
 		{
 			this.number = number;
 			this.seconds = seconds;

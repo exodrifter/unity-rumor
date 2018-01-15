@@ -22,9 +22,9 @@ namespace Exodrifter.Rumor.Expressions
 			name = str;
 		}
 
-		public override Value Evaluate(Engine.Rumor rumor)
+		public override Value Evaluate(Scope scope, Bindings bindings)
 		{
-			return rumor.Scope.GetVar(name);
+			return scope.GetVar(name);
 		}
 
 		public override string ToString()
