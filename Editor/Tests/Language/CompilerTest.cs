@@ -181,6 +181,75 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.IsAssignableFrom<MultiplyExpression>(
 				(nodes[0] as Statement).expression);
 		}
+
+		/// <summary>
+		/// Checks if 'if', 'elif', and 'else' statements compile.
+		/// <summary>
+		[Test]
+		public void CompileControlFlow()
+		{
+			var nodes = Compiler.Compile(@"
+if foo:
+	pause
+elif bar:
+	pause
+else:
+	pause
+");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Condition>(nodes[0]);
+
+			nodes = Compiler.Compile(@"
+if foo:
+	pause
+else:
+	pause
+");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Condition>(nodes[0]);
+
+			nodes = Compiler.Compile(@"
+if foo:
+	pause
+
+else:
+	pause
+");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Condition>(nodes[0]);
+
+			nodes = Compiler.Compile(@"
+if foo:
+	pause
+
+elif bar:
+	pause
+
+else:
+	pause
+");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Condition>(nodes[0]);
+
+			nodes = Compiler.Compile(@"
+if foo:
+	pause
+
+	
+elif bar:
+	pause
+
+   # comment
+elif car:
+	pause
+
+# comment
+else:
+	pause
+");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Condition>(nodes[0]);
+		}
 	}
 }
 

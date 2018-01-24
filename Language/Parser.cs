@@ -221,6 +221,28 @@ namespace Exodrifter.Rumor.Language
 			return temp;
 		}
 
+		private Reader GetTempOnNextNonEmptyLine(Reader reader)
+		{
+			var temp = GetTempOnNextLine(reader);
+			while (!temp.EOF)
+			{
+				// Check if the line is not blank
+				try
+				{
+					GetTempOnNextLine(temp);
+				}
+				catch (UnusedException)
+				{
+					return temp;
+				}
+
+				// Keep reading
+				temp.NextLine();
+			}
+
+			return temp;
+		}
+
 		#endregion
 
 		#region Compile Commands
@@ -326,32 +348,30 @@ namespace Exodrifter.Rumor.Language
 			reader.Expect(':');
 			var children = CompileChildren(reader, depth);
 
-			var temp = GetTempOnNextLine(reader);
+			var temp = GetTempOnNextNonEmptyLine(reader);
 			var nextDepth = temp.Skip();
+
 			if (depth == nextDepth && temp.HasMatch("elif"))
 			{
-				if (temp.HasMatch("elif"))
-				{
-					temp.Read("elif".Length);
-					temp.Skip();
+				temp.Read("elif".Length);
+				temp.Skip();
 
-					// Catch up reader
-					reader.Read(temp.Index - reader.Index);
+				// Catch up reader
+				reader.Read(temp.Index - reader.Index);
 
-					var elif = CompileElif(reader, depth);
-					return new Condition(new If(exp, children, elif));
-				}
-				else if (temp.HasMatch("else"))
-				{
-					temp.Read("else".Length);
-					temp.Skip();
+				var elif = CompileElif(reader, depth);
+				return new Condition(new If(exp, children, elif));
+			}
+			else if (depth == nextDepth && temp.HasMatch("else"))
+			{
+				temp.Read("else".Length);
+				temp.Skip();
 
-					// Catch up reader
-					reader.Read(temp.Index - reader.Index);
+				// Catch up reader
+				reader.Read(temp.Index - reader.Index);
 
-					var @else = CompileElse(reader, depth);
-					return new Condition(new If(exp, children, @else));
-				}
+				var @else = CompileElse(reader, depth);
+				return new Condition(new If(exp, children, @else));
 			}
 
 			return new Condition(new If(exp, children));
@@ -364,32 +384,30 @@ namespace Exodrifter.Rumor.Language
 			reader.Expect(':');
 			var children = CompileChildren(reader, depth);
 
-			var temp = GetTempOnNextLine(reader);
+			var temp = GetTempOnNextNonEmptyLine(reader);
 			var nextDepth = temp.Skip();
+
 			if (depth == nextDepth && temp.HasMatch("elif"))
 			{
-				if (temp.HasMatch("elif"))
-				{
-					temp.Read("elif".Length);
-					temp.Skip();
+				temp.Read("elif".Length);
+				temp.Skip();
 
-					// Catch up reader
-					reader.Read(temp.Index - reader.Index);
+				// Catch up reader
+				reader.Read(temp.Index - reader.Index);
 
-					var elif = CompileElif(reader, depth);
-					return new Elif(exp, children, elif);
-				}
-				else if (temp.HasMatch("else"))
-				{
-					temp.Read("else".Length);
-					temp.Skip();
+				var elif = CompileElif(reader, depth);
+				return new Elif(exp, children, elif);
+			}
+			else if (depth == nextDepth && temp.HasMatch("else"))
+			{
+				temp.Read("else".Length);
+				temp.Skip();
 
-					// Catch up reader
-					reader.Read(temp.Index - reader.Index);
+				// Catch up reader
+				reader.Read(temp.Index - reader.Index);
 
-					var @else = CompileElse(reader, depth);
-					return new Elif(exp, children, @else);
-				}
+				var @else = CompileElse(reader, depth);
+				return new Elif(exp, children, @else);
 			}
 
 			return new Elif(exp, children);
@@ -397,6 +415,8 @@ namespace Exodrifter.Rumor.Language
 
 		private Else CompileElse(Reader reader, int depth)
 		{
+			reader.Skip();
+			reader.Expect(':');
 			var children = CompileChildren(reader, depth);
 			return new Else(children);
 		}
@@ -911,7 +931,8 @@ namespace Exodrifter.Rumor.Language
 						bool isKeyword = false;
 						foreach (var keyword in new List<string>() {
 							"add", "call", "choice", "choose", "clear", "jump",
-							"label", "pause", "return", "say"})
+							"label", "pause", "return", "say", "if", "elif",
+							"else" })
 						{
 							if (temp.HasMatch(keyword))
 							{
