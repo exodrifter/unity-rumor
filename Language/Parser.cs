@@ -109,7 +109,7 @@ namespace Exodrifter.Rumor.Language
 				string command;
 				if (temp.Peek() == '$')
 				{
-					command = "" + temp.Read();
+					command = temp.Read().ToString();
 				}
 				else
 				{
@@ -171,7 +171,7 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				// Catch up reader
-				reader.Read(temp.Index - reader.Index);
+				reader.Update(temp);
 				temp = GetTempOnNextLine(reader);
 			}
 
@@ -357,7 +357,7 @@ namespace Exodrifter.Rumor.Language
 				temp.Skip();
 
 				// Catch up reader
-				reader.Read(temp.Index - reader.Index);
+				reader.Update(temp);
 
 				var elif = CompileElif(reader, depth);
 				return new Condition(new If(exp, children, elif));
@@ -368,7 +368,7 @@ namespace Exodrifter.Rumor.Language
 				temp.Skip();
 
 				// Catch up reader
-				reader.Read(temp.Index - reader.Index);
+				reader.Update(temp);
 
 				var @else = CompileElse(reader, depth);
 				return new Condition(new If(exp, children, @else));
@@ -393,7 +393,7 @@ namespace Exodrifter.Rumor.Language
 				temp.Skip();
 
 				// Catch up reader
-				reader.Read(temp.Index - reader.Index);
+				reader.Update(temp);
 
 				var elif = CompileElif(reader, depth);
 				return new Elif(exp, children, elif);
@@ -404,7 +404,7 @@ namespace Exodrifter.Rumor.Language
 				temp.Skip();
 
 				// Catch up reader
-				reader.Read(temp.Index - reader.Index);
+				reader.Update(temp);
 
 				var @else = CompileElse(reader, depth);
 				return new Elif(exp, children, @else);
@@ -806,13 +806,13 @@ namespace Exodrifter.Rumor.Language
 				// Catch up the reader
 				if (temp != null)
 				{
-					reader.Read(temp.Index - reader.Index);
+					reader.Update(temp);
 				}
 				temp = new Reader(reader);
 
 				// Skip whitespace
 				temp.Skip();
-				if (!temp.EOF && temp.Peek() == '\n')
+				while (!temp.EOF && temp.Peek() == '\n')
 				{
 					temp.NextLine();
 					temp.Skip();

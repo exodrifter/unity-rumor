@@ -150,29 +150,32 @@ namespace Exodrifter.Rumor.Language
 				return false;
 			}
 
-			// Read from current position
-			string str = "";
+			// Check if the match length is possible
+			if (index + match.Length > script.Length)
+			{
+				return false;
+			}
+
+			// Check each character one by one
 			for (int i = 0; i < match.Length; ++i)
 			{
-				if (index + i < script.Length)
+				var a = match[i];
+				var b = script[index + i];
+
+				// Case sensitivity
+				if (!caseSensitive)
 				{
-					str += script[index + i];
+					a = char.ToLowerInvariant(a);
+					b = char.ToLowerInvariant(b);
+				}
+
+				if (a != b)
+				{
+					return false;
 				}
 			}
 
-			// Case sensitivity
-			if (!caseSensitive)
-			{
-				match = match.ToLower();
-				str = str.ToLower();
-			}
-
-			// Check match
-			if (match == str)
-			{
-				return true;
-			}
-			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -218,25 +221,7 @@ namespace Exodrifter.Rumor.Language
 				throw new ReadException(this);
 			}
 
-			char ret = script[index];
-
-			// Update state
-			if (ret == '\t')
-			{
-				col += GetTabDelta();
-			}
-			else if (ret != '\n')
-			{
-				col++;
-			}
-			else
-			{
-				line++;
-				col = 1;
-			}
-
-			index++;
-			return ret;
+			return ReadInternal();
 		}
 
 		/// <summary>
@@ -247,14 +232,19 @@ namespace Exodrifter.Rumor.Language
 		/// <returns>The next string in the script.</returns>
 		public string Read(int length)
 		{
-			var builder = new StringBuilder();
+			if (index + length > script.Length)
+			{
+				throw new ReadException(this);
+			}
+
+			var ret = script.Substring(index, length);
 
 			for (int i = 0; i < length; ++i)
 			{
-				builder.Append(Read());
+				ReadInternal();
 			}
 
-			return builder.ToString();
+			return ret;
 		}
 
 		/// <summary>
@@ -268,41 +258,46 @@ namespace Exodrifter.Rumor.Language
 		/// <returns>The string found.</returns>
 		public string ReadUntil(params char[] arr)
 		{
-			var builder = new StringBuilder();
+			var start = index;
+			var length = 0;
 
 			while (!EOF)
 			{
 				// Check if reading should stop
-				var ch = script[index];
-				if (arr.Contains(ch))
+				if (arr.Contains(script[index]))
 				{
 					break;
 				}
 
-				// Read
-				builder.Append(ch);
-
-				// Update state
-				switch (ch)
-				{
-					case '\n':
-						line++;
-						col = 1;
-						break;
-
-					case '\t':
-						col += GetTabDelta();
-						break;
-
-					default:
-						col++;
-						break;
-				}
-
-				index++;
+				ReadInternal();
+				length++;
 			}
 
-			return builder.ToString();
+			return script.Substring(start, length);
+		}
+
+		private char ReadInternal()
+		{
+			var ch = script[index++];
+
+			// Update state
+			switch (ch)
+			{
+				case '\n':
+					line++;
+					col = 1;
+					break;
+
+				case '\t':
+					col += GetTabDelta();
+					break;
+
+				default:
+					col++;
+					break;
+			}
+
+			return ch;
 		}
 
 		/// <summary>
@@ -346,6 +341,18 @@ namespace Exodrifter.Rumor.Language
 		#endregion
 
 		#region Util
+
+		/// <summary>
+		/// Overwrites this reader's state with another. Does not check if the
+		/// readers are reading from the same source with the same
+		/// configuration.
+		/// </summary>
+		internal void Update(Reader other)
+		{
+			this.line = other.line;
+			this.col = other.col;
+			this.index = other.index;
+		}
 
 		/// <summary>
 		/// Returns the number of spaces the column position should move in

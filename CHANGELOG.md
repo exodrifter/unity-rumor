@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+* Compiler performance improvements
+
 ### Fixed
 * Fix `elif` and `else` compilation errors
 
