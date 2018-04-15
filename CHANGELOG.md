@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [2.0.1] - 2018-04-15
+
 ### Changed
 * Compiler performance improvements
 
@@ -182,7 +185,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/exodrifter/unity-rumor/compare/1.1.2...2.0.0
 [1.1.2]: https://github.com/exodrifter/unity-rumor/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/exodrifter/unity-rumor/compare/1.1.0...1.1.1
