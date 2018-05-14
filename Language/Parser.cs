@@ -74,24 +74,11 @@ namespace Exodrifter.Rumor.Language
 
 			while (!temp.EOF)
 			{
-				// Indentation level
-				var depth = temp.Skip();
-				if (temp.EOF)
+				// Get the depth of the next line
+				var depth = ReadNextDepth(temp);
+				if (depth == -1)
 				{
 					break;
-				}
-
-				// Ignore
-				var next = temp.Peek();
-				if (next == '\n')
-				{
-					temp.NextLine();
-					continue;
-				}
-				else if (next == '#')
-				{
-					temp.NextLine();
-					continue;
 				}
 
 				// Validate block
@@ -183,7 +170,7 @@ namespace Exodrifter.Rumor.Language
 			var temp = GetTempOnNextLine(reader);
 
 			// Check the depth
-			var nextDepth = temp.Skip();
+			var nextDepth = ReadNextDepth(temp);
 			if (nextDepth > currentDepth)
 			{
 				return Compile(reader);
@@ -241,6 +228,44 @@ namespace Exodrifter.Rumor.Language
 			}
 
 			return temp;
+		}
+
+		/// <summary>
+		/// Advances the reader to the next line and returns the depth of the
+		/// reader.
+		/// </summary>
+		/// <param name="reader">The reader to use.</param>
+		/// <returns>
+		/// The depth of the next line or -1 if there is no next line.
+		/// </returns>
+		private static int ReadNextDepth(Reader reader)
+		{
+			while (!reader.EOF)
+			{
+				// Indentation level
+				var depth = reader.Skip();
+				if (reader.EOF)
+				{
+					break;
+				}
+
+				// Ignore
+				var next = reader.Peek();
+				if (next == '\n')
+				{
+					reader.NextLine();
+					continue;
+				}
+				else if (next == '#')
+				{
+					reader.NextLine();
+					continue;
+				}
+
+				return depth;
+			}
+
+			return -1;
 		}
 
 		#endregion

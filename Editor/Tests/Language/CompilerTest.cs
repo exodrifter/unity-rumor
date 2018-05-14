@@ -233,6 +233,7 @@ else:
 
 			nodes = Compiler.Compile(@"
 if foo:
+# comment
 	pause
 
 	

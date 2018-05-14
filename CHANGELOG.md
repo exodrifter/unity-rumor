@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+* Fix compilation error when comment directly follows a statement expecting a
+  block
+
 
 ## [2.0.1] - 2018-04-15
 
