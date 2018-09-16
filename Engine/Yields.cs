@@ -144,6 +144,14 @@
 			}
 		}
 
+		public override void OnChoice()
+		{
+			if (!cantSkip)
+			{
+				Finished = true;
+			}
+		}
+
 		public override void OnUpdate(Rumor rumor, float delta)
 		{
 			base.OnUpdate(rumor, delta);

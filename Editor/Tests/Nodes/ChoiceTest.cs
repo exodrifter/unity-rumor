@@ -43,6 +43,43 @@ namespace Exodrifter.Rumor.Test.Nodes
 			yield.MoveNext();
 			Assert.AreEqual(3, rumor.State.Choices.Count);
 		}
+
+		/// <summary>
+		/// Ensure choices jump immediately without waiting for the current
+		/// pause to complete.
+		/// </summary>
+		[Test]
+		public void ChoiceTerminatesPause()
+		{
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
+				new Choice("1", new List<Node>() { new Return() } ),
+				new Pause(60, false),
+			});
+
+			var yield = rumor.Start();
+			yield.MoveNext(); // Start the pause
+			rumor.Choose(0);
+			yield.MoveNext(); // Update the state
+			Assert.AreEqual(true, rumor.Finished);
+		}
+
+		/// <summary>
+		/// Ensure choices cannot skip an unskippable pause.
+		/// </summary>
+		[Test]
+		public void ChoiceCannotSkipUnskippablePause()
+		{
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
+				new Choice("1", new List<Node>() { new Return() } ),
+				new Pause(60, true),
+			});
+
+			var yield = rumor.Start();
+			yield.MoveNext(); // Start the pause
+			rumor.Choose(0);
+			yield.MoveNext(); // Update the state
+			Assert.AreEqual(false, rumor.Finished);
+		}
 	}
 }
 
