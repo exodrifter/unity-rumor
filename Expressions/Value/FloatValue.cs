@@ -73,13 +73,16 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(Value value)
 		{
 			if (value == null) {
-				return new FloatValue(0);
+				throw new DivideByZeroException();
 			}
 			if (value.IsObject() && value.AsObject() == null) {
-				return new FloatValue(0);
+				throw new DivideByZeroException();
 			}
 			if (value.IsInt()) {
 				return new FloatValue(AsFloat() / value.AsInt());
+			}
+			if (value.IsFloat() && value.AsFloat() == 0) {
+				throw new DivideByZeroException();
 			}
 			if (value.IsFloat()) {
 				return new FloatValue(AsFloat() / value.AsFloat());

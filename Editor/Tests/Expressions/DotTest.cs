@@ -8,7 +8,7 @@ using System;
 namespace Exodrifter.Rumor.Test.Expressions
 {
 	/// <summary>
-	/// Ensure dot operators work as expected
+	/// Ensure dot operators work as expected.
 	/// </summary>
 	public class DotTest
 	{
@@ -16,23 +16,29 @@ namespace Exodrifter.Rumor.Test.Expressions
 		/// Check if member access on objects work.
 		/// </summary>
 		[Test]
-		public void Member()
+		public void ObjectDotMember()
 		{
 			var scope = new Scope();
 			var bindings = new Bindings();
 			scope.SetVar("o", new Test(1, 2));
 
-			// Public
 			var exp = new DotExpression(
 				new VariableExpression("o"),
-				new VariableExpression("a")
+				new VariableExpression("publicInt")
 			);
-			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsObject());
 
-			// Private
 			exp = new DotExpression(
 				new VariableExpression("o"),
-				new VariableExpression("b")
+				new VariableExpression("privateInt")
+			);
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings)
+			);
+
+			exp = new DotExpression(
+				new VariableExpression("o"),
+				new VariableExpression("imaginaryInt")
 			);
 			Assert.Throws<InvalidOperationException>(
 				() => exp.Evaluate(scope, bindings)
@@ -43,23 +49,29 @@ namespace Exodrifter.Rumor.Test.Expressions
 		/// Check if function access on objects work.
 		/// </summary>
 		[Test]
-		public void Function()
+		public void ObjectDotFunction()
 		{
 			var scope = new Scope();
 			var bindings = new Bindings();
 			scope.SetVar("o", new Test(1, 2));
 
-			// Public
 			var exp = new DotExpression(
 				new VariableExpression("o"),
-				new FunctionExpression("foo")
+				new FunctionExpression("publicMethod")
 			);
-			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
+			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsObject());
 
-			// Private
 			exp = new DotExpression(
 				new VariableExpression("o"),
-				new FunctionExpression("bar")
+				new FunctionExpression("privateMethod")
+			);
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings)
+			);
+
+			exp = new DotExpression(
+				new VariableExpression("o"),
+				new FunctionExpression("imaginaryMethod")
 			);
 			Assert.Throws<InvalidOperationException>(
 				() => exp.Evaluate(scope, bindings)
@@ -67,96 +79,89 @@ namespace Exodrifter.Rumor.Test.Expressions
 		}
 
 		/// <summary>
-		/// Make sure dot operators can only be called on objects.
+		/// Check that member access on primitives works.
 		/// </summary>
 		[Test]
-		public void Invalid()
+		public void PrimitiveDotMember()
 		{
 			var scope = new Scope();
 			var bindings = new Bindings();
-			scope.SetVar("o", new Test(1, 2));
+			scope.SetVar("string", "str");
+
+			var exp = new DotExpression(
+				new VariableExpression("string"),
+				new VariableExpression("Length")
+			);
+			Assert.AreEqual(3, exp.Evaluate(scope, bindings).AsObject());
+		}
+
+		[Test]
+		public void PrimitiveDotFunction()
+		{
+			var scope = new Scope();
+			var bindings = new Bindings();
 			scope.SetVar("bool", true);
 			scope.SetVar("int", 1);
 			scope.SetVar("float", 1f);
 			scope.SetVar("string", "str");
 
-			// Member access
 			var exp = new DotExpression(
 				new VariableExpression("bool"),
-				new VariableExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(bool), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("int"),
-				new VariableExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(int), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("float"),
-				new VariableExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(float), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("string"),
+				new FunctionExpression("GetType")
+			);
+			Assert.AreEqual(typeof(string), exp.Evaluate(scope, bindings).AsObject());
+		}
+
+		/// <summary>
+		/// Check that member access on null always returns null.
+		/// </summary>
+		[Test]
+		public void NullDot()
+		{
+			var scope = new Scope();
+			var bindings = new Bindings();
+
+			var exp = new DotExpression(
+				new VariableExpression("null"),
 				new VariableExpression("foo")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			// Function access
-			exp = new DotExpression(
-				new VariableExpression("bool"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(null, exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
-				new VariableExpression("int"),
+				new VariableExpression("null"),
 				new FunctionExpression("foo")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("float"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("string"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(null, exp.Evaluate(scope, bindings).AsObject());
 		}
 	}
 
 	class Test
 	{
-		public int a;
-		private int b;
+		public int publicInt;
+		private int privateInt;
 
-		public Test(int a, int b) { this.a = a; this.b = b; }
+		public Test(int a, int b) { publicInt = a; privateInt = b; }
 
-		public int foo() { return a; }
-		private int bar() { return b; }
+		public int publicMethod() { return publicInt; }
+		private int privateMethod() { return privateInt; }
 	}
 }
 

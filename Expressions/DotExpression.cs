@@ -21,8 +21,7 @@ namespace Exodrifter.Rumor.Expressions
 			var l = left.Evaluate(scope, bindings);
 
 			if (l == null || l.AsObject() == null) {
-				throw new NullReferenceException(
-					"Left argument to dot operator is null");
+				return new ObjectValue(null);
 			}
 			if (right == null) {
 				throw new NullReferenceException(
