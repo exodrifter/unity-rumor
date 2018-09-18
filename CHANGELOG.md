@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix compilation error when comment directly follows a statement expecting a
   block
 * Fix pauses not ending if a choice has been picked
+* Fix `==` expressions almost always returning `true` instead of the correct
+  value
+* Fix `.` expressions with `null` on the left side causing an error instead of
+  returning null
+* Update test that said using the `.` operator on primitives shouldn't work when
+  it actually does
+* Fix not all cases throw a `DivideByZero` exception when dividing by `0` or
+  `null` when they should throw that exception every time
+* Fix `null + null` to return `null` instead of throwing
+  `InvalidOperationException`
 
 ## [2.0.1] - 2018-04-15
 
