@@ -178,7 +178,7 @@ namespace Exodrifter.Rumor.Test.Lang
 			nodes = Compiler.Compile("$ 1 + 2 * 3 + 4");
 			Assert.AreEqual(1, nodes.Count);
 			Assert.IsAssignableFrom<Statement>(nodes[0]);
-			Assert.IsAssignableFrom<MultiplyExpression>(
+			Assert.IsAssignableFrom<AddExpression>(
 				(nodes[0] as Statement).expression);
 		}
 

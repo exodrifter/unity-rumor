@@ -43,31 +43,6 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.False(boolean);
 		}
 
-		/// <summary>
-		/// Check if boolean parsing works with trailing characters.
-		/// </summary>
-		[Test]
-		public void ParseBooleanExtra()
-		{
-			var parser = new Parser();
-
-			var reader = new Reader("truefoobar");
-			var boolean = parser.ParseBool(reader);
-			Assert.True(boolean);
-
-			reader = new Reader("falsefoobar");
-			boolean = parser.ParseBool(reader);
-			Assert.False(boolean);
-
-			reader = new Reader("truefalse");
-			boolean = parser.ParseBool(reader);
-			Assert.True(boolean);
-
-			reader = new Reader("falsetrue");
-			boolean = parser.ParseBool(reader);
-			Assert.False(boolean);
-		}
-
 		#endregion
 
 		#region Number

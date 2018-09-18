@@ -176,7 +176,7 @@ namespace Exodrifter.Rumor.Language
 			}
 
 			// Check that the match is followed by whitespace if required
-			if (requireWhitespace && !char.IsWhiteSpace(script[index + match.Length]))
+			if (requireWhitespace && (match.Length > 0) && (index + match.Length < script.Length) && !char.IsWhiteSpace(script[index + match.Length]))
 			{
 				return false;
 			}
