@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix compilation error when comment directly follows a statement expecting a
   block
 * Fix pauses not ending if a choice has been picked
+* Fix float and int equality testing
+* Allow comparison of floats and ints with strings
+* Better parsing errors
+* Allow function and variable names to start with keywords 
+* Fix math operator precedence
 
 ## [2.0.1] - 2018-04-15
 
