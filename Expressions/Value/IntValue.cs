@@ -124,13 +124,13 @@ namespace Exodrifter.Rumor.Expressions
 				return new BoolValue((AsInt() != 0) == (value.AsObject() != null));
 			}
 			if (value.IsInt()) {
-				return new BoolValue((AsInt() != 0) == (value.AsInt() != 0));
+				return new BoolValue(AsInt() == value.AsInt());
 			}
 			if (value.IsFloat()) {
-				return new BoolValue((AsInt() != 0) == (value.AsFloat() != 0));
+				return new BoolValue(AsFloat() == value.AsFloat());
 			}
 			if (value.IsString()) {
-				return new BoolValue((AsInt() != 0) == (value.AsString() != ""));
+				return new BoolValue(AsInt().ToString() == value.AsString());
 			}
 			if (value.IsBool()) {
 				return new BoolValue((AsInt() != 0) == (value.AsBool()));

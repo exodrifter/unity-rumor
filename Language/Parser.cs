@@ -30,8 +30,8 @@ namespace Exodrifter.Rumor.Language
 				".", "!",
 				"*", "/", "+", "-",
 				"<", ">", "<=", ">=",
-				"and", "xor", "or",
 				"==", "!=",
+				"and", "xor", "or",
 				"*=", "/=", "+=", "-=",
 				"=",
 			});
@@ -89,7 +89,7 @@ namespace Exodrifter.Rumor.Language
 				}
 				if (depth > targetDepth)
 				{
-					throw new ParseException(temp, "Unexpected block");
+					throw new ParseException(temp, "Unexpected block: '" + temp.ReadUntil('\n').Trim() + "'");
 				}
 
 				// Parse the command
@@ -387,7 +387,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Condition(new If(exp, children, elif));
 			}
-			else if (depth == nextDepth && temp.HasMatch("else"))
+			else if (depth == nextDepth && temp.HasMatch("else", false))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -423,7 +423,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Elif(exp, children, elif);
 			}
-			else if (depth == nextDepth && temp.HasMatch("else"))
+			else if (depth == nextDepth && temp.HasMatch("else", false))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -956,14 +956,17 @@ namespace Exodrifter.Rumor.Language
 						bool isKeyword = false;
 						foreach (var keyword in new List<string>() {
 							"add", "call", "choice", "choose", "clear", "jump",
-							"label", "pause", "return", "say", "if", "elif",
-							"else" })
+							"label", "pause", "return", "say", "if", "elif"})
 						{
 							if (temp.HasMatch(keyword))
 							{
 								isKeyword = true;
 								break;
 							}
+						}
+						if (!isKeyword && temp.HasMatch("else", false))
+						{
+							isKeyword = true;
 						}
 
 						if (!isKeyword)
@@ -994,7 +997,7 @@ namespace Exodrifter.Rumor.Language
 				{
 					foreach (var op in ops.Keys)
 					{
-						if (temp.HasMatch(op))
+						if (temp.HasMatch(op, false))
 						{
 							// Get the longest operator
 							if (potentialOp.Length < op.Length)
@@ -1050,7 +1053,7 @@ namespace Exodrifter.Rumor.Language
 				return new NoOpExpression();
 			}
 
-			int opValue = int.MaxValue; // operator precedence
+			int opValue = -1; // operator precedence
 			int opIndex = -1; // operator index in the token list
 			var parenthesis = new List<Token>();
 
@@ -1063,8 +1066,8 @@ namespace Exodrifter.Rumor.Language
 				{
 					var newOpValue = ops[token.Text];
 
-					// Token is an operator with a higher precedence
-					if (newOpValue < opValue)
+					// Token is an operator with a lower precedence
+					if (newOpValue > opValue)
 					{
 						opValue = newOpValue;
 						opIndex = i;
