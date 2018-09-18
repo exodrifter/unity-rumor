@@ -8,13 +8,13 @@ namespace Exodrifter.Rumor.Test.Expressions
 	/// <summary>
 	/// Ensure Literal expressions operate as expected.
 	/// </summary>
-	public class LiteralExpressionTest
+	public class LiteralTest
 	{
 		/// <summary>
 		/// Check the constructors of literal expressions.
 		/// </summary>
 		[Test]
-		public void LiteralExpressionConstructor()
+		public void LiteralConstructor()
 		{
 			var a = new LiteralExpression(1);
 			Assert.AreEqual(a.Value.GetType(), typeof(IntValue));
