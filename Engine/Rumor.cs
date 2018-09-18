@@ -435,7 +435,7 @@ namespace Exodrifter.Rumor.Engine
 				EnterBlock(State.Consequences[index]);
 				LastChoice = State.Choices[index];
 				LastChoiceIndex = index;
-				State.RemoveChoice(index);
+				State.ClearChoices();
 			}
 
 			if (null == iter) {
