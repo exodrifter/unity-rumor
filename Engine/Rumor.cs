@@ -74,6 +74,7 @@ namespace Exodrifter.Rumor.Engine
 		/// null if no choices have been chosen yet.
 		/// </summary>
 		public string LastChoice { get; set; }
+		public int LastChoiceIndex { get; set; }
 
 		/// <summary>
 		/// Returns true if we are currently on a choose node.
@@ -226,6 +227,7 @@ namespace Exodrifter.Rumor.Engine
 			bindings.Bind("_cancel_count", () => { return CancelCount; });
 			bindings.Bind("_finish_count", () => { return FinishCount; });
 			bindings.Bind("_choice", () => { return LastChoice; });
+			bindings.Bind("_choice_index", () => { return LastChoiceIndex; });
 
 			bindings.Bind("_set_default_speaker", (object speaker) => { Scope.DefaultSpeaker = speaker; });
 		}
@@ -432,7 +434,8 @@ namespace Exodrifter.Rumor.Engine
 			if (0 <= index && index < State.Consequences.Count) {
 				EnterBlock(State.Consequences[index]);
 				LastChoice = State.Choices[index];
-				State.RemoveChoice(index);
+				LastChoiceIndex = index;
+				State.ClearChoices();
 			}
 
 			if (null == iter) {
