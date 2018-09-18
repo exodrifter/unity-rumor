@@ -40,7 +40,9 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("o"),
 				new VariableExpression("imaginaryInt")
 			);
-			Assert.AreEqual(null, exp.Evaluate(scope, bindings).AsObject());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings)
+			);
 		}
 
 		/// <summary>
@@ -71,53 +73,26 @@ namespace Exodrifter.Rumor.Test.Expressions
 				new VariableExpression("o"),
 				new FunctionExpression("imaginaryMethod")
 			);
-			Assert.AreEqual(null, exp.Evaluate(scope, bindings).AsObject());
+			Assert.Throws<InvalidOperationException>(
+				() => exp.Evaluate(scope, bindings)
+			);
 		}
 
 		/// <summary>
-		/// Check that member access on primitives does not work.
+		/// Check that member access on primitives works.
 		/// </summary>
 		[Test]
 		public void PrimitiveDotMember()
 		{
 			var scope = new Scope();
 			var bindings = new Bindings();
-			scope.SetVar("bool", true);
-			scope.SetVar("int", 1);
-			scope.SetVar("float", 1f);
 			scope.SetVar("string", "str");
 
 			var exp = new DotExpression(
-				new VariableExpression("bool"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("int"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("float"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
 				new VariableExpression("string"),
-				new VariableExpression("foo")
+				new VariableExpression("Length")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(3, exp.Evaluate(scope, bindings).AsObject());
 		}
 
 		[Test]
@@ -132,35 +107,27 @@ namespace Exodrifter.Rumor.Test.Expressions
 
 			var exp = new DotExpression(
 				new VariableExpression("bool"),
-				new FunctionExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(bool), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("int"),
-				new FunctionExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(int), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("float"),
-				new FunctionExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(float), exp.Evaluate(scope, bindings).AsObject());
 
 			exp = new DotExpression(
 				new VariableExpression("string"),
-				new FunctionExpression("foo")
+				new FunctionExpression("GetType")
 			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			Assert.AreEqual(typeof(string), exp.Evaluate(scope, bindings).AsObject());
 		}
 
 		/// <summary>

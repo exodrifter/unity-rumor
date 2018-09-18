@@ -69,27 +69,27 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			if (value == null)
 			{
-				return new BoolValue(AsString() == "");
+				return new BoolValue(false);
 			}
 			if (value.IsObject())
 			{
-				return new BoolValue((AsString() != "") == (value.AsObject() != null));
+				return new BoolValue(false);
 			}
 			if (value.IsInt())
 			{
-				return new BoolValue((AsString() != "") == (value.AsInt() != 0));
+				return new BoolValue(false);
 			}
 			if (value.IsFloat())
 			{
-				return new BoolValue((AsString() != "") == (value.AsFloat() != 0));
+				return new BoolValue(false);
 			}
 			if (value.IsString())
 			{
-				return new BoolValue((AsString() != "") == (value.AsString() != ""));
+				return new BoolValue(AsString() == value.AsString());
 			}
 			if (value.IsBool())
 			{
-				return new BoolValue((AsString() != "") == (value.AsBool()));
+				return new BoolValue(false);
 			}
 			throw new InvalidOperationException();
 		}

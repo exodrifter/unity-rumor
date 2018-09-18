@@ -25,6 +25,9 @@ namespace Exodrifter.Rumor.Expressions
 				if (value == null) {
 					return new ObjectValue(null);
 				}
+				if (value.AsObject() == null) {
+					return new ObjectValue(null);
+				}
 				if (value.IsInt()) {
 					return new IntValue(value.AsInt());
 				}
@@ -114,19 +117,19 @@ namespace Exodrifter.Rumor.Expressions
 				return new BoolValue(AsObject() == null);
 			}
 			if (value.IsBool()) {
-				return new BoolValue((AsObject() != null) == value.AsBool());
+				return new BoolValue(false);
 			}
 			else if (value.IsInt()) {
-				return new BoolValue((AsObject() != null) == (value.AsInt() != 0));
+				return new BoolValue(false);
 			}
 			else if (value.IsFloat()) {
-				return new BoolValue((AsObject() != null) == (value.AsFloat() != 0));
+				return new BoolValue(false);
 			}
 			else if (value.IsString()) {
-				return new BoolValue((AsObject() != null) == (value.AsString() != ""));
+				return new BoolValue(false);
 			}
 			else if (value.IsObject()) {
-				return new BoolValue((AsObject() != null) == (value.AsObject() != null));
+				return new BoolValue(AsObject() == value.AsObject());
 			}
 			throw new InvalidOperationException();
 		}

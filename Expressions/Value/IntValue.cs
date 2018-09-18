@@ -73,10 +73,10 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value Divide(Value value)
 		{
 			if (value == null) {
-				return new IntValue(0);
+				throw new DivideByZeroException();
 			}
 			if (value.IsObject() && value.AsObject() == null) {
-				return new IntValue(0);
+				throw new DivideByZeroException();
 			}
 			if (value.IsInt()) {
 				return new IntValue(AsInt() / value.AsInt());

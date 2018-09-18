@@ -48,7 +48,7 @@ namespace Exodrifter.Rumor.Test.Expressions
 		[Test]
 		public void FloatMinusFloat()
 		{
-			var aa = new AddExpression(varA, varA);
+			var aa = new SubtractExpression(varA, varA);
 			Assert.AreEqual(0f, Eval(aa).AsObject());
 
 			var ab = new SubtractExpression(varA, varB);
