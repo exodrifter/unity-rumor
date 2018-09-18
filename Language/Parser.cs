@@ -387,7 +387,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Condition(new If(exp, children, elif));
 			}
-			else if (depth == nextDepth && temp.HasMatch("else"))
+			else if (depth == nextDepth && temp.HasMatch("else", false))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -423,7 +423,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Elif(exp, children, elif);
 			}
-			else if (depth == nextDepth && temp.HasMatch("else"))
+			else if (depth == nextDepth && temp.HasMatch("else", false))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -956,14 +956,17 @@ namespace Exodrifter.Rumor.Language
 						bool isKeyword = false;
 						foreach (var keyword in new List<string>() {
 							"add", "call", "choice", "choose", "clear", "jump",
-							"label", "pause", "return", "say", "if", "elif",
-							"else" })
+							"label", "pause", "return", "say", "if", "elif"})
 						{
 							if (temp.HasMatch(keyword))
 							{
 								isKeyword = true;
 								break;
 							}
+						}
+						if (!isKeyword && temp.HasMatch("else", false))
+						{
+							isKeyword = true;
 						}
 
 						if (!isKeyword)
@@ -994,7 +997,7 @@ namespace Exodrifter.Rumor.Language
 				{
 					foreach (var op in ops.Keys)
 					{
-						if (temp.HasMatch(op))
+						if (temp.HasMatch(op, false))
 						{
 							// Get the longest operator
 							if (potentialOp.Length < op.Length)

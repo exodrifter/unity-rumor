@@ -143,7 +143,7 @@ namespace Exodrifter.Rumor.Language
 		/// <param name="caseSensitive">
 		/// True for a case-sensitive search.
 		/// </param>
-		public bool HasMatch(string match, bool caseSensitive = false)
+		public bool HasMatch(string match, bool requireWhitespace = true, bool caseSensitive = false)
 		{
 			if (EOF || match == null)
 			{
@@ -173,6 +173,12 @@ namespace Exodrifter.Rumor.Language
 				{
 					return false;
 				}
+			}
+
+			// Check that the match is followed by whitespace if required
+			if (requireWhitespace && !char.IsWhiteSpace(script[index + match.Length]))
+			{
+				return false;
 			}
 
 			return true;
