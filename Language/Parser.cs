@@ -30,8 +30,8 @@ namespace Exodrifter.Rumor.Language
 				".", "!",
 				"*", "/", "+", "-",
 				"<", ">", "<=", ">=",
-				"and", "xor", "or",
 				"==", "!=",
+				"and", "xor", "or",
 				"*=", "/=", "+=", "-=",
 				"=",
 			});
@@ -1050,7 +1050,7 @@ namespace Exodrifter.Rumor.Language
 				return new NoOpExpression();
 			}
 
-			int opValue = int.MaxValue; // operator precedence
+			int opValue = -1; // operator precedence
 			int opIndex = -1; // operator index in the token list
 			var parenthesis = new List<Token>();
 
@@ -1063,8 +1063,8 @@ namespace Exodrifter.Rumor.Language
 				{
 					var newOpValue = ops[token.Text];
 
-					// Token is an operator with a higher precedence
-					if (newOpValue < opValue)
+					// Token is an operator with a lower precedence
+					if (newOpValue > opValue)
 					{
 						opValue = newOpValue;
 						opIndex = i;
