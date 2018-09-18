@@ -89,7 +89,7 @@ namespace Exodrifter.Rumor.Language
 				}
 				if (depth > targetDepth)
 				{
-					throw new ParseException(temp, "Unexpected block");
+					throw new ParseException(temp, "Unexpected block: '" + temp.ReadUntil('\n').Trim() + "'");
 				}
 
 				// Parse the command
