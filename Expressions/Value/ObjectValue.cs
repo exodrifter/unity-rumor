@@ -31,6 +31,9 @@ namespace Exodrifter.Rumor.Expressions
 				if (value.IsFloat()) {
 					return new FloatValue(value.AsFloat());
 				}
+				if (value.IsObject() && value.AsObject() == null) {
+					return new ObjectValue(null);
+				}
 			}
 			if (value == null) {
 				throw new InvalidOperationException();
