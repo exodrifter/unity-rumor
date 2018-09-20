@@ -116,22 +116,10 @@ namespace Exodrifter.Rumor.Expressions
 			if (value == null) {
 				return new BoolValue(AsObject() == null);
 			}
-			if (value.IsBool()) {
-				return new BoolValue((AsObject() != null) == value.AsBool());
-			}
-			else if (value.IsInt()) {
-				return new BoolValue((AsObject() != null) == (value.AsInt() != 0));
-			}
-			else if (value.IsFloat()) {
-				return new BoolValue((AsObject() != null) == (value.AsFloat() != 0));
-			}
-			else if (value.IsString()) {
-				return new BoolValue((AsObject() != null) == (value.AsString() != ""));
-			}
 			else if (value.IsObject()) {
-				return new BoolValue((AsObject() != null) == (value.AsObject() != null));
+				return new BoolValue(AsObject() == value.AsObject());
 			}
-			throw new InvalidOperationException();
+			return new BoolValue(false);
 		}
 
 		public override Value BoolAnd(Value value)
