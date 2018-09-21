@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Expressions
 			if (AsObject() == null) {
 				return new BoolValue(true);
 			}
-			throw new InvalidOperationException();
+			return new BoolValue(false);
 		}
 
 		public override Value Add(Value value)

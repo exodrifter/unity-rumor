@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   string with `==` would always return `true` instead of `false`
 * Fix bug where `>=` and `<=` would compare the `Value` when seeing if two
   values were equal instead of the wrapped values
+* Fix bug where using `!` on a non-null object would throw an exception
 
 ## [2.0.1] - 2018-04-15
 
