@@ -19,8 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix math operator precedence
 * Fix bug where comparing any non-empty string with another, different non-empty
   string with `==` would always return `true` instead of `false`
-* Fix bug where `>=` would compare the `Value` when seeing if two values were
-  equal instead of the wrapped values, which caused the `0 >= 0f` test to fail
+* Fix bug where `>=` and `<=` would compare the `Value` when seeing if two
+  values were equal instead of the wrapped values
 
 ## [2.0.1] - 2018-04-15
 
