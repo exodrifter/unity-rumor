@@ -163,6 +163,46 @@ namespace Exodrifter.Rumor.Test.Lang
 
 		#endregion
 
+		#region Clear
+
+		/// <summary>
+		/// Checks if clear statements with no argument compile.
+		/// </summary>
+		[Test]
+		public void CompileClearNoArgs()
+		{
+			var nodes = Compiler.Compile("clear");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.ALL, (nodes[0] as Clear).ClearType);
+		}
+
+		/// <summary>
+		/// Checks if clear statements with the "dialog" argument compile.
+		/// </summary>
+		[Test]
+		public void CompileClearDialog()
+		{
+			var nodes = Compiler.Compile("clear dialog");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.DIALOG, (nodes[0] as Clear).ClearType);
+		}
+
+		/// <summary>
+		/// Checks if clear statements with the "choices" argument compile.
+		/// </summary>
+		[Test]
+		public void CompileClearChoices()
+		{
+			var nodes = Compiler.Compile("clear choices");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.CHOICES, (nodes[0] as Clear).ClearType);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Checks if '$' statements compile.
 		/// <summary>
