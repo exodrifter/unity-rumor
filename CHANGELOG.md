@@ -17,11 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Better parsing errors
 * Allow function and variable names to start with keywords 
 * Fix math operator precedence
-* Fix bug where comparing any non-empty string with another, different non-empty
-  string with `==` would always return `true` instead of `false`
-* Fix bug where `>=` and `<=` would compare the `Value` when seeing if two
-  values were equal instead of the wrapped values
-* Fix bug where using `!` on a non-null object would throw an exception
+* `null + null` returns `null` instead of throwing `InvalidOperationException`
+* Fix comparing any non-empty string with another, different non-empty string
+  with `==` would always return `true` instead of `false`
+* Fix `>=` and `<=` not working due to comparing the wrapper type instead of
+  the wrapped values
+* Fix using `!` on a non-null object would throw an exception
 
 ## [2.0.1] - 2018-04-15
 
