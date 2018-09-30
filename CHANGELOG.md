@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix `>=` and `<=` not working due to comparing the wrapper type instead of
   the wrapped values
 * Fix using `!` on a non-null object would throw an exception
+* `clear choices` and `clear dialog` compile instead of throwing a compilation
+  error
 
 ## [2.0.1] - 2018-04-15
 

@@ -12,7 +12,11 @@ namespace Exodrifter.Rumor.Nodes
 	[Serializable]
 	public sealed class Clear : Node
 	{
-		private ClearType type;
+		private readonly ClearType type;
+		public ClearType ClearType
+		{
+			get { return type; }
+		}
 
 		/// <summary>
 		/// Creates a new Return node.

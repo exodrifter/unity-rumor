@@ -353,13 +353,16 @@ namespace Exodrifter.Rumor.Language
 		private Clear CompileClear(Reader reader)
 		{
 			var type = ClearType.ALL;
+			reader.Skip();
 
 			if (reader.HasMatch("choices"))
 			{
+				reader.Read("choices".Length);
 				type = ClearType.CHOICES;
 			}
 			else if (reader.HasMatch("dialog"))
 			{
+				reader.Read("dialog".Length);
 				type = ClearType.DIALOG;
 			}
 
