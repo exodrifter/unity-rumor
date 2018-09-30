@@ -8,155 +8,202 @@ using System;
 namespace Exodrifter.Rumor.Test.Expressions
 {
 	/// <summary>
-	/// Ensure dot operators work as expected
+	/// Ensure dot operators work as expected.
 	/// </summary>
 	public class DotTest
 	{
+		#region Helpers
+
 		/// <summary>
-		/// Check if member access on objects work.
+		/// Creates a scope with one variable in it.
 		/// </summary>
-		[Test]
-		public void Member()
+		/// <param name="name">The name of the variable to assign.</param>
+		/// <param name="value">The value of the variable to assign.</param>
+		/// <returns>A scope with a single variable assigned.</returns>
+		public Scope NewScope(string name, object value)
 		{
 			var scope = new Scope();
-			var bindings = new Bindings();
-			scope.SetVar("o", new Test(1, 2));
+			scope.SetVar(name, value);
+			return scope;
+		}
 
-			// Public
-			var exp = new DotExpression(
-				new VariableExpression("o"),
-				new VariableExpression("a")
-			);
-			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
+		private Value Eval(Expression exp, Scope scope)
+		{
+			scope = scope ?? new Scope();
+			return exp.Evaluate(scope, new Bindings());
+		}
 
-			// Private
-			exp = new DotExpression(
-				new VariableExpression("o"),
-				new VariableExpression("b")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
+		private DotExpression DotMember(string l, string r)
+		{
+			return new DotExpression(
+				new VariableExpression(l),
+				new VariableExpression(r)
 			);
 		}
 
-		/// <summary>
-		/// Check if function access on objects work.
-		/// </summary>
-		[Test]
-		public void Function()
+		private DotExpression DotFunction(string l, string r)
 		{
-			var scope = new Scope();
-			var bindings = new Bindings();
-			scope.SetVar("o", new Test(1, 2));
-
-			// Public
-			var exp = new DotExpression(
-				new VariableExpression("o"),
-				new FunctionExpression("foo")
-			);
-			Assert.AreEqual(1, exp.Evaluate(scope, bindings).AsInt());
-
-			// Private
-			exp = new DotExpression(
-				new VariableExpression("o"),
-				new FunctionExpression("bar")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
+			return new DotExpression(
+				new VariableExpression(l),
+				new FunctionExpression(r)
 			);
 		}
 
-		/// <summary>
-		/// Make sure dot operators can only be called on objects.
-		/// </summary>
+		#endregion
+
+		#region Null Dot
+
 		[Test]
-		public void Invalid()
+		public void NullDotMember()
 		{
-			var scope = new Scope();
-			var bindings = new Bindings();
-			scope.SetVar("o", new Test(1, 2));
-			scope.SetVar("bool", true);
-			scope.SetVar("int", 1);
-			scope.SetVar("float", 1f);
-			scope.SetVar("string", "str");
-
-			// Member access
-			var exp = new DotExpression(
-				new VariableExpression("bool"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("int"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("float"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("string"),
-				new VariableExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			// Function access
-			exp = new DotExpression(
-				new VariableExpression("bool"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("int"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("float"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
-
-			exp = new DotExpression(
-				new VariableExpression("string"),
-				new FunctionExpression("foo")
-			);
-			Assert.Throws<InvalidOperationException>(
-				() => exp.Evaluate(scope, bindings)
-			);
+			var exp = DotMember("null", "foobar");
+			Assert.Throws<NullReferenceException>(() => Eval(exp, null));
 		}
-	}
 
-	class Test
-	{
-		public int a;
-		private int b;
+		[Test]
+		public void NullDotFunction()
+		{
+			var exp = DotFunction("null", "foobar");
+			Assert.Throws<NullReferenceException>(() => Eval(exp, null));
+		}
 
-		public Test(int a, int b) { this.a = a; this.b = b; }
+		#endregion
 
-		public int foo() { return a; }
-		private int bar() { return b; }
+		#region Bool Dot
+
+		[Test]
+		public void BoolDotMember()
+		{
+			var scope = NewScope("bool", true);
+
+			// `bool` doesn't have any accessible variable members
+			var exp = DotMember("bool", "foobar");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+		}
+
+		[Test]
+		public void BoolDotFunction()
+		{
+			var scope = NewScope("bool", true);
+
+			var exp = DotFunction("bool", "GetHashCode");
+			Assert.AreEqual(true.GetHashCode(), Eval(exp, scope).AsObject());
+		}
+
+		#endregion
+
+		#region Int Dot
+
+		[Test]
+		public void IntDotMember()
+		{
+			var scope = NewScope("int", 1);
+
+			// `int` doesn't have any accessible variable members
+			var exp = DotMember("int", "foobar");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+		}
+
+		[Test]
+		public void IntDotFunction()
+		{
+			var scope = NewScope("int", 1);
+
+			var exp = DotFunction("int", "GetHashCode");
+			Assert.AreEqual(1.GetHashCode(), Eval(exp, scope).AsObject());
+		}
+
+		#endregion
+
+		#region Float Dot
+
+		[Test]
+		public void FloatDotMember()
+		{
+			var scope = NewScope("float", 1f);
+
+			// `float` doesn't have any accessible variable members
+			var exp = DotMember("float", "foobar");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+		}
+
+		[Test]
+		public void FloatDotFunction()
+		{
+			var scope = NewScope("float", 1f);
+
+			var exp = DotFunction("float", "GetHashCode");
+			Assert.AreEqual(1f.GetHashCode(), Eval(exp, scope).AsObject());
+		}
+
+		#endregion
+
+		#region String Dot
+
+		[Test]
+		public void StringDotMember()
+		{
+			var scope = NewScope("string", "abc");
+
+			var exp = DotMember("string", "Length");
+			Assert.AreEqual("abc".Length, Eval(exp, scope).AsObject());
+		}
+
+		[Test]
+		public void StringDotFunction()
+		{
+			var scope = NewScope("string", "abc");
+
+			var exp = DotFunction("string", "GetHashCode");
+			Assert.AreEqual("abc".GetHashCode(), Eval(exp, scope).AsObject());
+		}
+
+		#endregion
+
+		#region Object Dot
+
+		class Test
+		{
+			public int publicInt;
+			private int privateInt;
+
+			public Test(int a, int b) { publicInt = a; privateInt = b; }
+
+			public int publicMethod() { return publicInt; }
+			private int privateMethod() { return privateInt; }
+		}
+
+		[Test]
+		public void ObjectDotMember()
+		{
+			var scope = NewScope("object", new Test(1, 2));
+
+			var exp = DotMember("object", "publicInt");
+			Assert.AreEqual(1, Eval(exp, scope).AsObject());
+
+			exp = DotMember("object", "privateInt");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+
+			exp = DotMember("object", "imaginaryInt");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+		}
+
+		[Test]
+		public void ObjectDotFunction()
+		{
+			var scope = NewScope("object", new Test(1, 2));
+
+			var exp = DotFunction("object", "publicMethod");
+			Assert.AreEqual(1, Eval(exp, scope).AsObject());
+
+			exp = DotFunction("object", "privateMethod");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+
+			exp = DotFunction("object", "imaginaryMethod");
+			Assert.Throws<InvalidOperationException>(() => Eval(exp, scope));
+		}
+
+		#endregion
 	}
 }
 

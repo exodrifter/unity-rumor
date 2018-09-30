@@ -50,31 +50,13 @@ namespace Exodrifter.Rumor.Expressions
 
 		public override Value EqualTo(Value value)
 		{
-			if (value == null)
-			{
+			if (value == null) {
 				return new BoolValue(!AsBool());
 			}
-			if (value.IsObject())
-			{
-				return new BoolValue(AsBool() == (value.AsObject() != null));
-			}
-			if (value.IsInt())
-			{
-				return new BoolValue(AsBool() == (value.AsInt() != 0));
-			}
-			if (value.IsFloat())
-			{
-				return new BoolValue(AsBool() == (value.AsFloat() != 0));
-			}
-			if (value.IsString())
-			{
-				return new BoolValue(AsBool() == (value.AsString() != ""));
-			}
-			if (value.IsBool())
-			{
+			if (value.IsBool()) {
 				return new BoolValue(AsBool() == value.AsBool());
 			}
-			throw new InvalidOperationException();
+			return new BoolValue(false);
 		}
 
 		public override Value Divide(Value value)

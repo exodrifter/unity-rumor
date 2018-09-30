@@ -118,10 +118,7 @@ namespace Exodrifter.Rumor.Expressions
 		public override Value EqualTo(Value value)
 		{
 			if (value == null) {
-				return new BoolValue(AsInt() == 0);
-			}
-			if (value.IsObject()) {
-				return new BoolValue((AsInt() != 0) == (value.AsObject() != null));
+				return new BoolValue(false);
 			}
 			if (value.IsInt()) {
 				return new BoolValue(AsInt() == value.AsInt());
@@ -129,13 +126,7 @@ namespace Exodrifter.Rumor.Expressions
 			if (value.IsFloat()) {
 				return new BoolValue(AsFloat() == value.AsFloat());
 			}
-			if (value.IsString()) {
-				return new BoolValue(AsInt().ToString() == value.AsString());
-			}
-			if (value.IsBool()) {
-				return new BoolValue((AsInt() != 0) == (value.AsBool()));
-			}
-			throw new InvalidOperationException();
+			return new BoolValue(false);
 		}
 
 		public override Value BoolAnd(Value value)

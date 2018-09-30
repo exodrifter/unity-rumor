@@ -6,15 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+* `==` now only works when comparing values of the same type, with the notable
+  exception of Int and Floats which can be compared to each other.
+
 ### Fixed
 * Fix compilation error when comment directly follows a statement expecting a
   block
 * Fix pauses not ending if a choice has been picked
-* Fix float and int equality testing
-* Allow comparison of floats and ints with strings
 * Better parsing errors
 * Allow function and variable names to start with keywords 
 * Fix math operator precedence
+* `null + null` returns `null` instead of throwing `InvalidOperationException`
+* Fix comparing any non-empty string with another, different non-empty string
+  with `==` would always return `true` instead of `false`
+* Fix `>=` and `<=` not working due to comparing the wrapper type instead of
+  the wrapped values
+* Fix using `!` on a non-null object would throw an exception
 
 ## [2.0.1] - 2018-04-15
 

@@ -19,7 +19,7 @@ namespace Exodrifter.Rumor.Expressions
 		{
 			var l = left.Evaluate(scope, bindings) ?? new ObjectValue(null);
 			var r = right.Evaluate(scope, bindings) ?? new ObjectValue(null);
-			return new BoolValue(l.GreaterThan(r).AsBool() || l.Equals(r));
+			return new BoolValue(l.GreaterThan(r).AsBool() || l.EqualTo(r).AsBool());
 		}
 
 		public override string ToString()
