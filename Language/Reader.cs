@@ -8,6 +8,13 @@ namespace Exodrifter.Rumor.Language
 	/// </summary>
 	public class Reader : ITextPosition
 	{
+		/// <summary>
+		/// A string containing all of the valid characters that can be used to
+		/// name a variable.
+		/// </summary>
+		public const string VALID_VAR_CHARS =
+			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
+
 		#region Properties
 
 		/// <summary>
@@ -170,6 +177,38 @@ namespace Exodrifter.Rumor.Language
 				}
 
 				if (a != b)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Returns true if the specified token is found in the script starting
+		/// at the current position. Always returns false if the reader is at
+		/// the end of the file.
+		/// </summary>
+		/// <param name="match">
+		/// The requested token to find.
+		/// </param>
+		/// <param name="caseSensitive">
+		/// True for a case-sensitive search.
+		/// </param>
+		public bool HasToken(string match, bool caseSensitive = false)
+		{
+			var isMatch = HasMatch(match, caseSensitive);
+			if (isMatch == false)
+			{
+				return false;
+			}
+
+			// A match is a token if it cannot also be the prefix of a variable
+			var pos = index + match.Length;
+			if (pos < script.Length)
+			{
+				if (VALID_VAR_CHARS.Contains(script[pos]))
 				{
 					return false;
 				}

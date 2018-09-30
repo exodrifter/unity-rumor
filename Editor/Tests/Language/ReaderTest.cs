@@ -216,6 +216,75 @@ namespace Exodrifter.Rumor.Test.Lang
 
 		#endregion
 
+		#region HasToken
+
+		/// <summary>
+		/// Checks if the reader handles a null script correctly while checking
+		/// for a token.
+		/// </summary>
+		[Test]
+		public void HasTokenNull()
+		{
+			var reader = new Reader(null, 4);
+
+			Assert.False(reader.HasMatch(""));
+			Check(0, 1, 1, reader);
+
+			Assert.False(reader.HasMatch(""));
+			Check(0, 1, 1, reader);
+
+			Assert.False(reader.HasMatch(null));
+			Check(0, 1, 1, reader);
+		}
+
+		/// <summary>
+		/// Checks if the reader handles an empty script correctly while
+		/// checking for a token.
+		/// </summary>
+		[Test]
+		public void HasTokenEmpty()
+		{
+			var reader = new Reader("", 4);
+
+			Assert.False(reader.HasMatch(""));
+			Check(0, 1, 1, reader);
+
+			Assert.False(reader.HasMatch(""));
+			Check(0, 1, 1, reader);
+		}
+
+		/// <summary>
+		/// Checks if the reader checks for tokensproperly.
+		/// </summary>
+		[Test]
+		public void HasTokenTest()
+		{
+			var reader = new Reader("abcd", 4);
+
+			Assert.True(reader.HasToken("abcd"));
+			Check(0, 1, 1, reader);
+
+			Assert.False(reader.HasToken("abc"));
+			Check(0, 1, 1, reader);
+
+			reader = new Reader("abcd:", 4);
+
+			Assert.True(reader.HasToken("abcd"));
+			Check(0, 1, 1, reader);
+
+			reader = new Reader("abcd)", 4);
+
+			Assert.True(reader.HasToken("abcd"));
+			Check(0, 1, 1, reader);
+
+			reader = new Reader("abcd ", 4);
+
+			Assert.True(reader.HasToken("abcd"));
+			Check(0, 1, 1, reader);
+		}
+
+		#endregion
+
 		#region Peek
 
 		/// <summary>
