@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [3.0.0] - 2018-09-29
+
 ### Changed
 * `==` now only works when comparing values of the same type, with the notable
   exception of Int and Floats which can be compared to each other.
@@ -15,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   block
 * Fix pauses not ending if a choice has been picked
 * Better parsing errors
-* Allow function and variable names to start with keywords 
+* Allow function and variable names to start with keywords
 * Fix math operator precedence
 * `null + null` returns `null` instead of throwing `InvalidOperationException`
 * Fix comparing any non-empty string with another, different non-empty string
@@ -25,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix using `!` on a non-null object would throw an exception
 * `clear choices` and `clear dialog` compile instead of throwing a compilation
   error
+
 
 ## [2.0.1] - 2018-04-15
 
@@ -204,7 +208,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.0
 [2.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/exodrifter/unity-rumor/compare/1.1.2...2.0.0
 [1.1.2]: https://github.com/exodrifter/unity-rumor/compare/1.1.1...1.1.2
