@@ -292,7 +292,7 @@ namespace Exodrifter.Rumor.Language
 			if (!noWait)
 			{
 				reader.Skip();
-				if (reader.HasMatch("no_wait"))
+				if (reader.HasToken("no_wait"))
 				{
 					reader.Read("no_wait".Length);
 					noWait = true;
@@ -333,7 +333,7 @@ namespace Exodrifter.Rumor.Language
 
 			Expression seconds = new LiteralExpression(0);
 			reader.Skip();
-			if (reader.HasMatch("in"))
+			if (reader.HasToken("in"))
 			{
 				reader.Read("in".Length);
 				seconds = CompileExpression(reader);
@@ -341,7 +341,7 @@ namespace Exodrifter.Rumor.Language
 
 			Expression @default = new LiteralExpression(0);
 			reader.Skip();
-			if (reader.HasMatch("default"))
+			if (reader.HasToken("default"))
 			{
 				reader.Read("default".Length);
 				@default = CompileExpression(reader);
@@ -355,12 +355,12 @@ namespace Exodrifter.Rumor.Language
 			var type = ClearType.ALL;
 			reader.Skip();
 
-			if (reader.HasMatch("choices"))
+			if (reader.HasToken("choices"))
 			{
 				reader.Read("choices".Length);
 				type = ClearType.CHOICES;
 			}
-			else if (reader.HasMatch("dialog"))
+			else if (reader.HasToken("dialog"))
 			{
 				reader.Read("dialog".Length);
 				type = ClearType.DIALOG;
@@ -379,7 +379,7 @@ namespace Exodrifter.Rumor.Language
 			var temp = GetTempOnNextNonEmptyLine(reader);
 			var nextDepth = temp.Skip();
 
-			if (depth == nextDepth && temp.HasMatch("elif"))
+			if (depth == nextDepth && temp.HasToken("elif"))
 			{
 				temp.Read("elif".Length);
 				temp.Skip();
@@ -390,7 +390,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Condition(new If(exp, children, elif));
 			}
-			else if (depth == nextDepth && temp.HasMatch("else", false))
+			else if (depth == nextDepth && temp.HasToken("else"))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -415,7 +415,7 @@ namespace Exodrifter.Rumor.Language
 			var temp = GetTempOnNextNonEmptyLine(reader);
 			var nextDepth = temp.Skip();
 
-			if (depth == nextDepth && temp.HasMatch("elif"))
+			if (depth == nextDepth && temp.HasToken("elif"))
 			{
 				temp.Read("elif".Length);
 				temp.Skip();
@@ -426,7 +426,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Elif(exp, children, elif);
 			}
-			else if (depth == nextDepth && temp.HasMatch("else", false))
+			else if (depth == nextDepth && temp.HasToken("else"))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -470,7 +470,7 @@ namespace Exodrifter.Rumor.Language
 			// Check for cant_skip argument
 			bool cantSkip = false;
 			reader.Skip();
-			if (reader.HasMatch("cant_skip"))
+			if (reader.HasToken("cant_skip"))
 			{
 				reader.Read("cant_skip".Length);
 				cantSkip = true;
@@ -504,7 +504,7 @@ namespace Exodrifter.Rumor.Language
 			if (!noWait)
 			{
 				reader.Skip();
-				if (reader.HasMatch("no_wait"))
+				if (reader.HasToken("no_wait"))
 				{
 					reader.Read("no_wait".Length);
 					noWait = true;
@@ -532,12 +532,12 @@ namespace Exodrifter.Rumor.Language
 
 		public bool ParseBool(Reader reader)
 		{
-			if (reader.HasMatch("false"))
+			if (reader.HasToken("false"))
 			{
 				reader.Read("false".Length);
 				return false;
 			}
-			else if (reader.HasMatch("true"))
+			else if (reader.HasToken("true"))
 			{
 				reader.Read("true".Length);
 				return true;
@@ -788,13 +788,10 @@ namespace Exodrifter.Rumor.Language
 
 		#region Variable
 
-		private const string VALID_VAR_CHARS =
-			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
-
 		public string ParseVariable(Reader reader)
 		{
 			var variable = new StringBuilder();
-			while (!reader.EOF && VALID_VAR_CHARS.Contains(reader.Peek()))
+			while (!reader.EOF && Reader.VALID_VAR_CHARS.Contains(reader.Peek()))
 			{
 				variable.Append(reader.Read());
 			}
@@ -802,7 +799,7 @@ namespace Exodrifter.Rumor.Language
 			if (variable.Length == 0)
 			{
 				throw new ReadException(
-					reader, VALID_VAR_CHARS.ToCharArray());
+					reader, Reader.VALID_VAR_CHARS.ToCharArray());
 			}
 			return variable.ToString();
 		}
@@ -947,13 +944,13 @@ namespace Exodrifter.Rumor.Language
 						expression = new LiteralExpression(num);
 					}
 					// Boolean Literal
-					else if (temp.HasMatch("true") || temp.HasMatch("false"))
+					else if (temp.HasToken("true") || temp.HasToken("false"))
 					{
 						var b = ParseBool(temp);
 						expression = new LiteralExpression(b);
 					}
 					// Variable
-					else if (VALID_VAR_CHARS.Contains(next))
+					else if (Reader.VALID_VAR_CHARS.Contains(next))
 					{
 						// Check for keywords
 						bool isKeyword = false;
@@ -961,13 +958,13 @@ namespace Exodrifter.Rumor.Language
 							"add", "call", "choice", "choose", "clear", "jump",
 							"label", "pause", "return", "say", "if", "elif"})
 						{
-							if (temp.HasMatch(keyword))
+							if (temp.HasToken(keyword))
 							{
 								isKeyword = true;
 								break;
 							}
 						}
-						if (!isKeyword && temp.HasMatch("else", false))
+						if (!isKeyword && temp.HasToken("else"))
 						{
 							isKeyword = true;
 						}

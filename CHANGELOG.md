@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+* Fix `true` and `false` always being treated as variables when they should be
+  a boolean literal
+
 
 ## [3.0.0] - 2018-09-29
 
