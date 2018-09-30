@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 
+using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Expressions;
 using Exodrifter.Rumor.Language;
 using Exodrifter.Rumor.Nodes;
@@ -86,12 +87,114 @@ namespace Exodrifter.Rumor.Test.Lang
 
 		#endregion
 
-		#region Say
+		#region Boolean
+
+		[Test]
+		public void CompileTrueBool()
+		{
+			var scope = new Scope();
+			var binds = new Bindings();
+
+			var nodes = Compiler.Compile("$ true");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(true, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileFalseBool()
+		{
+			var scope = new Scope();
+			var binds = new Bindings();
+
+			var nodes = Compiler.Compile("$ false");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(false, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileTrueBoolInFunction()
+		{
+			var scope = new Scope();
+			var binds = new Bindings();
+			binds.Bind<object, object>("id", x => x );
+
+			var nodes = Compiler.Compile("$ id(true)");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(true, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileFalseBoolInFunction()
+		{
+			var scope = new Scope();
+			var binds = new Bindings();
+			binds.Bind<object, object>("id", x => x);
+
+			var nodes = Compiler.Compile("$ id(false)");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(false, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		#endregion
+
+		#region Clear
 
 		/// <summary>
-		/// Checks if say statements with only dialog compile.
+		/// Checks if clear statements with no argument compile.
 		/// </summary>
 		[Test]
+		public void CompileClearNoArgs()
+		{
+			var nodes = Compiler.Compile("clear");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.ALL, (nodes[0] as Clear).ClearType);
+		}
+
+		/// <summary>
+		/// Checks if clear statements with the "dialog" argument compile.
+		/// </summary>
+		[Test]
+		public void CompileClearDialog()
+		{
+			var nodes = Compiler.Compile("clear dialog");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.DIALOG, (nodes[0] as Clear).ClearType);
+		}
+
+		/// <summary>
+		/// Checks if clear statements with the "choices" argument compile.
+		/// </summary>
+		[Test]
+		public void CompileClearChoices()
+		{
+			var nodes = Compiler.Compile("clear choices");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Clear>(nodes[0]);
+			Assert.AreEqual(ClearType.CHOICES, (nodes[0] as Clear).ClearType);
+		}
+
+		#endregion
+
+		#region Say
+
+	/// <summary>
+	/// Checks if say statements with only dialog compile.
+	/// </summary>
+	[Test]
 		public void CompileSayDialog()
 		{
 			var nodes = Compiler.Compile("say \"Hello world\"");
@@ -163,42 +266,99 @@ namespace Exodrifter.Rumor.Test.Lang
 
 		#endregion
 
-		#region Clear
+		#region Variable
 
-		/// <summary>
-		/// Checks if clear statements with no argument compile.
-		/// </summary>
 		[Test]
-		public void CompileClearNoArgs()
+		public void CompileVariable()
 		{
-			var nodes = Compiler.Compile("clear");
+			var scope = new Scope();
+			scope.SetVar("foobar", 5);
+			var binds = new Bindings();
+
+			var nodes = Compiler.Compile("$ foobar");
 			Assert.AreEqual(1, nodes.Count);
-			Assert.IsAssignableFrom<Clear>(nodes[0]);
-			Assert.AreEqual(ClearType.ALL, (nodes[0] as Clear).ClearType);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
 		}
 
-		/// <summary>
-		/// Checks if clear statements with the "dialog" argument compile.
-		/// </summary>
 		[Test]
-		public void CompileClearDialog()
+		public void CompileVariableNumbers()
 		{
-			var nodes = Compiler.Compile("clear dialog");
+			var scope = new Scope();
+			scope.SetVar("f1234", 5);
+			var binds = new Bindings();
+
+			var nodes = Compiler.Compile("$ f1234");
 			Assert.AreEqual(1, nodes.Count);
-			Assert.IsAssignableFrom<Clear>(nodes[0]);
-			Assert.AreEqual(ClearType.DIALOG, (nodes[0] as Clear).ClearType);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
 		}
 
-		/// <summary>
-		/// Checks if clear statements with the "choices" argument compile.
-		/// </summary>
 		[Test]
-		public void CompileClearChoices()
+		public void CompileVariableKeyword()
 		{
-			var nodes = Compiler.Compile("clear choices");
+			var scope = new Scope();
+			scope.SetVar("truest", 5);
+			var binds = new Bindings();
+
+			var nodes = Compiler.Compile("$ truest");
 			Assert.AreEqual(1, nodes.Count);
-			Assert.IsAssignableFrom<Clear>(nodes[0]);
-			Assert.AreEqual(ClearType.CHOICES, (nodes[0] as Clear).ClearType);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileVariableInFunction()
+		{
+			var scope = new Scope();
+			scope.SetVar("foobar", 5);
+			var binds = new Bindings();
+			binds.Bind<object, object>("id", x => x);
+
+			var nodes = Compiler.Compile("$ id(foobar)");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileVariableNumbersInFunction()
+		{
+			var scope = new Scope();
+			scope.SetVar("f1234", 5);
+			var binds = new Bindings();
+			binds.Bind<object, object>("id", x => x);
+
+			var nodes = Compiler.Compile("$ id(f1234)");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
+		}
+
+		[Test]
+		public void CompileVariableKeywordInFunction()
+		{
+			var scope = new Scope();
+			scope.SetVar("truest", 5);
+			var binds = new Bindings();
+			binds.Bind<object, object>("id", x => x);
+
+			var nodes = Compiler.Compile("$ id(truest)");
+			Assert.AreEqual(1, nodes.Count);
+			Assert.IsAssignableFrom<Statement>(nodes[0]);
+
+			var exp = (nodes[0] as Statement).expression;
+			Assert.AreEqual(5, exp.Evaluate(scope, binds).AsObject());
 		}
 
 		#endregion
