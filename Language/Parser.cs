@@ -390,7 +390,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Condition(new If(exp, children, elif));
 			}
-			else if (depth == nextDepth && temp.HasMatch("else", false))
+			else if (depth == nextDepth && temp.HasMatch("else"))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -426,7 +426,7 @@ namespace Exodrifter.Rumor.Language
 				var elif = CompileElif(reader, depth);
 				return new Elif(exp, children, elif);
 			}
-			else if (depth == nextDepth && temp.HasMatch("else", false))
+			else if (depth == nextDepth && temp.HasMatch("else"))
 			{
 				temp.Read("else".Length);
 				temp.Skip();
@@ -967,7 +967,7 @@ namespace Exodrifter.Rumor.Language
 								break;
 							}
 						}
-						if (!isKeyword && temp.HasMatch("else", false))
+						if (!isKeyword && temp.HasMatch("else"))
 						{
 							isKeyword = true;
 						}

@@ -166,13 +166,10 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.True(reader.HasMatch("abcd"));
 			Check(0, 1, 1, reader);
 
-			Assert.True(reader.HasMatch("abc", false));
+			Assert.True(reader.HasMatch("abc"));
 			Check(0, 1, 1, reader);
 
-			Assert.False(reader.HasMatch("abc"));
-			Check(0, 1, 1, reader);
-
-			Assert.True(reader.HasMatch("a", false));
+			Assert.True(reader.HasMatch("a"));
 			Check(0, 1, 1, reader);
 
 			Assert.True(reader.HasMatch(""));
@@ -207,10 +204,10 @@ namespace Exodrifter.Rumor.Test.Lang
 			Assert.True(reader.HasMatch("bcd"));
 			Check(1, 1, 2, reader);
 
-			Assert.True(reader.HasMatch("b", false));
+			Assert.True(reader.HasMatch("bc"));
 			Check(1, 1, 2, reader);
 
-			Assert.False(reader.HasMatch("b"));
+			Assert.True(reader.HasMatch("b"));
 			Check(1, 1, 2, reader);
 
 			Assert.False(reader.HasMatch(null));
