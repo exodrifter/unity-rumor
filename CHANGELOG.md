@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 * Fix `true` and `false` always being treated as variables when they should be
   a boolean literal
+* Fix scope serialization not working when .NET 4.x runtime is selected
 
 
 ## [3.0.0] - 2018-09-29
