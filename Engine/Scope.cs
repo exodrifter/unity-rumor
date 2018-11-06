@@ -204,18 +204,27 @@ namespace Exodrifter.Rumor.Engine
 
 		#region Serialization
 
+		private List<string> tempKeys;
+		private List<Value> tempValues;
+
 		public Scope(SerializationInfo info, StreamingContext context)
 		{
-			var keys = info.GetValue<List<string>>("keys");
-			var values = info.GetValue<List<Value>>("values");
-
 			vars = new Dictionary<string, Value>();
-			for (int i = 0; i < keys.Count; ++i)
-			{
-				vars.Add(keys[i], values[i]);
-			}
+			tempKeys = info.GetValue<List<string>>("keys");
+			tempValues = info.GetValue<List<Value>>("values");
 
 			DefaultSpeaker = info.GetValue<object>("defaultSpeaker");
+		}
+
+		[OnDeserialized]
+		void OnDeserialized()
+		{
+			for (int i = 0; i < tempKeys.Count; ++i)
+			{
+				vars.Add(tempKeys[i], tempValues[i]);
+			}
+			tempKeys = null;
+			tempValues = null;
 		}
 
 		void ISerializable.GetObjectData
