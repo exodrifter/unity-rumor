@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [3.0.1] - 2018-11-06
+
 ### Fixed
 * Fix `true` and `false` always being treated as variables when they should be
   a boolean literal
@@ -213,7 +216,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/3.0.1...HEAD
+[3.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.1
 [3.0.0]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.0
 [2.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/exodrifter/unity-rumor/compare/1.1.2...2.0.0
@@ -226,4 +230,3 @@ For examples of how Rumor works, see the `Examples/` folder.
 [0.2.0]: https://github.com/exodrifter/unity-rumor/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/exodrifter/unity-rumor/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/exodrifter/unity-rumor/compare/215489c...0.1.0
-
