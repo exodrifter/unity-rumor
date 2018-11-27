@@ -345,7 +345,6 @@ namespace Exodrifter.Rumor.Engine
 		private void Init()
 		{
 			stack.Push(new StackFrame(nodes));
-			State.Clear();
 		}
 
 		/// <summary>
@@ -394,7 +393,6 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Clear();
 			Finished = true;
 
 			FinishCount++;
@@ -413,7 +411,6 @@ namespace Exodrifter.Rumor.Engine
 				return;
 			}
 
-			State.Clear();
 			Cancelled = true;
 
 			CancelCount++;

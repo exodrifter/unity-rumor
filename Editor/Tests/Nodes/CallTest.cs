@@ -130,6 +130,44 @@ namespace Exodrifter.Rumor.Test.Nodes
 			yield.MoveNext();
 			Assert.AreEqual("aa", (rumor.Current as Say).EvaluateText(rumor));
 		}
+
+		/// <summary>
+		/// Ensure calls don't clear the state.
+		/// </summary>
+		[Test]
+		public void CallDoesntClearState()
+		{
+			var rumor = new Rumor.Engine.Rumor(new List<Node>() {
+				new Say("foo"),
+				new Call("a"),
+				new Add("foo"),
+				new Label("a", new List<Node>() {
+					new Add("bar"),
+					new Return(),
+				}),
+				new Add("baz"),
+			});
+
+			var yield = rumor.Start();
+			yield.MoveNext();
+			Assert.AreEqual("foo", rumor.State.Dialog[null]);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("foo bar", rumor.State.Dialog[null]);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("foo bar foo", rumor.State.Dialog[null]);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("foo bar foo bar", rumor.State.Dialog[null]);
+
+			rumor.Advance();
+			yield.MoveNext();
+			Assert.AreEqual("foo bar foo bar baz", rumor.State.Dialog[null]);
+		}
 	}
 }
 

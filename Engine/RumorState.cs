@@ -57,7 +57,9 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public RumorState()
 		{
-			Clear();
+			Dialog = new LazyDictionary<object, string>();
+			Choices = new List<string>();
+			Consequences = new List<List<Node>>();
 		}
 
 		/// <summary>
@@ -140,9 +142,9 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void Clear()
 		{
-			Dialog = new LazyDictionary<object, string>();
-			Choices = new List<string>();
-			Consequences = new List<List<Node>>();
+			Dialog.Clear();
+			Choices.Clear();
+			Consequences.Clear();
 
 			if (OnClear != null) {
 				OnClear(ClearType.ALL);
@@ -154,8 +156,8 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void ClearChoices()
 		{
-			Choices = new List<string>();
-			Consequences = new List<List<Node>>();
+			Choices.Clear();
+			Consequences.Clear();
 
 			if (OnClear != null) {
 				OnClear(ClearType.CHOICES);
@@ -167,7 +169,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void ClearDialog()
 		{
-			Dialog = new LazyDictionary<object, string>();
+			Dialog.Clear();
 
 			if (OnClear != null) {
 				OnClear(ClearType.DIALOG);

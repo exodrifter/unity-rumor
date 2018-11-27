@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added `.asmdef` files, which should prevent Rumor from being repeatedly
   recompiled when used as a submodule in a Unity Project
 
+### Changed
+* Stop OnClear messages from being sent when `Rumor` is started or stopped or
+  when a `jump` or `call` command is encountered
+
 
 ## [3.0.1] - 2018-11-06
 
