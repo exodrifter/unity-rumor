@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `TextAsset`s
 * Added `.asmdef` files, which should prevent Rumor from being repeatedly
   recompiled when used as a submodule in a Unity Project
+* Added `GetVarNames` to `Scope` to allow iterating over all set variables in a
+  scope
 
 ### Changed
 * Stop OnClear messages from being sent when `Rumor` is started or stopped or

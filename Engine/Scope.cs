@@ -68,6 +68,15 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Returns all variable names in the scope that have been set.
+		/// </summary>
+		/// <returns>The variables in the scope.</returns>
+		public List<string> GetVarNames()
+		{
+			return new List<string>(vars.Keys);
+		}
+
+		/// <summary>
 		/// Returns the value of the specified variable.
 		/// </summary>
 		/// <returns>The value of the variable.</returns>
