@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+* Added a `ScriptedImporter` to import files with the `.rumor` extension as
+  `TextAsset`s
+
 
 ## [3.0.1] - 2018-11-06
 
