@@ -132,4 +132,4 @@ public class RumorScriptExample : MonoBehaviour
 }
 ```
 
-See `Examples/RumorScriptExample.cs` to run this example in Unity.
+See `Editor/Examples/RumorScriptExample.cs` to run this example in Unity.

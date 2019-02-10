@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Added a `ScriptedImporter` to import files with the `.rumor` extension as
   `TextAsset`s
+* Added `.asmdef` files, which should prevent Rumor from being repeatedly
+  recompiled when used as a submodule in a Unity Project
 
 
 ## [3.0.1] - 2018-11-06
