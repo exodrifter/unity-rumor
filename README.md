@@ -73,7 +73,7 @@ label end:
 ```
 
 **Example.cs**
-```
+```csharp
 using Exodrifter.Rumor.Engine;
 using System.IO;
 using UnityEngine;
