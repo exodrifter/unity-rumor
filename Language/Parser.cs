@@ -319,7 +319,10 @@ namespace Exodrifter.Rumor.Language
 		{
 			var text = CompileExpression(reader);
 			reader.Skip();
-			reader.Expect(':');
+			if (reader.Peek() == ':')
+			{
+				reader.Expect(':');
+			}
 			return new Choice(text, CompileChildren(reader, depth));
 		}
 
@@ -373,7 +376,10 @@ namespace Exodrifter.Rumor.Language
 		{
 			var exp = CompileExpression(reader);
 			reader.Skip();
-			reader.Expect(':');
+			if (reader.Peek() == ':')
+			{
+				reader.Expect(':');
+			}
 			var children = CompileChildren(reader, depth);
 
 			var temp = GetTempOnNextNonEmptyLine(reader);
@@ -409,7 +415,10 @@ namespace Exodrifter.Rumor.Language
 		{
 			var exp = CompileExpression(reader);
 			reader.Skip();
-			reader.Expect(':');
+			if (reader.Peek() == ':')
+			{
+				reader.Expect(':');
+			}
 			var children = CompileChildren(reader, depth);
 
 			var temp = GetTempOnNextNonEmptyLine(reader);
@@ -444,7 +453,10 @@ namespace Exodrifter.Rumor.Language
 		private Else CompileElse(Reader reader, int depth)
 		{
 			reader.Skip();
-			reader.Expect(':');
+			if (reader.Peek() == ':')
+			{
+				reader.Expect(':');
+			}
 			var children = CompileChildren(reader, depth);
 			return new Else(children);
 		}
@@ -459,7 +471,10 @@ namespace Exodrifter.Rumor.Language
 		{
 			var name = ParseVariable(reader);
 			reader.Skip();
-			reader.Expect(':');
+			if (reader.Peek() == ':')
+			{
+				reader.Expect(':');
+			}
 			return new Label(name, CompileChildren(reader, depth));
 		}
 

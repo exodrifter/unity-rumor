@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Stop OnClear messages from being sent when `Rumor` is started or stopped or
   when a `jump` or `call` command is encountered
+* `choice`, `label`, `if`, `elif`, and `else` commands no longer require the `:`
+  character
 
 
 ## [3.0.1] - 2018-11-06
