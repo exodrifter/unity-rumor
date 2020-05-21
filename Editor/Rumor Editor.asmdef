@@ -1,16 +1,23 @@
 {
     "name": "RumorEditor",
     "references": [
-        "Rumor"
+        "Rumor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
+    "includePlatforms": [
+        "Editor"
     ],
-    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
     "autoReferenced": false,
-    "defineConstraints": []
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
