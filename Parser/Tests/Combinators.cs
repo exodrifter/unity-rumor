@@ -12,7 +12,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("aaa");
 
 			var result = new CharParser('a').Many(0).Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual(new char[] { 'a', 'a', 'a' }, result.Value);
 		}
 
@@ -22,7 +21,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("a");
 
 			var result = new CharParser('z').Many(0).Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual(new char[] { }, result.Value);
 		}
 
@@ -32,7 +30,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("a");
 
 			var result = new CharParser('a').Many(1).Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual(new char[] { 'a' }, result.Value);
 		}
 
@@ -41,12 +38,13 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("a");
 
-			var result = new CharParser('z').Many(1).Parse(state);
-			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(0, result.ErrorIndex);
+			var exception = Assert.Throws<ParserException>(() =>
+				new CharParser('z').Many(1).Parse(state)
+			);
+			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(
 				new string[] { "at least 1 more of z" },
-				result.Expected
+				exception.Expected
 			);
 		}
 
@@ -62,7 +60,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var result = new CharParser('a')
 				.Or(new CharParser('z'))
 				.Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual('a', result.Value);
 		}
 
@@ -74,7 +71,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var result = new CharParser('a')
 				.Or(new CharParser('z'))
 				.Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual('z', result.Value);
 		}
 
@@ -83,11 +79,13 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("m", 0);
 
-			var result = new CharParser('a')
+			var exception = Assert.Throws<ParserException>(() =>
+				new CharParser('a')
 				.Or(new CharParser('z'))
-				.Parse(state);
-			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(new string[] { "a", "z" }, result.Expected);
+				.Parse(state)
+			);
+			Assert.AreEqual(0, exception.Index);
+			Assert.AreEqual(new string[] { "a", "z" }, exception.Expected);
 		}
 
 		#endregion
@@ -102,7 +100,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var result = new CharParser('a')
 				.Then(new CharParser('b'))
 				.Parse(state);
-			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual('b', result.Value);
 		}
 
@@ -111,12 +108,13 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("ab", 0);
 
-			var result = new CharParser('z')
+			var exception = Assert.Throws<ParserException>(() =>
+				new CharParser('z')
 				.Then(new CharParser('b'))
-				.Parse(state);
-			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(0, result.ErrorIndex);
-			Assert.AreEqual(new string[] { "z" }, result.Expected);
+				.Parse(state)
+			);
+			Assert.AreEqual(0, exception.Index);
+			Assert.AreEqual(new string[] { "z" }, exception.Expected);
 		}
 
 		[Test]
@@ -124,12 +122,13 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("ab", 0);
 
-			var result = new CharParser('a')
+			var exception = Assert.Throws<ParserException>(() =>
+				new CharParser('a')
 				.Then(new CharParser('z'))
-				.Parse(state);
-			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(1, result.ErrorIndex);
-			Assert.AreEqual(new string[] { "z" }, result.Expected);
+				.Parse(state)
+			);
+			Assert.AreEqual(1, exception.Index);
+			Assert.AreEqual(new string[] { "z" }, exception.Expected);
 		}
 
 		#endregion

@@ -19,25 +19,27 @@ namespace Exodrifter.Rumor.Parser
 
 			while (true)
 			{
-				var result = parser.Parse(state);
-				if (result.IsSuccess)
+				try
 				{
+					var result = parser.Parse(state);
 					results.Add(result.Value);
 					state = result.NextState;
-					continue;
 				}
-				else if (results.Count < minimum)
+				catch (ParserException exception)
 				{
-					var delta = minimum - results.Count;
-					return Result<List<T>>.Error(
-						result.ErrorIndex,
-						"at least " + delta + " more of " +
-						string.Join(", ", result.Expected)
-					);
-				}
-				else
-				{
-					return Result<List<T>>.Success(state, results);
+					if (results.Count < minimum)
+					{
+						var delta = minimum - results.Count;
+						throw new ParserException(
+							exception.Index,
+							"at least " + delta + " more of " +
+							string.Join(", ", exception.Expected)
+						);
+					}
+					else
+					{
+						return Result<List<T>>.Success(state, results);
+					}
 				}
 			}
 		}

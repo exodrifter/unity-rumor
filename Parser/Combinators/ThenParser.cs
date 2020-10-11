@@ -14,14 +14,7 @@
 		public override Result<U> Parse(State state)
 		{
 			var result = first.Parse(state);
-			if (result.IsSuccess)
-			{
-				return second.Parse(result.NextState);
-			}
-			else
-			{
-				return Result<U>.Error(result.ErrorIndex, result.Expected);
-			}
+			return second.Parse(result.NextState);
 		}
 	}
 }

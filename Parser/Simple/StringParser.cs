@@ -18,7 +18,7 @@
 
 			if (state.Source.Length <= state.Index + str.Length - 1)
 			{
-				return Result<string>.Error(state.Index, str);
+				throw new ParserException(state.Index, str);
 			}
 
 			if (state.Source.Substring(state.Index, str.Length) == str)
@@ -27,7 +27,7 @@
 				return Result<string>.Success(newState, str);
 			}
 
-			return Result<string>.Error(state.Index, str);
+			throw new ParserException(state.Index, str);
 		}
 	}
 }

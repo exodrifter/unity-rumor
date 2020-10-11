@@ -15,26 +15,24 @@ namespace Exodrifter.Rumor.Parser
 
 		public override Result<T> Parse(State state)
 		{
-			var result1 = first.Parse(state);
-			if (result1.IsSuccess)
+			try
 			{
-				return result1;
+				return first.Parse(state);
 			}
-			else
+			catch (ParserException exception1)
 			{
-				var result2 = second.Parse(state);
-				if (result2.IsSuccess)
+				try
 				{
-					return result2;
+					return second.Parse(state);
 				}
-				else
+				catch (ParserException exception2)
 				{
 					var expected = new List<string>(
-						result1.Expected.Length + result2.Expected.Length
+						exception1.Expected.Length + exception2.Expected.Length
 					);
-					expected.AddRange(result1.Expected);
-					expected.AddRange(result2.Expected);
-					return Result<T>.Error(state.Index, expected.ToArray());
+					expected.AddRange(exception1.Expected);
+					expected.AddRange(exception2.Expected);
+					throw new ParserException(state.Index, expected.ToArray());
 				}
 			}
 		}

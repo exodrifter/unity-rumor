@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			if (state.Source.Length <= state.Index)
 			{
-				return Result<char>.Error(state.Index, expected);
+				throw new ParserException(state.Index, expected);
 			}
 
 			var ch = state.Source[state.Index];
@@ -39,7 +39,7 @@ namespace Exodrifter.Rumor.Parser
 				return Result<char>.Success(newState, ch);
 			}
 
-			return Result<char>.Error(state.Index, expected);
+			throw new ParserException(state.Index, expected);
 		}
 	}
 }
