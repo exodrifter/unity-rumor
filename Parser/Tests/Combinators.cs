@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManySuccess()
 		{
-			var state = new State("aaa");
+			var state = new State("aaa", 4, 0);
 
 			var result = new CharParser('a').Many(0).Parse(state);
 			Assert.AreEqual(new char[] { 'a', 'a', 'a' }, result.Value);
@@ -18,7 +18,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void Many0Success()
 		{
-			var state = new State("a");
+			var state = new State("a", 4, 0);
 
 			var result = new CharParser('z').Many(0).Parse(state);
 			Assert.AreEqual(new char[] { }, result.Value);
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void Many1Success()
 		{
-			var state = new State("a");
+			var state = new State("a", 4, 0);
 
 			var result = new CharParser('a').Many(1).Parse(state);
 			Assert.AreEqual(new char[] { 'a' }, result.Value);
@@ -36,7 +36,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManyFailure()
 		{
-			var state = new State("a");
+			var state = new State("a", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
 				new CharParser('z').Many(1).Parse(state)
@@ -55,7 +55,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrLeftSuccess()
 		{
-			var state = new State("a", 0);
+			var state = new State("a", 4, 0);
 
 			var result = new CharParser('a')
 				.Or(new CharParser('z'))
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrRightSuccess()
 		{
-			var state = new State("z", 0);
+			var state = new State("z", 4, 0);
 
 			var result = new CharParser('a')
 				.Or(new CharParser('z'))
@@ -77,7 +77,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrFailure()
 		{
-			var state = new State("m", 0);
+			var state = new State("m", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
 				new CharParser('a')
@@ -95,7 +95,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenSuccess()
 		{
-			var state = new State("ab", 0);
+			var state = new State("ab", 4, 0);
 
 			var result = new CharParser('a')
 				.Then(new CharParser('b'))
@@ -106,7 +106,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenLeftFailure()
 		{
-			var state = new State("ab", 0);
+			var state = new State("ab", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
 				new CharParser('z')
@@ -120,7 +120,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenRightFailure()
 		{
-			var state = new State("ab", 0);
+			var state = new State("ab", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
 				new CharParser('a')

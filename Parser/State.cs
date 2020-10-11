@@ -11,6 +11,12 @@
 		public string Source { get; }
 
 		/// <summary>
+		/// The number of spaces each tab in the source file should be treated
+		/// as.
+		/// </summary>
+		public int TabSize { get; }
+
+		/// <summary>
 		/// The current index in the source file the parser is pointing at.
 		/// </summary>
 		public int Index { get; }
@@ -30,9 +36,10 @@
 		/// <param name="index">
 		/// The index where the parser should start.
 		/// </param>
-		public State(string source, int index = 0)
+		public State(string source, int tabSize, int index = 0)
 		{
 			Source = source;
+			TabSize = tabSize;
 			Index = index;
 			IndentIndex = 0;
 		}
@@ -48,7 +55,12 @@
 		/// </returns>
 		public State AddIndex(int indexDelta)
 		{
-			return new State(Source, Index + indexDelta, IndentIndex);
+			return new State(
+				Source,
+				TabSize,
+				Index + indexDelta,
+				IndentIndex
+			);
 		}
 
 		/// <summary>
@@ -60,14 +72,20 @@
 		/// </returns>
 		public State SetIndent()
 		{
-			return new State(Source, Index, Index);
+			return new State(
+				Source,
+				TabSize,
+				Index,
+				Index
+			);
 		}
 
 		#region Internal
 
-		private State(string source, int index, int indentIndex)
+		private State(string source, int tabSize, int index, int indentIndex)
 		{
 			Source = source;
+			TabSize = tabSize;
 			Index = index;
 			IndentIndex = indentIndex;
 		}
