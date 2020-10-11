@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						return Result<List<T>>.Success(state, results);
+						return new Result<List<T>>(state, results);
 					}
 				}
 			}

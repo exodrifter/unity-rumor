@@ -13,7 +13,7 @@
 		{
 			if (string.IsNullOrEmpty(str))
 			{
-				return Result<string>.Success(state, str);
+				return new Result<string>(state, str);
 			}
 
 			if (state.Source.Length <= state.Index + str.Length - 1)
@@ -24,7 +24,7 @@
 			if (state.Source.Substring(state.Index, str.Length) == str)
 			{
 				var newState = state.AddIndex(str.Length);
-				return Result<string>.Success(newState, str);
+				return new Result<string>(newState, str);
 			}
 
 			throw new ParserException(state.Index, str);

@@ -15,7 +15,7 @@
 
 			if (current >= indent)
 			{
-				return Result<int>.Success(state, current);
+				return new Result<int>(state, current);
 			}
 			else
 			{

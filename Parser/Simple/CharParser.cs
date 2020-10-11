@@ -36,7 +36,7 @@ namespace Exodrifter.Rumor.Parser
 			if (predicate(ch))
 			{
 				var newState = state.AddIndex(1);
-				return Result<char>.Success(newState, ch);
+				return new Result<char>(newState, ch);
 			}
 
 			throw new ParserException(state.Index, expected);
