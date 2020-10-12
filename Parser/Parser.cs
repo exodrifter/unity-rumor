@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
@@ -19,6 +20,27 @@ namespace Exodrifter.Rumor.Parser
 		public Parser<U> Then<U>(Parser<U> other)
 		{
 			return new ThenParser<T, U>(this, other);
+		}
+
+		/// <summary>
+		/// Runs an arbitrary function over the result of the parser.
+		/// </summary>
+		/// <typeparam name="U">
+		/// The new type of the result.
+		/// </typeparam>
+		/// <param name="fn">
+		/// The function to use over the result.
+		/// </param>
+		/// <returns>
+		/// A new parser which represents the result of running an arbitrary
+		/// function over the result of this parser.
+		/// </returns>
+		public Parser<U> Fn<U>(Func<T, U> fn)
+		{
+			return new LambdaParser<U>(state => {
+				var result = Parse(state);
+				return new Result<U>(result.NextState, fn(result.Value));
+			});
 		}
 	}
 }

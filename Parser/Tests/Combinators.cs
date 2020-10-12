@@ -4,6 +4,21 @@ namespace Exodrifter.Rumor.Parser.Tests
 {
 	public static class Combinators
 	{
+		#region Fn
+
+		[Test]
+		public static void FnSuccess()
+		{
+			var state = new State("aaa", 4, 0);
+
+			var result = new CharParser('a').Many(0)
+				.Fn(chs => new string(chs.ToArray()))
+				.Parse(state);
+			Assert.AreEqual("aaa", result.Value);
+		}
+
+		#endregion
+
 		#region Many
 
 		[Test]
