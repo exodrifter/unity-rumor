@@ -7,21 +7,6 @@ namespace Exodrifter.Rumor.Parser
 	{
 		public abstract Result<T> Parse(State state);
 
-		public Parser<List<T>> Many(int minimum)
-		{
-			return new ManyParser<T>(this, minimum);
-		}
-
-		public Parser<T> Or(Parser<T> other)
-		{
-			return new OrParser<T>(this, other);
-		}
-
-		public Parser<U> Then<U>(Parser<U> other)
-		{
-			return new ThenParser<T, U>(this, other);
-		}
-
 		/// <summary>
 		/// Runs an arbitrary function over the result of the parser.
 		/// </summary>
@@ -41,6 +26,35 @@ namespace Exodrifter.Rumor.Parser
 				var result = Parse(state);
 				return new Result<U>(result.NextState, fn(result.Value));
 			});
+		}
+
+		public Parser<List<T>> Many(int minimum)
+		{
+			return new ManyParser<T>(this, minimum);
+		}
+
+		public Parser<T> Maybe()
+		{
+			return new LambdaParser<T>(state => {
+				try
+				{
+					return Parse(state);
+				}
+				catch (ParserException)
+				{
+					return new Result<T>(state, default);
+				}
+			});
+		}
+
+		public Parser<T> Or(Parser<T> other)
+		{
+			return new OrParser<T>(this, other);
+		}
+
+		public Parser<U> Then<U>(Parser<U> other)
+		{
+			return new ThenParser<T, U>(this, other);
 		}
 	}
 }
