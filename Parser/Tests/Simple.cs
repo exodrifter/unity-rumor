@@ -58,7 +58,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 0);
 
 			var result = Parse.SameOrIndented()(state);
-			Assert.AreEqual(0, result.Value);
+			Assert.AreEqual(1, result.Value);
 		}
 
 		[Test]
@@ -67,7 +67,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("    hello world!", 4, 4);
 
 			var result = Parse.SameOrIndented()(state);
-			Assert.AreEqual(4, result.Value);
+			Assert.AreEqual(5, result.Value);
 		}
 
 		[Test]

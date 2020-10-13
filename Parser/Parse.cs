@@ -9,17 +9,19 @@ namespace Exodrifter.Rumor.Parser
 		#region Char
 
 		/// <summary>
-		/// Returns a parser which parses the specified character.
+		/// Returns a parser that parses the specified character.
 		/// </summary>
 		/// <param name="ch">The character to parse.</param>
-		/// <returns>A parser.</returns>
+		/// <returns>
+		/// A parser that returns the parsed character.
+		/// </returns>
 		public static Parser<char> Char(char ch)
 		{
 			return Char((other) => ch == other, ch.ToString());
 		}
 
 		/// <summary>
-		/// Creates a parser which parses any character that satisfies a
+		/// Returns a parser that parses any character which satisfies a
 		/// predicate.
 		/// </summary>
 		/// <param name="predicate">
@@ -28,7 +30,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="expected">
 		/// The expected value (used in error messages).
 		/// </param>
-		/// <returns>A parser.</returns>
+		/// <returns>
+		/// A parser that returns the parsed character.
+		/// </returns>
 		public static Parser<char> Char(Func<char, bool> predicate, string expected)
 		{
 			return state =>
@@ -54,10 +58,13 @@ namespace Exodrifter.Rumor.Parser
 		#region Indented
 
 		/// <summary>
-		/// Fails if the current parser position is not at the same indentation
-		/// level or greater than the reference indentation level.
+		/// Returns a parser that fails if the current parser position is not at
+		/// the same indentation level or greater than the reference indentation
+		/// level.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>
+		/// A parser that returns the current column.
+		/// </returns>
 		public static Parser<int> SameOrIndented()
 		{
 			return state =>
@@ -97,17 +104,17 @@ namespace Exodrifter.Rumor.Parser
 
 			// The line is backwards, so to read the line in order we need to
 			// read it starting at the end.
-			var result = 0;
+			var column = 1;
 			for (int i = line.Length - 1; i >= 0; i--)
 			{
 				var ch = line[i];
 				if (ch == ' ')
 				{
-					result++;
+					column++;
 				}
 				else if (ch == '\t')
 				{
-					result += state.TabSize - (result % state.TabSize);
+					column += state.TabSize - (column % state.TabSize);
 				}
 				else
 				{
@@ -115,7 +122,7 @@ namespace Exodrifter.Rumor.Parser
 				}
 			}
 
-			return result;
+			return column;
 		}
 
 		#endregion
@@ -132,7 +139,7 @@ namespace Exodrifter.Rumor.Parser
 		/// The function to use over the result.
 		/// </param>
 		/// <returns>
-		/// A new parser which represents the result of running an arbitrary
+		/// A new parser which returns the result of running an arbitrary
 		/// function over the result of this parser.
 		/// </returns>
 		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
@@ -160,6 +167,41 @@ namespace Exodrifter.Rumor.Parser
 				{
 					return new Result<T>(state, default);
 				}
+			};
+		}
+
+		#endregion
+
+		#region String
+
+		/// <summary>
+		/// Parses the specified string.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns>
+		/// A parser that returns the specified string.
+		/// </returns>
+		public static Parser<string> String(string str)
+		{
+			return state =>
+			{
+				if (string.IsNullOrEmpty(str))
+				{
+					return new Result<string>(state, str);
+				}
+
+				if (state.Source.Length <= state.Index + str.Length - 1)
+				{
+					throw new ParserException(state.Index, str);
+				}
+
+				if (state.Source.Substring(state.Index, str.Length) == str)
+				{
+					var newState = state.AddIndex(str.Length);
+					return new Result<string>(newState, str);
+				}
+
+				throw new ParserException(state.Index, str);
 			};
 		}
 
