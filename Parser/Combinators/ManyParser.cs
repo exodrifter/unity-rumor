@@ -14,7 +14,7 @@ namespace Exodrifter.Rumor.Parser
 				{
 					try
 					{
-						var result = parser.DoParse(state);
+						var result = parser(state);
 						results.Add(result.Value);
 						state = result.NextState;
 					}

@@ -6,8 +6,8 @@
 		{
 			return state =>
 			{
-				var result = first.DoParse(state);
-				return second.DoParse(result.NextState);
+				var result = first(state);
+				return second(result.NextState);
 			};
 		}
 	}

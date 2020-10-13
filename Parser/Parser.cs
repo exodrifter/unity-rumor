@@ -6,11 +6,6 @@ namespace Exodrifter.Rumor.Parser
 
 	public static partial class Parse
 	{
-		public static Result<T> DoParse<T>(this Parser<T> parser, State state)
-		{
-			return parser(state);
-		}
-
 		/// <summary>
 		/// Runs an arbitrary function over the result of the parser.
 		/// </summary>
@@ -28,7 +23,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			return state =>
 			{
-				var result = parser.DoParse(state);
+				var result = parser(state);
 				return new Result<U>(result.NextState, fn(result.Value));
 			};
 		}
@@ -39,7 +34,7 @@ namespace Exodrifter.Rumor.Parser
 			{
 				try
 				{
-					return parser.DoParse(state);
+					return parser(state);
 				}
 				catch (ParserException)
 				{

@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("h", 4, 0);
 
-			var result = Parse.Char('h').DoParse(state);
+			var result = Parse.Char('h')(state);
 			Assert.AreEqual('h', result.Value);
 		}
 
@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("world", 4, 3);
 
-			var result = Parse.Char('l').DoParse(state);
+			var result = Parse.Char('l')(state);
 			Assert.AreEqual('l', result.Value);
 		}
 
@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("h", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Char('H').DoParse(state)
+				Parse.Char('H')(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "H" }, exception.Expected);
@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("world", 4, 3);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Char('L').DoParse(state)
+				Parse.Char('L')(state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(new string[] { "L" }, exception.Expected);
@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.Indented().DoParse(state);
+			var result = Parse.Indented()(state);
 			Assert.AreEqual(0, result.Value);
 		}
 
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("    hello world!", 4, 4);
 
-			var result = Parse.Indented().DoParse(state);
+			var result = Parse.Indented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -75,7 +75,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("  \thello world!", 4, 3);
 
-			var result = Parse.Indented().DoParse(state);
+			var result = Parse.Indented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -84,7 +84,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("\n  \thello world!", 4, 4);
 
-			var result = Parse.Indented().DoParse(state);
+			var result = Parse.Indented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -96,7 +96,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Indented().DoParse(state)
+				Parse.Indented()(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Indented().DoParse(state)
+				Parse.Indented()(state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
@@ -125,7 +125,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.String("hello world!").DoParse(state);
+			var result = Parse.String("hello world!")(state);
 			Assert.AreEqual("hello world!", result.Value);
 		}
 
@@ -134,7 +134,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 6);
 
-			var result = Parse.String("world!").DoParse(state);
+			var result = Parse.String("world!")(state);
 			Assert.AreEqual("world!", result.Value);
 		}
 
@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.String("HELLO WORLD!").DoParse(state)
+				Parse.String("HELLO WORLD!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "HELLO WORLD!" }, exception.Expected);
@@ -156,7 +156,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 6);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.String("WORLD!").DoParse(state)
+				Parse.String("WORLD!")(state)
 			);
 			Assert.AreEqual(6, exception.Index);
 			Assert.AreEqual(new string[] { "WORLD!" }, exception.Expected);

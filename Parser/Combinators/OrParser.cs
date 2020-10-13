@@ -10,13 +10,13 @@ namespace Exodrifter.Rumor.Parser
 			{
 				try
 				{
-					return first.DoParse(state);
+					return first(state);
 				}
 				catch (ParserException exception1)
 				{
 					try
 					{
-						return second.DoParse(state);
+						return second(state);
 					}
 					catch (ParserException exception2)
 					{
