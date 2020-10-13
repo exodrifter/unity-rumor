@@ -2,46 +2,40 @@
 
 namespace Exodrifter.Rumor.Parser
 {
-	public class ManyParser<T> : Parser<List<T>>
+	public static partial class Parse
 	{
-		private readonly Parser<T> parser;
-		private readonly int minimum;
-
-		public ManyParser(Parser<T> parser, int minimum)
+		public static Parser<List<T>> Many<T>(this Parser<T> parser, int minimum)
 		{
-			this.parser = parser;
-			this.minimum = minimum;
-		}
-
-		public override Result<List<T>> Parse(State state)
-		{
-			var results = new List<T>();
-
-			while (true)
+			return state =>
 			{
-				try
+				var results = new List<T>();
+
+				while (true)
 				{
-					var result = parser.Parse(state);
-					results.Add(result.Value);
-					state = result.NextState;
-				}
-				catch (ParserException exception)
-				{
-					if (results.Count < minimum)
+					try
 					{
-						var delta = minimum - results.Count;
-						throw new ParserException(
-							exception.Index,
-							"at least " + delta + " more of " +
-							string.Join(", ", exception.Expected)
-						);
+						var result = parser.DoParse(state);
+						results.Add(result.Value);
+						state = result.NextState;
 					}
-					else
+					catch (ParserException exception)
 					{
-						return new Result<List<T>>(state, results);
+						if (results.Count < minimum)
+						{
+							var delta = minimum - results.Count;
+							throw new ParserException(
+								exception.Index,
+								"at least " + delta + " more of " +
+								string.Join(", ", exception.Expected)
+							);
+						}
+						else
+						{
+							return new Result<List<T>>(state, results);
+						}
 					}
 				}
-			}
+			};
 		}
 	}
 }

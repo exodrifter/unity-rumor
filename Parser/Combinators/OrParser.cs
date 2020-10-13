@@ -2,39 +2,33 @@
 
 namespace Exodrifter.Rumor.Parser
 {
-	public class OrParser<T> : Parser<T>
+	public static partial class Parse
 	{
-		private readonly Parser<T> first;
-		private readonly Parser<T> second;
-
-		public OrParser(Parser<T> first, Parser<T> second)
+		public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second)
 		{
-			this.first = first;
-			this.second = second;
-		}
-
-		public override Result<T> Parse(State state)
-		{
-			try
-			{
-				return first.Parse(state);
-			}
-			catch (ParserException exception1)
+			return state =>
 			{
 				try
 				{
-					return second.Parse(state);
+					return first.DoParse(state);
 				}
-				catch (ParserException exception2)
+				catch (ParserException exception1)
 				{
-					var expected = new List<string>(
-						exception1.Expected.Length + exception2.Expected.Length
-					);
-					expected.AddRange(exception1.Expected);
-					expected.AddRange(exception2.Expected);
-					throw new ParserException(state.Index, expected.ToArray());
+					try
+					{
+						return second.DoParse(state);
+					}
+					catch (ParserException exception2)
+					{
+						var expected = new List<string>(
+							exception1.Expected.Length + exception2.Expected.Length
+						);
+						expected.AddRange(exception1.Expected);
+						expected.AddRange(exception2.Expected);
+						throw new ParserException(state.Index, expected.ToArray());
+					}
 				}
-			}
+			};
 		}
 	}
 }

@@ -1,20 +1,14 @@
 ﻿namespace Exodrifter.Rumor.Parser
 {
-	public class ThenParser<T, U> : Parser<U>
+	public static partial class Parse
 	{
-		private readonly Parser<T> first;
-		private readonly Parser<U> second;
-
-		public ThenParser(Parser<T> first, Parser<U> second)
+		public static Parser<U> Then<T,U>(this Parser<T> first, Parser<U> second)
 		{
-			this.first = first;
-			this.second = second;
-		}
-
-		public override Result<U> Parse(State state)
-		{
-			var result = first.Parse(state);
-			return second.Parse(result.NextState);
+			return state =>
+			{
+				var result = first.DoParse(state);
+				return second.DoParse(result.NextState);
+			};
 		}
 	}
 }

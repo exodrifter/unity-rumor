@@ -1,11 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
-	public abstract class Parser<T>
+	public delegate Result<T> Parser<T>(State state);
+
+	public static partial class Parse
 	{
-		public abstract Result<T> Parse(State state);
+		public static Result<T> DoParse<T>(this Parser<T> parser, State state)
+		{
+			return parser(state);
+		}
 
 		/// <summary>
 		/// Runs an arbitrary function over the result of the parser.
@@ -20,41 +24,28 @@ namespace Exodrifter.Rumor.Parser
 		/// A new parser which represents the result of running an arbitrary
 		/// function over the result of this parser.
 		/// </returns>
-		public Parser<U> Fn<U>(Func<T, U> fn)
+		public static Parser<U> Fn<T, U>(this Parser<T> parser, Func<T, U> fn)
 		{
-			return new LambdaParser<U>(state => {
-				var result = Parse(state);
+			return state =>
+			{
+				var result = parser.DoParse(state);
 				return new Result<U>(result.NextState, fn(result.Value));
-			});
+			};
 		}
 
-		public Parser<List<T>> Many(int minimum)
+		public static Parser<T> Maybe<T>(this Parser<T> parser)
 		{
-			return new ManyParser<T>(this, minimum);
-		}
-
-		public Parser<T> Maybe()
-		{
-			return new LambdaParser<T>(state => {
+			return state =>
+			{
 				try
 				{
-					return Parse(state);
+					return parser.DoParse(state);
 				}
 				catch (ParserException)
 				{
 					return new Result<T>(state, default);
 				}
-			});
-		}
-
-		public Parser<T> Or(Parser<T> other)
-		{
-			return new OrParser<T>(this, other);
-		}
-
-		public Parser<U> Then<U>(Parser<U> other)
-		{
-			return new ThenParser<T, U>(this, other);
+			};
 		}
 	}
 }

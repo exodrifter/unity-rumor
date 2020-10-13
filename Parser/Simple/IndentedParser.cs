@@ -4,26 +4,27 @@
 	/// Succeeds when the current indentation level is either equal to or
 	/// greater than the indexed indentation level in the state.
 	/// </summary>
-	public class IndentedParser : Parser<int>
+	public static partial class Parse
 	{
-		public IndentedParser() { }
-
-		public override Result<int> Parse(State state)
+		public static Parser<int> Indented()
 		{
-			var current = CalculateIndentFrom(state, state.Index);
-			var indent = CalculateIndentFrom(state, state.IndentIndex);
+			return state =>
+			{
+				var current = CalculateIndentFrom(state, state.Index);
+				var indent = CalculateIndentFrom(state, state.IndentIndex);
 
-			if (current >= indent)
-			{
-				return new Result<int>(state, current);
-			}
-			else
-			{
-				throw new ParserException(
-					state.Index,
-					"indented line"
-				);
-			}
+				if (current >= indent)
+				{
+					return new Result<int>(state, current);
+				}
+				else
+				{
+					throw new ParserException(
+						state.Index,
+						"indented line"
+					);
+				}
+			};
 		}
 
 		private static int CalculateIndentFrom(State state, int index)
