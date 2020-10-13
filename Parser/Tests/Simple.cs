@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.Indented()(state);
+			var result = Parse.SameOrIndented()(state);
 			Assert.AreEqual(0, result.Value);
 		}
 
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("    hello world!", 4, 4);
 
-			var result = Parse.Indented()(state);
+			var result = Parse.SameOrIndented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -75,7 +75,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("  \thello world!", 4, 3);
 
-			var result = Parse.Indented()(state);
+			var result = Parse.SameOrIndented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -84,7 +84,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("\n  \thello world!", 4, 4);
 
-			var result = Parse.Indented()(state);
+			var result = Parse.SameOrIndented()(state);
 			Assert.AreEqual(4, result.Value);
 		}
 
@@ -96,7 +96,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Indented()(state)
+				Parse.SameOrIndented()(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Indented()(state)
+				Parse.SameOrIndented()(state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
