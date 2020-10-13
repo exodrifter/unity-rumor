@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
@@ -12,9 +13,6 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that parses the specified character.
 		/// </summary>
 		/// <param name="ch">The character to parse.</param>
-		/// <returns>
-		/// A parser that returns the parsed character.
-		/// </returns>
 		public static Parser<char> Char(char ch)
 		{
 			return Char((other) => ch == other, ch.ToString());
@@ -30,9 +28,6 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="expected">
 		/// The expected value (used in error messages).
 		/// </param>
-		/// <returns>
-		/// A parser that returns the parsed character.
-		/// </returns>
 		public static Parser<char> Char(Func<char, bool> predicate, string expected)
 		{
 			return state =>
@@ -58,13 +53,10 @@ namespace Exodrifter.Rumor.Parser
 		#region Indented
 
 		/// <summary>
-		/// Returns a parser that fails if the current parser position is not at
-		/// the same indentation level or greater than the reference indentation
-		/// level.
+		/// Returns a parser that returns the current column or fails if the
+		/// current parser position is not at the same indentation level or
+		/// more than the reference indentation level.
 		/// </summary>
-		/// <returns>
-		/// A parser that returns the current column.
-		/// </returns>
 		public static Parser<int> SameOrIndented()
 		{
 			return state =>
@@ -130,7 +122,8 @@ namespace Exodrifter.Rumor.Parser
 		#region LINQ-like
 
 		/// <summary>
-		/// Runs an arbitrary function over the result of the parser.
+		/// Returns a new parser that returns the result of running an arbitrary
+		/// function over the result of this parser.
 		/// </summary>
 		/// <typeparam name="U">
 		/// The new type of the result.
@@ -138,16 +131,61 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="fn">
 		/// The function to use over the result.
 		/// </param>
-		/// <returns>
-		/// A new parser which returns the result of running an arbitrary
-		/// function over the result of this parser.
-		/// </returns>
 		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
 		{
 			return state =>
 			{
 				var result = parser(state);
 				return new Result<U>(result.NextState, fn(result.Value));
+			};
+		}
+
+		#endregion
+
+		#region Many
+
+		/// <summary>
+		/// Returns a new parser that repeats a parser for a specified minimum
+		/// number of successful times.
+		/// </summary>
+		/// <typeparam name="T">The return type of the parser.</typeparam>
+		/// <param name="parser">
+		/// The parser to repeat.
+		/// </param>
+		/// <param name="minimum">
+		/// The minimum number of successes.
+		/// </param>
+		public static Parser<List<T>> Many<T>(this Parser<T> parser, int minimum)
+		{
+			return state =>
+			{
+				var results = new List<T>();
+
+				while (true)
+				{
+					try
+					{
+						var result = parser(state);
+						results.Add(result.Value);
+						state = result.NextState;
+					}
+					catch (ParserException exception)
+					{
+						if (results.Count < minimum)
+						{
+							var delta = minimum - results.Count;
+							throw new ParserException(
+								exception.Index,
+								"at least " + delta + " more of " +
+								string.Join(", ", exception.Expected)
+							);
+						}
+						else
+						{
+							return new Result<List<T>>(state, results);
+						}
+					}
+				}
 			};
 		}
 
