@@ -4,19 +4,6 @@ namespace Exodrifter.Rumor.Parser.Tests
 {
 	public static class Combinators
 	{
-		#region Fn
-
-		[Test]
-		public static void FnSuccess()
-		{
-			var state = new State("aaa", 4, 0);
-
-			var result = Parse.Char('a').Many(0).String()(state);
-			Assert.AreEqual("aaa", result.Value);
-		}
-
-		#endregion
-
 		#region Many
 
 		[Test]
@@ -93,6 +80,25 @@ namespace Exodrifter.Rumor.Parser.Tests
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "a", "z" }, exception.Expected);
+		}
+
+		#endregion
+
+		#region Rollback
+
+		/// <summary>
+		/// These test if the parser rolls back successfully when trying other
+		/// options.
+		/// </summary>
+		[Test]
+		public static void RollbackSuccess()
+		{
+			var state = new State("az", 4, 0);
+
+			var result = Parse.Char('a').Then(
+				Parse.Char('b').Or(Parse.Char('z'))
+			)(state);
+			Assert.AreEqual('z', result.Value);
 		}
 
 		#endregion
