@@ -5,19 +5,20 @@ namespace Exodrifter.Rumor.Compiler
 {
 	public static class Compiler
 	{
-		public static Result<SayNode> SayNode(State state)
+		public static Parser<SayNode> SayNode()
 		{
-			var r1 = Identifier().Maybe()(state);
-			var r2 = Parse.Char(':')(r1.NextState);
-			var r3 = Parse.Char(ch => ch != '\n', "")
-				.Many(0)
-				.Select(chs => new string(chs.ToArray()))
-				(r2.NextState);
+			return state =>
+			{
+				var r1 = Identifier().Maybe()(state);
+				var r2 = Parse.Char(':')(r1.NextState);
+				var r3 = Parse.Char(ch => ch != '\n', "")
+					.Many(0).String()(r2.NextState);
 
-			return new Result<SayNode>(
-				r3.NextState,
-				new SayNode(r1.Value, r3.Value)
-			);
+				return new Result<SayNode>(
+					r3.NextState,
+					new SayNode(r1.Value, r3.Value)
+				);
+			};
 		}
 
 		public static Parser<string> Identifier()
@@ -26,9 +27,7 @@ namespace Exodrifter.Rumor.Compiler
 			{
 				var result =
 					Parse.Char(char.IsLetterOrDigit, "alphanumeric character")
-					.Many(1)
-					.Select(chs => new string(chs.ToArray()))
-					(state);
+					.Many(1).String()(state);
 
 				if (result.Value.StartsWith("_"))
 				{

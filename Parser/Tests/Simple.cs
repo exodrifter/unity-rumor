@@ -99,7 +99,10 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.SameOrIndented()(state)
 			);
 			Assert.AreEqual(2, exception.Index);
-			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
+			Assert.AreEqual(
+				new string[] { "line indented to column 5 or more" },
+				exception.Expected
+			);
 		}
 
 		[Test]
@@ -113,7 +116,10 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.SameOrIndented()(state)
 			);
 			Assert.AreEqual(3, exception.Index);
-			Assert.AreEqual(new string[] { "indented line" }, exception.Expected);
+			Assert.AreEqual(
+				new string[] { "line indented to column 5 or more" },
+				exception.Expected
+			);
 		}
 
 		#endregion

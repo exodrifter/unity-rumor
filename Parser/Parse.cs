@@ -13,10 +13,39 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that parses the specified character.
 		/// </summary>
 		/// <param name="ch">The character to parse.</param>
-		public static Parser<char> Char(char ch)
-		{
-			return Char((other) => ch == other, ch.ToString());
-		}
+		public static Parser<char> Char(char ch) =>
+			Char(ch.Equals, ch.ToString());
+
+		/// <summary>
+		/// Returns a parser that parses a letter or number.
+		/// </summary>
+		public static Parser<char> Alphanumeric =>
+			Char(char.IsLetterOrDigit, "alphanumeric character");
+
+		/// <summary>
+		/// Returns a parser that parses any character.
+		/// </summary>
+		public static Parser<char> AnyChar =>
+			Char(_ => true, "any character");
+
+		/// <summary>
+		/// Returns a parser that parses a space or tab.
+		/// </summary>
+		public static Parser<char> Spaces =>
+			Char(ch => ch == ' ' || ch == '\t', "space");
+
+		/// <summary>
+		/// Returns a parser that parses a carriage return or newline.
+		/// </summary>
+		public static Parser<char> NewLine =>
+			Char(ch => ch == '\r' || ch == '\n', "newline");
+
+		/// <summary>
+		/// Returns a parser that parses a whitespace character. This includes
+		/// space, tab, carriage return, and newline.
+		/// </summary>
+		public static Parser<char> Whitespace =>
+			Char(char.IsWhiteSpace, "whitespace");
 
 		/// <summary>
 		/// Returns a parser that parses any character which satisfies a
@@ -51,18 +80,17 @@ namespace Exodrifter.Rumor.Parser
 		#region Indented
 
 		/// <summary>
-		/// Returns a parser that returns the current column or fails if the
-		/// current parser position is not at the same indentation level or
-		/// more than the reference indentation level.
+		/// Returns a parser that returns the current column if the current
+		/// parser position is less than the reference indentation level.
 		/// </summary>
-		public static Parser<int> SameOrIndented()
+		public static Parser<int> Unindented()
 		{
 			return state =>
 			{
-				var current = CalculateIndentFrom(state, state.Index);
-				var indent = CalculateIndentFrom(state, state.IndentIndex);
+				int current = CalculateIndentFrom(state, state.Index);
+				int reference = CalculateIndentFrom(state, state.IndentIndex);
 
-				if (current >= indent)
+				if (current == reference)
 				{
 					return new Result<int>(state, current);
 				}
@@ -70,7 +98,58 @@ namespace Exodrifter.Rumor.Parser
 				{
 					throw new ParserException(
 						state.Index,
-						"indented line"
+						"line indented less than column " + reference
+					);
+				}
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser that returns the current column if the current
+		/// parser position is the same as the reference indentation level.
+		/// </summary>
+		public static Parser<int> Same()
+		{
+			return state =>
+			{
+				int current = CalculateIndentFrom(state, state.Index);
+				int reference = CalculateIndentFrom(state, state.IndentIndex);
+
+				if (current == reference)
+				{
+					return new Result<int>(state, current);
+				}
+				else
+				{
+					throw new ParserException(
+						state.Index,
+						"line indented to column " + reference
+					);
+				}
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser that returns the current column if the current
+		/// parser position is at the same indentation level or more than the
+		/// reference indentation level.
+		/// </summary>
+		public static Parser<int> SameOrIndented()
+		{
+			return state =>
+			{
+				int current = CalculateIndentFrom(state, state.Index);
+				int reference = CalculateIndentFrom(state, state.IndentIndex);
+
+				if (current >= reference)
+				{
+					return new Result<int>(state, current);
+				}
+				else
+				{
+					throw new ParserException(
+						state.Index,
+						"line indented to column " + reference + " or more"
 					);
 				}
 			};
@@ -131,6 +210,32 @@ namespace Exodrifter.Rumor.Parser
 			{
 				var result = parser(state);
 				return new Result<U>(result.NextState, fn(result.Value));
+			};
+		}
+
+		/// <summary>
+		/// Returns a new parser that returns the result of another parser only
+		/// if its result satisfies some predicate.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to check the result of.</param>
+		/// <param name="predicate">The predicate to satisfy.</param>
+		/// <param name="expected">
+		/// The expected value (used in error messages).
+		/// </param>
+		public static Parser<T> Where<T>(this Parser<T> parser, Func<T, bool> predicate, string expected)
+		{
+			return state =>
+			{
+				var result = parser(state);
+				if (predicate(result.Value))
+				{
+					return result;
+				}
+				else
+				{
+					throw new ParserException(state.Index, expected);
+				}
 			};
 		}
 
@@ -211,8 +316,8 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that returns the first successful result.
 		/// </summary>
 		/// <typeparam name="T">The type of the parsers to use.</typeparam>
-		/// <param name="first">The first parser to try.</param>
-		/// <param name="second">The second parser to try.</param>
+		/// <param name="parser">The first parser to try.</param>
+		/// <param name="others">The second parser to try.</param>
 		public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second)
 		{
 			return state =>
@@ -240,9 +345,57 @@ namespace Exodrifter.Rumor.Parser
 			};
 		}
 
+		/// <summary>
+		/// Returns the first parser that returns a successful result.
+		/// </summary>
+		/// <typeparam name="T">The type of the parsers to use.</typeparam>
+		/// <param name="parsers">The parsers to try.</param>
+		public static Parser<T> Or<T>(params Parser<T>[] parsers)
+		{
+			Parser<T> result = null;
+			foreach (var parser in parsers)
+			{
+				if (result != null)
+				{
+					result.Or(parser);
+				}
+				else
+				{
+					result = parser;
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a parser that returns the first successful result.
+		/// </summary>
+		/// <typeparam name="T">The type of the parsers to use.</typeparam>
+		/// <param name="parser">The first parser to try.</param>
+		/// <param name="others">The other parsers to try.</param>
+		public static Parser<T> Or<T>(this Parser<T> parser, params Parser<T>[] others)
+		{
+			Parser<T> result = parser;
+			foreach (var other in others)
+			{
+				result.Or(other);
+			}
+			return result;
+		}
+
 		#endregion
 
 		#region String
+
+		/// <summary>
+		/// Converts a parser that returns a list of characters into a parser
+		/// that returns a string.
+		/// </summary>
+		/// <param name="parser">The parser to convert.</param>
+		public static Parser<string> String(this Parser<List<char>> parser)
+		{
+			return parser.Select(chs => new string(chs.ToArray()));
+		}
 
 		/// <summary>
 		/// Parses the specified string.
@@ -270,6 +423,27 @@ namespace Exodrifter.Rumor.Parser
 
 				throw new ParserException(state.Index, str);
 			};
+		}
+
+		/// <summary>
+		/// Parses any one of the specified strings.
+		/// </summary>
+		/// <param name="str">The string to parse.</param>
+		public static Parser<string> String(params string[] strs)
+		{
+			Parser<string> result = null;
+			foreach (var str in strs)
+			{
+				if (result != null)
+				{
+					result.Or(String(str));
+				}
+				else
+				{
+					result = String(str);
+				}
+			}
+			return result;
 		}
 
 		#endregion

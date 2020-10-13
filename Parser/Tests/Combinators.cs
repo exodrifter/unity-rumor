@@ -11,9 +11,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("aaa", 4, 0);
 
-			var result = Parse.Char('a').Many(0)
-				.Select(chs => new string(chs.ToArray()))
-				(state);
+			var result = Parse.Char('a').Many(0).String()(state);
 			Assert.AreEqual("aaa", result.Value);
 		}
 
