@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Compiler
 			var r2 = Parse.Char(':').DoParse(r1.NextState);
 			var r3 = Parse.Char(ch => ch != '\n', "")
 				.Many(0)
-				.Fn(chs => new string(chs.ToArray()))
+				.Select(chs => new string(chs.ToArray()))
 				.DoParse(r2.NextState);
 
 			return new Result<SayNode>(
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Compiler
 				var result =
 					Parse.Char(char.IsLetterOrDigit, "alphanumeric character")
 					.Many(1)
-					.Fn(chs => new string(chs.ToArray()))
+					.Select(chs => new string(chs.ToArray()))
 					.DoParse(state);
 
 				if (result.Value.StartsWith("_"))

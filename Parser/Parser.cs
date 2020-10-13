@@ -24,7 +24,7 @@ namespace Exodrifter.Rumor.Parser
 		/// A new parser which represents the result of running an arbitrary
 		/// function over the result of this parser.
 		/// </returns>
-		public static Parser<U> Fn<T, U>(this Parser<T> parser, Func<T, U> fn)
+		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
 		{
 			return state =>
 			{
