@@ -22,9 +22,7 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that parses any character which satisfies a
 		/// predicate.
 		/// </summary>
-		/// <param name="predicate">
-		/// The predicate to satisfy.
-		/// </param>
+		/// <param name="predicate">The predicate to satisfy.</param>
 		/// <param name="expected">
 		/// The expected value (used in error messages).
 		/// </param>
@@ -125,12 +123,8 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a new parser that returns the result of running an arbitrary
 		/// function over the result of this parser.
 		/// </summary>
-		/// <typeparam name="U">
-		/// The new type of the result.
-		/// </typeparam>
-		/// <param name="fn">
-		/// The function to use over the result.
-		/// </param>
+		/// <typeparam name="U">The new type of the result.</typeparam>
+		/// <param name="fn">The function to use over the result.</param>
 		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
 		{
 			return state =>
@@ -149,12 +143,8 @@ namespace Exodrifter.Rumor.Parser
 		/// number of successful times.
 		/// </summary>
 		/// <typeparam name="T">The return type of the parser.</typeparam>
-		/// <param name="parser">
-		/// The parser to repeat.
-		/// </param>
-		/// <param name="minimum">
-		/// The minimum number of successes.
-		/// </param>
+		/// <param name="parser">The parser to repeat.</param>
+		/// <param name="minimum">The minimum number of successes.</param>
 		public static Parser<List<T>> Many<T>(this Parser<T> parser, int minimum)
 		{
 			return state =>
@@ -193,6 +183,11 @@ namespace Exodrifter.Rumor.Parser
 
 		#region Maybe
 
+		/// <summary>
+		/// Returns a parser that returns the default value if the parser fails.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to try.</param>
 		public static Parser<T> Maybe<T>(this Parser<T> parser)
 		{
 			return state =>
@@ -252,10 +247,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <summary>
 		/// Parses the specified string.
 		/// </summary>
-		/// <param name="str"></param>
-		/// <returns>
-		/// A parser that returns the specified string.
-		/// </returns>
+		/// <param name="str">The string to parse.</param>
 		public static Parser<string> String(string str)
 		{
 			return state =>
@@ -277,6 +269,27 @@ namespace Exodrifter.Rumor.Parser
 				}
 
 				throw new ParserException(state.Index, str);
+			};
+		}
+
+		#endregion
+
+		#region Then
+
+		/// <summary>
+		/// Returns a parser which runs the first parser, discards the result,
+		/// then runs the second parser.
+		/// </summary>
+		/// <typeparam name="T">The type to discard.</typeparam>
+		/// <typeparam name="U">The type to return.</typeparam>
+		/// <param name="first">The parser to discard the result of.</param>
+		/// <param name="second">The parser to return the result of.</param>
+		public static Parser<U> Then<T, U>(this Parser<T> first, Parser<U> second)
+		{
+			return state =>
+			{
+				var result = first(state);
+				return second(result.NextState);
 			};
 		}
 
