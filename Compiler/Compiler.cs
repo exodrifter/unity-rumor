@@ -7,39 +7,25 @@ namespace Exodrifter.Rumor.Compiler
 	{
 		public static Parser<SayNode> SayNode()
 		{
-			return state =>
+			return (ref State state) =>
 			{
-				var r1 = Identifier().Maybe()(state);
-				var r2 = Parse.Char(':')(r1.NextState);
-				var r3 = Parse.Char(ch => ch != '\n', "")
-					.Many(0).String()(r2.NextState);
+				var identifier = Identifier().Maybe()(ref state);
+				Parse.Char(':')(ref state);
+				var dialog = Parse.AnyChar.Many(0).String()(ref state);
 
-				return new Result<SayNode>(
-					r3.NextState,
-					new SayNode(r1.Value, r3.Value)
-				);
+				return new SayNode(identifier, dialog);
 			};
 		}
 
 		public static Parser<string> Identifier()
 		{
-			return state =>
+			return (ref State state) =>
 			{
-				var result =
+				return
 					Parse.Char(char.IsLetterOrDigit, "alphanumeric character")
-					.Many(1).String()(state);
-
-				if (result.Value.StartsWith("_"))
-				{
-					throw new ParserException(
-						state.Index,
-						"any alphanumeric character except for '_'"
-					);
-				}
-				else
-				{
-					return result;
-				}
+					.Many(1).String()
+					.Where(x => x.StartsWith("_"), "identifier")
+					(ref state);
 			};
 		}
 	}

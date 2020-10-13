@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
-	public delegate Result<T> Parser<T>(State state);
+	public delegate T Parser<T>(ref State state);
 
 	public static partial class Parse
 	{
@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Parser
 		/// </param>
 		public static Parser<char> Char(Func<char, bool> predicate, string expected)
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				if (state.Source.Length <= state.Index)
 				{
@@ -67,8 +67,8 @@ namespace Exodrifter.Rumor.Parser
 				var ch = state.Source[state.Index];
 				if (predicate(ch))
 				{
-					var newState = state.AddIndex(1);
-					return new Result<char>(newState, ch);
+					state = state.AddIndex(1);
+					return ch;
 				}
 
 				throw new ParserException(state.Index, expected);
@@ -85,14 +85,14 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		public static Parser<int> Unindented()
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				int current = CalculateIndentFrom(state, state.Index);
 				int reference = CalculateIndentFrom(state, state.IndentIndex);
 
 				if (current == reference)
 				{
-					return new Result<int>(state, current);
+					return current;
 				}
 				else
 				{
@@ -110,14 +110,14 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		public static Parser<int> Same()
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				int current = CalculateIndentFrom(state, state.Index);
 				int reference = CalculateIndentFrom(state, state.IndentIndex);
 
 				if (current == reference)
 				{
-					return new Result<int>(state, current);
+					return current;
 				}
 				else
 				{
@@ -136,14 +136,14 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		public static Parser<int> SameOrIndented()
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				int current = CalculateIndentFrom(state, state.Index);
 				int reference = CalculateIndentFrom(state, state.IndentIndex);
 
 				if (current >= reference)
 				{
-					return new Result<int>(state, current);
+					return current;
 				}
 				else
 				{
@@ -206,10 +206,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="fn">The function to use over the result.</param>
 		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
 		{
-			return state =>
+			return (ref State state) =>
 			{
-				var result = parser(state);
-				return new Result<U>(result.NextState, fn(result.Value));
+				return fn(parser(ref state));
 			};
 		}
 
@@ -225,11 +224,13 @@ namespace Exodrifter.Rumor.Parser
 		/// </param>
 		public static Parser<T> Where<T>(this Parser<T> parser, Func<T, bool> predicate, string expected)
 		{
-			return state =>
+			return (ref State state) =>
 			{
-				var result = parser(state);
-				if (predicate(result.Value))
+				var temp = state;
+				var result = parser(ref temp);
+				if (predicate(result))
 				{
+					state = temp;
 					return result;
 				}
 				else
@@ -252,7 +253,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="minimum">The minimum number of successes.</param>
 		public static Parser<List<T>> Many<T>(this Parser<T> parser, int minimum)
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				var results = new List<T>();
 
@@ -260,9 +261,10 @@ namespace Exodrifter.Rumor.Parser
 				{
 					try
 					{
-						var result = parser(state);
-						results.Add(result.Value);
-						state = result.NextState;
+						var temp = state;
+						var result = parser(ref temp);
+						state = temp;
+						results.Add(result);
 					}
 					catch (ParserException exception)
 					{
@@ -277,7 +279,7 @@ namespace Exodrifter.Rumor.Parser
 						}
 						else
 						{
-							return new Result<List<T>>(state, results);
+							return results;
 						}
 					}
 				}
@@ -295,15 +297,15 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="parser">The parser to try.</param>
 		public static Parser<T> Maybe<T>(this Parser<T> parser)
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				try
 				{
-					return parser(state);
+					return parser(ref state);
 				}
 				catch (ParserException)
 				{
-					return new Result<T>(state, default);
+					return default;
 				}
 			};
 		}
@@ -320,17 +322,23 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="others">The second parser to try.</param>
 		public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second)
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				try
 				{
-					return first(state);
+					var temp1 = state;
+					var result = first(ref temp1);
+					state = temp1;
+					return result;
 				}
 				catch (ParserException exception1)
 				{
 					try
 					{
-						return second(state);
+						var temp2 = state;
+						var result = second(ref temp2);
+						state = temp2;
+						return result;
 					}
 					catch (ParserException exception2)
 					{
@@ -403,11 +411,11 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="str">The string to parse.</param>
 		public static Parser<string> String(string str)
 		{
-			return state =>
+			return (ref State state) =>
 			{
 				if (string.IsNullOrEmpty(str))
 				{
-					return new Result<string>(state, str);
+					return str;
 				}
 
 				if (state.Source.Length <= state.Index + str.Length - 1)
@@ -417,8 +425,8 @@ namespace Exodrifter.Rumor.Parser
 
 				if (state.Source.Substring(state.Index, str.Length) == str)
 				{
-					var newState = state.AddIndex(str.Length);
-					return new Result<string>(newState, str);
+					state = state.AddIndex(str.Length);
+					return str;
 				}
 
 				throw new ParserException(state.Index, str);
@@ -460,10 +468,10 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="second">The parser to return the result of.</param>
 		public static Parser<U> Then<T, U>(this Parser<T> first, Parser<U> second)
 		{
-			return state =>
+			return (ref State state) =>
 			{
-				var result = first(state);
-				return second(result.NextState);
+				var result = first(ref state);
+				return second(ref state);
 			};
 		}
 
