@@ -210,6 +210,43 @@ namespace Exodrifter.Rumor.Parser
 
 		#endregion
 
+		#region Or
+
+		/// <summary>
+		/// Returns a parser that returns the first successful result.
+		/// </summary>
+		/// <typeparam name="T">The type of the parsers to use.</typeparam>
+		/// <param name="first">The first parser to try.</param>
+		/// <param name="second">The second parser to try.</param>
+		public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second)
+		{
+			return state =>
+			{
+				try
+				{
+					return first(state);
+				}
+				catch (ParserException exception1)
+				{
+					try
+					{
+						return second(state);
+					}
+					catch (ParserException exception2)
+					{
+						var expected = new List<string>(
+							exception1.Expected.Length + exception2.Expected.Length
+						);
+						expected.AddRange(exception1.Expected);
+						expected.AddRange(exception2.Expected);
+						throw new ParserException(state.Index, expected.ToArray());
+					}
+				}
+			};
+		}
+
+		#endregion
+
 		#region String
 
 		/// <summary>
