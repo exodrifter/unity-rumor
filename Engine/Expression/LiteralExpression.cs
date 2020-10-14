@@ -1,17 +1,51 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class LiteralExpression<T> : Expression<T>
+	public class LiteralExpression<T> : Expression<T> where T : Value
 	{
-		private readonly T value;
+		public readonly T Value;
 
 		public LiteralExpression(T value)
 		{
-			this.value = value;
+			Value = value;
 		}
 
 		public override T Evaluate()
 		{
-			return value;
+			return Value;
+		}
+
+		public override Expression<T> Simplify()
+		{
+			return this;
+		}
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as LiteralExpression<T>);
+		}
+
+		public bool Equals(LiteralExpression<T> other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			return Equals(Value, other.Value);
+		}
+
+		public override int GetHashCode()
+		{
+			return Util.GetHashCode(Value);
+		}
+
+		#endregion
+
+		public override string ToString()
+		{
+			return Value.ToString();
 		}
 	}
 }

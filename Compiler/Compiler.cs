@@ -23,19 +23,10 @@ namespace Exodrifter.Rumor.Compiler
 				Parse.Char(':')(ref temp);
 				Parse.Whitespaces(ref temp);
 
-				var lines = Parse.Block1(
-					Parse.AnyChar.Until(Parse.EOL).String(),
-					Parse.Indented
-				)(ref temp);
-
-				var dialog = new List<string>();
-				foreach (var line in lines)
-				{
-					dialog.Add(line.Trim());
-				}
+				var dialog = Text()(ref temp);
 
 				state = temp;
-				return new SayNode(identifier, string.Join(" ", dialog));
+				return new SayNode(identifier, dialog);
 			};
 		}
 
@@ -49,6 +40,88 @@ namespace Exodrifter.Rumor.Compiler
 					(ref state);
 			};
 		}
+
+		#region Text
+
+		public static Parser<Expression<StringValue>> Text()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				var lines = Parse.Block1(
+					TextLine(),
+					Parse.Indented
+				)(ref temp);
+
+				Expression<StringValue> dialog = null;
+				foreach (var line in lines)
+				{
+					if (dialog != null)
+					{
+						var s = new StringValue(" ");
+						dialog = new ConcatExpression(
+							new ConcatExpression(dialog, s),
+							line
+						);
+					}
+					else
+					{
+						dialog = line;
+					}
+				}
+
+				state = temp;
+
+				return dialog.Simplify();
+			};
+		}
+
+		private static Parser<Expression<StringValue>> TextLine()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				var s = "";
+				if (Parse.FollowedBy(Parse.Spaces1)(ref temp))
+				{
+					Parse.Spaces1(ref temp);
+					s = " ";
+				}
+
+				var rest =
+					Parse.AnyChar
+					.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
+					.String()(ref temp);
+
+				if (Parse.FollowedBy(Parse.EOL)(ref temp))
+				{
+					state = temp;
+					return new LiteralExpression<StringValue>(
+						new StringValue(s + rest)
+					);
+				}
+				else
+				{
+					var substitution =
+						Parse.Parenthesis('{', '}', Math())(ref temp);
+
+					var remaining = TextLine()(ref temp);
+
+					state = temp;
+					return new ConcatExpression(
+						new ConcatExpression(
+							new StringValue(s + rest),
+							new ToStringExpression<NumberValue>(substitution)
+						),
+						remaining
+					);
+				}
+			};
+		}
+
+		#endregion
 
 		#region Math
 

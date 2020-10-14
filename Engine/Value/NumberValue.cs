@@ -8,15 +8,15 @@
 
 		public static NumberValue operator +(NumberValue n) => n;
 		public static NumberValue operator -(NumberValue n) =>
-			new NumberValue(-(double)n.value);
+			new NumberValue(-(double)n.InternalValue);
 
 		public static NumberValue operator +(NumberValue l, NumberValue r) =>
-			new NumberValue((double)l.value + (double)r.value);
+			new NumberValue((double)l.InternalValue + (double)r.InternalValue);
 		public static NumberValue operator -(NumberValue l, NumberValue r) =>
-			new NumberValue((double)l.value - (double)r.value);
+			new NumberValue((double)l.InternalValue - (double)r.InternalValue);
 		public static NumberValue operator *(NumberValue l, NumberValue r) =>
-			new NumberValue((double)l.value * (double)r.value);
+			new NumberValue((double)l.InternalValue * (double)r.InternalValue);
 		public static NumberValue operator /(NumberValue l, NumberValue r) =>
-			new NumberValue((double)l.value / (double)r.value);
+			new NumberValue((double)l.InternalValue / (double)r.InternalValue);
 	}
 }

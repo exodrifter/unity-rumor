@@ -62,6 +62,33 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(new SayNode("alice", "Hello world!"), node);
 		}
 
+		[Test]
+		public static void SaySubstitutionSuccess()
+		{
+			var state = new State(": {1+2} berries please.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "3 berries please."), node);
+		}
+
+		[Test]
+		public static void SaySubstitutionWhitespaceSuccess()
+		{
+			var state = new State(": {\n 1\n +\n 2} berries please.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "3 berries please."), node);
+		}
+
+		[Test]
+		public static void SaySubstitutionComplexMathSuccess()
+		{
+			var state = new State(": {(1+2) * 5} berries please.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "15 berries please."), node);
+		}
+
 		#endregion
 	}
 }

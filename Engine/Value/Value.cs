@@ -5,7 +5,7 @@
 	/// </summary>
 	public abstract class Value
 	{
-		protected object value { get; }
+		public object InternalValue { get; }
 
 		public abstract ValueType Type { get; }
 
@@ -15,16 +15,16 @@
 		/// <param name="value">The value.</param>
 		public Value(object value)
 		{
-			this.value = value;
+			InternalValue = value;
 		}
 
 		public override string ToString()
 		{
-			if (value == null)
+			if (InternalValue == null)
 			{
 				return "<null>";
 			}
-			return value.ToString();
+			return InternalValue.ToString();
 		}
 
 		#region Equality
@@ -40,12 +40,12 @@
 			{
 				return false;
 			}
-			return Equals(value, other.value);
+			return Equals(InternalValue, other.InternalValue);
 		}
 
 		public override int GetHashCode()
 		{
-			return Util.GetHashCode(value);
+			return Util.GetHashCode(InternalValue);
 		}
 
 		public static bool operator ==(Value l, Value r)
