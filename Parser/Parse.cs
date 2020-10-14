@@ -283,50 +283,56 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that returns the current column if the current
 		/// parser position is less than the reference indentation level.
 		/// </summary>
-		public static Parser<int> Unindented()
+		public static Parser<int> Unindented
 		{
-			return (ref State state) =>
+			get
 			{
-				int current = CalculateIndentFrom(state, state.Index);
-				int reference = CalculateIndentFrom(state, state.IndentIndex);
+				return (ref State state) =>
+				{
+					int current = CalculateIndentFrom(state, state.Index);
+					int indent = CalculateIndentFrom(state, state.IndentIndex);
 
-				if (current == reference)
-				{
-					return current;
-				}
-				else
-				{
-					throw new ParserException(
-						state.Index,
-						"line indented less than column " + reference
-					);
-				}
-			};
+					if (current == indent)
+					{
+						return current;
+					}
+					else
+					{
+						throw new ParserException(
+							state.Index,
+							"line indented less than column " + indent
+						);
+					}
+				};
+			}
 		}
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
 		/// parser position is the same as the reference indentation level.
 		/// </summary>
-		public static Parser<int> Same()
+		public static Parser<int> Same
 		{
-			return (ref State state) =>
+			get
 			{
-				int current = CalculateIndentFrom(state, state.Index);
-				int reference = CalculateIndentFrom(state, state.IndentIndex);
+				return (ref State state) =>
+				{
+					int current = CalculateIndentFrom(state, state.Index);
+					int indent = CalculateIndentFrom(state, state.IndentIndex);
 
-				if (current == reference)
-				{
-					return current;
-				}
-				else
-				{
-					throw new ParserException(
-						state.Index,
-						"line indented to column " + reference
-					);
-				}
-			};
+					if (current == indent)
+					{
+						return current;
+					}
+					else
+					{
+						throw new ParserException(
+							state.Index,
+							"line indented to column " + indent
+						);
+					}
+				};
+			}
 		}
 
 		/// <summary>
@@ -334,25 +340,57 @@ namespace Exodrifter.Rumor.Parser
 		/// parser position is at the same indentation level or more than the
 		/// reference indentation level.
 		/// </summary>
-		public static Parser<int> SameOrIndented()
+		public static Parser<int> SameOrIndented
 		{
-			return (ref State state) =>
+			get
 			{
-				int current = CalculateIndentFrom(state, state.Index);
-				int reference = CalculateIndentFrom(state, state.IndentIndex);
+				return (ref State state) =>
+				{
+					int current = CalculateIndentFrom(state, state.Index);
+					int indent = CalculateIndentFrom(state, state.IndentIndex);
 
-				if (current >= reference)
+					if (current >= indent)
+					{
+						return current;
+					}
+					else
+					{
+						throw new ParserException(
+							state.Index,
+							"line indented to column " + indent + " or more"
+						);
+					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Returns a parser that returns the current column if the current
+		/// parser position is at a greater indentation level than the reference
+		/// indentation level.
+		/// </summary>
+		public static Parser<int> Indented
+		{
+			get
+			{
+				return (ref State state) =>
 				{
-					return current;
-				}
-				else
-				{
-					throw new ParserException(
-						state.Index,
-						"line indented to column " + reference + " or more"
-					);
-				}
-			};
+					int current = CalculateIndentFrom(state, state.Index);
+					int indent = CalculateIndentFrom(state, state.IndentIndex);
+
+					if (current > indent)
+					{
+						return current;
+					}
+					else
+					{
+						throw new ParserException(
+							state.Index,
+							"line indented to column " + indent + " or more"
+						);
+					}
+				};
+			}
 		}
 
 		private static int CalculateIndentFrom(State state, int index)
@@ -392,6 +430,62 @@ namespace Exodrifter.Rumor.Parser
 			}
 
 			return column;
+		}
+
+		public static Parser<List<T>> Block1<T>
+			(this Parser<T> parser, Parser<int> indentType) =>
+			Block(parser, indentType, 1);
+
+		/// <summary>
+		/// Parses an indented block of zero or more occurrences of
+		/// <paramref name="parser"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to use.</param>
+		/// <param name="minimum">
+		/// The minimum number of times the parser must be successful.
+		/// </param>
+		public static Parser<List<T>> Block<T>
+			(Parser<T> parser, Parser<int> indentType, int minimum = 0)
+		{
+			return (ref State state) =>
+			{
+				var results = new List<T>();
+
+				while (true)
+				{
+					var temp = state;
+					results.Add(parser(ref temp));
+
+					// Consume the rest of the line
+					Space.Until(NewLine.Then(new Unit()).Or(EOF))
+						.Then(NewLine.Then(new Unit()).Or(EOF))(ref temp);
+					state = temp;
+
+					// Check if the block continues
+					try
+					{
+						Spaces.Then(indentType)(ref temp);
+						state = temp;
+					}
+					catch (ParserException exception)
+					{
+						if (results.Count < minimum)
+						{
+							var delta = minimum - results.Count;
+							throw new ParserException(
+								exception.Index,
+								"at least " + delta + " more of " +
+								string.Join(", ", exception.Expected)
+							);
+						}
+						else
+						{
+							return results;
+						}
+					}
+				}
+			};
 		}
 
 		#endregion
@@ -700,7 +794,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			return (ref State state) =>
 			{
-				var result = first(ref state);
+				first(ref state);
 				return second(ref state);
 			};
 		}

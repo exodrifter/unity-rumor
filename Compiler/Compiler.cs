@@ -1,5 +1,6 @@
 ﻿using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
+using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler
 {
@@ -9,11 +10,28 @@ namespace Exodrifter.Rumor.Compiler
 		{
 			return (ref State state) =>
 			{
-				var identifier = Identifier().Maybe()(ref state);
-				Parse.Char(':')(ref state);
-				var dialog = Parse.AnyChar.Many(0).String()(ref state);
+				var temp = state.SetIndent();
 
-				return new SayNode(identifier, dialog);
+				var identifier = Identifier().Maybe()(ref temp)
+					.GetValueOrDefault(null);
+
+				Parse.Spaces(ref temp);
+				Parse.Char(':')(ref temp);
+				Parse.Whitespaces(ref temp);
+
+				var lines = Parse.Block1(
+					Parse.AnyChar.Until(Parse.NewLine).String(),
+					Parse.Indented
+				)(ref temp);
+
+				var dialog = new List<string>();
+				foreach (var line in lines)
+				{
+					dialog.Add(line.Trim());
+				}
+
+				state = temp;
+				return new SayNode(identifier, string.Join(" ", dialog));
 			};
 		}
 

@@ -53,50 +53,50 @@ namespace Exodrifter.Rumor.Parser.Tests
 		#region Indented
 
 		[Test]
-		public static void ZeroIndentedSuccess()
+		public static void ZeroSameOrIndentedSuccess()
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.SameOrIndented()(ref state);
+			var result = Parse.SameOrIndented(ref state);
 			Assert.AreEqual(1, result);
 		}
 
 		[Test]
-		public static void IndentedSuccess()
+		public static void SameOrIndentedSuccess()
 		{
 			var state = new State("    hello world!", 4, 4);
 
-			var result = Parse.SameOrIndented()(ref state);
+			var result = Parse.SameOrIndented(ref state);
 			Assert.AreEqual(5, result);
 		}
 
 		[Test]
-		public static void IndentedTabSuccess()
+		public static void SameOrIndentedTabSuccess()
 		{
 			var state = new State("  \thello world!", 4, 3);
 
-			var result = Parse.SameOrIndented()(ref state);
+			var result = Parse.SameOrIndented(ref state);
 			Assert.AreEqual(4, result);
 		}
 
 		[Test]
-		public static void IndentedLineSuccess()
+		public static void SameOrIndentedLineSuccess()
 		{
 			var state = new State("\n  \thello world!", 4, 4);
 
-			var result = Parse.SameOrIndented()(ref state);
+			var result = Parse.SameOrIndented(ref state);
 			Assert.AreEqual(4, result);
 		}
 
 		[Test]
-		public static void IndentedFailure()
+		public static void SameOrIndentedFailure()
 		{
 			var state = new State("    hello world!", 4, 4)
 				.SetIndent()
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.SameOrIndented()(ref state)
+				Parse.SameOrIndented(ref state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(
@@ -106,18 +106,47 @@ namespace Exodrifter.Rumor.Parser.Tests
 		}
 
 		[Test]
-		public static void IndentedLineFailure()
+		public static void SameOrIndentedLineFailure()
 		{
 			var state = new State("\n    hello world!", 4, 5)
 				.SetIndent()
 				.AddIndex(-2);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.SameOrIndented()(ref state)
+				Parse.SameOrIndented(ref state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(
 				new string[] { "line indented to column 5 or more" },
+				exception.Expected
+			);
+		}
+
+		[Test]
+		public static void BlockSuccess()
+		{
+			var state = new State("  a\n  a\n a", 4, 2);
+			state = state.SetIndent();
+
+			var result = Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
+				.String()(ref state);
+			Assert.AreEqual("aa", result);
+		}
+
+		[Test]
+		public static void BlockFailure()
+		{
+			var state = new State("  ab\n  a\n a", 4, 2);
+			state = state.SetIndent();
+
+			var exception = Assert.Throws<ParserException>(() =>
+				Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
+					.String()(ref state)
+			);
+
+			Assert.AreEqual(3, exception.Index);
+			Assert.AreEqual(
+				new string[] { "space" },
 				exception.Expected
 			);
 		}
