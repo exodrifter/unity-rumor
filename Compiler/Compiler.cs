@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Compiler
 				Parse.Whitespaces(ref temp);
 
 				var lines = Parse.Block1(
-					Parse.AnyChar.Until(Parse.NewLine).String(),
+					Parse.AnyChar.Until(Parse.EOL).String(),
 					Parse.Indented
 				)(ref temp);
 
@@ -40,9 +40,8 @@ namespace Exodrifter.Rumor.Compiler
 			return (ref State state) =>
 			{
 				return
-					Parse.Char(char.IsLetterOrDigit, "alphanumeric character")
-					.Many(1).String()
-					.Where(x => x.StartsWith("_"), "identifier")
+					Parse.Alphanumeric.Many(1).String()
+					.Where(x => !x.StartsWith("_"), "identifier")
 					(ref state);
 			};
 		}

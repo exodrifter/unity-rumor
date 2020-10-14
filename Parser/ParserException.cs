@@ -10,4 +10,10 @@ public class ParserException : Exception
 		Index = index;
 		Expected = expected;
 	}
+
+	public override string ToString()
+	{
+		return "Parser Exception at index " + Index
+			+ ": expected " + string.Join(", ", Expected);
+	}
 }

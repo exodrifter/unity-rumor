@@ -193,6 +193,13 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that succeeds if the parser is at the end of the
+		/// line or at the end of a file.
+		/// </summary>
+		public static Parser<Unit> EOL =>
+			NewLine.Then(new Unit()).Or(EOF);
+
+		/// <summary>
+		/// Returns a parser that succeeds if the parser is at the end of the
 		/// file.
 		/// </summary>
 		public static Parser<Unit> EOF
@@ -218,6 +225,28 @@ namespace Exodrifter.Rumor.Parser
 		#region Followed By
 
 		/// <summary>
+		/// Returns true if the parser would succeed.
+		/// </summary>
+		/// <typeparam name="T">The return type of the parser.</typeparam>
+		/// <param name="parser">The parser to try.</param>
+		public static Parser<bool> FollowedBy<T>(Parser<T> parser)
+		{
+			return (ref State state) =>
+			{
+				try
+				{
+					var temp = state;
+					parser(ref temp);
+					return true;
+				}
+				catch (ParserException)
+				{
+					return false;
+				}
+			};
+		}
+
+		/// <summary>
 		/// Returns a parser that only succeeds if the following parser
 		/// would also succeed directly after the first.
 		/// </summary>
@@ -240,6 +269,14 @@ namespace Exodrifter.Rumor.Parser
 				return result;
 			};
 		}
+
+		/// <summary>
+		/// Returns true if the parser would fail.
+		/// </summary>
+		/// <typeparam name="T">The return type of the parser.</typeparam>
+		/// <param name="parser">The parser to try.</param>
+		public static Parser<bool> NotFollowedBy<T>(Parser<T> parser) =>
+			FollowedBy(parser).Select(x => !x);
 
 		/// <summary>
 		/// Returns a parser that only succeeds if the following parser
@@ -461,6 +498,12 @@ namespace Exodrifter.Rumor.Parser
 					Space.Until(NewLine.Then(new Unit()).Or(EOF))
 						.Then(NewLine.Then(new Unit()).Or(EOF))(ref temp);
 					state = temp;
+
+					// Stop if we are at the end of the file
+					if (FollowedBy(EOF)(ref state))
+					{
+						return results;
+					}
 
 					// Check if the block continues
 					try
