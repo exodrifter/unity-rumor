@@ -506,17 +506,17 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="parser">The parser to try.</param>
-		public static Parser<T> Maybe<T>(this Parser<T> parser)
+		public static Parser<Maybe<T>> Maybe<T>(this Parser<T> parser)
 		{
 			return (ref State state) =>
 			{
 				try
 				{
-					return parser(ref state);
+					return new Maybe<T>(parser(ref state));
 				}
 				catch (ParserException)
 				{
-					return default;
+					return new Maybe<T>();
 				}
 			};
 		}
