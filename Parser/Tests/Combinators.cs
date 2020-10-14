@@ -1,9 +1,36 @@
 ﻿using NUnit.Framework;
+using System;
 
 namespace Exodrifter.Rumor.Parser.Tests
 {
 	public static class Combinators
 	{
+		#region Chain
+
+		[Test]
+		public static void ChainL1Success()
+		{
+			var state = new State("a,z,b", 4, 0);
+
+			Func<char, char, char> fn = (l, r) => {
+				if (l > r)
+				{
+					return l;
+				}
+				else
+				{
+					return r;
+				}
+			};
+
+			var result = Parse.Letter
+				.ChainL1(Parse.Char(',').Then(fn))(ref state);
+
+			Assert.AreEqual('z', result);
+		}
+
+		#endregion
+
 		#region Many
 
 		[Test]

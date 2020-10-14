@@ -5,6 +5,12 @@ namespace Exodrifter.Rumor.Parser
 {
 	public delegate T Parser<T>(ref State state);
 
+	/// <summary>
+	/// This class represents the result of the parser when the parser has no
+	/// value to return.
+	/// </summary>
+	public class Unit { }
+
 	public static partial class Parse
 	{
 		#region Char
@@ -15,6 +21,18 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="ch">The character to parse.</param>
 		public static Parser<char> Char(char ch) =>
 			Char(ch.Equals, ch.ToString());
+
+		/// <summary>
+		/// Returns a parser that parses a digit.
+		/// </summary>
+		public static Parser<char> Letter =>
+			Char(char.IsLetter, "letter");
+
+		/// <summary>
+		/// Returns a parser that parses a digit.
+		/// </summary>
+		public static Parser<char> Digit =>
+			Char(char.IsDigit, "digit");
 
 		/// <summary>
 		/// Returns a parser that parses a letter or number.
@@ -31,8 +49,20 @@ namespace Exodrifter.Rumor.Parser
 		/// <summary>
 		/// Returns a parser that parses a space or tab.
 		/// </summary>
-		public static Parser<char> Spaces =>
+		public static Parser<char> Space =>
 			Char(ch => ch == ' ' || ch == '\t', "space");
+
+		/// <summary>
+		/// Returns a parser that parses zero or more spaces and tabs.
+		/// </summary>
+		public static Parser<string> Spaces =>
+			Space.Many().String();
+
+		/// <summary>
+		/// Returns a parser that parses one or more spaces and tabs.
+		/// </summary>
+		public static Parser<string> Spaces1 =>
+			Space.Many1().String();
 
 		/// <summary>
 		/// Returns a parser that parses a carriage return or newline.
@@ -48,6 +78,48 @@ namespace Exodrifter.Rumor.Parser
 			Char(char.IsWhiteSpace, "whitespace");
 
 		/// <summary>
+		/// Returns a parser that parses zero or more whitespace characters.
+		/// </summary>
+		public static Parser<string> Whitespaces =>
+			Whitespace.Many().String();
+
+		/// <summary>
+		/// Returns a parser that parses one or more whitespace characters.
+		/// </summary>
+		public static Parser<string> Whitespaces1 =>
+			Whitespace.Many1().String();
+
+		/// <summary>
+		/// Returns a parser that parses any character that exists in the
+		/// string.
+		/// </summary>
+		/// <param name="str">The characters to parse.</param>
+		public static Parser<char> Char(string str) =>
+			Char(str.ToCharArray());
+
+		/// <summary>
+		/// Returns a parser that parses any character that exists in the
+		/// array.
+		/// </summary>
+		/// <param name="str">The characters to parse.</param>
+		public static Parser<char> Char(params char[] chs)
+		{
+			Parser<char> parser = null;
+			foreach (var ch in chs)
+			{
+				if (parser != null)
+				{
+					parser.Or(Char(ch));
+				}
+				else
+				{
+					parser = Char(ch);
+				}
+			}
+			return parser;
+		}
+
+		/// <summary>
 		/// Returns a parser that parses any character which satisfies a
 		/// predicate.
 		/// </summary>
@@ -55,7 +127,8 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="expected">
 		/// The expected value (used in error messages).
 		/// </param>
-		public static Parser<char> Char(Func<char, bool> predicate, string expected)
+		public static Parser<char> Char
+			(Func<char, bool> predicate, string expected)
 		{
 			return (ref State state) =>
 			{
@@ -72,6 +145,133 @@ namespace Exodrifter.Rumor.Parser
 				}
 
 				throw new ParserException(state.Index, expected);
+			};
+		}
+
+		#endregion
+
+		#region Chain
+
+		/// <summary>
+		/// Returns a new parser that repeats a parser one or more times,
+		/// separated by <paramref name="op"/>, and returns the left associative
+		/// application of the function returned by the <paramref name="op"/>
+		/// on those values.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to repeat.</param>
+		/// <param name="op">The parser for the operator.</param>
+		public static Parser<T> ChainL1<T>
+			(this Parser<T> parser, Parser<Func<T, T, T>> op)
+		{
+			return (ref State state) =>
+			{
+				var x = parser(ref state);
+				while (true)
+				{
+					try
+					{
+						var temp = state;
+						var fn = op(ref temp);
+						var y = parser(ref temp);
+						x = fn(x, y);
+
+						state = temp;
+					}
+					catch (ParserException)
+					{
+						break;
+					}
+				}
+				return x;
+			};
+		}
+
+		#endregion
+
+		#region EOF
+
+		/// <summary>
+		/// Returns a parser that succeeds if the parser is at the end of the
+		/// file.
+		/// </summary>
+		public static Parser<Unit> EOF
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					if (state.EOF)
+					{
+						return new Unit();
+					}
+					else
+					{
+						throw new ParserException(state.Index, "end of file");
+					}
+				};
+			}
+		}
+
+		#endregion
+
+		#region Followed By
+
+		/// <summary>
+		/// Returns a parser that only succeeds if the following parser
+		/// would also succeed directly after the first.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the following parser.</typeparam>
+		/// <param name="parser">The parser.</param>
+		/// <param name="after">The following parser that must succeed.</param>
+		public static Parser<T> FollowedBy<T, U>
+			(this Parser<T> parser, Parser<U> after)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				var result = parser(ref temp);
+
+				var tempAfter = temp;
+				after(ref tempAfter);
+
+				state = temp;
+				return result;
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser that only succeeds if the following parser
+		/// would also fail directly after the first.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the following parser.</typeparam>
+		/// <param name="parser">The parser.</param>
+		/// <param name="after">The following parser that must fail.</param>
+		/// <param name="failure">
+		/// The expected failure (used in error messages).
+		/// </param>
+		public static Parser<T> NotFollowedBy<T, U>
+			(this Parser<T> parser, Parser<U> after, string failure)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				var result = parser(ref temp);
+
+				try
+				{
+					var tempAfter = temp;
+					after(ref tempAfter);
+				}
+				catch (ParserException)
+				{
+					state = temp;
+					return result;
+				}
+
+				throw new ParserException(temp.Index, failure);
 			};
 		}
 
@@ -204,7 +404,8 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		/// <typeparam name="U">The new type of the result.</typeparam>
 		/// <param name="fn">The function to use over the result.</param>
-		public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> fn)
+		public static Parser<U> Select<T, U>
+			(this Parser<T> parser, Func<T, U> fn)
 		{
 			return (ref State state) =>
 			{
@@ -222,7 +423,8 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="expected">
 		/// The expected value (used in error messages).
 		/// </param>
-		public static Parser<T> Where<T>(this Parser<T> parser, Func<T, bool> predicate, string expected)
+		public static Parser<T> Where<T>
+			(this Parser<T> parser, Func<T, bool> predicate, string expected)
 		{
 			return (ref State state) =>
 			{
@@ -244,9 +446,11 @@ namespace Exodrifter.Rumor.Parser
 
 		#region Many
 
-		public static Parser<List<T>> Many<T>(this Parser<T> parser) =>
-			Many(parser, 0);
-
+		/// <summary>
+		/// Returns a new parser that repeats a parser one or more times.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to repeat.</param>
 		public static Parser<List<T>> Many1<T>(this Parser<T> parser) =>
 			Many(parser, 1);
 
@@ -257,7 +461,8 @@ namespace Exodrifter.Rumor.Parser
 		/// <typeparam name="T">The return type of the parser.</typeparam>
 		/// <param name="parser">The parser to repeat.</param>
 		/// <param name="minimum">The minimum number of successes.</param>
-		public static Parser<List<T>> Many<T>(this Parser<T> parser, int minimum)
+		public static Parser<List<T>> Many<T>
+			(this Parser<T> parser, int minimum = 0)
 		{
 			return (ref State state) =>
 			{
@@ -337,7 +542,7 @@ namespace Exodrifter.Rumor.Parser
 					state = temp1;
 					return result;
 				}
-				catch (ParserException exception1)
+				catch (ParserException e1)
 				{
 					try
 					{
@@ -346,14 +551,15 @@ namespace Exodrifter.Rumor.Parser
 						state = temp2;
 						return result;
 					}
-					catch (ParserException exception2)
+					catch (ParserException e2)
 					{
 						var expected = new List<string>(
-							exception1.Expected.Length + exception2.Expected.Length
+							e1.Expected.Length + e2.Expected.Length
 						);
-						expected.AddRange(exception1.Expected);
-						expected.AddRange(exception2.Expected);
-						throw new ParserException(state.Index, expected.ToArray());
+						expected.AddRange(e1.Expected);
+						expected.AddRange(e2.Expected);
+						throw new ParserException
+							(state.Index, expected.ToArray());
 					}
 				}
 			};
@@ -466,13 +672,31 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser which runs the first parser, discards the result,
+		/// then returns a different value.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the value to return.</typeparam>
+		/// <param name="first">The parser.</param>
+		/// <param name="second">The value to return.</param>
+		public static Parser<U> Then<T, U>(this Parser<T> first, U value)
+		{
+			return (ref State state) =>
+			{
+				var result = first(ref state);
+				return value;
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser which runs the first parser, discards the result,
 		/// then runs the second parser.
 		/// </summary>
 		/// <typeparam name="T">The type to discard.</typeparam>
 		/// <typeparam name="U">The type to return.</typeparam>
 		/// <param name="first">The parser to discard the result of.</param>
 		/// <param name="second">The parser to return the result of.</param>
-		public static Parser<U> Then<T, U>(this Parser<T> first, Parser<U> second)
+		public static Parser<U> Then<T, U>
+			(this Parser<T> first, Parser<U> second)
 		{
 			return (ref State state) =>
 			{
@@ -492,7 +716,8 @@ namespace Exodrifter.Rumor.Parser
 		/// <typeparam name="U">The type of the parser to check.</typeparam>
 		/// <param name="parser">The parser to run.</param>
 		/// <param name="until">If this parser succeeds, stop.</param>
-		public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> until)
+		public static Parser<List<T>> Until<T, U>
+			(this Parser<T> parser, Parser<U> until)
 		{
 			return (ref State state) =>
 			{
