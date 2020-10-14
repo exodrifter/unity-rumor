@@ -13,6 +13,22 @@ namespace Exodrifter.Rumor.Parser
 
 	public static partial class Parse
 	{
+		/// <summary>
+		/// Wraps a raw value in a parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the value.</typeparam>
+		/// <param name="value">The value to wrap in a parser.</param>
+		/// <returns>
+		/// A parser that doesn't do anything but return the value.
+		/// </returns>
+		public static Parser<T> Pure<T>(T value)
+		{
+			return (ref State state) =>
+			{
+				return value;
+			};
+		}
+
 		#region Char
 
 		/// <summary>
@@ -185,6 +201,122 @@ namespace Exodrifter.Rumor.Parser
 				}
 				return x;
 			};
+		}
+
+		#endregion
+
+		#region Number
+
+		public static Parser<string> Sign =>
+			Char('-').Or(Char('+')).String().Or(Pure(""));
+
+		/// <summary>
+		/// Parses an integer number.
+		/// </summary>
+		public static Parser<string> Number
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					var temp = state;
+					var digit = Digit(ref temp);
+					var rest = Digit.Or(Char('_')).Many().String()(ref temp);
+					state = temp;
+
+					return digit + rest;
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a integer number with an optional sign.
+		/// </summary>
+		public static Parser<string> SignedNumber
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					var temp = state;
+					var sign = Sign(ref temp);
+					var number = Number(ref temp);
+					state = temp;
+
+					return sign + number;
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a number with a decimal component.
+		/// </summary>
+		public static Parser<string> Decimal
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					var temp = state;
+					var l = Number(ref temp);
+					state = temp;
+
+					try
+					{
+						var p = Char('.')(ref temp);
+						var r = Number(ref temp);
+						state = temp;
+						return l + p + r;
+					}
+					catch (ParserException)
+					{
+						return l;
+					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a number with a decimal component and an optional sign.
+		/// </summary>
+		public static Parser<string> SignedDecimal
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					var temp = state;
+					var sign = Sign(ref temp);
+					var number = Decimal(ref temp);
+					state = temp;
+
+					return sign + number;
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a double with an optional sign.
+		/// </summary>
+		public static Parser<double> Double
+		{
+			get
+			{
+				return (ref State state) =>
+				{
+					var temp = state;
+					var str = SignedDecimal(ref temp);
+
+					double result;
+					if (!double.TryParse(str, out result))
+					{
+						throw new ParserException(state.Index, "double");
+					}
+
+					state = temp;
+					return result;
+				};
+			}
 		}
 
 		#endregion
@@ -743,6 +875,14 @@ namespace Exodrifter.Rumor.Parser
 		#endregion
 
 		#region String
+
+		/// <summary>
+		/// Converts a parser that returns a character into a parser that
+		/// returns a string.
+		/// </summary>
+		/// <param name="parser">The parser to convert.</param>
+		public static Parser<string> String(this Parser<char> parser) =>
+			parser.Select(x => x.ToString());
 
 		/// <summary>
 		/// Converts a parser that returns a list of characters into a parser
