@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Exodrifter.Rumor.Compiler.Tests
 {
-	public static class NodeTest
+	public static class Node
 	{
 		#region Say
 

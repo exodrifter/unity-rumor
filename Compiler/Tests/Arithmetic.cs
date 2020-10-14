@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Exodrifter.Rumor.Compiler.Tests
 {
-	public static class ExpressionTest
+	public static class Arithmetic
 	{
 		#region Literal
 
