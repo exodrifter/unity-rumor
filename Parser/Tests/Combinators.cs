@@ -138,5 +138,32 @@ namespace Exodrifter.Rumor.Parser.Tests
 		}
 
 		#endregion
+
+		#region Until
+
+		[Test]
+		public static void UntilSuccess()
+		{
+			var state = new State("aaaab", 4, 0);
+
+			var result = Parse.Char('a').Until(Parse.Char('b'))
+				.Then(Parse.Char('b'))(ref state);
+
+			Assert.AreEqual('b', result);
+		}
+
+		[Test]
+		public static void UntilFailure()
+		{
+			var state = new State("aaaa", 4, 0);
+
+			var exception = Assert.Throws<ParserException>(() =>
+				Parse.Char('a').Until(Parse.Char('b')).String()(ref state)
+			);
+			Assert.AreEqual(4, exception.Index);
+			Assert.AreEqual(new string[] { "b" }, exception.Expected);
+		}
+
+		#endregion
 	}
 }

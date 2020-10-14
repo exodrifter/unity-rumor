@@ -244,6 +244,12 @@ namespace Exodrifter.Rumor.Parser
 
 		#region Many
 
+		public static Parser<List<T>> Many<T>(this Parser<T> parser) =>
+			Many(parser, 0);
+
+		public static Parser<List<T>> Many1<T>(this Parser<T> parser) =>
+			Many(parser, 1);
+
 		/// <summary>
 		/// Returns a new parser that repeats a parser for a specified minimum
 		/// number of successful times.
@@ -472,6 +478,57 @@ namespace Exodrifter.Rumor.Parser
 			{
 				var result = first(ref state);
 				return second(ref state);
+			};
+		}
+
+		#endregion
+
+		#region Until
+
+		/// <summary>
+		/// Runs a parser until the result of another parser is successful.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser to run.</typeparam>
+		/// <typeparam name="U">The type of the parser to check.</typeparam>
+		/// <param name="parser">The parser to run.</param>
+		/// <param name="until">If this parser succeeds, stop.</param>
+		public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> until)
+		{
+			return (ref State state) =>
+			{
+				var results = new List<T>();
+				while (true)
+				{
+					try
+					{
+						var temp = state;
+						until(ref temp);
+						break;
+					}
+					catch (ParserException untilException)
+					{
+						try
+						{
+							results.Add(parser(ref state));
+						}
+						catch (ParserException parserException)
+						{
+							// If we're at the end of the source file, throw
+							// the parsing exception for the until parser
+							// instead, since that is more likely descriptive
+							// of the content that is missing.
+							if (state.EOF)
+							{
+								throw untilException;
+							}
+							else
+							{
+								throw parserException;
+							}
+						}
+					}
+				}
+				return results;
 			};
 		}
 

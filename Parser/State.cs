@@ -28,6 +28,11 @@
 		public int IndentIndex { get; }
 
 		/// <summary>
+		/// Returns true if the state is pointing to the end of the file.
+		/// </summary>
+		public bool EOF { get { return Index >= Source.Length; } }
+
+		/// <summary>
 		/// Creates a new parser state.
 		/// </summary>
 		/// <param name="source">
