@@ -50,17 +50,27 @@ namespace Exodrifter.Rumor.Compiler
 			};
 		}
 
+		#region Math
+
 		/// <summary>
 		/// Parses an arithmetic expression.
 		/// </summary>
 		public static Parser<Expression<NumberValue>> Math() =>
-			Parse.ChainL1(NumberLiteral(), AddOrSubtract())
+			Parse.ChainL1(MultipliedPieces(), AddOrSubtract());
+
+		// Groups the multiplication and division operators
+		private static Parser<Expression<NumberValue>> MultipliedPieces() =>
+			Parse.ChainL1(Piece(), MultiplyOrDivide());
+
+		// Either math expressions surrounded by parenthesis or number literals
+		private static Parser<Expression<NumberValue>> Piece() =>
+			Parse.Parenthesis('(', ')', Parse.Ref(() => Math()), Parse.SameOrIndented)
 				.Or(NumberLiteral());
 
 		/// <summary>
 		/// Parses a number literal.
 		/// </summary>
-		public static Parser<Expression<NumberValue>> NumberLiteral()
+		private static Parser<Expression<NumberValue>> NumberLiteral()
 		{
 			return (ref State state) =>
 			{
@@ -77,13 +87,13 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses an addition or subtraction operator.
 		/// </summary>
-		public static Parser<NumberOperator> AddOrSubtract() =>
+		private static Parser<NumberOperator> AddOrSubtract() =>
 			Add().Or(Subtract());
 
 		/// <summary>
 		/// Parses an addition operator.
 		/// </summary>
-		public static Parser<NumberOperator> Add()
+		private static Parser<NumberOperator> Add()
 		{
 			return (ref State state) =>
 			{
@@ -101,7 +111,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a subtraction operator.
 		/// </summary>
-		public static Parser<NumberOperator> Subtract()
+		private static Parser<NumberOperator> Subtract()
 		{
 			return (ref State state) =>
 			{
@@ -115,5 +125,49 @@ namespace Exodrifter.Rumor.Compiler
 				return op;
 			};
 		}
+
+		/// <summary>
+		/// Parses an addition or subtraction operator.
+		/// </summary>
+		private static Parser<NumberOperator> MultiplyOrDivide() =>
+			Multiply().Or(Divide());
+
+		/// <summary>
+		/// Parses an addition operator.
+		/// </summary>
+		private static Parser<NumberOperator> Multiply()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.Char('*')(ref temp);
+				state = temp;
+
+				NumberOperator op = (l, r) => new MultiplyExpression(l, r);
+				return op;
+			};
+		}
+
+		/// <summary>
+		/// Parses a subtraction operator.
+		/// </summary>
+		private static Parser<NumberOperator> Divide()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.Char('/')(ref temp);
+				state = temp;
+
+				NumberOperator op = (l, r) => new DivideExpression(l, r);
+				return op;
+			};
+		}
+
+		#endregion
 	}
 }

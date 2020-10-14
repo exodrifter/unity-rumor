@@ -29,6 +29,113 @@ namespace Exodrifter.Rumor.Parser
 			};
 		}
 
+		#region Parenthesis
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Parenthesis<T>
+			(char before, char after, Parser<T> parser) =>
+			Parenthesis(Char(before), Char(after), parser);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Parenthesis<T>
+			(string before, string after, Parser<T> parser) =>
+			Parenthesis(String(before), String(after), parser);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
+		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
+		/// <param name="before">The parser for the beginning delimiter.</param>
+		/// <param name="after">The parser for the ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Parenthesis<T, U, V>
+			(Parser<U> before, Parser<V> after, Parser<T> parser)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				before(ref temp);
+				var result = parser(ref temp);
+				after(ref temp);
+				state = temp;
+
+				return result;
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for whitespace that keeps the content in the same block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Parenthesis<T>
+			(char before, char after, Parser<T> parser,
+			Parser<int> indentType) =>
+			Parenthesis(Char(before), Char(after), parser, indentType);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for whitespace that keeps the content in the same block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Parenthesis<T>
+			(string before, string after, Parser<T> parser,
+			Parser<int> indentType) =>
+			Parenthesis(String(before), String(after), parser, indentType);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for whitespace that keeps the content in the same block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
+		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
+		/// <param name="before">The parser for the beginning delimiter.</param>
+		/// <param name="after">The parser for the ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Parenthesis<T, U, V>
+			(Parser<U> before, Parser<V> after, Parser<T> parser,
+			Parser<int> indentType)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				before(ref temp);
+				Whitespaces(ref temp);
+				indentType(ref temp);
+				var result = parser(ref temp);
+				after(ref temp);
+				state = temp;
+
+				return result;
+			};
+		}
+
+		#endregion
+
 		#region Char
 
 		/// <summary>
@@ -601,6 +708,16 @@ namespace Exodrifter.Rumor.Parser
 			return column;
 		}
 
+		/// <summary>
+		/// Parses an indented block of one or more occurrences of
+		/// <paramref name="parser"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="parser">The parser to use.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		/// <param name="minimum">
+		/// The minimum number of times the parser must be successful.
+		/// </param>
 		public static Parser<List<T>> Block1<T>
 			(this Parser<T> parser, Parser<int> indentType) =>
 			Block(parser, indentType, 1);
@@ -611,6 +728,7 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="parser">The parser to use.</param>
+		/// <param name="indentType">The indentation parser.</param>
 		/// <param name="minimum">
 		/// The minimum number of times the parser must be successful.
 		/// </param>
@@ -870,6 +988,31 @@ namespace Exodrifter.Rumor.Parser
 				result.Or(other);
 			}
 			return result;
+		}
+
+		#endregion
+
+		#region Reference
+
+		/// <summary>
+		/// Refer to another parser indirectly, which can be used to allow a set
+		/// of circular-dependent parsers to be created.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser to refer to</typeparam>
+		/// <param name="reference">
+		/// A function that produces the indirectly-referenced parser.
+		/// </param>
+		public static Parser<T> Ref<T>(Func<Parser<T>> reference)
+		{
+			Parser<T> p = null;
+
+			return (ref State state) =>
+			{
+				if (p == null)
+					p = reference();
+
+				return p(ref state);
+			};
 		}
 
 		#endregion
