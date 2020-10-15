@@ -28,6 +28,28 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 		#endregion
 
+		#region Not
+
+		[Test]
+		public static void NotTrueSuccess()
+		{
+			var state = new State("not true", 4, 0);
+
+			var exp = Compiler.Logic()(ref state);
+			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
+		}
+
+		[Test]
+		public static void NotFalseSuccess()
+		{
+			var state = new State("not false", 4, 0);
+
+			var exp = Compiler.Logic()(ref state);
+			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
+		}
+
+		#endregion
+
 		#region Or
 
 		[Test]
@@ -198,6 +220,28 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var exp = Compiler.Logic()(ref state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
+		}
+
+		#endregion
+
+		#region Complex
+
+		[Test]
+		public static void ComplexLogicSuccess()
+		{
+			var state = new State("false || true && true ^ false", 4, 0);
+
+			var exp = Compiler.Logic()(ref state);
+			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
+		}
+
+		[Test]
+		public static void ComplexLogicMultilineSuccess()
+		{
+			var state = new State("false\n || true\n && true\n ^ false", 4, 0);
+
+			var exp = Compiler.Logic()(ref state);
+			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
 		#endregion

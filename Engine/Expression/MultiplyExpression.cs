@@ -29,6 +29,7 @@
 			this.l = l;
 			this.r = r;
 		}
+
 		public override NumberValue Evaluate()
 		{
 			return l.Evaluate() * r.Evaluate();

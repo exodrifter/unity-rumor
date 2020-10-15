@@ -15,6 +15,9 @@
 		public static BooleanValue operator ^(BooleanValue l, BooleanValue r) =>
 			new BooleanValue((bool)l.InternalValue ^ (bool)r.InternalValue);
 
+		public static BooleanValue operator !(BooleanValue l) =>
+			new BooleanValue(!(bool)l.InternalValue);
+
 		public static bool operator true(BooleanValue x)
 		{
 			return (bool)x.InternalValue;

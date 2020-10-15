@@ -55,9 +55,28 @@ namespace Exodrifter.Rumor.Compiler
 
 		// Either logic expressions surrounded by parenthesis or boolean literals
 		private static Parser<Expression<BooleanValue>> LogicPiece() =>
-			Parse.Parenthesis(
-					'(', ')', Parse.Ref(() => Logic()), Parse.SameOrIndented
-				).Or(BooleanLiteral());
+			Parse.Parenthesis('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
+				.Or(Not())
+				.Or(BooleanLiteral());
+
+		/// <summary>
+		/// Parses a logic not operator and the logic expression associated
+		/// with it.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> Not()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.String("not", "!")(ref temp);
+				var logic = Parse.Ref(() => Logic())(ref temp);
+				state = temp;
+
+				return new NotExpression(logic);
+			};
+		}
 
 		/// <summary>
 		/// Parses a number literal.
@@ -148,9 +167,8 @@ namespace Exodrifter.Rumor.Compiler
 
 		// Either math expressions surrounded by parenthesis or number literals
 		private static Parser<Expression<NumberValue>> MathPiece() =>
-			Parse.Parenthesis(
-					'(', ')', Parse.Ref(() => Math()), Parse.SameOrIndented
-				).Or(NumberLiteral());
+			Parse.Parenthesis('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
+				.Or(NumberLiteral());
 
 		/// <summary>
 		/// Parses a number literal.
