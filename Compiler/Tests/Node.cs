@@ -62,8 +62,44 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(new SayNode("alice", "Hello world!"), node);
 		}
 
+		#endregion
+
+		#region Say Boolean Substitution
+
 		[Test]
-		public static void SaySubstitutionSuccess()
+		public static void SayBooleanSubstitutionSuccess()
+		{
+			var state = new State(": That's { true or false }.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "That's true."), node);
+		}
+
+		[Test]
+		public static void SayBooleanSubstitutionMultiLineSuccess()
+		{
+			var state = new State(": That's { true\n or\n false }.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "That's true."), node);
+		}
+
+		[Test]
+		public static void SayBooleanSubstitutionComplexSuccess()
+		{
+			var state = new State(
+				": That's { (true and false) or true }.", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "That's true."), node);
+		}
+
+		#endregion
+
+		#region Say Math Substitution
+
+		[Test]
+		public static void SayMathSubstitutionSuccess()
 		{
 			var state = new State(": {1+2} berries please.", 4, 0);
 
@@ -72,7 +108,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
-		public static void SaySubstitutionWhitespaceSuccess()
+		public static void SayMathSubstitutionMultiLineSuccess()
 		{
 			var state = new State(": {\n 1\n +\n 2} berries please.", 4, 0);
 
@@ -81,12 +117,34 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
-		public static void SaySubstitutionComplexMathSuccess()
+		public static void SayMathSubstitutionComplexSuccess()
 		{
 			var state = new State(": {(1+2) * 5} berries please.", 4, 0);
 
 			var node = Compiler.SayNode()(ref state);
 			Assert.AreEqual(new SayNode(null, "15 berries please."), node);
+		}
+
+		#endregion
+
+		#region Say Quote Substitution
+
+		[Test]
+		public static void SayQuoteSubstitutionSuccess()
+		{
+			var state = new State(": Hello {\"world!\"}", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "Hello world!"), node);
+		}
+
+		[Test]
+		public static void SayQuoteSubstitutionMultiLineSuccess()
+		{
+			var state = new State(": Hello {\n \"world!\"\n }", 4, 0);
+
+			var node = Compiler.SayNode()(ref state);
+			Assert.AreEqual(new SayNode(null, "Hello world!"), node);
 		}
 
 		#endregion

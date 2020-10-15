@@ -273,6 +273,19 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
+		#region Substitution
+
+		private static Parser<Expression<StringValue>> Substitution =>
+			Parse.Parenthesis('{', '}',
+				Math().Select(x => (Expression<StringValue>)
+					new ToStringExpression<NumberValue>(x))
+				.Or(Logic().Select(x => (Expression<StringValue>)
+					new ToStringExpression<BooleanValue>(x)))
+				.Or(Quote())
+			);
+
+		#endregion
+
 		#region Text
 
 		public static Parser<Expression<StringValue>> Text()
@@ -334,20 +347,73 @@ namespace Exodrifter.Rumor.Compiler
 				}
 				else
 				{
-					var substitution =
-						Parse.Parenthesis('{', '}', Math())(ref temp);
-
+					var substitution = Substitution(ref temp);
 					var remaining = TextLine()(ref temp);
 
 					state = temp;
 					return new ConcatExpression(
 						new ConcatExpression(
 							new StringLiteral(s + rest),
-							new ToStringExpression<NumberValue>(substitution)
+							substitution
 						),
 						remaining
 					);
 				}
+			};
+		}
+
+		#endregion
+
+		#region Quote
+
+		public static Parser<Expression<StringValue>> Quote()
+		{
+			return Parse.Parenthesis('\"', '\"', QuoteInternal());
+		}
+
+		private static Parser<Expression<StringValue>> QuoteInternal()
+		{
+			return (ref State state) =>
+			{
+				var start = Parse.AnyChar
+					.Until(Parse.Char('\\', '{', '\"'))
+					.String()
+					.Select(str => new StringLiteral(str))
+					(ref state);
+
+				var rest = EscapeSequence()
+					.Or(SubstitutionQuote())
+					.Or(Parse.Pure<Expression<StringValue>>(null))
+					(ref state);
+
+				if (rest != null)
+				{
+					return new ConcatExpression(start, rest);
+				}
+				else
+				{
+					return start;
+				}
+			};
+		}
+
+		private static Parser<Expression<StringValue>> EscapeSequence()
+		{
+			return Parse.String("\\n").Then("\n")
+				.Or(Parse.String("\\r").Then("\r"))
+				.Or(Parse.String("\\{").Then("{"))
+				.Or(Parse.String("\\\"").Then("\""))
+				.Or(Parse.String("\\\\").Then("\\"))
+				.Select(str => (Expression<StringValue>)new StringLiteral(str));
+		}
+
+		private static Parser<Expression<StringValue>> SubstitutionQuote()
+		{
+			return (ref State state) =>
+			{
+				var sub = Substitution(ref state);
+				var rest = Parse.Ref(QuoteInternal)(ref state);
+				return new ConcatExpression(sub, rest);
 			};
 		}
 

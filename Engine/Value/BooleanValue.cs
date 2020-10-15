@@ -27,5 +27,10 @@
 		{
 			return !(bool)x.InternalValue;
 		}
+
+		public override string ToString()
+		{
+			return (bool)InternalValue ? "true" : "false";
+		}
 	}
 }

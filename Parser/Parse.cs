@@ -32,7 +32,8 @@ namespace Exodrifter.Rumor.Parser
 		#region Parenthesis
 
 		/// <summary>
-		/// Returns a parser that parses delimiters around another parser.
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="before">The beginning delimiter.</param>
@@ -43,7 +44,8 @@ namespace Exodrifter.Rumor.Parser
 			Parenthesis(Char(before), Char(after), parser);
 
 		/// <summary>
-		/// Returns a parser that parses delimiters around another parser.
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="before">The beginning delimiter.</param>
@@ -54,7 +56,8 @@ namespace Exodrifter.Rumor.Parser
 			Parenthesis(String(before), String(after), parser);
 
 		/// <summary>
-		/// Returns a parser that parses delimiters around another parser.
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
@@ -69,7 +72,9 @@ namespace Exodrifter.Rumor.Parser
 			{
 				var temp = state;
 				before(ref temp);
+				Whitespaces(ref temp);
 				var result = parser(ref temp);
+				Whitespaces(ref temp);
 				after(ref temp);
 				state = temp;
 
@@ -79,7 +84,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
-		/// allowing for whitespace that keeps the content in the same block.
+		/// allowing for padded whitespace that keeps the content in the same
+		/// block.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="before">The beginning delimiter.</param>
@@ -93,7 +99,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
-		/// allowing for whitespace that keeps the content in the same block.
+		/// allowing for padded whitespace that keeps the content in the same
+		/// block.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="before">The beginning delimiter.</param>
@@ -127,6 +134,8 @@ namespace Exodrifter.Rumor.Parser
 				Whitespaces(ref temp);
 				indentType(ref temp);
 				var result = parser(ref temp);
+				Whitespaces(ref temp);
+				indentType(ref temp);
 				after(ref temp);
 				state = temp;
 
@@ -1088,7 +1097,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			return (ref State state) =>
 			{
-				var result = first(ref state);
+				first(ref state);
 				return value;
 			};
 		}
