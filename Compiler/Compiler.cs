@@ -7,6 +7,8 @@ namespace Exodrifter.Rumor.Compiler
 {
 	using NumberOperator =
 		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<NumberValue>>;
+	using BooleanOperator =
+		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
 
 	public static class Compiler
 	{
@@ -40,6 +42,98 @@ namespace Exodrifter.Rumor.Compiler
 					(ref state);
 			};
 		}
+
+		#region Logic
+
+		public static Parser<Expression<BooleanValue>> Logic() =>
+			Parse.ChainL1(AndPieces(), Or());
+
+		private static Parser<Expression<BooleanValue>> AndPieces() =>
+			Parse.ChainL1(XorPieces(), And());
+
+		private static Parser<Expression<BooleanValue>> XorPieces() =>
+			Parse.ChainL1(LogicPiece(), Xor());
+
+		// Either logic expressions surrounded by parenthesis or boolean literals
+		private static Parser<Expression<BooleanValue>> LogicPiece() =>
+			Parse.Parenthesis(
+					'(', ')', Parse.Ref(() => Logic()), Parse.SameOrIndented
+				).Or(BooleanLiteral());
+
+		/// <summary>
+		/// Parses a number literal.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> BooleanLiteral()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				var b = Parse.String("true").Then(true)
+						.Or(Parse.String("false").Then(false))
+						(ref temp);
+				state = temp;
+
+				return new LiteralExpression<BooleanValue>(new BooleanValue(b));
+			};
+		}
+
+		/// <summary>
+		/// Parses a logic or operator.
+		/// </summary>
+		private static Parser<BooleanOperator> Or()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.String("or", "||")(ref temp);
+				state = temp;
+
+				BooleanOperator op = (l, r) => new OrExpression(l, r);
+				return op;
+			};
+		}
+
+		/// <summary>
+		/// Parses a logic and operator.
+		/// </summary>
+		private static Parser<BooleanOperator> And()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.String("and", "&&")(ref temp);
+				state = temp;
+
+				BooleanOperator op = (l, r) => new AndExpression(l, r);
+				return op;
+			};
+		}
+
+		/// <summary>
+		/// Parses a logic xor operator.
+		/// </summary>
+		private static Parser<BooleanOperator> Xor()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.String("xor", "^")(ref temp);
+				state = temp;
+
+				BooleanOperator op = (l, r) => new XorExpression(l, r);
+				return op;
+			};
+		}
+
+		#endregion
 
 		#region Text
 
@@ -133,12 +227,13 @@ namespace Exodrifter.Rumor.Compiler
 
 		// Groups the multiplication and division operators
 		private static Parser<Expression<NumberValue>> MultipliedPieces() =>
-			Parse.ChainL1(Piece(), MultiplyOrDivide());
+			Parse.ChainL1(MathPiece(), MultiplyOrDivide());
 
 		// Either math expressions surrounded by parenthesis or number literals
-		private static Parser<Expression<NumberValue>> Piece() =>
-			Parse.Parenthesis('(', ')', Parse.Ref(() => Math()), Parse.SameOrIndented)
-				.Or(NumberLiteral());
+		private static Parser<Expression<NumberValue>> MathPiece() =>
+			Parse.Parenthesis(
+					'(', ')', Parse.Ref(() => Math()), Parse.SameOrIndented
+				).Or(NumberLiteral());
 
 		/// <summary>
 		/// Parses a number literal.

@@ -227,19 +227,12 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="str">The characters to parse.</param>
 		public static Parser<char> Char(params char[] chs)
 		{
-			Parser<char> parser = null;
+			var parsers = new List<Parser<char>>(chs.Length);
 			foreach (var ch in chs)
 			{
-				if (parser != null)
-				{
-					parser.Or(Char(ch));
-				}
-				else
-				{
-					parser = Char(ch);
-				}
+				parsers.Add(Char(ch));
 			}
-			return parser;
+			return Or(parsers.ToArray());
 		}
 
 		/// <summary>
@@ -964,7 +957,7 @@ namespace Exodrifter.Rumor.Parser
 			{
 				if (result != null)
 				{
-					result.Or(parser);
+					result = result.Or(parser);
 				}
 				else
 				{
@@ -985,7 +978,7 @@ namespace Exodrifter.Rumor.Parser
 			Parser<T> result = parser;
 			foreach (var other in others)
 			{
-				result.Or(other);
+				result = result.Or(other);
 			}
 			return result;
 		}
@@ -1071,19 +1064,12 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="str">The string to parse.</param>
 		public static Parser<string> String(params string[] strs)
 		{
-			Parser<string> result = null;
+			var parsers = new List<Parser<string>>(strs.Length);
 			foreach (var str in strs)
 			{
-				if (result != null)
-				{
-					result.Or(String(str));
-				}
-				else
-				{
-					result = String(str);
-				}
+				parsers.Add(String(str));
 			}
-			return result;
+			return Or(parsers.ToArray());
 		}
 
 		#endregion

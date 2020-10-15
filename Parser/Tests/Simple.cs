@@ -186,6 +186,18 @@ namespace Exodrifter.Rumor.Parser.Tests
 		}
 
 		[Test]
+		public static void StringParserLengthFail()
+		{
+			var state = new State("hello world!", 4, 0);
+
+			var exception = Assert.Throws<ParserException>(() =>
+				Parse.String("HELLO WORLD!!")(ref state)
+			);
+			Assert.AreEqual(0, exception.Index);
+			Assert.AreEqual(new string[] { "HELLO WORLD!!" }, exception.Expected);
+		}
+
+		[Test]
 		public static void StringParserIndexFail()
 		{
 			var state = new State("hello world!", 4, 6);
@@ -195,6 +207,15 @@ namespace Exodrifter.Rumor.Parser.Tests
 			);
 			Assert.AreEqual(6, exception.Index);
 			Assert.AreEqual(new string[] { "WORLD!" }, exception.Expected);
+		}
+
+		[Test]
+		public static void StringParserMultiSuccess()
+		{
+			var state = new State("bar", 4, 0);
+
+			var result = Parse.String("foo", "bar")(ref state);
+			Assert.AreEqual("bar", result);
 		}
 
 		#endregion
