@@ -1,7 +1,6 @@
 ﻿using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
 using System;
-using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler
 {
@@ -135,88 +134,6 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
-		#region Text
-
-		public static Parser<Expression<StringValue>> Text()
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-
-				var lines = Parse.Block1(
-					TextLine(),
-					Parse.Indented
-				)(ref temp);
-
-				Expression<StringValue> dialog = null;
-				foreach (var line in lines)
-				{
-					if (dialog != null)
-					{
-						var s = new StringValue(" ");
-						dialog = new ConcatExpression(
-							new ConcatExpression(dialog, s),
-							line
-						);
-					}
-					else
-					{
-						dialog = line;
-					}
-				}
-
-				state = temp;
-
-				return dialog.Simplify();
-			};
-		}
-
-		private static Parser<Expression<StringValue>> TextLine()
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-
-				var s = "";
-				if (Parse.FollowedBy(Parse.Spaces1)(ref temp))
-				{
-					Parse.Spaces1(ref temp);
-					s = " ";
-				}
-
-				var rest =
-					Parse.AnyChar
-					.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
-					.String()(ref temp);
-
-				if (Parse.FollowedBy(Parse.EOL)(ref temp))
-				{
-					state = temp;
-					return new LiteralExpression<StringValue>(
-						new StringValue(s + rest)
-					);
-				}
-				else
-				{
-					var substitution =
-						Parse.Parenthesis('{', '}', Math())(ref temp);
-
-					var remaining = TextLine()(ref temp);
-
-					state = temp;
-					return new ConcatExpression(
-						new ConcatExpression(
-							new StringValue(s + rest),
-							new ToStringExpression<NumberValue>(substitution)
-						),
-						remaining
-					);
-				}
-			};
-		}
-
-		#endregion
-
 		#region Math
 
 		/// <summary>
@@ -333,6 +250,88 @@ namespace Exodrifter.Rumor.Compiler
 
 				NumberOperator op = (l, r) => new DivideExpression(l, r);
 				return op;
+			};
+		}
+
+		#endregion
+
+		#region Text
+
+		public static Parser<Expression<StringValue>> Text()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				var lines = Parse.Block1(
+					TextLine(),
+					Parse.Indented
+				)(ref temp);
+
+				Expression<StringValue> dialog = null;
+				foreach (var line in lines)
+				{
+					if (dialog != null)
+					{
+						var s = new StringValue(" ");
+						dialog = new ConcatExpression(
+							new ConcatExpression(dialog, s),
+							line
+						);
+					}
+					else
+					{
+						dialog = line;
+					}
+				}
+
+				state = temp;
+
+				return dialog.Simplify();
+			};
+		}
+
+		private static Parser<Expression<StringValue>> TextLine()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				var s = "";
+				if (Parse.FollowedBy(Parse.Spaces1)(ref temp))
+				{
+					Parse.Spaces1(ref temp);
+					s = " ";
+				}
+
+				var rest =
+					Parse.AnyChar
+					.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
+					.String()(ref temp);
+
+				if (Parse.FollowedBy(Parse.EOL)(ref temp))
+				{
+					state = temp;
+					return new LiteralExpression<StringValue>(
+						new StringValue(s + rest)
+					);
+				}
+				else
+				{
+					var substitution =
+						Parse.Parenthesis('{', '}', Math())(ref temp);
+
+					var remaining = TextLine()(ref temp);
+
+					state = temp;
+					return new ConcatExpression(
+						new ConcatExpression(
+							new StringValue(s + rest),
+							new ToStringExpression<NumberValue>(substitution)
+						),
+						remaining
+					);
+				}
 			};
 		}
 
