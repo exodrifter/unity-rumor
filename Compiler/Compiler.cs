@@ -4,6 +4,7 @@ using System;
 
 namespace Exodrifter.Rumor.Compiler
 {
+	// Define type aliases for convenience
 	using NumberOperator =
 		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<NumberValue>>;
 	using BooleanOperator =
@@ -44,58 +45,25 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Logic
 
+		/// <summary>
+		/// Parses a logic expression, which will return a
+		/// <see cref="BooleanLiteral"/> when evaluated.
+		/// </summary>
 		public static Parser<Expression<BooleanValue>> Logic() =>
 			Parse.ChainL1(AndPieces(), Or());
 
+		// Groups the "and" operators
 		private static Parser<Expression<BooleanValue>> AndPieces() =>
 			Parse.ChainL1(XorPieces(), And());
 
+		// Groups the "xor" operators
 		private static Parser<Expression<BooleanValue>> XorPieces() =>
 			Parse.ChainL1(LogicPiece(), Xor());
 
-		// Either logic expressions surrounded by parenthesis or boolean literals
 		private static Parser<Expression<BooleanValue>> LogicPiece() =>
 			Parse.Parenthesis('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
-				.Or(Not())
+				.Or(NotExpression())
 				.Or(BooleanLiteral());
-
-		/// <summary>
-		/// Parses a logic not operator and the logic expression associated
-		/// with it.
-		/// </summary>
-		private static Parser<Expression<BooleanValue>> Not()
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.String("not", "!")(ref temp);
-				var logic = Parse.Ref(() => Logic())(ref temp);
-				state = temp;
-
-				return new NotExpression(logic);
-			};
-		}
-
-		/// <summary>
-		/// Parses a number literal.
-		/// </summary>
-		private static Parser<Expression<BooleanValue>> BooleanLiteral()
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				var b = Parse.String("true").Then(true)
-						.Or(Parse.String("false").Then(false))
-						(ref temp);
-				state = temp;
-
-				return new BooleanLiteral(b);
-			};
-		}
 
 		/// <summary>
 		/// Parses a logic or operator.
@@ -151,12 +119,51 @@ namespace Exodrifter.Rumor.Compiler
 			};
 		}
 
+		/// <summary>
+		/// Parses a boolean literal.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> BooleanLiteral()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				var b = Parse.String("true").Then(true)
+						.Or(Parse.String("false").Then(false))
+						(ref temp);
+				state = temp;
+
+				return new BooleanLiteral(b);
+			};
+		}
+
+		/// <summary>
+		/// Parses a logic not operator and the logic expression associated
+		/// with it.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> NotExpression()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				Parse.String("not", "!")(ref temp);
+				var logic = Parse.Ref(() => Logic())(ref temp);
+				state = temp;
+
+				return new NotExpression(logic);
+			};
+		}
+
 		#endregion
 
 		#region Math
 
 		/// <summary>
-		/// Parses an arithmetic expression.
+		/// Parses an arithmetic expression, which will return a
+		/// <see cref="NumberValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression<NumberValue>> Math() =>
 			Parse.ChainL1(MultipliedPieces(), AddOrSubtract());
@@ -165,27 +172,9 @@ namespace Exodrifter.Rumor.Compiler
 		private static Parser<Expression<NumberValue>> MultipliedPieces() =>
 			Parse.ChainL1(MathPiece(), MultiplyOrDivide());
 
-		// Either math expressions surrounded by parenthesis or number literals
 		private static Parser<Expression<NumberValue>> MathPiece() =>
 			Parse.Parenthesis('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
 				.Or(NumberLiteral());
-
-		/// <summary>
-		/// Parses a number literal.
-		/// </summary>
-		private static Parser<Expression<NumberValue>> NumberLiteral()
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				var num = Parse.Double(ref temp);
-				state = temp;
-
-				return new NumberLiteral(num);
-			};
-		}
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
@@ -230,13 +219,13 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		/// <summary>
-		/// Parses an addition or subtraction operator.
+		/// Parses a multiplication or division operator.
 		/// </summary>
 		private static Parser<NumberOperator> MultiplyOrDivide() =>
 			Multiply().Or(Divide());
 
 		/// <summary>
-		/// Parses an addition operator.
+		/// Parses an multiplication operator.
 		/// </summary>
 		private static Parser<NumberOperator> Multiply()
 		{
@@ -254,7 +243,7 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		/// <summary>
-		/// Parses a subtraction operator.
+		/// Parses a division operator.
 		/// </summary>
 		private static Parser<NumberOperator> Divide()
 		{
@@ -271,10 +260,31 @@ namespace Exodrifter.Rumor.Compiler
 			};
 		}
 
+		/// <summary>
+		/// Parses a number literal.
+		/// </summary>
+		private static Parser<Expression<NumberValue>> NumberLiteral()
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+				Parse.Whitespaces(ref temp);
+				Parse.SameOrIndented(ref temp);
+				var num = Parse.Double(ref temp);
+				state = temp;
+
+				return new NumberLiteral(num);
+			};
+		}
+
 		#endregion
 
 		#region Substitution
 
+		/// <summary>
+		/// Parses a substitution. Shared by the <see cref="Text"/> and
+		/// <see cref="Quote"/> parsers.
+		/// </summary>
 		private static Parser<Expression<StringValue>> Substitution =>
 			Parse.Parenthesis('{', '}',
 				Math().Select(x => (Expression<StringValue>)
@@ -288,46 +298,57 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Text
 
+		/// <summary>
+		/// Parses a text expression, or a block of unquoted strings, which will
+		/// return a <see cref="StringValue"/> when evaluated.
+		/// </summary>
 		public static Parser<Expression<StringValue>> Text()
 		{
 			return (ref State state) =>
 			{
 				var temp = state;
 
+				// Parse each line of the text
 				var lines = Parse.Block1(
 					TextLine(),
 					Parse.Indented
 				)(ref temp);
 
-				Expression<StringValue> dialog = null;
+				// Combine each line of the text into a single expression
+				Expression<StringValue> result = null;
 				foreach (var line in lines)
 				{
-					if (dialog != null)
+					if (result != null)
 					{
 						var s = new StringValue(" ");
-						dialog = new ConcatExpression(
-							new ConcatExpression(dialog, new StringLiteral(s)),
+						result = new ConcatExpression(
+							new ConcatExpression(result, new StringLiteral(s)),
 							line
 						);
 					}
 					else
 					{
-						dialog = line;
+						result = line;
 					}
 				}
 
 				state = temp;
-
-				return dialog.Simplify();
+				return result.Simplify();
 			};
 		}
 
+		/// <summary>
+		/// Parses a single line of a text block.
+		/// </summary>
 		private static Parser<Expression<StringValue>> TextLine()
 		{
 			return (ref State state) =>
 			{
 				var temp = state;
 
+				// If there is at least one space, prepend the resulting string
+				// with a space. This is to maintain the space between words
+				// across different lines.
 				var s = "";
 				if (Parse.FollowedBy(Parse.Spaces1)(ref temp))
 				{
@@ -340,14 +361,22 @@ namespace Exodrifter.Rumor.Compiler
 					.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
 					.String()(ref temp);
 
+				// If we're at the end of the line, there is nothing left to
+				// parse.
 				if (Parse.FollowedBy(Parse.EOL)(ref temp))
 				{
 					state = temp;
 					return new StringLiteral(s + rest);
 				}
+
+				// Otherwise, we've found a substitution that needs to be
+				// parsed.
 				else
 				{
 					var substitution = Substitution(ref temp);
+
+					// Parse the rest of the line (which may contain another
+					// substitution)
 					var remaining = TextLine()(ref temp);
 
 					state = temp;
@@ -366,6 +395,10 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Quote
 
+		/// <summary>
+		/// Parses a quote expression, or a quoted string, which will return a
+		/// <see cref="StringValue"/> when evaluated.
+		/// </summary>
 		public static Parser<Expression<StringValue>> Quote()
 		{
 			return Parse.Parenthesis('\"', '\"', QuoteInternal());
