@@ -5,24 +5,6 @@
 		private readonly Expression<StringValue> l;
 		private readonly Expression<StringValue> r;
 
-		public ConcatExpression(StringValue l, StringValue r)
-		{
-			this.l = new LiteralExpression<StringValue>(l);
-			this.r = new LiteralExpression<StringValue>(r);
-		}
-
-		public ConcatExpression(StringValue l, Expression<StringValue> r)
-		{
-			this.l = new LiteralExpression<StringValue>(l);
-			this.r = r;
-		}
-
-		public ConcatExpression(Expression<StringValue> l, StringValue r)
-		{
-			this.l = l;
-			this.r = new LiteralExpression<StringValue>(r);
-		}
-
 		public ConcatExpression
 			(Expression<StringValue> l, Expression<StringValue> r)
 		{
@@ -37,15 +19,12 @@
 
 		public override Expression<StringValue> Simplify()
 		{
-			if (l is LiteralExpression<StringValue>
-				&& r is LiteralExpression<StringValue>)
+			if (l is StringLiteral && r is StringLiteral)
 			{
-				var left = l as LiteralExpression<StringValue>;
-				var right = r as LiteralExpression<StringValue>;
+				var left = l as StringLiteral;
+				var right = r as StringLiteral;
 
-				return new LiteralExpression<StringValue>(
-					left.Value + right.Value
-				);
+				return new StringLiteral(left.Value + right.Value);
 			}
 			else
 			{

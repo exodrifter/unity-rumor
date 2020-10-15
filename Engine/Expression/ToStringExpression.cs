@@ -4,11 +4,6 @@
 	{
 		private readonly Expression<T> value;
 
-		public ToStringExpression(T value)
-		{
-			this.value = new LiteralExpression<T>(value);
-		}
-
 		public ToStringExpression(Expression<T> value)
 		{
 			this.value = value;
@@ -23,23 +18,19 @@
 		public override Expression<StringValue> Simplify()
 		{
 			// Inline literals
-			if (value is LiteralExpression<BooleanValue>)
+			if (value is BooleanLiteral)
 			{
-				var b = (value as LiteralExpression<BooleanValue>).Value;
-				return new LiteralExpression<StringValue>(
-					new StringValue(b.ToString())
-				);
+				var b = (value as BooleanLiteral).Value;
+				return new StringLiteral(b.ToString());
 			}
-			else if (value is LiteralExpression<NumberValue>)
+			else if (value is NumberLiteral)
 			{
-				var n = (value as LiteralExpression<NumberValue>).Value;
-				return new LiteralExpression<StringValue>(
-					new StringValue(n.ToString())
-				);
+				var n = (value as NumberLiteral).Value;
+				return new StringLiteral(n.ToString());
 			}
-			else if (value is LiteralExpression<StringValue>)
+			else if (value is StringLiteral)
 			{
-				return value as LiteralExpression<StringValue>;
+				return value as StringLiteral;
 			}
 
 			// Attempt more simplification

@@ -93,7 +93,7 @@ namespace Exodrifter.Rumor.Compiler
 						(ref temp);
 				state = temp;
 
-				return new LiteralExpression<BooleanValue>(new BooleanValue(b));
+				return new BooleanLiteral(b);
 			};
 		}
 
@@ -183,7 +183,7 @@ namespace Exodrifter.Rumor.Compiler
 				var num = Parse.Double(ref temp);
 				state = temp;
 
-				return new LiteralExpression<NumberValue>(new NumberValue(num));
+				return new NumberLiteral(num);
 			};
 		}
 
@@ -293,7 +293,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						var s = new StringValue(" ");
 						dialog = new ConcatExpression(
-							new ConcatExpression(dialog, s),
+							new ConcatExpression(dialog, new StringLiteral(s)),
 							line
 						);
 					}
@@ -330,9 +330,7 @@ namespace Exodrifter.Rumor.Compiler
 				if (Parse.FollowedBy(Parse.EOL)(ref temp))
 				{
 					state = temp;
-					return new LiteralExpression<StringValue>(
-						new StringValue(s + rest)
-					);
+					return new StringLiteral(s + rest);
 				}
 				else
 				{
@@ -344,7 +342,7 @@ namespace Exodrifter.Rumor.Compiler
 					state = temp;
 					return new ConcatExpression(
 						new ConcatExpression(
-							new StringValue(s + rest),
+							new StringLiteral(s + rest),
 							new ToStringExpression<NumberValue>(substitution)
 						),
 						remaining

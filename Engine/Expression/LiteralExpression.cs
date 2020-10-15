@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class LiteralExpression<T> : Expression<T> where T : Value
+	public abstract class LiteralExpression<T> : Expression<T> where T : Value
 	{
 		public readonly T Value;
 

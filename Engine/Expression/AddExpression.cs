@@ -5,24 +5,6 @@
 		internal readonly Expression<NumberValue> l;
 		internal readonly Expression<NumberValue> r;
 
-		public AddExpression(NumberValue l, NumberValue r)
-		{
-			this.l = new LiteralExpression<NumberValue>(l);
-			this.r = new LiteralExpression<NumberValue>(r);
-		}
-
-		public AddExpression(NumberValue l, Expression<NumberValue> r)
-		{
-			this.l = new LiteralExpression<NumberValue>(l);
-			this.r = r;
-		}
-
-		public AddExpression(Expression<NumberValue> l, NumberValue r)
-		{
-			this.l = l;
-			this.r = new LiteralExpression<NumberValue>(r);
-		}
-
 		public AddExpression
 			(Expression<NumberValue> l, Expression<NumberValue> r)
 		{
@@ -37,15 +19,12 @@
 
 		public override Expression<NumberValue> Simplify()
 		{
-			if (l is LiteralExpression<NumberValue>
-				&& r is LiteralExpression<NumberValue>)
+			if (l is NumberLiteral && r is NumberLiteral)
 			{
-				var left = l as LiteralExpression<NumberValue>;
-				var right = r as LiteralExpression<NumberValue>;
+				var left = l as NumberLiteral;
+				var right = r as NumberLiteral;
 
-				return new LiteralExpression<NumberValue>(
-					left.Value + right.Value
-				);
+				return new NumberLiteral(left.Value + right.Value);
 			}
 			else
 			{

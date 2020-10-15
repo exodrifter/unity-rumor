@@ -5,24 +5,6 @@
 		private readonly Expression<BooleanValue> l;
 		private readonly Expression<BooleanValue> r;
 
-		public XorExpression(BooleanValue l, BooleanValue r)
-		{
-			this.l = new LiteralExpression<BooleanValue>(l);
-			this.r = new LiteralExpression<BooleanValue>(r);
-		}
-
-		public XorExpression(BooleanValue l, Expression<BooleanValue> r)
-		{
-			this.l = new LiteralExpression<BooleanValue>(l);
-			this.r = r;
-		}
-
-		public XorExpression(Expression<BooleanValue> l, BooleanValue r)
-		{
-			this.l = l;
-			this.r = new LiteralExpression<BooleanValue>(r);
-		}
-
 		public XorExpression
 			(Expression<BooleanValue> l, Expression<BooleanValue> r)
 		{
@@ -37,15 +19,12 @@
 
 		public override Expression<BooleanValue> Simplify()
 		{
-			if (l is LiteralExpression<BooleanValue>
-				&& r is LiteralExpression<BooleanValue>)
+			if (l is BooleanLiteral && r is BooleanLiteral)
 			{
-				var left = l as LiteralExpression<BooleanValue>;
-				var right = r as LiteralExpression<BooleanValue>;
+				var left = l as BooleanLiteral;
+				var right = r as BooleanLiteral;
 
-				return new LiteralExpression<BooleanValue>(
-					left.Value ^ right.Value
-				);
+				return new BooleanLiteral(left.Value ^ right.Value);
 			}
 			else
 			{
@@ -58,7 +37,7 @@
 				}
 				else
 				{
-					return new AndExpression(left, right).Simplify();
+					return new XorExpression(left, right).Simplify();
 				}
 			}
 		}

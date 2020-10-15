@@ -8,9 +8,7 @@
 		public SayNode(string speaker, string dialog)
 		{
 			Speaker = speaker;
-			Dialog = new LiteralExpression<StringValue>(
-				new StringValue(dialog)
-			);
+			Dialog = new StringLiteral(dialog);
 		}
 
 		public SayNode(string speaker, Expression<StringValue> dialog)

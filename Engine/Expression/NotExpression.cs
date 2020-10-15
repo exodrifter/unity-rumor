@@ -4,11 +4,6 @@
 	{
 		private readonly Expression<BooleanValue> expression;
 
-		public NotExpression(BooleanValue expression)
-		{
-			this.expression = new LiteralExpression<BooleanValue>(expression);
-		}
-
 		public NotExpression(Expression<BooleanValue> expression)
 		{
 			this.expression = expression;
@@ -21,10 +16,10 @@
 
 		public override Expression<BooleanValue> Simplify()
 		{
-			if (expression is LiteralExpression<BooleanValue>)
+			if (expression is BooleanLiteral)
 			{
-				var e = expression as LiteralExpression<BooleanValue>;
-				return new LiteralExpression<BooleanValue>(!e.Value);
+				var e = expression as BooleanLiteral;
+				return new BooleanLiteral(!e.Value);
 			}
 			else
 			{
