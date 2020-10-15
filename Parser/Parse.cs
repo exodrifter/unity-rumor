@@ -29,128 +29,6 @@ namespace Exodrifter.Rumor.Parser
 			};
 		}
 
-		#region Surround
-
-		/// <summary>
-		/// Returns a parser that parses delimiters with padded whitespace
-		/// around another parser.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="before">The beginning delimiter.</param>
-		/// <param name="after">The ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Surround<T>
-			(char before, char after, Parser<T> parser) =>
-			Surround(Char(before), Char(after), parser);
-
-		/// <summary>
-		/// Returns a parser that parses delimiters with padded whitespace
-		/// around another parser.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="before">The beginning delimiter.</param>
-		/// <param name="after">The ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Surround<T>
-			(string before, string after, Parser<T> parser) =>
-			Surround(String(before), String(after), parser);
-
-		/// <summary>
-		/// Returns a parser that parses delimiters with padded whitespace
-		/// around another parser.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
-		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
-		/// <param name="before">The parser for the beginning delimiter.</param>
-		/// <param name="after">The parser for the ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Surround<T, U, V>
-			(Parser<U> before, Parser<V> after, Parser<T> parser)
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-
-				before(ref temp);
-				Whitespaces(ref temp);
-
-				var result = parser(ref temp);
-
-				Whitespaces(ref temp);
-				after(ref temp);
-
-				state = temp;
-				return result;
-			};
-		}
-
-		/// <summary>
-		/// Returns a parser that parses delimiters around another parser,
-		/// allowing for padded whitespace that keeps the content in the same
-		/// block.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="before">The beginning delimiter.</param>
-		/// <param name="after">The ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T>
-			(char before, char after, Parser<T> parser,
-			Parser<int> indentType) =>
-			Surround(Char(before), Char(after), parser, indentType);
-
-		/// <summary>
-		/// Returns a parser that parses delimiters around another parser,
-		/// allowing for padded whitespace that keeps the content in the same
-		/// block.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="before">The beginning delimiter.</param>
-		/// <param name="after">The ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T>
-			(string before, string after, Parser<T> parser,
-			Parser<int> indentType) =>
-			Surround(String(before), String(after), parser, indentType);
-
-		/// <summary>
-		/// Returns a parser that parses delimiters around another parser,
-		/// allowing for whitespace that keeps the content in the same block.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
-		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
-		/// <param name="before">The parser for the beginning delimiter.</param>
-		/// <param name="after">The parser for the ending delimiter.</param>
-		/// <param name="parser">The parser between the delimiters.</param>
-		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T, U, V>
-			(Parser<U> before, Parser<V> after, Parser<T> parser,
-			Parser<int> indentType)
-		{
-			return (ref State state) =>
-			{
-				var temp = state;
-
-				before(ref temp);
-				Whitespaces(ref temp);
-				indentType(ref temp);
-
-				var result = parser(ref temp);
-
-				Whitespaces(ref temp);
-				indentType(ref temp);
-				after(ref temp);
-
-				state = temp;
-				return result;
-			};
-		}
-
-		#endregion
-
 		#region Char
 
 		/// <summary>
@@ -1085,6 +963,128 @@ namespace Exodrifter.Rumor.Parser
 				parsers.Add(String(str));
 			}
 			return Or(parsers.ToArray());
+		}
+
+		#endregion
+
+		#region Surround
+
+		/// <summary>
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Surround<T>
+			(char before, char after, Parser<T> parser) =>
+			Surround(Char(before), Char(after), parser);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Surround<T>
+			(string before, string after, Parser<T> parser) =>
+			Surround(String(before), String(after), parser);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters with padded whitespace
+		/// around another parser.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
+		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
+		/// <param name="before">The parser for the beginning delimiter.</param>
+		/// <param name="after">The parser for the ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		public static Parser<T> Surround<T, U, V>
+			(Parser<U> before, Parser<V> after, Parser<T> parser)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				before(ref temp);
+				Whitespaces(ref temp);
+
+				var result = parser(ref temp);
+
+				Whitespaces(ref temp);
+				after(ref temp);
+
+				state = temp;
+				return result;
+			};
+		}
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for padded whitespace that keeps the content in the same
+		/// block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Surround<T>
+			(char before, char after, Parser<T> parser,
+			Parser<int> indentType) =>
+			Surround(Char(before), Char(after), parser, indentType);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for padded whitespace that keeps the content in the same
+		/// block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <param name="before">The beginning delimiter.</param>
+		/// <param name="after">The ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Surround<T>
+			(string before, string after, Parser<T> parser,
+			Parser<int> indentType) =>
+			Surround(String(before), String(after), parser, indentType);
+
+		/// <summary>
+		/// Returns a parser that parses delimiters around another parser,
+		/// allowing for whitespace that keeps the content in the same block.
+		/// </summary>
+		/// <typeparam name="T">The type of the parser.</typeparam>
+		/// <typeparam name="U">The type of the beginning delimiter.</typeparam>
+		/// <typeparam name="V">The type of the ending delimiter.</typeparam>
+		/// <param name="before">The parser for the beginning delimiter.</param>
+		/// <param name="after">The parser for the ending delimiter.</param>
+		/// <param name="parser">The parser between the delimiters.</param>
+		/// <param name="indentType">The indentation parser.</param>
+		public static Parser<T> Surround<T, U, V>
+			(Parser<U> before, Parser<V> after, Parser<T> parser,
+			Parser<int> indentType)
+		{
+			return (ref State state) =>
+			{
+				var temp = state;
+
+				before(ref temp);
+				Whitespaces(ref temp);
+				indentType(ref temp);
+
+				var result = parser(ref temp);
+
+				Whitespaces(ref temp);
+				indentType(ref temp);
+				after(ref temp);
+
+				state = temp;
+				return result;
+			};
 		}
 
 		#endregion
