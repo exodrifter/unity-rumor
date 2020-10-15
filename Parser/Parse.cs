@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Parser
 			};
 		}
 
-		#region Parenthesis
+		#region Surround
 
 		/// <summary>
 		/// Returns a parser that parses delimiters with padded whitespace
@@ -39,9 +39,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="before">The beginning delimiter.</param>
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Parenthesis<T>
+		public static Parser<T> Surround<T>
 			(char before, char after, Parser<T> parser) =>
-			Parenthesis(Char(before), Char(after), parser);
+			Surround(Char(before), Char(after), parser);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters with padded whitespace
@@ -51,9 +51,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="before">The beginning delimiter.</param>
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Parenthesis<T>
+		public static Parser<T> Surround<T>
 			(string before, string after, Parser<T> parser) =>
-			Parenthesis(String(before), String(after), parser);
+			Surround(String(before), String(after), parser);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters with padded whitespace
@@ -65,19 +65,22 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="before">The parser for the beginning delimiter.</param>
 		/// <param name="after">The parser for the ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
-		public static Parser<T> Parenthesis<T, U, V>
+		public static Parser<T> Surround<T, U, V>
 			(Parser<U> before, Parser<V> after, Parser<T> parser)
 		{
 			return (ref State state) =>
 			{
 				var temp = state;
+
 				before(ref temp);
 				Whitespaces(ref temp);
+
 				var result = parser(ref temp);
+
 				Whitespaces(ref temp);
 				after(ref temp);
-				state = temp;
 
+				state = temp;
 				return result;
 			};
 		}
@@ -92,10 +95,10 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Parenthesis<T>
+		public static Parser<T> Surround<T>
 			(char before, char after, Parser<T> parser,
 			Parser<int> indentType) =>
-			Parenthesis(Char(before), Char(after), parser, indentType);
+			Surround(Char(before), Char(after), parser, indentType);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
@@ -107,10 +110,10 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Parenthesis<T>
+		public static Parser<T> Surround<T>
 			(string before, string after, Parser<T> parser,
 			Parser<int> indentType) =>
-			Parenthesis(String(before), String(after), parser, indentType);
+			Surround(String(before), String(after), parser, indentType);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
@@ -123,22 +126,25 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The parser for the ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Parenthesis<T, U, V>
+		public static Parser<T> Surround<T, U, V>
 			(Parser<U> before, Parser<V> after, Parser<T> parser,
 			Parser<int> indentType)
 		{
 			return (ref State state) =>
 			{
 				var temp = state;
+
 				before(ref temp);
 				Whitespaces(ref temp);
 				indentType(ref temp);
+
 				var result = parser(ref temp);
+
 				Whitespaces(ref temp);
 				indentType(ref temp);
 				after(ref temp);
-				state = temp;
 
+				state = temp;
 				return result;
 			};
 		}

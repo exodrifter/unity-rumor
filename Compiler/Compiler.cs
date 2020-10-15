@@ -61,7 +61,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(LogicPiece(), Xor());
 
 		private static Parser<Expression<BooleanValue>> LogicPiece() =>
-			Parse.Parenthesis('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
+			Parse.Surround('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
 				.Or(NotExpression())
 				.Or(BooleanLiteral());
 
@@ -173,7 +173,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece(), MultiplyOrDivide());
 
 		private static Parser<Expression<NumberValue>> MathPiece() =>
-			Parse.Parenthesis('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
+			Parse.Surround('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
 				.Or(NumberLiteral());
 
 		/// <summary>
@@ -286,7 +286,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="Quote"/> parsers.
 		/// </summary>
 		private static Parser<Expression<StringValue>> Substitution =>
-			Parse.Parenthesis('{', '}',
+			Parse.Surround('{', '}',
 				Math().Select(x => (Expression<StringValue>)
 					new ToStringExpression<NumberValue>(x))
 				.Or(Logic().Select(x => (Expression<StringValue>)
@@ -401,7 +401,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		public static Parser<Expression<StringValue>> Quote()
 		{
-			return Parse.Parenthesis('\"', '\"', QuoteInternal());
+			return Parse.Surround('\"', '\"', QuoteInternal());
 		}
 
 		private static Parser<Expression<StringValue>> QuoteInternal()
