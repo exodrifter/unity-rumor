@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("01234567890", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(1234567890d), n.Evaluate());
 		}
 
@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("+01234567890", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(1234567890d), n.Evaluate());
 		}
 
@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("-01234567890", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1234567890d), n.Evaluate());
 		}
 
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("01234567890.123456789", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual
 				(new NumberValue(1234567890.123456789d), n.Evaluate());
 		}
@@ -50,7 +50,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("+01234567890.123456789", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual
 				(new NumberValue(1234567890.123456789d), n.Evaluate());
 		}
@@ -60,7 +60,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("-01234567890.123456789", 4, 0);
 
-			var n = Compiler.Math()(state);
+			var n = ExpressionCompiler.Math(state);
 			Assert.AreEqual
 				(new NumberValue(-1234567890.123456789d), n.Evaluate());
 		}
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1+2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate());
 		}
 
@@ -83,7 +83,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1++2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate());
 		}
 
@@ -92,7 +92,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1+-2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate());
 		}
 
@@ -101,7 +101,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1  +   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate());
 		}
 
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1\n   +\n   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate());
 		}
 
@@ -119,7 +119,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 + 2 + 3 + 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(10d), exp.Evaluate());
 		}
 
@@ -128,7 +128,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 +\n 2 +\n 3 + 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(10d), exp.Evaluate());
 		}
 
@@ -141,7 +141,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1-2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate());
 		}
 
@@ -150,7 +150,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1-+2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate());
 		}
 
@@ -159,7 +159,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1--2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate());
 		}
 
@@ -168,7 +168,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1  -   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate());
 		}
 
@@ -177,7 +177,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1\n   -\n   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate());
 		}
 
@@ -186,7 +186,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 - 2 - 3 - 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-8d), exp.Evaluate());
 		}
 
@@ -195,7 +195,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 -\n 2 -\n 3 - 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-8d), exp.Evaluate());
 		}
 
@@ -208,7 +208,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1*2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(2d), exp.Evaluate());
 		}
 
@@ -217,7 +217,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1*+2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(2d), exp.Evaluate());
 		}
 
@@ -226,7 +226,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1*-2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-2d), exp.Evaluate());
 		}
 
@@ -235,7 +235,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1  *   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(2d), exp.Evaluate());
 		}
 
@@ -244,7 +244,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1\n   *\n   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(2d), exp.Evaluate());
 		}
 
@@ -253,7 +253,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 * 2 * 3 * 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(24d), exp.Evaluate());
 		}
 
@@ -262,7 +262,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1 *\n 2 *\n 3 * 4", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(24d), exp.Evaluate());
 		}
 
@@ -275,7 +275,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1/2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate());
 		}
 
@@ -284,7 +284,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1/+2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate());
 		}
 
@@ -293,7 +293,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1/-2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(-0.5d), exp.Evaluate());
 		}
 
@@ -302,7 +302,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1  /   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate());
 		}
 
@@ -311,7 +311,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("1\n   /\n   2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate());
 		}
 
@@ -320,7 +320,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("8 / 4 / 2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(1d), exp.Evaluate());
 		}
 
@@ -329,7 +329,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("8 /\n 4 /\n 2", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(1d), exp.Evaluate());
 		}
 
@@ -342,7 +342,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("8 + 2 * 5 / 5 + 1", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(11d), exp.Evaluate());
 		}
 
@@ -351,7 +351,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("(8 + 2) * 5", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(50d), exp.Evaluate());
 		}
 
@@ -360,7 +360,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("(8 \n + 2) * 5", 4, 0);
 
-			var exp = Compiler.Math()(state);
+			var exp = ExpressionCompiler.Math(state);
 			Assert.AreEqual(new NumberValue(50d), exp.Evaluate());
 		}
 
