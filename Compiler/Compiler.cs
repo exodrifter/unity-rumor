@@ -38,6 +38,9 @@ namespace Exodrifter.Rumor.Compiler
 			};
 		}
 
+		public static Parser<ReturnNode> Return =>
+			Parse.String("return").Then(new ReturnNode());
+
 		public static Parser<WaitNode> Wait =>
 			Parse.String("wait").Then(new WaitNode());
 
