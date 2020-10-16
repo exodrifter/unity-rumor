@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class ClearNode
+	public class ClearNode : Node
 	{
 		public ClearType Type { get; }
 

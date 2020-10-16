@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public abstract class DialogNode
+	public abstract class DialogNode : Node
 	{
 		public string Speaker { get; }
 		public Expression<StringValue> Dialog { get; }

@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class ReturnNode
+	public class ReturnNode : Node
 	{
 		public ReturnNode() { }
 

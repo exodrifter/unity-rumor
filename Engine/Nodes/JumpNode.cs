@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class JumpNode
+	public class JumpNode : Node
 	{
 		public string Identifier { get; }
 

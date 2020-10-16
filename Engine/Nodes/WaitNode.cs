@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class WaitNode
+	public class WaitNode : Node
 	{
 		public WaitNode() { }
 

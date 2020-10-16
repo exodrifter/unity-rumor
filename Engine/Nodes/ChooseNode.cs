@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class ChooseNode
+	public class ChooseNode : Node
 	{
 		public ChooseNode() { }
 

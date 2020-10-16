@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class PauseNode
+	public class PauseNode : Node
 	{
 		public Expression<NumberValue> Time { get; }
 
