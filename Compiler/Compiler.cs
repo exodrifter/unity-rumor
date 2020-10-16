@@ -6,15 +6,15 @@ namespace Exodrifter.Rumor.Compiler
 {
 	public static class Compiler
 	{
-		#region Dialog
+		#region Nodes
 
-		public static Parser<AddNode> AddNode =>
-			DialogNode('+', (i, d) => new AddNode(i, d));
+		public static Parser<AddNode> Add =>
+			Dialog('+', (i, d) => new AddNode(i, d));
 
-		public static Parser<SayNode> SayNode =>
-			DialogNode(':', (i, d) => new SayNode(i, d));
+		public static Parser<SayNode> Say =>
+			Dialog(':', (i, d) => new SayNode(i, d));
 
-		private static Parser<T> DialogNode<T>
+		private static Parser<T> Dialog<T>
 			(char ch, Func<string, Expression<StringValue>, T> constructor)
 		{
 			return state =>
@@ -37,6 +37,9 @@ namespace Exodrifter.Rumor.Compiler
 				}
 			};
 		}
+
+		public static Parser<WaitNode> Wait =>
+			Parse.String("wait").Then(new WaitNode());
 
 		#endregion
 
