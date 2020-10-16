@@ -77,6 +77,25 @@ namespace Exodrifter.Rumor.Compiler
 			};
 		}
 
+		public static Parser<JumpNode> Jump
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("jump")(state);
+						Parse.Spaces1(state);
+						var identifier = Identifier(state);
+
+						transaction.Commit();
+						return new JumpNode(identifier);
+					}
+				};
+			}
+		}
+
 		public static Parser<ReturnNode> Return =>
 			Parse.String("return").Then(new ReturnNode());
 
