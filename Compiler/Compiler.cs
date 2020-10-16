@@ -8,6 +8,9 @@ namespace Exodrifter.Rumor.Compiler
 	{
 		#region Nodes
 
+		public static Parser<ChooseNode> Choose =>
+			Parse.String("choose").Then(new ChooseNode());
+
 		public static Parser<AddNode> Add =>
 			Dialog('+', (i, d) => new AddNode(i, d));
 
