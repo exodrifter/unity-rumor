@@ -61,7 +61,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(LogicPiece(), Xor());
 
 		private static Parser<Expression<BooleanValue>> LogicPiece() =>
-			Parse.Surround('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
+			Parse.SurroundBlock('(', ')', Parse.Ref(Logic), Parse.SameOrIndented)
 				.Or(NotExpression())
 				.Or(BooleanLiteral());
 
@@ -183,7 +183,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece(), MultiplyOrDivide());
 
 		private static Parser<Expression<NumberValue>> MathPiece() =>
-			Parse.Surround('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
+			Parse.SurroundBlock('(', ')', Parse.Ref(Math), Parse.SameOrIndented)
 				.Or(NumberLiteral());
 
 		/// <summary>

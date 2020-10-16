@@ -66,5 +66,33 @@ namespace Exodrifter.Rumor.Parser
 				return other;
 			}
 		}
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as Maybe<T>);
+		}
+
+		public bool Equals(Maybe<T> other)
+		{
+			if (HasValue)
+			{
+				return HasValue == other.HasValue
+					&& Value.Equals(other.Value);
+			}
+
+			return HasValue == other.HasValue;
+		}
+
+		public override int GetHashCode()
+		{
+			if (HasValue)
+			{
+				return 0;
+			}
+			else
+			{
+				return Value.GetHashCode();
+			}
+		}
 	}
 }
