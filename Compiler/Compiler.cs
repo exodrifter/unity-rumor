@@ -96,6 +96,37 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
+		public static Parser<PauseNode> Pause
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("pause")(state);
+						Parse.Spaces1(state);
+
+						var number = ExpressionCompiler.Math(state);
+						Parse.Spaces(state);
+
+						var scale = Parse
+							.String("ms", "milliseconds").Then(0.001d)
+							.Or(Parse.String("s", "seconds").Then(1d))
+							.Or(Parse.String("m", "minutes").Then(60d))
+							(state);
+
+						var time = new MultiplyExpression(
+							number,
+							new NumberLiteral(scale)
+						).Simplify();
+
+						return new PauseNode(time);
+					}
+				};
+			}
+		}
+
 		public static Parser<ReturnNode> Return =>
 			Parse.String("return").Then(new ReturnNode());
 
