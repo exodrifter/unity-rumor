@@ -1058,10 +1058,10 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T>
+		public static Parser<T> SurroundBlock<T>
 			(char before, char after, Parser<T> parser,
 			Parser<int> indentType) =>
-			Surround(Char(before), Char(after), parser, indentType);
+			SurroundBlock(Char(before), Char(after), parser, indentType);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
@@ -1073,10 +1073,10 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T>
+		public static Parser<T> SurroundBlock<T>
 			(string before, string after, Parser<T> parser,
 			Parser<int> indentType) =>
-			Surround(String(before), String(after), parser, indentType);
+			SurroundBlock(String(before), String(after), parser, indentType);
 
 		/// <summary>
 		/// Returns a parser that parses delimiters around another parser,
@@ -1089,7 +1089,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="after">The parser for the ending delimiter.</param>
 		/// <param name="parser">The parser between the delimiters.</param>
 		/// <param name="indentType">The indentation parser.</param>
-		public static Parser<T> Surround<T, U, V>
+		public static Parser<T> SurroundBlock<T, U, V>
 			(Parser<U> before, Parser<V> after, Parser<T> parser,
 			Parser<int> indentType)
 		{
