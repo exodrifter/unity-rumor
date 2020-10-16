@@ -11,6 +11,42 @@ namespace Exodrifter.Rumor.Compiler
 		public static Parser<ChooseNode> Choose =>
 			Parse.String("choose").Then(new ChooseNode());
 
+		public static Parser<ClearNode> Clear
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						state.IndentIndex = state.Index;
+
+						Parse.String("clear")(state);
+						transaction.Commit();
+
+						// Parse the optional clear type
+						try
+						{
+							Parse.Spaces1(state);
+
+							var type =
+								Parse.String("all").Then(ClearType.All)
+								.Or(Parse.String("choices").Then(ClearType.Choices))
+								.Or(Parse.String("dialog").Then(ClearType.Dialog))
+								(state);
+
+							transaction.Commit();
+							return new ClearNode(type);
+						}
+						catch (ParserException)
+						{
+							return new ClearNode(ClearType.All);
+						}
+					}
+				};
+			}
+		}
+
 		public static Parser<AddNode> Add =>
 			Dialog('+', (i, d) => new AddNode(i, d));
 
