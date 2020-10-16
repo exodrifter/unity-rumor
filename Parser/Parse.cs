@@ -3,6 +3,14 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
+	/// <summary>
+	/// A parser is a function that takes an input state and returns a value
+	/// which has been determined by reading the contents of the input. It is
+	/// required to roll back the state to the original value on failure and
+	/// to update the state to a new position on success.
+	/// </summary>
+	/// <typeparam name="T">The type the parser will return.</typeparam>
+	/// <param name="state">The input state.</param>
 	public delegate T Parser<T>(State state);
 
 	/// <summary>
@@ -168,36 +176,39 @@ namespace Exodrifter.Rumor.Parser
 		/// on those values.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="parser">The parser to repeat.</param>
+		/// <param name="value">The parser for the value.</param>
 		/// <param name="op">The parser for the operator.</param>
 		public static Parser<T> ChainL1<T>
-			(this Parser<T> parser, Parser<Func<T, T, T>> op)
+			(this Parser<T> value, Parser<Func<T, T, T>> op)
 		{
 			return state =>
 			{
 				using (var transaction = new Transaction(state))
 				{
 					// Parse the first value
-					var x = parser(state);
-					transaction.Commit();
+					var x = value(state);
 
-					// Parse an operator and the next value
 					while (true)
 					{
+						// Parse an operator
+						Func<T, T, T> fn;
 						try
 						{
-							var fn = op(state);
-							var y = parser(state);
-
-							transaction.Commit();
-							x = fn(x, y);
+							fn = op(state);
 						}
 						catch (ParserException)
 						{
 							break;
 						}
+
+						// This part of the parser is not in the try block
+						// because if the operator exists, the value must also
+						// exist
+						var y = value(state);
+						x = fn(x, y);
 					}
 
+					transaction.Commit();
 					return x;
 				}
 			};
@@ -763,10 +774,7 @@ namespace Exodrifter.Rumor.Parser
 					{
 						try
 						{
-							var result = parser(state);
-
-							transaction.Commit();
-							results.Add(result);
+							results.Add(parser(state));
 						}
 						catch (ParserException exception)
 						{
@@ -781,6 +789,7 @@ namespace Exodrifter.Rumor.Parser
 							}
 							else
 							{
+								transaction.Commit();
 								return results;
 							}
 						}
@@ -1138,8 +1147,14 @@ namespace Exodrifter.Rumor.Parser
 		{
 			return state =>
 			{
-				first(state);
-				return second(state);
+				using (var transaction = new Transaction(state))
+				{
+					first(state);
+					var result = second(state);
+
+					transaction.Commit();
+					return result;
+				}
 			};
 		}
 
@@ -1159,39 +1174,44 @@ namespace Exodrifter.Rumor.Parser
 		{
 			return state =>
 			{
-				var results = new List<T>();
-
-				while (true)
+				using (var transaction = new Transaction(state))
 				{
-					try
-					{
-						until(new State(state));
-						break;
-					}
-					catch (ParserException untilException)
+					var results = new List<T>();
+
+					while (true)
 					{
 						try
 						{
-							results.Add(parser(state));
+							until(new State(state));
+							break;
 						}
-						catch (ParserException parserException)
+						catch (ParserException untilException)
 						{
-							// If we're at the end of the source file, throw
-							// the parsing exception for the until parser
-							// instead, since that is more likely descriptive
-							// of the content that is missing.
-							if (state.EOF)
+							try
 							{
-								throw untilException;
+								results.Add(parser(state));
 							}
-							else
+							catch (ParserException parserException)
 							{
-								throw parserException;
+								// If we're at the end of the source file, throw
+								// the parsing exception for the until parser
+								// instead, since that is more likely descriptive
+								// of the content that is missing.
+								if (state.EOF)
+								{
+									throw untilException;
+								}
+								else
+								{
+									throw parserException;
+								}
 							}
 						}
 					}
+
+					transaction.Commit();
+					return results;
 				}
-				return results;
 			};
 		}
 

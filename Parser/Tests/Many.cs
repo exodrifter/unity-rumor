@@ -1,0 +1,106 @@
+﻿using NUnit.Framework;
+
+namespace Exodrifter.Rumor.Parser.Tests
+{
+	public static class Many
+	{
+		/// <summary>
+		/// Test what happens in the expected use case for this parser.
+		/// </summary>
+		[Test]
+		public static void ManySuccess()
+		{
+			var state = new State("aaa", 4, 0);
+
+			var result = Parse.Char('a').Many(0)(state);
+			Assert.AreEqual(new char[] { 'a', 'a', 'a' }, result);
+
+			Assert.AreEqual(3, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+
+		/// <summary>
+		/// Test what happens when the input is empty.
+		/// </summary>
+		[Test]
+		public static void ManyEmptySuccess()
+		{
+			var state = new State("", 4, 0);
+
+			var result = Parse.Char('a').Many(0)(state);
+			Assert.AreEqual(new char[] { }, result);
+
+			Assert.AreEqual(0, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+
+		/// <summary>
+		/// Test that the parser succeeds when followed by input that the
+		/// original parser cannot parse.
+		/// </summary>
+		[Test]
+		public static void ManyTrailingSuccess()
+		{
+			var state = new State("az", 4, 0);
+
+			var result = Parse.Char('a').Many(0)(state);
+			Assert.AreEqual(new char[] { 'a' }, result);
+
+			Assert.AreEqual(1, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+
+		/// <summary>
+		/// Test what happens when the original parser will not succeed.
+		/// </summary>
+		[Test]
+		public static void Many0Success()
+		{
+			var state = new State("z", 4, 0);
+
+			var result = Parse.Char('a').Many(0)(state);
+			Assert.AreEqual(new char[] { }, result);
+
+			Assert.AreEqual(0, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+
+		/// <summary>
+		/// Test that the parser works when a minimum number of successes is
+		/// specified.
+		/// </summary>
+		[Test]
+		public static void Many1Success()
+		{
+			var state = new State("a", 4, 0);
+
+			var result = Parse.Char('a').Many(1)(state);
+			Assert.AreEqual(new char[] { 'a' }, result);
+
+			Assert.AreEqual(1, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+
+		/// <summary>
+		/// Test that the parser fails when a minimum number of successes is not
+		/// met.
+		/// </summary>
+		[Test]
+		public static void ManyFailure()
+		{
+			var state = new State("a", 4, 0);
+
+			var exception = Assert.Throws<ParserException>(() =>
+				Parse.Char('a').Many(2)(state)
+			);
+			Assert.AreEqual(1, exception.Index);
+			Assert.AreEqual(
+				new string[] { "at least 1 more of a" },
+				exception.Expected
+			);
+
+			Assert.AreEqual(0, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
+		}
+	}
+}
