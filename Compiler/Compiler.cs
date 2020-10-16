@@ -1,12 +1,105 @@
 ﻿using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
 using System;
+using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler
 {
 	public static class Compiler
 	{
+		#region Block
+
+		public static Parser<Dictionary<string, List<Node>>> Block
+		{
+			get
+			{
+				return state =>
+				{
+					Parse.Whitespaces(state);
+					state.IndentIndex = state.Index;
+
+					var blocks = Parse.Many(NodeBlock.Or(LabelBlock))(state);
+
+					var result = new Dictionary<string, List<Node>>();
+					foreach (var block in blocks)
+					{
+						foreach (var key in block.Keys)
+						{
+							if (result.ContainsKey(key))
+							{
+								result[key].AddRange(block[key]);
+							}
+							else
+							{
+								result[key] = block[key];
+							}
+						}
+					}
+
+					return result;
+				};
+			}
+		}
+
+		private static Parser<Dictionary<string, List<Node>>> NodeBlock
+		{
+			get
+			{
+				return state =>
+				{
+					var nodes = Parse.Block(Node, Parse.Same)(state);
+
+					var result = new Dictionary<string, List<Node>>();
+					result.Add("_main", nodes);
+					return result;
+				};
+			}
+		}
+
+		private static Parser<Dictionary<string, List<Node>>> LabelBlock
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("label")(state);
+						Parse.Spaces1(state);
+						var identifier = IdentifierLabel(state);
+
+						// Consume at least one newline
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.NewLine(state);
+						Parse.Whitespaces(state);
+
+						Parse.Indented(state);
+						var result = NodeBlock(state);
+
+						// Move the node block to the identifier
+						result[identifier] = result[null];
+						result.Remove(null);
+
+						transaction.Commit();
+						return result;
+					}
+				};
+			}
+		}
+
+		#endregion
+
 		#region Nodes
+
+		public static Parser<Node> Node =>
+			Choose.Select(x => (Node)x)
+			.Or(Clear.Select(x => (Node)x))
+			.Or(Add.Select(x => (Node)x))
+			.Or(Say.Select(x => (Node)x))
+			.Or(Jump.Select(x => (Node)x))
+			.Or(Pause.Select(x => (Node)x))
+			.Or(Return.Select(x => (Node)x))
+			.Or(Wait.Select(x => (Node)x));
 
 		public static Parser<ChooseNode> Choose =>
 			Parse.String("choose").Then(new ChooseNode());
@@ -140,5 +233,8 @@ namespace Exodrifter.Rumor.Compiler
 				.Many(1)
 				.String()
 				.Where(x => !x.StartsWith("_"), "identifier");
+
+		public static Parser<string> IdentifierLabel =>
+			Parse.Surround('[', ']', Identifier);
 	}
 }

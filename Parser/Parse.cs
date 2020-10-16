@@ -92,7 +92,7 @@ namespace Exodrifter.Rumor.Parser
 		/// Returns a parser that parses a carriage return or newline.
 		/// </summary>
 		public static Parser<char> NewLine =>
-			Char(ch => ch == '\r' || ch == '\n', "newline");
+			String("\r\n", "\n").Then('\n');
 
 		/// <summary>
 		/// Returns a parser that parses a whitespace character. This includes
@@ -662,8 +662,7 @@ namespace Exodrifter.Rumor.Parser
 						results.Add(line(state));
 
 						// Consume the rest of the whitespace on this line
-						Space.Until(NewLine.Then(new Unit()).Or(EOF))
-							.Then(NewLine.Then(new Unit()).Or(EOF))(state);
+						Space.Until(NewLine.Then(new Unit()).Or(EOF))(state);
 						transaction.Commit();
 
 						// If this is the end of the file, stop
@@ -686,17 +685,19 @@ namespace Exodrifter.Rumor.Parser
 						// Check if the block continues
 						try
 						{
-							Spaces.Then(indentType)(state);
+							NewLine
+								.Then(Whitespaces)
+								.Then(indentType)
+								.NotFollowedBy(EOF, "line")(state);
 						}
-						catch (ParserException exception)
+						catch (ParserException)
 						{
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
 								throw new ParserException(
-									exception.Index,
-									"at least " + delta + " more of " +
-									string.Join(", ", exception.Expected)
+									state.Index,
+									"at least " + delta + " more line"
 								);
 							}
 							else
