@@ -666,6 +666,23 @@ namespace Exodrifter.Rumor.Parser
 							.Then(NewLine.Then(new Unit()).Or(EOF))(state);
 						transaction.Commit();
 
+						// If this is the end of the file, stop
+						if (FollowedBy(EOF)(state))
+						{
+							if (results.Count < minimum)
+							{
+								var delta = minimum - results.Count;
+								throw new ParserException(
+									state.Index,
+									"at least " + delta + " more line"
+								);
+							}
+							else
+							{
+								return results;
+							}
+						}
+
 						// Check if the block continues
 						try
 						{
