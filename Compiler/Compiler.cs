@@ -159,7 +159,7 @@ namespace Exodrifter.Rumor.Compiler
 					Parse.Whitespaces(state);
 					Parse.SameOrIndented(state);
 					Parse.String("not", "!")(state);
-					var logic = Parse.Ref(() => Logic())(state);
+					var logic = Logic()(state);
 
 					transaction.Commit();
 					return new NotExpression(logic);
@@ -473,7 +473,7 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var sub = Substitution(state);
-					var rest = Parse.Ref(QuoteInternal)(state);
+					var rest = QuoteInternal()(state);
 
 					transaction.Commit();
 					return new ConcatExpression(sub, rest);
