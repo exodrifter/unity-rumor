@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("h", 4, 0);
 
-			var result = Parse.Char('h')(ref state);
+			var result = Parse.Char('h')(state);
 			Assert.AreEqual('h', result);
 		}
 
@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("world", 4, 3);
 
-			var result = Parse.Char('l')(ref state);
+			var result = Parse.Char('l')(state);
 			Assert.AreEqual('l', result);
 		}
 
@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("h", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Char('H')(ref state)
+				Parse.Char('H')(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "H" }, exception.Expected);
@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("world", 4, 3);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.Char('L')(ref state)
+				Parse.Char('L')(state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(new string[] { "L" }, exception.Expected);
@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.SameOrIndented(ref state);
+			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(1, result);
 		}
 
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("    hello world!", 4, 4);
 
-			var result = Parse.SameOrIndented(ref state);
+			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(5, result);
 		}
 
@@ -75,7 +75,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("  \thello world!", 4, 3);
 
-			var result = Parse.SameOrIndented(ref state);
+			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(4, result);
 		}
 
@@ -84,19 +84,19 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("\n  \thello world!", 4, 4);
 
-			var result = Parse.SameOrIndented(ref state);
+			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(4, result);
 		}
 
 		[Test]
 		public static void SameOrIndentedFailure()
 		{
-			var state = new State("    hello world!", 4, 4)
-				.SetIndent()
-				.AddIndex(-2);
+			var state = new State("    hello world!", 4, 4);
+			state.IndentIndex = state.Index;
+			state.Index -= 2;
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.SameOrIndented(ref state)
+				Parse.SameOrIndented(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(
@@ -108,12 +108,12 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedLineFailure()
 		{
-			var state = new State("\n    hello world!", 4, 5)
-				.SetIndent()
-				.AddIndex(-2);
+			var state = new State("\n    hello world!", 4, 5);
+			state.IndentIndex = state.Index;
+			state.Index -= 2;
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.SameOrIndented(ref state)
+				Parse.SameOrIndented(state)
 			);
 			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(
@@ -126,10 +126,10 @@ namespace Exodrifter.Rumor.Parser.Tests
 		public static void BlockSuccess()
 		{
 			var state = new State("  a\n  a\n a", 4, 2);
-			state = state.SetIndent();
+			state.IndentIndex = state.Index;
 
 			var result = Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
-				.String()(ref state);
+				.String()(state);
 			Assert.AreEqual("aa", result);
 		}
 
@@ -137,11 +137,11 @@ namespace Exodrifter.Rumor.Parser.Tests
 		public static void BlockFailure()
 		{
 			var state = new State("  ab\n  a\n a", 4, 2);
-			state = state.SetIndent();
+			state.IndentIndex = state.Index;
 
 			var exception = Assert.Throws<ParserException>(() =>
 				Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
-					.String()(ref state)
+					.String()(state)
 			);
 
 			Assert.AreEqual(3, exception.Index);
@@ -160,7 +160,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var result = Parse.String("hello world!")(ref state);
+			var result = Parse.String("hello world!")(state);
 			Assert.AreEqual("hello world!", result);
 		}
 
@@ -169,7 +169,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 6);
 
-			var result = Parse.String("world!")(ref state);
+			var result = Parse.String("world!")(state);
 			Assert.AreEqual("world!", result);
 		}
 
@@ -179,7 +179,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.String("HELLO WORLD!")(ref state)
+				Parse.String("HELLO WORLD!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "HELLO WORLD!" }, exception.Expected);
@@ -191,7 +191,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 0);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.String("HELLO WORLD!!")(ref state)
+				Parse.String("HELLO WORLD!!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "HELLO WORLD!!" }, exception.Expected);
@@ -203,7 +203,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("hello world!", 4, 6);
 
 			var exception = Assert.Throws<ParserException>(() =>
-				Parse.String("WORLD!")(ref state)
+				Parse.String("WORLD!")(state)
 			);
 			Assert.AreEqual(6, exception.Index);
 			Assert.AreEqual(new string[] { "WORLD!" }, exception.Expected);
@@ -214,7 +214,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("bar", 4, 0);
 
-			var result = Parse.String("foo", "bar")(ref state);
+			var result = Parse.String("foo", "bar")(state);
 			Assert.AreEqual("bar", result);
 		}
 

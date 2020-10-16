@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true", 4, 0);
 
-			var n = Compiler.Logic()(ref state);
+			var n = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), n.Evaluate());
 		}
 
@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false", 4, 0);
 
-			var n = Compiler.Logic()(ref state);
+			var n = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), n.Evaluate());
 		}
 
@@ -35,7 +35,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("not true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -44,7 +44,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("not false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -57,7 +57,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true or true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true or false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -75,7 +75,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false or false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -84,7 +84,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true || true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -93,7 +93,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true || false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -102,7 +102,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false || false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -115,7 +115,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true and true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -124,7 +124,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true and false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -133,7 +133,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false and false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -142,7 +142,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true && true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -151,7 +151,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true && false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -160,7 +160,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false && false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -173,7 +173,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true xor true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -182,7 +182,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true xor false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -191,7 +191,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false xor false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -200,7 +200,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true ^ true", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -209,7 +209,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("true ^ false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -218,7 +218,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false ^ false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(false), exp.Evaluate());
 		}
 
@@ -231,7 +231,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false || true && true ^ false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 
@@ -240,7 +240,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("false\n || true\n && true\n ^ false", 4, 0);
 
-			var exp = Compiler.Logic()(ref state);
+			var exp = Compiler.Logic()(state);
 			Assert.AreEqual(new BooleanValue(true), exp.Evaluate());
 		}
 

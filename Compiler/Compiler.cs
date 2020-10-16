@@ -14,33 +14,33 @@ namespace Exodrifter.Rumor.Compiler
 	{
 		public static Parser<SayNode> SayNode()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state.SetIndent();
+				using (var transaction = new Transaction(state))
+				{
+					state.IndentIndex = state.Index;
 
-				var identifier = Identifier().Maybe()(ref temp)
-					.GetValueOrDefault(null);
+					var identifier = Identifier().Maybe()(state)
+						.GetValueOrDefault(null);
 
-				Parse.Spaces(ref temp);
-				Parse.Char(':')(ref temp);
-				Parse.Whitespaces(ref temp);
+					Parse.Spaces(state);
+					Parse.Char(':')(state);
+					Parse.Whitespaces(state);
 
-				var dialog = Text()(ref temp);
+					var dialog = Text()(state);
 
-				state = temp;
-				return new SayNode(identifier, dialog);
+					transaction.Commit();
+					return new SayNode(identifier, dialog);
+				}
 			};
 		}
 
 		public static Parser<string> Identifier()
 		{
-			return (ref State state) =>
-			{
-				return
-					Parse.Alphanumeric.Many(1).String()
-					.Where(x => !x.StartsWith("_"), "identifier")
-					(ref state);
-			};
+			return Parse.Alphanumeric
+					.Many(1)
+					.String()
+					.Where(x => !x.StartsWith("_"), "identifier");
 		}
 
 		#region Logic
@@ -70,16 +70,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<BooleanOperator> Or()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.String("or", "||")(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("or", "||")(state);
 
-				BooleanOperator op = (l, r) => new OrExpression(l, r);
-				return op;
+					transaction.Commit();
+					BooleanOperator op = (l, r) => new OrExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -88,16 +90,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<BooleanOperator> And()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.String("and", "&&")(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("and", "&&")(state);
 
-				BooleanOperator op = (l, r) => new AndExpression(l, r);
-				return op;
+					transaction.Commit();
+					BooleanOperator op = (l, r) => new AndExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -106,16 +110,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<BooleanOperator> Xor()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.String("xor", "^")(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("xor", "^")(state);
 
-				BooleanOperator op = (l, r) => new XorExpression(l, r);
-				return op;
+					transaction.Commit();
+					BooleanOperator op = (l, r) => new XorExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -124,17 +130,19 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Expression<BooleanValue>> BooleanLiteral()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				var b = Parse.String("true").Then(true)
-						.Or(Parse.String("false").Then(false))
-						(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					var b = Parse.String("true").Then(true)
+							.Or(Parse.String("false").Then(false))
+							(state);
 
-				return new BooleanLiteral(b);
+					transaction.Commit();
+					return new BooleanLiteral(b);
+				}
 			};
 		}
 
@@ -144,16 +152,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Expression<BooleanValue>> NotExpression()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.String("not", "!")(ref temp);
-				var logic = Parse.Ref(() => Logic())(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("not", "!")(state);
+					var logic = Parse.Ref(() => Logic())(state);
 
-				return new NotExpression(logic);
+					transaction.Commit();
+					return new NotExpression(logic);
+				}
 			};
 		}
 
@@ -187,16 +197,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<NumberOperator> Add()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.Char('+')(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.Char('+')(state);
 
-				NumberOperator op = (l, r) => new AddExpression(l, r);
-				return op;
+					transaction.Commit();
+					NumberOperator op = (l, r) => new AddExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -205,16 +217,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<NumberOperator> Subtract()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.Char('-')(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.Char('-')(state);
 
-				NumberOperator op = (l, r) => new SubtractExpression(l, r);
-				return op;
+					transaction.Commit();
+					NumberOperator op = (l, r) => new SubtractExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -229,16 +243,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<NumberOperator> Multiply()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.Char('*')(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.Char('*')(state);
 
-				NumberOperator op = (l, r) => new MultiplyExpression(l, r);
-				return op;
+					transaction.Commit();
+					NumberOperator op = (l, r) => new MultiplyExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -247,16 +263,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<NumberOperator> Divide()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				Parse.Char('/')(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.Char('/')(state);
 
-				NumberOperator op = (l, r) => new DivideExpression(l, r);
-				return op;
+					transaction.Commit();
+					NumberOperator op = (l, r) => new DivideExpression(l, r);
+					return op;
+				}
 			};
 		}
 
@@ -265,15 +283,17 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Expression<NumberValue>> NumberLiteral()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				Parse.Whitespaces(ref temp);
-				Parse.SameOrIndented(ref temp);
-				var num = Parse.Double(ref temp);
-				state = temp;
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					var num = Parse.Double(state);
 
-				return new NumberLiteral(num);
+					transaction.Commit();
+					return new NumberLiteral(num);
+				}
 			};
 		}
 
@@ -304,36 +324,37 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		public static Parser<Expression<StringValue>> Text()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-
-				// Parse each line of the text
-				var lines = Parse.Block1(
-					TextLine(),
-					Parse.Indented
-				)(ref temp);
-
-				// Combine each line of the text into a single expression
-				Expression<StringValue> result = null;
-				foreach (var line in lines)
+				using (var transaction = new Transaction(state))
 				{
-					if (result != null)
-					{
-						var s = new StringValue(" ");
-						result = new ConcatExpression(
-							new ConcatExpression(result, new StringLiteral(s)),
-							line
-						);
-					}
-					else
-					{
-						result = line;
-					}
-				}
+					// Parse each line of the text
+					var lines = Parse.Block1(
+						TextLine(),
+						Parse.Indented
+					)(state);
 
-				state = temp;
-				return result.Simplify();
+					// Combine each line of the text into a single expression
+					Expression<StringValue> result = null;
+					foreach (var line in lines)
+					{
+						if (result != null)
+						{
+							var s = new StringValue(" ");
+							result = new ConcatExpression(
+								new ConcatExpression(result, new StringLiteral(s)),
+								line
+							);
+						}
+						else
+						{
+							result = line;
+						}
+					}
+
+					transaction.Commit();
+					return result.Simplify();
+				}
 			};
 		}
 
@@ -342,51 +363,52 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Expression<StringValue>> TextLine()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-
-				// If there is at least one space, prepend the resulting string
-				// with a space. This is to maintain the space between words
-				// across different lines.
-				var s = "";
-				if (Parse.FollowedBy(Parse.Spaces1)(ref temp))
+				using (var transaction = new Transaction(state))
 				{
-					Parse.Spaces1(ref temp);
-					s = " ";
-				}
+					// If there is at least one space, prepend the resulting string
+					// with a space. This is to maintain the space between words
+					// across different lines.
+					var s = "";
+					if (Parse.FollowedBy(Parse.Spaces1)(state))
+					{
+						Parse.Spaces1(state);
+						s = " ";
+					}
 
-				var rest =
-					Parse.AnyChar
-					.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
-					.String()(ref temp);
+					var rest =
+						Parse.AnyChar
+						.Until(Parse.EOL.Or(Parse.Char('{').Then(new Unit())))
+						.String()(state);
 
-				// If we're at the end of the line, there is nothing left to
-				// parse.
-				if (Parse.FollowedBy(Parse.EOL)(ref temp))
-				{
-					state = temp;
-					return new StringLiteral(s + rest);
-				}
+					// If we're at the end of the line, there is nothing left to
+					// parse.
+					if (Parse.FollowedBy(Parse.EOL)(state))
+					{
+						transaction.Commit();
+						return new StringLiteral(s + rest);
+					}
 
-				// Otherwise, we've found a substitution that needs to be
-				// parsed.
-				else
-				{
-					var substitution = Substitution(ref temp);
+					// Otherwise, we've found a substitution that needs to be
+					// parsed.
+					else
+					{
+						var substitution = Substitution(state);
 
-					// Parse the rest of the line (which may contain another
-					// substitution)
-					var remaining = TextLine()(ref temp);
+						// Parse the rest of the line (which may contain another
+						// substitution)
+						var remaining = TextLine()(state);
 
-					state = temp;
-					return new ConcatExpression(
-						new ConcatExpression(
-							new StringLiteral(s + rest),
-							substitution
-						),
-						remaining
-					);
+						transaction.Commit();
+						return new ConcatExpression(
+							new ConcatExpression(
+								new StringLiteral(s + rest),
+								substitution
+							),
+							remaining
+						);
+					}
 				}
 			};
 		}
@@ -406,26 +428,30 @@ namespace Exodrifter.Rumor.Compiler
 
 		private static Parser<Expression<StringValue>> QuoteInternal()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var start = Parse.AnyChar
-					.Until(Parse.Char('\\', '{', '\"'))
-					.String()
-					.Select(str => new StringLiteral(str))
-					(ref state);
-
-				var rest = EscapeSequence()
-					.Or(SubstitutionQuote())
-					.Or(Parse.Pure<Expression<StringValue>>(null))
-					(ref state);
-
-				if (rest != null)
+				using (var transaction = new Transaction(state))
 				{
-					return new ConcatExpression(start, rest);
-				}
-				else
-				{
-					return start;
+					var start = Parse.AnyChar
+						.Until(Parse.Char('\\', '{', '\"'))
+						.String()
+						.Select(str => new StringLiteral(str))
+						(state);
+
+					var rest = EscapeSequence()
+						.Or(SubstitutionQuote())
+						.Or(Parse.Pure<Expression<StringValue>>(null))
+						(state);
+
+					transaction.Commit();
+					if (rest != null)
+					{
+						return new ConcatExpression(start, rest);
+					}
+					else
+					{
+						return start;
+					}
 				}
 			};
 		}
@@ -442,11 +468,16 @@ namespace Exodrifter.Rumor.Compiler
 
 		private static Parser<Expression<StringValue>> SubstitutionQuote()
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var sub = Substitution(ref state);
-				var rest = Parse.Ref(QuoteInternal)(ref state);
-				return new ConcatExpression(sub, rest);
+				using (var transaction = new Transaction(state))
+				{
+					var sub = Substitution(state);
+					var rest = Parse.Ref(QuoteInternal)(state);
+
+					transaction.Commit();
+					return new ConcatExpression(sub, rest);
+				}
 			};
 		}
 

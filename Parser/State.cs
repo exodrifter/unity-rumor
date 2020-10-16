@@ -19,13 +19,13 @@
 		/// <summary>
 		/// The current index in the source file the parser is pointing at.
 		/// </summary>
-		public int Index { get; }
+		public int Index { get; set; }
 
 		/// <summary>
 		/// The index in the source file to check the current indentation level
 		/// against, if needed.
 		/// </summary>
-		public int IndentIndex { get; }
+		public int IndentIndex { get; set; }
 
 		/// <summary>
 		/// Returns true if the state is pointing to the end of the file.
@@ -50,51 +50,15 @@
 		}
 
 		/// <summary>
-		/// Returns a new state with the index changed by the specified delta.
+		/// Creates a copy of a parser state.
 		/// </summary>
-		/// <param name="indexDelta">
-		/// The amount to change the index.
-		/// </param>
-		/// <returns>
-		/// A new state with a modified index.
-		/// </returns>
-		public State AddIndex(int indexDelta)
+		/// <param name="other">The other state to make a copy of.</param>
+		public State(State other)
 		{
-			return new State(
-				Source,
-				TabSize,
-				Index + indexDelta,
-				IndentIndex
-			);
+			Source = other.Source;
+			TabSize = other.TabSize;
+			Index = other.Index;
+			IndentIndex = other.IndentIndex;
 		}
-
-		/// <summary>
-		/// Sets the index of the location used for checking indentation levels
-		/// to the current index.
-		/// </summary>
-		/// <returns>
-		/// A new state with a modified index for checking indentation levels.
-		/// </returns>
-		public State SetIndent()
-		{
-			return new State(
-				Source,
-				TabSize,
-				Index,
-				Index
-			);
-		}
-
-		#region Internal
-
-		private State(string source, int tabSize, int index, int indentIndex)
-		{
-			Source = source;
-			TabSize = tabSize;
-			Index = index;
-			IndentIndex = indentIndex;
-		}
-
-		#endregion
 	}
 }

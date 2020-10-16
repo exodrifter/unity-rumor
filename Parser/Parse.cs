@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Parser
 {
-	public delegate T Parser<T>(ref State state);
+	public delegate T Parser<T>(State state);
 
 	/// <summary>
 	/// This class represents the result of the parser when the parser has no
@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Parser
 		/// </returns>
 		public static Parser<T> Pure<T>(T value)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				return value;
 			};
@@ -139,7 +139,7 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<char> Char
 			(Func<char, bool> predicate, string expected)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				if (state.Source.Length <= state.Index)
 				{
@@ -149,7 +149,7 @@ namespace Exodrifter.Rumor.Parser
 				var ch = state.Source[state.Index];
 				if (predicate(ch))
 				{
-					state = state.AddIndex(1);
+					state.Index += 1;
 					return ch;
 				}
 
@@ -173,26 +173,33 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<T> ChainL1<T>
 			(this Parser<T> parser, Parser<Func<T, T, T>> op)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var x = parser(ref state);
-				while (true)
+				using (var transaction = new Transaction(state))
 				{
-					try
-					{
-						var temp = state;
-						var fn = op(ref temp);
-						var y = parser(ref temp);
-						x = fn(x, y);
+					// Parse the first value
+					var x = parser(state);
+					transaction.Commit();
 
-						state = temp;
-					}
-					catch (ParserException)
+					// Parse an operator and the next value
+					while (true)
 					{
-						break;
+						try
+						{
+							var fn = op(state);
+							var y = parser(state);
+
+							transaction.Commit();
+							x = fn(x, y);
+						}
+						catch (ParserException)
+						{
+							break;
+						}
 					}
+
+					return x;
 				}
-				return x;
 			};
 		}
 
@@ -210,14 +217,16 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
-					var temp = state;
-					var digit = Digit(ref temp);
-					var rest = Digit.Or(Char('_')).Many().String()(ref temp);
-					state = temp;
+					using (var transaction = new Transaction(state))
+					{
+						var digit = Digit(state);
+						var rest = Digit.Or(Char('_')).Many().String()(state);
 
-					return digit + rest;
+						transaction.Commit();
+						return digit + rest;
+					}
 				};
 			}
 		}
@@ -229,14 +238,16 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
-					var temp = state;
-					var sign = Sign(ref temp);
-					var number = Number(ref temp);
-					state = temp;
+					using (var transaction = new Transaction(state))
+					{
+						var sign = Sign(state);
+						var number = Number(state);
 
-					return sign + number;
+						transaction.Commit();
+						return sign + number;
+					}
 				};
 			}
 		}
@@ -248,22 +259,25 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
-					var temp = state;
-					var l = Number(ref temp);
-					state = temp;
+					using (var transaction = new Transaction(state))
+					{
+						var l = Number(state);
+						transaction.Commit();
 
-					try
-					{
-						var p = Char('.')(ref temp);
-						var r = Number(ref temp);
-						state = temp;
-						return l + p + r;
-					}
-					catch (ParserException)
-					{
-						return l;
+						try
+						{
+							var p = Char('.')(state);
+							var r = Number(state);
+
+							transaction.Commit();
+							return l + p + r;
+						}
+						catch (ParserException)
+						{
+							return l;
+						}
 					}
 				};
 			}
@@ -276,14 +290,16 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
-					var temp = state;
-					var sign = Sign(ref temp);
-					var number = Decimal(ref temp);
-					state = temp;
+					using (var transaction = new Transaction(state))
+					{
+						var sign = Sign(state);
+						var number = Decimal(state);
 
-					return sign + number;
+						transaction.Commit();
+						return sign + number;
+					}
 				};
 			}
 		}
@@ -295,19 +311,21 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
-					var temp = state;
-					var str = SignedDecimal(ref temp);
-
-					double result;
-					if (!double.TryParse(str, out result))
+					using (var transaction = new Transaction(state))
 					{
-						throw new ParserException(state.Index, "double");
-					}
+						var str = SignedDecimal(state);
 
-					state = temp;
-					return result;
+						double result;
+						if (!double.TryParse(str, out result))
+						{
+							throw new ParserException(state.Index, "double");
+						}
+
+						transaction.Commit();
+						return result;
+					}
 				};
 			}
 		}
@@ -331,7 +349,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
 					if (state.EOF)
 					{
@@ -356,12 +374,11 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="parser">The parser to try.</param>
 		public static Parser<bool> FollowedBy<T>(Parser<T> parser)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				try
 				{
-					var temp = state;
-					parser(ref temp);
+					parser(new State(state));
 					return true;
 				}
 				catch (ParserException)
@@ -382,16 +399,16 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<T> FollowedBy<T, U>
 			(this Parser<T> parser, Parser<U> after)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				var result = parser(ref temp);
+				using (var transaction = new Transaction(state))
+				{
+					var result = parser(state);
+					after(new State(state));
 
-				var tempAfter = temp;
-				after(ref tempAfter);
-
-				state = temp;
-				return result;
+					transaction.Commit();
+					return result;
+				}
 			};
 		}
 
@@ -417,23 +434,24 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<T> NotFollowedBy<T, U>
 			(this Parser<T> parser, Parser<U> after, string failure)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				var result = parser(ref temp);
-
-				try
+				using (var transaction = new Transaction(state))
 				{
-					var tempAfter = temp;
-					after(ref tempAfter);
-				}
-				catch (ParserException)
-				{
-					state = temp;
-					return result;
-				}
+					var result = parser(state);
 
-				throw new ParserException(temp.Index, failure);
+					try
+					{
+						after(new State(state));
+					}
+					catch (ParserException)
+					{
+						transaction.Commit();
+						return result;
+					}
+
+					throw new ParserException(state.Index, failure);
+				}
 			};
 		}
 
@@ -449,7 +467,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
 					int current = CalculateIndentFrom(state, state.Index);
 					int indent = CalculateIndentFrom(state, state.IndentIndex);
@@ -477,7 +495,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
 					int current = CalculateIndentFrom(state, state.Index);
 					int indent = CalculateIndentFrom(state, state.IndentIndex);
@@ -506,7 +524,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
 					int current = CalculateIndentFrom(state, state.Index);
 					int indent = CalculateIndentFrom(state, state.IndentIndex);
@@ -535,7 +553,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			get
 			{
-				return (ref State state) =>
+				return state =>
 				{
 					int current = CalculateIndentFrom(state, state.Index);
 					int indent = CalculateIndentFrom(state, state.IndentIndex);
@@ -610,57 +628,53 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Parses an indented block of zero or more occurrences of
-		/// <paramref name="parser"/>.
+		/// <paramref name="line"/>.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="parser">The parser to use.</param>
+		/// <param name="line">The parser to use for one line.</param>
 		/// <param name="indentType">The indentation parser.</param>
 		/// <param name="minimum">
 		/// The minimum number of times the parser must be successful.
 		/// </param>
 		public static Parser<List<T>> Block<T>
-			(Parser<T> parser, Parser<int> indentType, int minimum = 0)
+			(Parser<T> line, Parser<int> indentType, int minimum = 0)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var results = new List<T>();
-
-				while (true)
+				using (var transaction = new Transaction(state))
 				{
-					var temp = state;
-					results.Add(parser(ref temp));
+					var results = new List<T>();
 
-					// Consume the rest of the line
-					Space.Until(NewLine.Then(new Unit()).Or(EOF))
-						.Then(NewLine.Then(new Unit()).Or(EOF))(ref temp);
-					state = temp;
+					while (true)
+					{
+						// Parse a line
+						results.Add(line(state));
 
-					// Stop if we are at the end of the file
-					if (FollowedBy(EOF)(ref state))
-					{
-						return results;
-					}
+						// Consume the rest of the whitespace on this line
+						Space.Until(NewLine.Then(new Unit()).Or(EOF))
+							.Then(NewLine.Then(new Unit()).Or(EOF))(state);
+						transaction.Commit();
 
-					// Check if the block continues
-					try
-					{
-						Spaces.Then(indentType)(ref temp);
-						state = temp;
-					}
-					catch (ParserException exception)
-					{
-						if (results.Count < minimum)
+						// Check if the block continues
+						try
 						{
-							var delta = minimum - results.Count;
-							throw new ParserException(
-								exception.Index,
-								"at least " + delta + " more of " +
-								string.Join(", ", exception.Expected)
-							);
+							Spaces.Then(indentType)(state);
 						}
-						else
+						catch (ParserException exception)
 						{
-							return results;
+							if (results.Count < minimum)
+							{
+								var delta = minimum - results.Count;
+								throw new ParserException(
+									exception.Index,
+									"at least " + delta + " more of " +
+									string.Join(", ", exception.Expected)
+								);
+							}
+							else
+							{
+								return results;
+							}
 						}
 					}
 				}
@@ -680,9 +694,9 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<U> Select<T, U>
 			(this Parser<T> parser, Func<T, U> fn)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				return fn(parser(ref state));
+				return fn(parser(state));
 			};
 		}
 
@@ -699,18 +713,20 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<T> Where<T>
 			(this Parser<T> parser, Func<T, bool> predicate, string expected)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
-				var result = parser(ref temp);
-				if (predicate(result))
+				using (var transaction = new Transaction(state))
 				{
-					state = temp;
-					return result;
-				}
-				else
-				{
-					throw new ParserException(state.Index, expected);
+					var result = parser(state);
+					if (predicate(result))
+					{
+						transaction.Commit();
+						return result;
+					}
+					else
+					{
+						throw new ParserException(state.Index, expected);
+					}
 				}
 			};
 		}
@@ -737,33 +753,36 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<List<T>> Many<T>
 			(this Parser<T> parser, int minimum = 0)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var results = new List<T>();
-
-				while (true)
+				using (var transaction = new Transaction(state))
 				{
-					try
+					var results = new List<T>();
+
+					while (true)
 					{
-						var temp = state;
-						var result = parser(ref temp);
-						state = temp;
-						results.Add(result);
-					}
-					catch (ParserException exception)
-					{
-						if (results.Count < minimum)
+						try
 						{
-							var delta = minimum - results.Count;
-							throw new ParserException(
-								exception.Index,
-								"at least " + delta + " more of " +
-								string.Join(", ", exception.Expected)
-							);
+							var result = parser(state);
+
+							transaction.Commit();
+							results.Add(result);
 						}
-						else
+						catch (ParserException exception)
 						{
-							return results;
+							if (results.Count < minimum)
+							{
+								var delta = minimum - results.Count;
+								throw new ParserException(
+									exception.Index,
+									"at least " + delta + " more of " +
+									string.Join(", ", exception.Expected)
+								);
+							}
+							else
+							{
+								return results;
+							}
 						}
 					}
 				}
@@ -781,11 +800,11 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="parser">The parser to try.</param>
 		public static Parser<Maybe<T>> Maybe<T>(this Parser<T> parser)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				try
 				{
-					return new Maybe<T>(parser(ref state));
+					return new Maybe<T>(parser(state));
 				}
 				catch (ParserException)
 				{
@@ -806,33 +825,34 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="others">The second parser to try.</param>
 		public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				try
-				{
-					var temp1 = state;
-					var result = first(ref temp1);
-					state = temp1;
-					return result;
-				}
-				catch (ParserException e1)
+				using (var transaction = new Transaction(state))
 				{
 					try
 					{
-						var temp2 = state;
-						var result = second(ref temp2);
-						state = temp2;
+						var result = first(state);
+						transaction.Commit();
 						return result;
 					}
-					catch (ParserException e2)
+					catch (ParserException e1)
 					{
-						var expected = new List<string>(
-							e1.Expected.Length + e2.Expected.Length
-						);
-						expected.AddRange(e1.Expected);
-						expected.AddRange(e2.Expected);
-						throw new ParserException
-							(state.Index, expected.ToArray());
+						try
+						{
+							var result = second(state);
+							transaction.Commit();
+							return result;
+						}
+						catch (ParserException e2)
+						{
+							var expected = new List<string>(
+								e1.Expected.Length + e2.Expected.Length
+							);
+							expected.AddRange(e1.Expected);
+							expected.AddRange(e2.Expected);
+							throw new ParserException
+								(state.Index, expected.ToArray());
+						}
 					}
 				}
 			};
@@ -885,19 +905,14 @@ namespace Exodrifter.Rumor.Parser
 		/// of circular-dependent parsers to be created.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser to refer to</typeparam>
-		/// <param name="reference">
+		/// <param name="parser">
 		/// A function that produces the indirectly-referenced parser.
 		/// </param>
-		public static Parser<T> Ref<T>(Func<Parser<T>> reference)
+		public static Parser<T> Ref<T>(Func<Parser<T>> parser)
 		{
-			Parser<T> p = null;
-
-			return (ref State state) =>
+			return state =>
 			{
-				if (p == null)
-					p = reference();
-
-				return p(ref state);
+				return parser()(state);
 			};
 		}
 
@@ -929,7 +944,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="str">The string to parse.</param>
 		public static Parser<string> String(string str)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				if (string.IsNullOrEmpty(str))
 				{
@@ -943,7 +958,7 @@ namespace Exodrifter.Rumor.Parser
 
 				if (state.Source.Substring(state.Index, str.Length) == str)
 				{
-					state = state.AddIndex(str.Length);
+					state.Index += str.Length;
 					return str;
 				}
 
@@ -1006,20 +1021,21 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<T> Surround<T, U, V>
 			(Parser<U> before, Parser<V> after, Parser<T> parser)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
+				using (var transaction = new Transaction(state))
+				{
+					before(state);
+					Whitespaces(state);
 
-				before(ref temp);
-				Whitespaces(ref temp);
+					var result = parser(state);
 
-				var result = parser(ref temp);
+					Whitespaces(state);
+					after(state);
 
-				Whitespaces(ref temp);
-				after(ref temp);
-
-				state = temp;
-				return result;
+					transaction.Commit();
+					return result;
+				}
 			};
 		}
 
@@ -1068,22 +1084,23 @@ namespace Exodrifter.Rumor.Parser
 			(Parser<U> before, Parser<V> after, Parser<T> parser,
 			Parser<int> indentType)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				var temp = state;
+				using (var transaction = new Transaction(state))
+				{
+					before(state);
+					Whitespaces(state);
+					indentType(state);
 
-				before(ref temp);
-				Whitespaces(ref temp);
-				indentType(ref temp);
+					var result = parser(state);
 
-				var result = parser(ref temp);
+					Whitespaces(state);
+					indentType(state);
+					after(state);
 
-				Whitespaces(ref temp);
-				indentType(ref temp);
-				after(ref temp);
-
-				state = temp;
-				return result;
+					transaction.Commit();
+					return result;
+				}
 			};
 		}
 
@@ -1101,9 +1118,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="second">The value to return.</param>
 		public static Parser<U> Then<T, U>(this Parser<T> first, U value)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				first(ref state);
+				first(state);
 				return value;
 			};
 		}
@@ -1119,10 +1136,10 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<U> Then<T, U>
 			(this Parser<T> first, Parser<U> second)
 		{
-			return (ref State state) =>
+			return state =>
 			{
-				first(ref state);
-				return second(ref state);
+				first(state);
+				return second(state);
 			};
 		}
 
@@ -1140,22 +1157,22 @@ namespace Exodrifter.Rumor.Parser
 		public static Parser<List<T>> Until<T, U>
 			(this Parser<T> parser, Parser<U> until)
 		{
-			return (ref State state) =>
+			return state =>
 			{
 				var results = new List<T>();
+
 				while (true)
 				{
 					try
 					{
-						var temp = state;
-						until(ref temp);
+						until(new State(state));
 						break;
 					}
 					catch (ParserException untilException)
 					{
 						try
 						{
-							results.Add(parser(ref state));
+							results.Add(parser(state));
 						}
 						catch (ParserException parserException)
 						{
