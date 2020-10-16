@@ -736,6 +736,9 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
+						// We want to rollback the state to before the parser
+						// was run for the correct index.
+						transaction.Rollback();
 						throw new ParserException(state.Index, expected);
 					}
 				}
