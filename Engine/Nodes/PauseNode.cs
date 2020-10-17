@@ -1,4 +1,6 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class PauseNode : Node
 	{
@@ -12,6 +14,12 @@
 		public PauseNode(Expression<NumberValue> time)
 		{
 			Time = time;
+		}
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			// TODO: Implement
+			yield break;
 		}
 
 		public override bool Equals(object obj)

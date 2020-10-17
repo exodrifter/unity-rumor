@@ -1,8 +1,16 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class ChooseNode : Node
 	{
 		public ChooseNode() { }
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			// TODO: Implement
+			yield break;
+		}
 
 		public override bool Equals(object obj)
 		{

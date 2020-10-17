@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Engine
 {
+	/// <summary>
+	/// A Rumor is the class used to execute a Rumor script.
+	/// </summary>
 	public class Rumor
 	{
 		/// <summary>
@@ -9,11 +14,146 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public const string MainIdentifier = "_main";
 
-		public Dictionary<string, List<Node>> Nodes { get; }
+		/// <summary>
+		/// The script that is being executed.
+		/// </summary>
+		private Dictionary<string, List<Node>> Nodes { get; }
+
+		/// <summary>
+		/// The current call stack.
+		/// </summary>
+		private Stack<StackFrame> Stack { get; }
+
+		/// <summary>
+		/// The labels that exist in this Rumor. These labels can be jumped to
+		/// using <see cref="Jump(string)"/>.
+		/// </summary>
+		public IEnumerable<string> Identifiers => Nodes.Keys;
+
+		/// <summary>
+		/// True if Rumor's call stack is not empty.
+		/// </summary>
+		public bool Executing => Stack.Count != 0;
+
+		/// <summary>
+		/// The number of times Rumor has run to completion. In other words, how
+		/// many times the call stack was emptied under normal conditions.
+		/// </summary>
+		public int FinishCount { get; private set; }
+
+		/// <summary>
+		/// The number of times Rumor failed to run to completion. In other
+		/// words, the number of times execution was stopped by calling
+		/// <see cref="Stop"/> during execution or by calling
+		/// <see cref="Start"/> again before execution finished.
+		/// </summary>
+		public int CancelCount { get; private set; }
 
 		public Rumor(Dictionary<string, List<Node>> nodes)
 		{
-			Nodes = nodes;
+			// Make a copy so our version does not change
+			Nodes = new Dictionary<string, List<Node>>(nodes);
+			Stack = new Stack<StackFrame>();
+		}
+
+		/// <summary>
+		/// Clears the call stack and returns an iterator that the caller must
+		/// use to execute this Rumor.
+		///
+		/// Note that this function doesn't actually do anything and that it
+		/// will return immediately; the caller is required to manipulate the
+		/// returned <see cref="IEnumerator"/> to execute Rumor. In Unity, this
+		/// can be done by passing the <see cref="IEnumerator"/> to
+		/// StartCoroutine.
+		///
+		/// This method cannot be used to spawn multiple execution instances;
+		/// create multiple Rumor instances instead if that behaviour is
+		/// desired.
+		/// </summary>
+		/// <returns>
+		/// Returns an <see cref="IEnumerator"/> that can be used to control
+		/// the execution of Rumor.
+		/// </returns>
+		public IEnumerator Start(string label = MainIdentifier)
+		{
+			if (Stack.Count > 0)
+			{
+				Stop();
+			}
+
+			Jump(label);
+
+			while (Stack.Count > 0)
+			{
+				// Continue executing this stack frame until it is either
+				// finished or it is no longer the top-most stack frame.
+				var frame = Stack.Peek();
+				var iter = frame.Execute(this);
+				while (iter.MoveNext()
+					&& Stack.Count > 0
+					&& Stack.Peek() == frame)
+				{
+					yield return null;
+				}
+
+				// Don't pop the stack if the stack frame we were executing is
+				// no longer the top-most stack frame.
+				if (Stack.Count > 0 && Stack.Peek() == frame)
+				{
+					Stack.Pop();
+				}
+			}
+
+			FinishCount++;
+		}
+
+		/// <summary>
+		/// Clears the call stack.
+		/// </summary>
+		public void Stop()
+		{
+			CancelCount++;
+			Stack.Clear();
+		}
+
+		/// <summary>
+		/// Attempts to advances execution of the script. This should be used
+		/// whenever the player presses an input to advance the state of the
+		/// dialog.
+		/// </summary>
+		public void Advance()
+		{
+			if (Stack.Count > 0)
+			{
+				Stack.Peek().Yield?.Advance();
+			}
+		}
+
+		/// <summary>
+		/// Pushes a labeled list of nodes as a new stack frame onto the call
+		/// stack.
+		/// </summary>
+		/// <param name="label">
+		/// The label of the list of nodes to jump execution to.
+		/// </param>
+		public void Jump(string label)
+		{
+			if (!Nodes.ContainsKey(label))
+			{
+				throw new InvalidOperationException(
+					"The label \"" + label + "\" does not exist!"
+				);
+			}
+
+			Stack.Push(new StackFrame(Nodes[label]));
+		}
+
+		/// <summary>
+		/// Removes the top-most stack frame from the call stack.
+		/// </summary>
+		public void Return()
+		{
+			Stack.Pop();
 		}
 	}
 }

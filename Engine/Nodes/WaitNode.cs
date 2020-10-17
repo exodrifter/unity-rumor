@@ -1,8 +1,15 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class WaitNode : Node
 	{
 		public WaitNode() { }
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			yield return new ForAdvance();
+		}
 
 		public override bool Equals(object obj)
 		{

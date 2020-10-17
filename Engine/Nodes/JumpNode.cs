@@ -1,12 +1,20 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class JumpNode : Node
 	{
-		public string Identifier { get; }
+		public string Label { get; }
 
-		public JumpNode(string identifier)
+		public JumpNode(string label)
 		{
-			Identifier = identifier;
+			Label = label;
+		}
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			rumor.Jump(Label);
+			yield break;
 		}
 
 		public override bool Equals(object obj)
@@ -21,17 +29,17 @@
 				return false;
 			}
 
-			return Identifier == other.Identifier;
+			return Label == other.Label;
 		}
 
 		public override int GetHashCode()
 		{
-			return Identifier.GetHashCode();
+			return Label.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return "jump " + Identifier;
+			return "jump " + Label;
 		}
 	}
 }

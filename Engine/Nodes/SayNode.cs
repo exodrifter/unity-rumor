@@ -1,4 +1,6 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class SayNode : DialogNode
 	{
@@ -7,6 +9,12 @@
 
 		public SayNode(string speaker, Expression<StringValue> dialog)
 			: base(speaker, dialog) { }
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			// TODO: Implement
+			yield break;
+		}
 
 		public override bool Equals(object obj)
 		{

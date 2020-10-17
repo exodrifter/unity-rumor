@@ -1,4 +1,6 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class ClearNode : Node
 	{
@@ -7,6 +9,12 @@
 		public ClearNode(ClearType type)
 		{
 			Type = type;
+		}
+
+		public override IEnumerator<Yield> Execute(Rumor rumor)
+		{
+			// TODO: Implement
+			yield break;
 		}
 
 		public override bool Equals(object obj)
