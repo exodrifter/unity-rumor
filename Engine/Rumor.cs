@@ -138,6 +138,20 @@ namespace Exodrifter.Rumor.Engine
 			}
 		}
 
+		public void Choose(string label)
+		{
+			if (State.GetChoices().ContainsKey(label))
+			{
+				if (Stack.Count > 0)
+				{
+					Stack.Peek().Yield?.Choose();
+				}
+
+				Jump(label);
+				State.ClearChoices();
+			}
+		}
+
 		/// <summary>
 		/// Pushes a labeled list of nodes as a new stack frame onto the call
 		/// stack.

@@ -11,6 +11,8 @@
 		public virtual void Advance() { }
 
 		public virtual void Update(double delta) { }
+
+		public virtual void Choose() { }
 	}
 
 	/// <summary>
@@ -45,6 +47,19 @@
 				elapsed += delta;
 				Finished = elapsed >= time;
 			}
+		}
+	}
+
+	/// <summary>
+	/// Yield execution until Rumor is advanced.
+	/// </summary>
+	public class ForChoose : Yield
+	{
+		public ForChoose() { }
+
+		public override void Choose()
+		{
+			Finished = true;
 		}
 	}
 }

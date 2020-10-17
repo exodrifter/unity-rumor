@@ -8,8 +8,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			// TODO: Implement
-			yield break;
+			yield return new ForChoose();
 		}
 
 		public override bool Equals(object obj)
