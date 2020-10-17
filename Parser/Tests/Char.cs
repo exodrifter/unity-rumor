@@ -32,7 +32,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		public static void CharParserFail()
 		{
 			var state = new State("h", 4, 0);
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('H')(state)
 			);
 
@@ -48,7 +48,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("world", 4, 3);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('L')(state)
 			);
 			Assert.AreEqual(3, exception.Index);

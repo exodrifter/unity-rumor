@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State(".a)", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -60,7 +60,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("a)", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("(a.", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);
@@ -96,7 +96,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("(a", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);

@@ -28,7 +28,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("_foobar", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.Identifier(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -60,7 +60,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("[_foobar]", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.IdentifierLabel(state)
 			);
 			Assert.AreEqual(1, exception.Index);
@@ -73,7 +73,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new State("[foobar]", 4, 0);
 			state.UsedIdentifiers.Add("foobar");
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.IdentifierLabel(state)
 			);
 			Assert.AreEqual(0, exception.Index);

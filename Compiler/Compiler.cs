@@ -129,7 +129,7 @@ namespace Exodrifter.Rumor.Compiler
 							transaction.CommitIndex();
 							return new ClearNode(type);
 						}
-						catch (ParserException)
+						catch (ExpectedException)
 						{
 							return new ClearNode(ClearType.All);
 						}
@@ -244,7 +244,7 @@ namespace Exodrifter.Rumor.Compiler
 
 					if (state.UsedIdentifiers.Contains(id))
 					{
-						throw new ParserException(errorIndex, "identifier");
+						throw new ExpectedException(errorIndex, "identifier");
 					}
 					else
 					{

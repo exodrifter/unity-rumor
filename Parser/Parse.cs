@@ -151,7 +151,7 @@ namespace Exodrifter.Rumor.Parser
 			{
 				if (state.Source.Length <= state.Index)
 				{
-					throw new ParserException(state.Index, expected);
+					throw new ExpectedException(state.Index, expected);
 				}
 
 				var ch = state.Source[state.Index];
@@ -161,7 +161,7 @@ namespace Exodrifter.Rumor.Parser
 					return ch;
 				}
 
-				throw new ParserException(state.Index, expected);
+				throw new ExpectedException(state.Index, expected);
 			};
 		}
 
@@ -196,7 +196,7 @@ namespace Exodrifter.Rumor.Parser
 						{
 							fn = op(state);
 						}
-						catch (ParserException)
+						catch (ExpectedException)
 						{
 							break;
 						}
@@ -285,7 +285,7 @@ namespace Exodrifter.Rumor.Parser
 							transaction.CommitIndex();
 							return l + p + r;
 						}
-						catch (ParserException)
+						catch (ExpectedException)
 						{
 							return l;
 						}
@@ -331,7 +331,7 @@ namespace Exodrifter.Rumor.Parser
 						double result;
 						if (!double.TryParse(str, out result))
 						{
-							throw new ParserException(state.Index, "double");
+							throw new ExpectedException(state.Index, "double");
 						}
 
 						transaction.CommitIndex();
@@ -368,7 +368,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ParserException(state.Index, "end of file");
+						throw new ExpectedException(state.Index, "end of file");
 					}
 				};
 			}
@@ -392,7 +392,7 @@ namespace Exodrifter.Rumor.Parser
 					parser(new State(state));
 					return true;
 				}
-				catch (ParserException)
+				catch (ExpectedException)
 				{
 					return false;
 				}
@@ -455,13 +455,13 @@ namespace Exodrifter.Rumor.Parser
 					{
 						after(new State(state));
 					}
-					catch (ParserException)
+					catch (ExpectedException)
 					{
 						transaction.CommitIndex();
 						return result;
 					}
 
-					throw new ParserException(state.Index, failure);
+					throw new ExpectedException(state.Index, failure);
 				}
 			};
 		}
@@ -490,7 +490,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ParserException(
+						throw new ExpectedException(
 							state.Index,
 							"line indented less than column " + indent
 						);
@@ -519,7 +519,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ParserException(
+						throw new ExpectedException(
 							state.Index,
 							"line indented to column " + indent
 						);
@@ -548,7 +548,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ParserException(
+						throw new ExpectedException(
 							state.Index,
 							"line indented to column " + indent + " or more"
 						);
@@ -577,7 +577,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ParserException(
+						throw new ExpectedException(
 							state.Index,
 							"line indented to column " + indent + " or more"
 						);
@@ -682,7 +682,7 @@ namespace Exodrifter.Rumor.Parser
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ParserException(
+								throw new ExpectedException(
 									state.Index,
 									"at least " + delta + " more line(s)"
 								);
@@ -701,12 +701,12 @@ namespace Exodrifter.Rumor.Parser
 								.Then(indentType)
 								.NotFollowedBy(EOF, "line")(state);
 						}
-						catch (ParserException)
+						catch (ExpectedException)
 						{
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ParserException(
+								throw new ExpectedException(
 									state.Index,
 									"at least " + delta + " more line(s)"
 								);
@@ -768,7 +768,7 @@ namespace Exodrifter.Rumor.Parser
 						// We want to rollback the state to before the parser
 						// was run for the correct index.
 						transaction.Rollback();
-						throw new ParserException(state.Index, expected);
+						throw new ExpectedException(state.Index, expected);
 					}
 				}
 			};
@@ -808,12 +808,12 @@ namespace Exodrifter.Rumor.Parser
 						{
 							results.Add(parser(state));
 						}
-						catch (ParserException exception)
+						catch (ExpectedException exception)
 						{
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ParserException(
+								throw new ExpectedException(
 									exception.Index,
 									"at least " + delta + " more of " +
 									string.Join(", ", exception.Expected)
@@ -847,7 +847,7 @@ namespace Exodrifter.Rumor.Parser
 				{
 					return new Maybe<T>(parser(state));
 				}
-				catch (ParserException)
+				catch (ExpectedException)
 				{
 					return new Maybe<T>();
 				}
@@ -876,7 +876,7 @@ namespace Exodrifter.Rumor.Parser
 						transaction.CommitIndex();
 						return result;
 					}
-					catch (ParserException e1)
+					catch (ExpectedException e1)
 					{
 						try
 						{
@@ -884,14 +884,14 @@ namespace Exodrifter.Rumor.Parser
 							transaction.CommitIndex();
 							return result;
 						}
-						catch (ParserException e2)
+						catch (ExpectedException e2)
 						{
 							var expected = new List<string>(
 								e1.Expected.Length + e2.Expected.Length
 							);
 							expected.AddRange(e1.Expected);
 							expected.AddRange(e2.Expected);
-							throw new ParserException
+							throw new ExpectedException
 								(state.Index, expected.ToArray());
 						}
 					}
@@ -994,7 +994,7 @@ namespace Exodrifter.Rumor.Parser
 
 				if (state.Source.Length <= state.Index + str.Length - 1)
 				{
-					throw new ParserException(state.Index, str);
+					throw new ExpectedException(state.Index, str);
 				}
 
 				if (state.Source.Substring(state.Index, str.Length) == str)
@@ -1003,7 +1003,7 @@ namespace Exodrifter.Rumor.Parser
 					return str;
 				}
 
-				throw new ParserException(state.Index, str);
+				throw new ExpectedException(state.Index, str);
 			};
 		}
 
@@ -1217,13 +1217,13 @@ namespace Exodrifter.Rumor.Parser
 							until(new State(state));
 							break;
 						}
-						catch (ParserException untilException)
+						catch (ExpectedException untilException)
 						{
 							try
 							{
 								results.Add(parser(state));
 							}
-							catch (ParserException parserException)
+							catch (ExpectedException parserException)
 							{
 								// If we're at the end of the source file, throw
 								// the parsing exception for the until parser

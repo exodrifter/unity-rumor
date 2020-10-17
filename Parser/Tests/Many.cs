@@ -90,7 +90,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("a", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('a').Many(2)(state)
 			);
 			Assert.AreEqual(1, exception.Index);

@@ -49,7 +49,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				}
 			};
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Letter.ChainL1(Parse.Char(',').Then(fn))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				}
 			};
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Letter.ChainL1(Parse.Char(',').Then(fn))(state)
 			);
 			Assert.AreEqual(4, exception.Index);
@@ -163,7 +163,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				}
 			};
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Letter.ChainL1(Parse.Char(',').Then(fn))(state)
 			);
 			Assert.AreEqual(4, exception.Index);

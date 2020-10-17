@@ -49,7 +49,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.SameOrIndented(state)
 			);
 			Assert.AreEqual(2, exception.Index);
@@ -66,7 +66,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.SameOrIndented(state)
 			);
 			Assert.AreEqual(3, exception.Index);
@@ -93,7 +93,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new State("  ab\n  a\n a", 4, 2);
 			state.IndentIndex = state.Index;
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
 					.String()(state)
 			);
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("HELLO WORLD!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("HELLO WORLD!!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
@@ -156,7 +156,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("hello world!", 4, 6);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("WORLD!")(state)
 			);
 			Assert.AreEqual(6, exception.Index);

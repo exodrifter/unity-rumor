@@ -1,19 +1,25 @@
 ﻿using System;
 
-public class ParserException : Exception
+namespace Exodrifter.Rumor.Parser
 {
-	public int Index { get; }
-	public string[] Expected { get; }
-
-	public ParserException(int index, params string[] expected)
+	public abstract class ParserException : Exception
 	{
-		Index = index;
-		Expected = expected;
-	}
+		/// <summary>
+		/// The index where this exception occurred.
+		/// </summary>
+		public int Index { get; }
 
-	public override string ToString()
-	{
-		return "Parser Exception at index " + Index
-			+ ": expected " + string.Join(", ", Expected);
+		public ParserException(int index)
+		{
+			Index = index;
+		}
+
+		protected abstract string GenerateMessage();
+
+		public override string ToString()
+		{
+			return "Parser Exception at index " + Index + ": " +
+				GenerateMessage();
+		}
 	}
 }

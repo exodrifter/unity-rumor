@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("(\na \n)", 4, 0);
 
-			var exception = Assert.Throws<ParserException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.SurroundBlock('(', ')',
 					Parse.Char('a'), Parse.Indented
 				)(state)
