@@ -4,7 +4,7 @@ namespace Exodrifter.Rumor.Parser
 {
 	/// <summary>
 	/// A class that can be used to roll back a <see cref="State"/> to a
-	/// previous set of values after some actions are done, event if an
+	/// previous set of values after some actions are done, even if an
 	/// exception is thrown.
 	/// </summary>
 	public class Transaction : IDisposable

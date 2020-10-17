@@ -2,6 +2,10 @@
 
 namespace Exodrifter.Rumor.Parser
 {
+	/// <summary>
+	/// Represents something that may or may not exist.
+	/// </summary>
+	/// <typeparam name="T">The type to wrap.</typeparam>
 	public class Maybe<T>
 	{
 		public bool HasValue { get; }
