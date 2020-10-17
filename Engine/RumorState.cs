@@ -20,6 +20,14 @@ namespace Exodrifter.Rumor.Engine
 		#region Choices
 
 		/// <summary>
+		/// An event you can subscribe to in order to get notified of new
+		/// choices that are added to the state. The first parameter is the
+		/// label of the choice and the second parameter is the text for the
+		/// choice.
+		/// </summary>
+		public event Action<string, string> OnChoiceAdded;
+
+		/// <summary>
 		/// Adds a new choice to the state. If the choice already exists, then
 		/// it will be overwritten with the new choice. <paramref name="text"/>
 		/// will have leading and trailing whitespace removed.
@@ -48,7 +56,9 @@ namespace Exodrifter.Rumor.Engine
 				throw new ArgumentNullException(nameof(text));
 			}
 
-			Choices.Add(label, text.Trim());
+			text = text.Trim();
+			Choices.Add(label, text);
+			OnChoiceAdded?.Invoke(label, text);
 		}
 
 		/// <summary>
@@ -77,7 +87,8 @@ namespace Exodrifter.Rumor.Engine
 				throw new ArgumentNullException(nameof(text));
 			}
 
-			Choices.Add(label, text.Trim());
+			Choices.Add(label, text);
+			OnChoiceAdded?.Invoke(label, text);
 		}
 
 		/// <summary>
@@ -94,12 +105,41 @@ namespace Exodrifter.Rumor.Engine
 		#region Clear
 
 		/// <summary>
+		/// An event you can subscribe to in order to get notified when dialog
+		/// and/or choices are removed from the state.
+		/// </summary>
+		public event Action<ClearType> OnClear;
+
+		/// <summary>
+		/// An event you can subscribe to in order to get notified when all of
+		/// the dialog and choices are removed from the state.
+		/// </summary>
+		public event Action OnClearAll;
+
+		/// <summary>
+		/// An event you can subscribe to in order to get notified when all of
+		/// the dialog is removed from the state.
+		/// </summary>
+		public event Action OnClearDialog;
+
+		/// <summary>
+		/// An event you can subscribe to in order to get notified when all of
+		/// the choices are removed from the state.
+		/// </summary>
+		public event Action OnClearChoices;
+
+		/// <summary>
 		/// Removes all of the dialog and choices from the state.
 		/// </summary>
 		public void ClearAll()
 		{
 			Dialog.Clear();
 			Choices.Clear();
+
+			OnClear?.Invoke(ClearType.All);
+			OnClearAll?.Invoke();
+			OnClearDialog?.Invoke();
+			OnClearChoices?.Invoke();
 		}
 
 		/// <summary>
@@ -108,6 +148,9 @@ namespace Exodrifter.Rumor.Engine
 		public void ClearDialog()
 		{
 			Dialog.Clear();
+
+			OnClear?.Invoke(ClearType.Dialog);
+			OnClearDialog?.Invoke();
 		}
 
 		/// <summary>
@@ -116,6 +159,9 @@ namespace Exodrifter.Rumor.Engine
 		public void ClearChoices()
 		{
 			Choices.Clear();
+
+			OnClear?.Invoke(ClearType.Choices);
+			OnClearChoices?.Invoke();
 		}
 
 		/// <summary>
@@ -127,16 +173,15 @@ namespace Exodrifter.Rumor.Engine
 			switch (type)
 			{
 				case ClearType.All:
-					Dialog.Clear();
-					Choices.Clear();
+					ClearAll();
 					break;
 
 				case ClearType.Dialog:
-					Dialog.Clear();
+					ClearDialog();
 					break;
 
 				case ClearType.Choices:
-					Choices.Clear();
+					ClearChoices();
 					break;
 
 				default:
@@ -149,6 +194,18 @@ namespace Exodrifter.Rumor.Engine
 		#endregion
 
 		#region Dialog
+
+		/// <summary>
+		/// An event you can subscribe to in order to get notified when dialog
+		/// is appended to the state
+		/// </summary>
+		public event Action<string, string> OnAppendDialog;
+
+		/// <summary>
+		/// An event you can subscribe to in order to get notified when dialog
+		/// is set in the state
+		/// </summary>
+		public event Action<string, string> OnSetDialog;
 
 		/// <summary>
 		/// Appends additional dialog for the specified speaker to the state.
@@ -182,15 +239,18 @@ namespace Exodrifter.Rumor.Engine
 				if (char.IsWhiteSpace(ch))
 				{
 					Dialog[speaker] += dialog;
+					OnAppendDialog?.Invoke(speaker, dialog);
 				}
 				else
 				{
 					Dialog[speaker] += " " + dialog;
+					OnAppendDialog?.Invoke(speaker, " " + dialog);
 				}
 			}
 			else
 			{
 				Dialog[speaker] = dialog;
+				OnAppendDialog?.Invoke(speaker, dialog);
 			}
 		}
 
@@ -217,10 +277,12 @@ namespace Exodrifter.Rumor.Engine
 			if (Dialog.ContainsKey(speaker))
 			{
 				Dialog[speaker] += dialog;
+				OnAppendDialog?.Invoke(speaker, dialog);
 			}
 			else
 			{
 				Dialog.Add(speaker, dialog);
+				OnAppendDialog?.Invoke(speaker, dialog);
 			}
 		}
 
@@ -249,8 +311,11 @@ namespace Exodrifter.Rumor.Engine
 				throw new ArgumentNullException(nameof(dialog));
 			}
 
+			dialog = dialog.Trim();
+
 			Dialog.Clear();
-			Dialog[speaker] = dialog.Trim();
+			Dialog[speaker] = dialog;
+			OnSetDialog?.Invoke(speaker, dialog);
 		}
 
 		/// <summary>
@@ -280,6 +345,7 @@ namespace Exodrifter.Rumor.Engine
 
 			Dialog.Clear();
 			Dialog[speaker] = dialog;
+			OnSetDialog?.Invoke(speaker, dialog);
 		}
 
 		/// <summary>
