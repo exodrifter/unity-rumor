@@ -6,9 +6,9 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public Expression<NumberValue> Time { get; }
 
-		public PauseNode(double time)
+		public PauseNode(double seconds)
 		{
-			Time = new NumberLiteral(time);
+			Time = new NumberLiteral(seconds);
 		}
 
 		public PauseNode(Expression<NumberValue> time)
@@ -18,8 +18,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			// TODO: Implement
-			yield break;
+			var seconds = Time.Evaluate().Value;
+			yield return new ForSeconds(seconds);
 		}
 
 		public override bool Equals(object obj)

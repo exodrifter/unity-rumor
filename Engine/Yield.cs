@@ -8,7 +8,9 @@
 	{
 		public bool Finished { get; protected set; }
 
-		public abstract void Advance();
+		public virtual void Advance() { }
+
+		public virtual void Update(double delta) { }
 	}
 
 	/// <summary>
@@ -19,6 +21,30 @@
 		public override void Advance()
 		{
 			Finished = true;
+		}
+	}
+
+	/// <summary>
+	/// Yield execution until Rumor is advanced.
+	/// </summary>
+	public class ForSeconds : Yield
+	{
+		private readonly double time;
+		private double elapsed;
+
+		public ForSeconds(double seconds)
+		{
+			time = seconds;
+			elapsed = 0;
+		}
+
+		public override void Update(double delta)
+		{
+			if (elapsed < time)
+			{
+				elapsed += delta;
+				Finished = elapsed >= time;
+			}
 		}
 	}
 }

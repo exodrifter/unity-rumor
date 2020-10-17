@@ -56,6 +56,8 @@ namespace Exodrifter.Rumor.Engine
 			Stack = new Stack<StackFrame>();
 		}
 
+		#region Start/Stop
+
 		/// <summary>
 		/// Clears the call stack and returns an iterator that the caller must
 		/// use to execute this Rumor.
@@ -116,6 +118,10 @@ namespace Exodrifter.Rumor.Engine
 			Stack.Clear();
 		}
 
+		#endregion
+
+		#region Controls
+
 		/// <summary>
 		/// Attempts to advances execution of the script. This should be used
 		/// whenever the player presses an input to advance the state of the
@@ -155,5 +161,15 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Stack.Pop();
 		}
+
+		public void Update(double delta)
+		{
+			if (Stack.Count > 0)
+			{
+				Stack.Peek().Yield?.Update(delta);
+			}
+		}
+
+		#endregion
 	}
 }
