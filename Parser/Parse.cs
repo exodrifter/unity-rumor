@@ -425,49 +425,6 @@ namespace Exodrifter.Rumor.Parser
 			};
 		}
 
-		/// <summary>
-		/// Returns true if the parser would fail.
-		/// </summary>
-		/// <typeparam name="T">The return type of the parser.</typeparam>
-		/// <param name="parser">The parser to try.</param>
-		public static Parser<bool> NotFollowedBy<T>(Parser<T> parser) =>
-			FollowedBy(parser).Select(x => !x);
-
-		/// <summary>
-		/// Returns a parser that only succeeds if the following parser
-		/// would also fail directly after the first.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <typeparam name="U">The type of the following parser.</typeparam>
-		/// <param name="parser">The parser.</param>
-		/// <param name="after">The following parser that must fail.</param>
-		/// <param name="failure">
-		/// The expected failure (used in error messages).
-		/// </param>
-		public static Parser<T> NotFollowedBy<T, U>
-			(this Parser<T> parser, Parser<U> after, string failure)
-		{
-			return state =>
-			{
-				using (var transaction = new Transaction(state))
-				{
-					var result = parser(state);
-
-					try
-					{
-						after(new State(state));
-					}
-					catch (ExpectedException)
-					{
-						transaction.CommitIndex();
-						return result;
-					}
-
-					throw new ExpectedException(state.Index, failure);
-				}
-			};
-		}
-
 		#endregion
 
 		#region Indented
@@ -633,6 +590,19 @@ namespace Exodrifter.Rumor.Parser
 				{
 					var results = new List<T>();
 
+					Action checkMinimum = () =>
+					{
+						if (results.Count < minimum)
+						{
+							var delta = minimum - results.Count;
+							throw new ReasonException(
+								state.Index,
+								"expected at least " + delta + " more " +
+								"line(s) for this block"
+							);
+						}
+					};
+
 					// Consume leading whitespace for this block
 					Whitespaces(state);
 					indentType(state);
@@ -652,19 +622,8 @@ namespace Exodrifter.Rumor.Parser
 						// If this is the end of the file, stop
 						if (FollowedBy(EOF)(state))
 						{
-							if (results.Count < minimum)
-							{
-								var delta = minimum - results.Count;
-								throw new ReasonException(
-									state.Index,
-									"expected at least " + delta + " more " +
-									"line(s) for this block"
-								);
-							}
-							else
-							{
-								return results;
-							}
+							checkMinimum();
+							return results;
 						}
 
 						// Check if the block continues
@@ -672,25 +631,19 @@ namespace Exodrifter.Rumor.Parser
 						{
 							NewLine
 								.Then(Whitespaces)
-								.Then(indentType)
-								.NotFollowedBy(EOF, "line")(state);
-						}
-						catch (ParserException ex)
-						{
-							if (results.Count < minimum)
+								.Then(indentType)(state);
+
+							// If this is the end of the file, stop
+							if (FollowedBy(EOF)(state))
 							{
-								var delta = minimum - results.Count;
-								throw new ReasonException(
-									state.Index,
-									"expected at least " + delta + " more " +
-									"line(s) for this block",
-									ex
-								);
-							}
-							else
-							{
+								checkMinimum();
 								return results;
 							}
+						}
+						catch (ParserException)
+						{
+							checkMinimum();
+							return results;
 						}
 					}
 				}
