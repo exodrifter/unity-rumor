@@ -1,19 +1,19 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class AddNode : DialogNode
+	public class AppendNode : DialogNode
 	{
-		public AddNode(string speaker, string dialog)
+		public AppendNode(string speaker, string dialog)
 			: base(speaker, dialog) { }
 
-		public AddNode(string speaker, Expression<StringValue> dialog)
+		public AppendNode(string speaker, Expression<StringValue> dialog)
 			: base(speaker, dialog) { }
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as AddNode);
+			return Equals(obj as AppendNode);
 		}
 
-		public bool Equals(AddNode other)
+		public bool Equals(AppendNode other)
 		{
 			if (other == null)
 			{

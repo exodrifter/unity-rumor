@@ -94,7 +94,7 @@ namespace Exodrifter.Rumor.Compiler
 		public static Parser<Node> Node =>
 			Choose.Select(x => (Node)x)
 			.Or(Clear.Select(x => (Node)x))
-			.Or(Add.Select(x => (Node)x))
+			.Or(Append.Select(x => (Node)x))
 			.Or(Say.Select(x => (Node)x))
 			.Or(Jump.Select(x => (Node)x))
 			.Or(Pause.Select(x => (Node)x))
@@ -146,8 +146,8 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		public static Parser<AddNode> Add =>
-			Dialog('+', (i, d) => new AddNode(i, d));
+		public static Parser<AppendNode> Append =>
+			Dialog('+', (i, d) => new AppendNode(i, d));
 
 		public static Parser<SayNode> Say =>
 			Dialog(':', (i, d) => new SayNode(i, d));
