@@ -20,15 +20,24 @@ namespace Exodrifter.Rumor.Engine
 		private Dictionary<string, List<Node>> Nodes { get; }
 
 		/// <summary>
-		/// The current call stack.
-		/// </summary>
-		private Stack<StackFrame> Stack { get; }
-
-		/// <summary>
 		/// The labels that exist in this Rumor. These labels can be jumped to
 		/// using <see cref="Jump(string)"/>.
 		/// </summary>
 		public IEnumerable<string> Identifiers => Nodes.Keys;
+
+		public Rumor(Dictionary<string, List<Node>> nodes)
+		{
+			// Make a copy so our version does not change
+			Nodes = new Dictionary<string, List<Node>>(nodes);
+			Stack = new Stack<StackFrame>();
+		}
+
+		#region Execution
+
+		/// <summary>
+		/// The current call stack.
+		/// </summary>
+		private Stack<StackFrame> Stack { get; }
 
 		/// <summary>
 		/// True if Rumor's call stack is not empty.
@@ -48,15 +57,6 @@ namespace Exodrifter.Rumor.Engine
 		/// <see cref="Start"/> again before execution finished.
 		/// </summary>
 		public int CancelCount { get; private set; }
-
-		public Rumor(Dictionary<string, List<Node>> nodes)
-		{
-			// Make a copy so our version does not change
-			Nodes = new Dictionary<string, List<Node>>(nodes);
-			Stack = new Stack<StackFrame>();
-		}
-
-		#region Start/Stop
 
 		/// <summary>
 		/// Clears the call stack and returns an iterator that the caller must
@@ -162,6 +162,13 @@ namespace Exodrifter.Rumor.Engine
 			Stack.Pop();
 		}
 
+		/// <summary>
+		/// Tells Rumor that <paramref name="delta"/> seconds have passed.
+		/// </summary>
+		/// <param name="delta">
+		/// The amount of time in seconds that has passed since the last time
+		/// this function was called.
+		/// </param>
 		public void Update(double delta)
 		{
 			if (Stack.Count > 0)
