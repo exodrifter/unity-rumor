@@ -325,43 +325,54 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a text expression, or a block of unquoted strings, which will
 		/// return a <see cref="StringValue"/> when evaluated.
 		/// </summary>
-		public static Parser<Expression<StringValue>> Text
+		public static Parser<Expression<StringValue>> Text =>
+			PrefixText<Unit>(null);
+
+		/// <summary>
+		/// Parses a text expression, or a block of unquoted strings, that are
+		/// prefixed with <paramref name="prefix"/> which will return a
+		/// <see cref="StringValue"/> when evaluated.
+		/// </summary>
+		/// <param name="prefix">
+		/// The prefix parser to use at the beginning of each line, or null for
+		/// no prefix parsing.
+		/// </param>
+		public static Parser<Expression<StringValue>> PrefixText<T>
+			(Parser<T> prefix)
 		{
-			get
+			return state =>
 			{
-				return state =>
+				using (var transaction = new Transaction(state))
 				{
-					using (var transaction = new Transaction(state))
+					// Parse each line of the text
+					var lines = Parse.PrefixBlock1(
+						prefix,
+						TextLine,
+						Parse.Indented
+					)(state);
+
+					// Combine each line of the text into a single expression
+					Expression<StringValue> result = null;
+					foreach (var line in lines)
 					{
-						// Parse each line of the text
-						var lines = Parse.Block1(
-							TextLine,
-							Parse.Indented
-						)(state);
-
-						// Combine each line of the text into a single expression
-						Expression<StringValue> result = null;
-						foreach (var line in lines)
+						if (result != null)
 						{
-							if (result != null)
-							{
-								var s = new StringValue(" ");
-								result = new ConcatExpression(
-									new ConcatExpression(result, new StringLiteral(s)),
-									line
-								);
-							}
-							else
-							{
-								result = line;
-							}
+							var s = new StringValue(" ");
+							result = new ConcatExpression(
+								new ConcatExpression(result, new StringLiteral(s)),
+								line
+							);
 						}
-
-						transaction.CommitIndex();
-						return result.Simplify();
+						else
+						{
+							result = line;
+						}
 					}
-				};
-			}
+
+					transaction.CommitIndex();
+					return result.Simplify();
+				}
+			};
 		}
 
 		/// <summary>

@@ -26,6 +26,7 @@ namespace Exodrifter.Rumor.Compiler
 								new Dictionary<string, List<Node>>()
 									{ { Rumor.MainIdentifier, new List<Node>() { x } } }
 							)
+							.Or(Choice)
 							.Or(Label),
 							Parse.Same
 						)(state);
@@ -89,17 +90,72 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
+		#region Choice
+
+		public static Parser<Dictionary<string, List<Node>>> Choice
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("choice")(state);
+						// TODO: Generate a label if one isn't defined
+						var identifier = Parse
+							.Spaces1
+							.Then(IdentifierLabel)
+							.Maybe()(state)
+							.GetValueOrDefault("");
+
+						// Consume the rest of the whitespace on this line
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.EOL(state);
+
+						// Parse the choice text
+						Parse.Whitespaces(state);
+						Parse.Indented(state);
+						var text = PrefixText(
+							Parse.Char('>').Then(Parse.Spaces)
+						)(state);
+
+						// Consume the rest of the whitespace on this line
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.EOL(state);
+
+						// Parse an indented block
+						Parse.Whitespaces(state);
+						Parse.Indented(state);
+						var result = Script(state);
+
+						// Move the main block to the identifier for this label
+						result[identifier] = result[Rumor.MainIdentifier];
+
+						// Add the choice as the only node in the main block
+						result[Rumor.MainIdentifier] = new List<Node>() {
+							new ChoiceNode(identifier, text)
+						};
+
+						transaction.CommitIndex();
+						return result;
+					}
+				};
+			}
+		}
+
+		#endregion
+
 		#region Nodes
 
 		public static Parser<Node> Node =>
-			Choose.Select(x => (Node)x)
-			.Or(Clear.Select(x => (Node)x))
+			Say.Select(x => (Node)x)
 			.Or(Append.Select(x => (Node)x))
-			.Or(Say.Select(x => (Node)x))
+			.Or(Clear.Select(x => (Node)x))
+			.Or(Choose.Select(x => (Node)x))
 			.Or(Jump.Select(x => (Node)x))
+			.Or(Wait.Select(x => (Node)x))
 			.Or(Pause.Select(x => (Node)x))
-			.Or(Return.Select(x => (Node)x))
-			.Or(Wait.Select(x => (Node)x));
+			.Or(Return.Select(x => (Node)x));
 
 		public static Parser<ChooseNode> Choose =>
 			Parse.String("choose").Then(new ChooseNode());
@@ -168,7 +224,7 @@ namespace Exodrifter.Rumor.Compiler
 					Parse.Char(ch)(state);
 					Parse.Whitespaces(state);
 
-					var dialog = Compiler.Text(state);
+					var dialog = Text(state);
 
 					transaction.CommitIndex();
 					return constructor(identifier, dialog);
