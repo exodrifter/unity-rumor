@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler
 {
+	using Rumor = Engine.Rumor;
+
 	public static class Compiler
 	{
 		#region Block
@@ -24,7 +26,7 @@ namespace Exodrifter.Rumor.Compiler
 						var blocks = Parse.Block(
 							Node.Select(x =>
 								new Dictionary<string, List<Node>>()
-									{ { "_main", new List<Node>() { x } } }
+									{ { Rumor.MainIdentifier, new List<Node>() { x } } }
 							)
 							.Or(Label),
 							Parse.Same
@@ -74,9 +76,9 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.Indented(state);
 						var result = Block(state);
 
-						// Move the main block to the identifier
-						result[identifier] = result["_main"];
-						result.Remove("_main");
+						// Move the main block to the identifier for this label
+						result[identifier] = result[Rumor.MainIdentifier];
+						result.Remove(Rumor.MainIdentifier);
 
 						transaction.CommitIndex();
 						return result;

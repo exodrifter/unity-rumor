@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler.Tests
 {
+	using Rumor = Engine.Rumor;
+
 	public static class Block
 	{
 		[Test]
@@ -16,7 +18,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
-					{ "_main", new List<Node>()
+					{ Rumor.MainIdentifier, new List<Node>()
 						{ new SayNode("Alice", "Hello world!")
 						}
 					},
@@ -43,7 +45,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
-					{ "_main", new List<Node>()
+					{ Rumor.MainIdentifier, new List<Node>()
 						{ new SayNode("Alice", "Hello world!")
 						, new SayNode("Alice", "How are you?")
 						, new SayNode("Alice", "The weather seems nice today.")
