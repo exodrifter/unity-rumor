@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			// TODO: Implement
+			rumor.State.Clear(Type);
 			yield break;
 		}
 

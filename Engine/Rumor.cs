@@ -25,11 +25,14 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public IEnumerable<string> Identifiers => Nodes.Keys;
 
+		public RumorState State { get; }
+
 		public Rumor(Dictionary<string, List<Node>> nodes)
 		{
 			// Make a copy so our version does not change
 			Nodes = new Dictionary<string, List<Node>>(nodes);
 			Stack = new Stack<StackFrame>();
+			State = new RumorState();
 		}
 
 		#region Execution
