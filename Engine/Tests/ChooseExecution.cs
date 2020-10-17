@@ -12,12 +12,12 @@ namespace Exodrifter.Rumor.Engine.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new ChoiceNode("choice1", "Hello?")
+						{ new AddChoiceNode("choice1", "Hello?")
 						, new ChooseNode()
 						}
 					},
 					{ "choice1", new List<Node>()
-						{ new SayNode("Alice", "Choice 1!")
+						{ new SetDialogNode("Alice", "Choice 1!")
 						}
 					}
 				}

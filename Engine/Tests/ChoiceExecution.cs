@@ -12,8 +12,8 @@ namespace Exodrifter.Rumor.Engine.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new ChoiceNode("choice1", "Hello?")
-						, new ChoiceNode("choice2", "Hello??")
+						{ new AddChoiceNode("choice1", "Hello?")
+						, new AddChoiceNode("choice2", "Hello??")
 						}
 					}
 				}

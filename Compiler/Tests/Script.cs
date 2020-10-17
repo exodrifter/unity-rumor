@@ -19,7 +19,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new SayNode("Alice", "Hello world!")
+						{ new SetDialogNode("Alice", "Hello world!")
 						}
 					},
 				},
@@ -46,9 +46,9 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new SayNode("Alice", "Hello world!")
-						, new SayNode("Alice", "How are you?")
-						, new SayNode("Alice", "The weather seems nice today.")
+						{ new SetDialogNode("Alice", "Hello world!")
+						, new SetDialogNode("Alice", "How are you?")
+						, new SetDialogNode("Alice", "The weather seems nice today.")
 						}
 					},
 				},

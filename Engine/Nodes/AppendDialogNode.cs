@@ -2,27 +2,27 @@
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class SayNode : DialogNode
+	public class AppendDialogNode : DialogNode
 	{
-		public SayNode(string speaker, string dialog)
+		public AppendDialogNode(string speaker, string dialog)
 			: base(speaker, dialog) { }
 
-		public SayNode(string speaker, Expression<StringValue> dialog)
+		public AppendDialogNode(string speaker, Expression<StringValue> dialog)
 			: base(speaker, dialog) { }
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
 			var dialog = Dialog.Evaluate().Value;
-			rumor.State.SetDialog(Speaker, dialog);
+			rumor.State.AppendDialog(Speaker, dialog);
 			yield return new ForAdvance();
 		}
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as SayNode);
+			return Equals(obj as AppendDialogNode);
 		}
 
-		public bool Equals(SayNode other)
+		public bool Equals(AppendDialogNode other)
 		{
 			if (other == null)
 			{
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override string ToString()
 		{
-			return Speaker + ": " + Dialog;
+			return Speaker + "+ " + Dialog;
 		}
 	}
 }

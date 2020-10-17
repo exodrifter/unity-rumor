@@ -2,18 +2,18 @@
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class ChoiceNode : Node
+	public class AddChoiceNode : Node
 	{
 		private string Label { get; }
 		private Expression<StringValue> Text { get; }
 
-		public ChoiceNode(string label, string text)
+		public AddChoiceNode(string label, string text)
 		{
 			Label = label;
 			Text = new StringLiteral(text);
 		}
 
-		public ChoiceNode(string label, Expression<StringValue> text)
+		public AddChoiceNode(string label, Expression<StringValue> text)
 		{
 			Label = label;
 			Text = text;
@@ -27,10 +27,10 @@ namespace Exodrifter.Rumor.Engine
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as ChoiceNode);
+			return Equals(obj as AddChoiceNode);
 		}
 
-		public bool Equals(ChoiceNode other)
+		public bool Equals(AddChoiceNode other)
 		{
 			if (other == null)
 			{

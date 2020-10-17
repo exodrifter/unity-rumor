@@ -28,7 +28,7 @@ namespace Exodrifter.Rumor.Compiler
 								new Dictionary<string, List<Node>>()
 									{ { Rumor.MainIdentifier, new List<Node>() { x } } }
 							)
-							.Or(Choice)
+							.Or(AddChoice)
 							.Or(Label),
 							Parse.Same
 						)(state);
@@ -94,7 +94,7 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Choice
 
-		public static Parser<Dictionary<string, List<Node>>> Choice
+		public static Parser<Dictionary<string, List<Node>>> AddChoice
 		{
 			get
 			{
@@ -136,7 +136,7 @@ namespace Exodrifter.Rumor.Compiler
 
 						// Add the choice as the only node in the main block
 						result[Rumor.MainIdentifier] = new List<Node>() {
-							new ChoiceNode(identifier, text)
+							new AddChoiceNode(identifier, text)
 						};
 
 						transaction.CommitIndex();
@@ -151,8 +151,8 @@ namespace Exodrifter.Rumor.Compiler
 		#region Nodes
 
 		public static Parser<Node> Node =>
-			Say.Select(x => (Node)x)
-			.Or(Append.Select(x => (Node)x))
+			SetDialog.Select(x => (Node)x)
+			.Or(AppendDialog.Select(x => (Node)x))
 			.Or(Clear.Select(x => (Node)x))
 			.Or(Choose.Select(x => (Node)x))
 			.Or(Jump.Select(x => (Node)x))
@@ -205,11 +205,11 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		public static Parser<AppendNode> Append =>
-			Dialog('+', (i, d) => new AppendNode(i, d));
+		public static Parser<AppendDialogNode> AppendDialog =>
+			Dialog('+', (i, d) => new AppendDialogNode(i, d));
 
-		public static Parser<SayNode> Say =>
-			Dialog(':', (i, d) => new SayNode(i, d));
+		public static Parser<SetDialogNode> SetDialog =>
+			Dialog(':', (i, d) => new SetDialogNode(i, d));
 
 		private static Parser<T> Dialog<T>
 			(char ch, Func<string, Expression<StringValue>, T> constructor)

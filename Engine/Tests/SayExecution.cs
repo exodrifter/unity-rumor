@@ -12,8 +12,8 @@ namespace Exodrifter.Rumor.Engine.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new SayNode("Alice", "Hello world!")
-						, new SayNode("Alice", "How are you?")
+						{ new SetDialogNode("Alice", "Hello world!")
+						, new SetDialogNode("Alice", "How are you?")
 						}
 					}
 				}
