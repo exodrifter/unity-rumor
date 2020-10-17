@@ -232,7 +232,27 @@ namespace Exodrifter.Rumor.Compiler
 				.String()
 				.Where(x => !x.StartsWith("_"), "identifier");
 
-		public static Parser<string> IdentifierLabel =>
-			Parse.Surround('[', ']', Identifier);
+		public static Parser<string> IdentifierLabel
+		{
+			get
+			{
+				return state =>
+				{
+					var errorIndex = state.Index;
+
+					var id = Parse.Surround('[', ']', Identifier)(state);
+
+					if (state.UsedIdentifiers.Contains(id))
+					{
+						throw new ParserException(errorIndex, "identifier");
+					}
+					else
+					{
+						state.UsedIdentifiers.Add(id);
+						return id;
+					}
+				};
+			}
+		}
 	}
 }

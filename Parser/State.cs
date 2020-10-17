@@ -1,4 +1,6 @@
-﻿namespace Exodrifter.Rumor.Parser
+﻿using System.Collections.Generic;
+
+namespace Exodrifter.Rumor.Parser
 {
 	/// <summary>
 	/// Contains the state of a parsing operation.
@@ -33,6 +35,11 @@
 		public bool EOF { get { return Index >= Source.Length; } }
 
 		/// <summary>
+		/// A list of identifiers that have already been used.
+		/// </summary>
+		public HashSet<string> UsedIdentifiers { get; }
+
+		/// <summary>
 		/// Creates a new parser state.
 		/// </summary>
 		/// <param name="source">
@@ -47,6 +54,8 @@
 			TabSize = tabSize;
 			Index = index;
 			IndentIndex = 0;
+
+			UsedIdentifiers = new HashSet<string>();
 		}
 
 		/// <summary>
@@ -59,6 +68,8 @@
 			TabSize = other.TabSize;
 			Index = other.Index;
 			IndentIndex = other.IndentIndex;
+
+			UsedIdentifiers = new HashSet<string>(other.UsedIdentifiers);
 		}
 	}
 }
