@@ -46,7 +46,7 @@ namespace Exodrifter.Rumor.Compiler
 							}
 						}
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 				};
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Compiler
 						result[identifier] = result["_main"];
 						result.Remove("_main");
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 				};
@@ -111,7 +111,7 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						Parse.String("clear")(state);
-						transaction.Commit();
+						transaction.CommitIndex();
 
 						// Parse the optional clear type
 						try
@@ -124,7 +124,7 @@ namespace Exodrifter.Rumor.Compiler
 								.Or(Parse.String("dialog").Then(ClearType.Dialog))
 								(state);
 
-							transaction.Commit();
+							transaction.CommitIndex();
 							return new ClearNode(type);
 						}
 						catch (ParserException)
@@ -160,7 +160,7 @@ namespace Exodrifter.Rumor.Compiler
 
 					var dialog = ExpressionCompiler.Text(state);
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return constructor(identifier, dialog);
 				}
 			};
@@ -178,7 +178,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.Spaces1(state);
 						var identifier = Identifier(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return new JumpNode(identifier);
 					}
 				};

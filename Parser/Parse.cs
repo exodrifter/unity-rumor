@@ -208,7 +208,7 @@ namespace Exodrifter.Rumor.Parser
 						x = fn(x, y);
 					}
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return x;
 				}
 			};
@@ -235,7 +235,7 @@ namespace Exodrifter.Rumor.Parser
 						var digit = Digit(state);
 						var rest = Digit.Or(Char('_')).Many().String()(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return digit + rest;
 					}
 				};
@@ -256,7 +256,7 @@ namespace Exodrifter.Rumor.Parser
 						var sign = Sign(state);
 						var number = Number(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return sign + number;
 					}
 				};
@@ -275,14 +275,14 @@ namespace Exodrifter.Rumor.Parser
 					using (var transaction = new Transaction(state))
 					{
 						var l = Number(state);
-						transaction.Commit();
+						transaction.CommitIndex();
 
 						try
 						{
 							var p = Char('.')(state);
 							var r = Number(state);
 
-							transaction.Commit();
+							transaction.CommitIndex();
 							return l + p + r;
 						}
 						catch (ParserException)
@@ -308,7 +308,7 @@ namespace Exodrifter.Rumor.Parser
 						var sign = Sign(state);
 						var number = Decimal(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return sign + number;
 					}
 				};
@@ -334,7 +334,7 @@ namespace Exodrifter.Rumor.Parser
 							throw new ParserException(state.Index, "double");
 						}
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 				};
@@ -417,7 +417,7 @@ namespace Exodrifter.Rumor.Parser
 					var result = parser(state);
 					after(new State(state));
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return result;
 				}
 			};
@@ -457,7 +457,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					catch (ParserException)
 					{
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 
@@ -674,7 +674,7 @@ namespace Exodrifter.Rumor.Parser
 						{
 							Space.Until(EOL)(state);
 						}
-						transaction.Commit();
+						transaction.CommitIndex();
 
 						// If this is the end of the file, stop
 						if (FollowedBy(EOF)(state))
@@ -760,7 +760,7 @@ namespace Exodrifter.Rumor.Parser
 					var result = parser(state);
 					if (predicate(result))
 					{
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 					else
@@ -821,7 +821,7 @@ namespace Exodrifter.Rumor.Parser
 							}
 							else
 							{
-								transaction.Commit();
+								transaction.CommitIndex();
 								return results;
 							}
 						}
@@ -873,7 +873,7 @@ namespace Exodrifter.Rumor.Parser
 					try
 					{
 						var result = first(state);
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result;
 					}
 					catch (ParserException e1)
@@ -881,7 +881,7 @@ namespace Exodrifter.Rumor.Parser
 						try
 						{
 							var result = second(state);
-							transaction.Commit();
+							transaction.CommitIndex();
 							return result;
 						}
 						catch (ParserException e2)
@@ -1074,7 +1074,7 @@ namespace Exodrifter.Rumor.Parser
 					Whitespaces(state);
 					after(state);
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return result;
 				}
 			};
@@ -1139,7 +1139,7 @@ namespace Exodrifter.Rumor.Parser
 					indentType(state);
 					after(state);
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return result;
 				}
 			};
@@ -1184,7 +1184,7 @@ namespace Exodrifter.Rumor.Parser
 					first(state);
 					var result = second(state);
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return result;
 				}
 			};
@@ -1241,7 +1241,7 @@ namespace Exodrifter.Rumor.Parser
 						}
 					}
 
-					transaction.Commit();
+					transaction.CommitIndex();
 					return results;
 				}
 			};

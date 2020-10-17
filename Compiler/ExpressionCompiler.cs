@@ -51,7 +51,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.String("or", "||")(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						BooleanOp op = (l, r) => new OrExpression(l, r);
 						return op;
 					}
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.String("and", "&&")(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						BooleanOp op = (l, r) => new AndExpression(l, r);
 						return op;
 					}
@@ -97,7 +97,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.String("xor", "^")(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						BooleanOp op = (l, r) => new XorExpression(l, r);
 						return op;
 					}
@@ -122,7 +122,7 @@ namespace Exodrifter.Rumor.Compiler
 								.Or(Parse.String("false").Then(false))
 								(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return new BooleanLiteral(b);
 					}
 				};
@@ -146,7 +146,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("not", "!")(state);
 						var logic = Logic(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return new NotExpression(logic);
 					}
 				};
@@ -195,7 +195,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.Char('+')(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						NumberOp op = (l, r) => new AddExpression(l, r);
 						return op;
 					}
@@ -218,7 +218,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.Char('-')(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						NumberOp op = (l, r) => new SubtractExpression(l, r);
 						return op;
 					}
@@ -247,7 +247,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.Char('*')(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						NumberOp op = (l, r) => new MultiplyExpression(l, r);
 						return op;
 					}
@@ -270,7 +270,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						Parse.Char('/')(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						NumberOp op = (l, r) => new DivideExpression(l, r);
 						return op;
 					}
@@ -293,7 +293,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						var num = Parse.Double(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return new NumberLiteral(num);
 					}
 				};
@@ -357,7 +357,7 @@ namespace Exodrifter.Rumor.Compiler
 							}
 						}
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return result.Simplify();
 					}
 				};
@@ -394,7 +394,7 @@ namespace Exodrifter.Rumor.Compiler
 						// left to parse.
 						if (Parse.FollowedBy(Parse.EOL)(state))
 						{
-							transaction.Commit();
+							transaction.CommitIndex();
 							return new StringLiteral(s + rest);
 						}
 
@@ -408,7 +408,7 @@ namespace Exodrifter.Rumor.Compiler
 							// another substitution)
 							var remaining = TextLine(state);
 
-							transaction.Commit();
+							transaction.CommitIndex();
 							return new ConcatExpression(
 								new ConcatExpression(
 									new StringLiteral(s + rest),
@@ -452,7 +452,7 @@ namespace Exodrifter.Rumor.Compiler
 							.Or(Parse.Pure<Expression<StringValue>>(null))
 							(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						if (rest != null)
 						{
 							return new ConcatExpression(start, rest);
@@ -492,7 +492,7 @@ namespace Exodrifter.Rumor.Compiler
 						var sub = Substitution(state);
 						var rest = QuoteInternal(state);
 
-						transaction.Commit();
+						transaction.CommitIndex();
 						return new ConcatExpression(sub, rest);
 					}
 				};
