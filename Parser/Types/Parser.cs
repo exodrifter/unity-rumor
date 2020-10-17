@@ -8,5 +8,5 @@
 	/// </summary>
 	/// <typeparam name="T">The type the parser will return.</typeparam>
 	/// <param name="state">The input state.</param>
-	public delegate T Parser<T>(State state);
+	public delegate T Parser<T>(ParserState state);
 }

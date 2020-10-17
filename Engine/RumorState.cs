@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Engine
 {
-	internal class State
+	public class RumorState
 	{
 		private Dictionary<string, string> Dialog { get; }
 		private Dictionary<string, string> Choices { get; }
@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Creates a new, empty state with no dialog or choices.
 		/// </summary>
-		internal State()
+		internal RumorState()
 		{
 			Dialog = new Dictionary<string, string>();
 			Choices = new Dictionary<string, string>();

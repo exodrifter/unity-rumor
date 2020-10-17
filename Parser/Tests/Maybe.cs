@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void MaybeJustSuccess()
 		{
-			var state = new State("a", 4, 0);
+			var state = new ParserState("a", 4, 0);
 
 			var result = Parse.Char('a').Maybe()(state);
 			Assert.AreEqual(new Maybe<char>('a'), result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void MaybeNothingSuccess()
 		{
-			var state = new State("b", 4, 0);
+			var state = new ParserState("b", 4, 0);
 
 			var result = Parse.Char('a').Maybe()(state);
 			Assert.AreEqual(new Maybe<char>(), result);
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void MaybeEmptySuccess()
 		{
-			var state = new State("", 4, 0);
+			var state = new ParserState("", 4, 0);
 
 			var result = Parse.Char('a').Maybe()(state);
 			Assert.AreEqual(new Maybe<char>(), result);

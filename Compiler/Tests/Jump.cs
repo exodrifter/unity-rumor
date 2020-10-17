@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void JumpSuccess()
 		{
-			var state = new State("jump start", 4, 0);
+			var state = new ParserState("jump start", 4, 0);
 
 			var node = Compiler.Jump(state);
 			Assert.AreEqual(new JumpNode("start"), node);

@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManySuccess()
 		{
-			var state = new State("aaa", 4, 0);
+			var state = new ParserState("aaa", 4, 0);
 
 			var result = Parse.Char('a').Many(0)(state);
 			Assert.AreEqual(new char[] { 'a', 'a', 'a' }, result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManyEmptySuccess()
 		{
-			var state = new State("", 4, 0);
+			var state = new ParserState("", 4, 0);
 
 			var result = Parse.Char('a').Many(0)(state);
 			Assert.AreEqual(new char[] { }, result);
@@ -41,7 +41,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManyTrailingSuccess()
 		{
-			var state = new State("az", 4, 0);
+			var state = new ParserState("az", 4, 0);
 
 			var result = Parse.Char('a').Many(0)(state);
 			Assert.AreEqual(new char[] { 'a' }, result);
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void Many0Success()
 		{
-			var state = new State("z", 4, 0);
+			var state = new ParserState("z", 4, 0);
 
 			var result = Parse.Char('a').Many(0)(state);
 			Assert.AreEqual(new char[] { }, result);
@@ -72,7 +72,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void Many1Success()
 		{
-			var state = new State("a", 4, 0);
+			var state = new ParserState("a", 4, 0);
 
 			var result = Parse.Char('a').Many(1)(state);
 			Assert.AreEqual(new char[] { 'a' }, result);
@@ -88,7 +88,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ManyFailure()
 		{
-			var state = new State("a", 4, 0);
+			var state = new ParserState("a", 4, 0);
 
 			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.Char('a').Many(2)(state)

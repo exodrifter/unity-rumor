@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Parser
 			{
 				try
 				{
-					parser(new State(state));
+					parser(new ParserState(state));
 					return true;
 				}
 				catch (ParserException)

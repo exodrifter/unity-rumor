@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ZeroSameOrIndentedSuccess()
 		{
-			var state = new State("hello world!", 4, 0);
+			var state = new ParserState("hello world!", 4, 0);
 
 			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(1, result);
@@ -18,7 +18,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedSuccess()
 		{
-			var state = new State("    hello world!", 4, 4);
+			var state = new ParserState("    hello world!", 4, 4);
 
 			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(5, result);
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedTabSuccess()
 		{
-			var state = new State("  \thello world!", 4, 3);
+			var state = new ParserState("  \thello world!", 4, 3);
 
 			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(4, result);
@@ -36,7 +36,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedLineSuccess()
 		{
-			var state = new State("\n  \thello world!", 4, 4);
+			var state = new ParserState("\n  \thello world!", 4, 4);
 
 			var result = Parse.SameOrIndented(state);
 			Assert.AreEqual(4, result);
@@ -45,7 +45,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedFailure()
 		{
-			var state = new State("    hello world!", 4, 4);
+			var state = new ParserState("    hello world!", 4, 4);
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
@@ -61,7 +61,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SameOrIndentedLineFailure()
 		{
-			var state = new State("\n    hello world!", 4, 5);
+			var state = new ParserState("\n    hello world!", 4, 5);
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
@@ -77,7 +77,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void BlockSuccess()
 		{
-			var state = new State("  a\n  a\n a", 4, 2);
+			var state = new ParserState("  a\n  a\n a", 4, 2);
 			state.IndentIndex = state.Index;
 
 			var result = Parse.Block(Parse.Char('a'), Parse.SameOrIndented)
@@ -88,7 +88,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void BlockFailure()
 		{
-			var state = new State("  ab\n  a\n a", 4, 2);
+			var state = new ParserState("  ab\n  a\n a", 4, 2);
 			state.IndentIndex = state.Index;
 
 			var exception = Assert.Throws<ExpectedException>(() =>
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserSuccess()
 		{
-			var state = new State("hello world!", 4, 0);
+			var state = new ParserState("hello world!", 4, 0);
 
 			var result = Parse.String("hello world!")(state);
 			Assert.AreEqual("hello world!", result);
@@ -119,7 +119,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserIndexSuccess()
 		{
-			var state = new State("hello world!", 4, 6);
+			var state = new ParserState("hello world!", 4, 6);
 
 			var result = Parse.String("world!")(state);
 			Assert.AreEqual("world!", result);
@@ -128,7 +128,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserFail()
 		{
-			var state = new State("hello world!", 4, 0);
+			var state = new ParserState("hello world!", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("HELLO WORLD!")(state)
@@ -143,7 +143,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserLengthFail()
 		{
-			var state = new State("hello world!", 4, 0);
+			var state = new ParserState("hello world!", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("HELLO WORLD!!")(state)
@@ -158,7 +158,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserIndexFail()
 		{
-			var state = new State("hello world!", 4, 6);
+			var state = new ParserState("hello world!", 4, 6);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.String("WORLD!")(state)
@@ -170,7 +170,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void StringParserMultiSuccess()
 		{
-			var state = new State("bar", 4, 0);
+			var state = new ParserState("bar", 4, 0);
 
 			var result = Parse.String("foo", "bar")(state);
 			Assert.AreEqual("bar", result);

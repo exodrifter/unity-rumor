@@ -133,7 +133,7 @@ namespace Exodrifter.Rumor.Parser
 					{
 						try
 						{
-							until(new State(state));
+							until(new ParserState(state));
 							break;
 						}
 						catch (ParserException untilException)

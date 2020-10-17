@@ -89,7 +89,7 @@
 			}
 		}
 
-		private static int CalculateIndentFrom(State state, int index)
+		private static int CalculateIndentFrom(ParserState state, int index)
 		{
 			var line = "";
 			for (int i = index - 1; i >= 0; i--)

@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddLineSuccess()
 		{
-			var state = new State("+ Hello world!", 4, 0);
+			var state = new ParserState("+ Hello world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "Hello world!"), node);
@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddSpeakerLineSuccess()
 		{
-			var state = new State("alice+ Hello world!", 4, 0);
+			var state = new ParserState("alice+ Hello world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode("alice", "Hello world!"), node);
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddMultiLineSuccess()
 		{
-			var state = new State("+ Hello\n  world!", 4, 0);
+			var state = new ParserState("+ Hello\n  world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "Hello world!"), node);
@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddSpeakerMultiLineSuccess()
 		{
-			var state = new State("alice+ Hello\n  world!", 4, 0);
+			var state = new ParserState("alice+ Hello\n  world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode("alice", "Hello world!"), node);
@@ -47,7 +47,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddNextMultiLineSuccess()
 		{
-			var state = new State("+\n Hello\n  world!", 4, 0);
+			var state = new ParserState("+\n Hello\n  world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "Hello world!"), node);
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddSpeakerNextMultiLineSuccess()
 		{
-			var state = new State("alice+\n Hello\n  world!", 4, 0);
+			var state = new ParserState("alice+\n Hello\n  world!", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode("alice", "Hello world!"), node);
@@ -69,7 +69,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddBooleanSubstitutionSuccess()
 		{
-			var state = new State("+ That's { true or false }.", 4, 0);
+			var state = new ParserState("+ That's { true or false }.", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "That's true."), node);
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddBooleanSubstitutionMultiLineSuccess()
 		{
-			var state = new State("+ That's { true\n or\n false }.", 4, 0);
+			var state = new ParserState("+ That's { true\n or\n false }.", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "That's true."), node);
@@ -87,7 +87,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddBooleanSubstitutionComplexSuccess()
 		{
-			var state = new State(
+			var state = new ParserState(
 				"+ That's { (true and false) or true }.", 4, 0);
 
 			var node = Compiler.Append(state);
@@ -101,7 +101,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddMathSubstitutionSuccess()
 		{
-			var state = new State("+ {1+2} berries please.", 4, 0);
+			var state = new ParserState("+ {1+2} berries please.", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "3 berries please."), node);
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddMathSubstitutionMultiLineSuccess()
 		{
-			var state = new State("+ {\n 1\n +\n 2} berries please.", 4, 0);
+			var state = new ParserState("+ {\n 1\n +\n 2} berries please.", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "3 berries please."), node);
@@ -119,7 +119,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddMathSubstitutionComplexSuccess()
 		{
-			var state = new State("+ {(1+2) * 5} berries please.", 4, 0);
+			var state = new ParserState("+ {(1+2) * 5} berries please.", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "15 berries please."), node);
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddQuoteSubstitutionSuccess()
 		{
-			var state = new State("+ Hello {\"world!\"}", 4, 0);
+			var state = new ParserState("+ Hello {\"world!\"}", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "Hello world!"), node);
@@ -141,7 +141,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AddQuoteSubstitutionMultiLineSuccess()
 		{
-			var state = new State("+ Hello {\n \"world!\"\n }", 4, 0);
+			var state = new ParserState("+ Hello {\n \"world!\"\n }", 4, 0);
 
 			var node = Compiler.Append(state);
 			Assert.AreEqual(new AppendNode(null, "Hello world!"), node);

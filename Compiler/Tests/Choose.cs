@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ChooseSuccess()
 		{
-			var state = new State("choose", 4, 0);
+			var state = new ParserState("choose", 4, 0);
 
 			var node = Compiler.Choose(state);
 			Assert.AreEqual(new ChooseNode(), node);

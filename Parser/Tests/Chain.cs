@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1Success()
 		{
-			var state = new State("a,z,b", 4, 0);
+			var state = new ParserState("a,z,b", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{
@@ -37,7 +37,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1EmptyFailure()
 		{
-			var state = new State("", 4, 0);
+			var state = new ParserState("", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{
@@ -68,7 +68,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1OneSuccess()
 		{
-			var state = new State("a", 4, 0);
+			var state = new ParserState("a", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{
@@ -94,7 +94,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1OpFailure()
 		{
-			var state = new State("a,b.z", 4, 0);
+			var state = new ParserState("a,b.z", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{
@@ -120,7 +120,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1ValueFailure()
 		{
-			var state = new State("a,z,0", 4, 0);
+			var state = new ParserState("a,z,0", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{
@@ -151,7 +151,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ChainL1MissingValueFailure()
 		{
-			var state = new State("a,z,", 4, 0);
+			var state = new ParserState("a,z,", 4, 0);
 			Func<char, char, char> fn = (l, r) => {
 				if (l > r)
 				{

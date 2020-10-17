@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void WhereSuccess()
 		{
-			var state = new State("a", 4, 0);
+			var state = new ParserState("a", 4, 0);
 
 			var result = Parse.AnyChar.Where(ch => ch == 'a', "a")(state);
 			Assert.AreEqual('a', result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void WhereFailure()
 		{
-			var state = new State("b", 4, 0);
+			var state = new ParserState("b", 4, 0);
 
 			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.AnyChar.Where(ch => ch == 'a', "message")(state)

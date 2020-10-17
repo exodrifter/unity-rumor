@@ -5,7 +5,7 @@ namespace Exodrifter.Rumor.Parser
 	/// <summary>
 	/// Contains the state of a parsing operation.
 	/// </summary>
-	public class State
+	public class ParserState
 	{
 		/// <summary>
 		/// The contents of the source file that is being parsed.
@@ -48,7 +48,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="index">
 		/// The index where the parser should start.
 		/// </param>
-		public State(string source, int tabSize, int index = 0)
+		public ParserState(string source, int tabSize, int index = 0)
 		{
 			Source = source;
 			TabSize = tabSize;
@@ -62,7 +62,7 @@ namespace Exodrifter.Rumor.Parser
 		/// Creates a copy of a parser state.
 		/// </summary>
 		/// <param name="other">The other state to make a copy of.</param>
-		public State(State other)
+		public ParserState(ParserState other)
 		{
 			Source = other.Source;
 			TabSize = other.TabSize;

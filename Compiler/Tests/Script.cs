@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ScriptOneSuccess()
 		{
-			var state = new State("Alice: Hello world!", 4, 0);
+			var state = new ParserState("Alice: Hello world!", 4, 0);
 
 			var result = Compiler.Script(state);
 			Assert.AreEqual(
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ScriptMultipleSuccess()
 		{
-			var state = new State(@"
+			var state = new ParserState(@"
 				Alice: Hello world!
 				Alice: How are you?
 				Alice: The weather seems nice today.

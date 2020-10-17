@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void UntilSuccess()
 		{
-			var state = new State("aaab", 4, 0);
+			var state = new ParserState("aaab", 4, 0);
 
 			var result = Parse.Char('a').Until(Parse.Char('b'))(state);
 			Assert.AreEqual(new char[] { 'a', 'a', 'a' }, result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void UntilEmptyFailure()
 		{
-			var state = new State("", 4, 0);
+			var state = new ParserState("", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('a').Until(Parse.Char('b'))(state)
@@ -44,7 +44,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void Until0Success()
 		{
-			var state = new State("b", 4, 0);
+			var state = new ParserState("b", 4, 0);
 
 			var result = Parse.Char('a').Until(Parse.Char('b'))(state);
 			Assert.AreEqual(new char[] { }, result);
@@ -59,7 +59,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void UntilFailure()
 		{
-			var state = new State("aaaa", 4, 0);
+			var state = new ParserState("aaaa", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('a').Until(Parse.Char('b'))(state)

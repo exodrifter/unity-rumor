@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenSuccess()
 		{
-			var state = new State("ab", 4, 0);
+			var state = new ParserState("ab", 4, 0);
 
 			var result = Parse.Char('a').Then(Parse.Char('b'))(state);
 			Assert.AreEqual('b', result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenLeftFailure()
 		{
-			var state = new State("ab", 4, 0);
+			var state = new ParserState("ab", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('z').Then(Parse.Char('b'))(state)
@@ -43,7 +43,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void ThenRightFailure()
 		{
-			var state = new State("ab", 4, 0);
+			var state = new ParserState("ab", 4, 0);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Char('a').Then(Parse.Char('z'))(state)
