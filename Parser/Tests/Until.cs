@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Char('a').Until(Parse.Char('b'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "b" }, exception.Expected);
+			Assert.AreEqual(new string[] { "'b'" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
@@ -65,7 +65,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Char('a').Until(Parse.Char('b'))(state)
 			);
 			Assert.AreEqual(4, exception.Index);
-			Assert.AreEqual(new string[] { "b" }, exception.Expected);
+			Assert.AreEqual(new string[] { "'b'" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);

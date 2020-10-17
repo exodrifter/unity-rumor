@@ -46,7 +46,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "(" }, exception.Expected);
+			Assert.AreEqual(new string[] { "'('" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
@@ -64,7 +64,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "(" }, exception.Expected);
+			Assert.AreEqual(new string[] { "'('" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
@@ -82,7 +82,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);
-			Assert.AreEqual(new string[] { ")" }, exception.Expected);
+			Assert.AreEqual(new string[] { "')'" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
@@ -100,7 +100,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);
-			Assert.AreEqual(new string[] { ")" }, exception.Expected);
+			Assert.AreEqual(new string[] { "')'" }, exception.Expected);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);

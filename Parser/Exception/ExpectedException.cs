@@ -11,14 +11,14 @@
 		public string[] Expected { get; }
 
 		public ExpectedException(int index, params string[] expected)
-			: base(index)
+			: base(index, MakeMessage(expected))
 		{
 			Expected = expected;
 		}
 
-		protected override string GenerateMessage()
+		private static string MakeMessage(params string[] expected)
 		{
-			return "expected " + string.Join(", ", Expected);
+			return "expected " + string.Join(", ", expected);
 		}
 	}
 }

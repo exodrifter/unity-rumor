@@ -29,15 +29,15 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("(\na \n)", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.SurroundBlock('(', ')',
 					Parse.Char('a'), Parse.Indented
 				)(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(
-				new string[] { "line indented to column 1 or more" },
-				exception.Expected
+				"parse exception at index 2: line indented to column 1 or more",
+				exception.Message
 			);
 
 			Assert.AreEqual(0, state.Index);

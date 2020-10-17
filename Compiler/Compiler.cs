@@ -115,11 +115,19 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("clear")(state);
 						transaction.CommitIndex();
 
-						// Parse the optional clear type
+						// Check if we might have defined an optional clear type
 						try
 						{
 							Parse.Spaces1(state);
+						}
+						catch (ParserException)
+						{
+							return new ClearNode(ClearType.All);
+						}
 
+						// Parse the optional clear type
+						if (!Parse.FollowedBy(Parse.EOL)(state))
+						{
 							var type =
 								Parse.String("all").Then(ClearType.All)
 								.Or(Parse.String("choices").Then(ClearType.Choices))
@@ -129,7 +137,7 @@ namespace Exodrifter.Rumor.Compiler
 							transaction.CommitIndex();
 							return new ClearNode(type);
 						}
-						catch (ExpectedException)
+						else
 						{
 							return new ClearNode(ClearType.All);
 						}
@@ -230,7 +238,10 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.Alphanumeric
 				.Many(1)
 				.String()
-				.Where(x => !x.StartsWith("_"), "identifier");
+				.Where(
+					x => !x.StartsWith("_"),
+					"identifiers starting with '_' are reserved"
+				);
 
 		public static Parser<string> IdentifierLabel
 		{
@@ -244,7 +255,10 @@ namespace Exodrifter.Rumor.Compiler
 
 					if (state.UsedIdentifiers.Contains(id))
 					{
-						throw new ExpectedException(errorIndex, "identifier");
+						throw new ReasonException(errorIndex,
+							"the identifier \"" + id + "\" has already been " +
+							"used!"
+						);
 					}
 					else
 					{

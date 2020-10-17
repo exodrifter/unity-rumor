@@ -4,22 +4,23 @@ namespace Exodrifter.Rumor.Parser
 {
 	public abstract class ParserException : Exception
 	{
-		/// <summary>
-		/// The index where this exception occurred.
-		/// </summary>
 		public int Index { get; }
 
-		public ParserException(int index)
+		public ParserException(int index, string message)
+			: base(MakeMessage(index, message))
 		{
 			Index = index;
 		}
 
-		protected abstract string GenerateMessage();
-
-		public override string ToString()
+		public ParserException(int index, string message, Exception inner)
+			: base(MakeMessage(index, message), inner)
 		{
-			return "Parser Exception at index " + Index + ": " +
-				GenerateMessage();
+			Index = index;
+		}
+
+		private static string MakeMessage(int index, string message)
+		{
+			return "parse exception at index " + index + ": " + message;
 		}
 	}
 }

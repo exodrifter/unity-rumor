@@ -28,11 +28,18 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("_foobar", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Compiler.Identifier(state)
 			);
-			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "at least 1 more of alphanumeric character" }, exception.Expected);
+			Assert.AreEqual(
+				"parse exception at index 0: expected at least 1 more " +
+				"instance(s) of the parser to succeed",
+				exception.Message
+			);
+			Assert.AreEqual(
+				"parse exception at index 0: expected alphanumeric character",
+				exception.InnerException.Message
+			);
 		}
 
 		#region Label
@@ -60,11 +67,18 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new State("[_foobar]", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Compiler.IdentifierLabel(state)
 			);
-			Assert.AreEqual(1, exception.Index);
-			Assert.AreEqual(new string[] { "at least 1 more of alphanumeric character" }, exception.Expected);
+			Assert.AreEqual(
+				"parse exception at index 1: expected at least 1 more " +
+				"instance(s) of the parser to succeed",
+				exception.Message
+			);
+			Assert.AreEqual(
+				"parse exception at index 1: expected alphanumeric character",
+				exception.InnerException.Message
+			);
 		}
 
 		[Test]
@@ -73,11 +87,14 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new State("[foobar]", 4, 0);
 			state.UsedIdentifiers.Add("foobar");
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Compiler.IdentifierLabel(state)
 			);
-			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "identifier" }, exception.Expected);
+			Assert.AreEqual(
+				"parse exception at index 0: the identifier \"foobar\" has " +
+				"already been used!",
+				exception.Message
+			);
 		}
 
 		#endregion

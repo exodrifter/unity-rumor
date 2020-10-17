@@ -42,11 +42,16 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<MultipleParserException>(() =>
 				Parse.Char('a').Or(Parse.Char('z'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "a", "z" }, exception.Expected);
+			Assert.AreEqual(
+				"parse exception at index 0: expected one of the following " +
+				"exceptions to not happen: parse exception at index 0: " +
+				"expected 'a'; parse exception at index 0: expected 'z'",
+				exception.Message
+			);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
@@ -60,11 +65,16 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("m", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<MultipleParserException>(() =>
 				Parse.Char('a').Or(Parse.Char('z'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "a", "z" }, exception.Expected);
+			Assert.AreEqual(
+				"parse exception at index 0: expected one of the following " +
+				"exceptions to not happen: parse exception at index 0: " +
+				"expected 'a'; parse exception at index 0: expected 'z'",
+				exception.Message
+			);
 
 			Assert.AreEqual(0, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);

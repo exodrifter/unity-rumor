@@ -44,7 +44,7 @@ namespace Exodrifter.Rumor.Parser
 		/// </summary>
 		/// <param name="ch">The character to parse.</param>
 		public static Parser<char> Char(char ch) =>
-			Char(ch.Equals, ch.ToString());
+			Char(ch.Equals, "'" + ch.ToString() + "'");
 
 		/// <summary>
 		/// Returns a parser that parses a digit.
@@ -196,7 +196,7 @@ namespace Exodrifter.Rumor.Parser
 						{
 							fn = op(state);
 						}
-						catch (ExpectedException)
+						catch (ParserException)
 						{
 							break;
 						}
@@ -285,7 +285,7 @@ namespace Exodrifter.Rumor.Parser
 							transaction.CommitIndex();
 							return l + p + r;
 						}
-						catch (ExpectedException)
+						catch (ParserException)
 						{
 							return l;
 						}
@@ -331,7 +331,9 @@ namespace Exodrifter.Rumor.Parser
 						double result;
 						if (!double.TryParse(str, out result))
 						{
-							throw new ExpectedException(state.Index, "double");
+							throw new FormatException(state.Index, "double",
+								"this might be a bug, please file a bug report"
+							);
 						}
 
 						transaction.CommitIndex();
@@ -392,7 +394,7 @@ namespace Exodrifter.Rumor.Parser
 					parser(new State(state));
 					return true;
 				}
-				catch (ExpectedException)
+				catch (ParserException)
 				{
 					return false;
 				}
@@ -472,35 +474,6 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
-		/// parser position is at a lower column number than the reference
-		/// indentation index.
-		/// </summary>
-		public static Parser<int> Unindented
-		{
-			get
-			{
-				return state =>
-				{
-					int current = CalculateIndentFrom(state, state.Index);
-					int indent = CalculateIndentFrom(state, state.IndentIndex);
-
-					if (current == indent)
-					{
-						return current;
-					}
-					else
-					{
-						throw new ExpectedException(
-							state.Index,
-							"line indented less than column " + indent
-						);
-					}
-				};
-			}
-		}
-
-		/// <summary>
-		/// Returns a parser that returns the current column if the current
 		/// parser position is at the same column number as the reference
 		/// indentation index.
 		/// </summary>
@@ -519,9 +492,9 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ExpectedException(
+						throw new ReasonException(
 							state.Index,
-							"line indented to column " + indent
+							"expected a line indented to column " + indent
 						);
 					}
 				};
@@ -548,7 +521,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ExpectedException(
+						throw new ReasonException(
 							state.Index,
 							"line indented to column " + indent + " or more"
 						);
@@ -577,7 +550,7 @@ namespace Exodrifter.Rumor.Parser
 					}
 					else
 					{
-						throw new ExpectedException(
+						throw new ReasonException(
 							state.Index,
 							"line indented to column " + indent + " or more"
 						);
@@ -682,9 +655,10 @@ namespace Exodrifter.Rumor.Parser
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ExpectedException(
+								throw new ReasonException(
 									state.Index,
-									"at least " + delta + " more line(s)"
+									"expected at least " + delta + " more " +
+									"line(s) for this block"
 								);
 							}
 							else
@@ -701,14 +675,16 @@ namespace Exodrifter.Rumor.Parser
 								.Then(indentType)
 								.NotFollowedBy(EOF, "line")(state);
 						}
-						catch (ExpectedException)
+						catch (ParserException ex)
 						{
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ExpectedException(
+								throw new ReasonException(
 									state.Index,
-									"at least " + delta + " more line(s)"
+									"expected at least " + delta + " more " +
+									"line(s) for this block",
+									ex
 								);
 							}
 							else
@@ -747,11 +723,9 @@ namespace Exodrifter.Rumor.Parser
 		/// <typeparam name="T">The type of the parser.</typeparam>
 		/// <param name="parser">The parser to check the result of.</param>
 		/// <param name="predicate">The predicate to satisfy.</param>
-		/// <param name="expected">
-		/// The expected value (used in error messages).
-		/// </param>
+		/// <param name="message">The error messages to use on failure.</param>
 		public static Parser<T> Where<T>
-			(this Parser<T> parser, Func<T, bool> predicate, string expected)
+			(this Parser<T> parser, Func<T, bool> predicate, string message)
 		{
 			return state =>
 			{
@@ -768,7 +742,7 @@ namespace Exodrifter.Rumor.Parser
 						// We want to rollback the state to before the parser
 						// was run for the correct index.
 						transaction.Rollback();
-						throw new ExpectedException(state.Index, expected);
+						throw new ReasonException(state.Index, message);
 					}
 				}
 			};
@@ -808,15 +782,16 @@ namespace Exodrifter.Rumor.Parser
 						{
 							results.Add(parser(state));
 						}
-						catch (ExpectedException exception)
+						catch (ParserException exception)
 						{
 							if (results.Count < minimum)
 							{
 								var delta = minimum - results.Count;
-								throw new ExpectedException(
-									exception.Index,
-									"at least " + delta + " more of " +
-									string.Join(", ", exception.Expected)
+								throw new ReasonException(
+									state.Index,
+									"expected at least " + delta + " more " +
+									"instance(s) of the parser to succeed",
+									exception
 								);
 							}
 							else
@@ -847,7 +822,7 @@ namespace Exodrifter.Rumor.Parser
 				{
 					return new Maybe<T>(parser(state));
 				}
-				catch (ExpectedException)
+				catch (ParserException)
 				{
 					return new Maybe<T>();
 				}
@@ -876,7 +851,7 @@ namespace Exodrifter.Rumor.Parser
 						transaction.CommitIndex();
 						return result;
 					}
-					catch (ExpectedException e1)
+					catch (ParserException e1)
 					{
 						try
 						{
@@ -884,15 +859,9 @@ namespace Exodrifter.Rumor.Parser
 							transaction.CommitIndex();
 							return result;
 						}
-						catch (ExpectedException e2)
+						catch (ParserException e2)
 						{
-							var expected = new List<string>(
-								e1.Expected.Length + e2.Expected.Length
-							);
-							expected.AddRange(e1.Expected);
-							expected.AddRange(e2.Expected);
-							throw new ExpectedException
-								(state.Index, expected.ToArray());
+							throw new MultipleParserException(e1, e2);
 						}
 					}
 				}
@@ -994,7 +963,7 @@ namespace Exodrifter.Rumor.Parser
 
 				if (state.Source.Length <= state.Index + str.Length - 1)
 				{
-					throw new ExpectedException(state.Index, str);
+					throw new ExpectedException(state.Index, "\"" + str + "\"");
 				}
 
 				if (state.Source.Substring(state.Index, str.Length) == str)
@@ -1003,7 +972,7 @@ namespace Exodrifter.Rumor.Parser
 					return str;
 				}
 
-				throw new ExpectedException(state.Index, str);
+				throw new ExpectedException(state.Index, "\"" + str + "\"");
 			};
 		}
 
@@ -1217,18 +1186,18 @@ namespace Exodrifter.Rumor.Parser
 							until(new State(state));
 							break;
 						}
-						catch (ExpectedException untilException)
+						catch (ParserException untilException)
 						{
 							try
 							{
 								results.Add(parser(state));
 							}
-							catch (ExpectedException parserException)
+							catch (ParserException parserException)
 							{
 								// If we're at the end of the source file, throw
-								// the parsing exception for the until parser
-								// instead, since that is more likely descriptive
-								// of the content that is missing.
+								// the exception for the until parser instead,
+								// since that is more likely to be descriptive
+								// of why this parser is failing.
 								if (state.EOF)
 								{
 									throw untilException;

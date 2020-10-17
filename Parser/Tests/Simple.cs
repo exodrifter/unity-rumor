@@ -49,13 +49,12 @@ namespace Exodrifter.Rumor.Parser.Tests
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.SameOrIndented(state)
 			);
-			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(
-				new string[] { "line indented to column 5 or more" },
-				exception.Expected
+				"parse exception at index 2: line indented to column 5 or more",
+				exception.Message
 			);
 		}
 
@@ -66,13 +65,12 @@ namespace Exodrifter.Rumor.Parser.Tests
 			state.IndentIndex = state.Index;
 			state.Index -= 2;
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.SameOrIndented(state)
 			);
-			Assert.AreEqual(3, exception.Index);
 			Assert.AreEqual(
-				new string[] { "line indented to column 5 or more" },
-				exception.Expected
+				"parse exception at index 3: line indented to column 5 or more",
+				exception.Message
 			);
 		}
 
@@ -136,7 +134,10 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.String("HELLO WORLD!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "HELLO WORLD!" }, exception.Expected);
+			Assert.AreEqual(
+				new string[] { "\"HELLO WORLD!\"" },
+				exception.Expected
+			);
 		}
 
 		[Test]
@@ -148,7 +149,10 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.String("HELLO WORLD!!")(state)
 			);
 			Assert.AreEqual(0, exception.Index);
-			Assert.AreEqual(new string[] { "HELLO WORLD!!" }, exception.Expected);
+			Assert.AreEqual(
+				new string[] { "\"HELLO WORLD!!\"" },
+				exception.Expected
+			);
 		}
 
 		[Test]
@@ -160,7 +164,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 				Parse.String("WORLD!")(state)
 			);
 			Assert.AreEqual(6, exception.Index);
-			Assert.AreEqual(new string[] { "WORLD!" }, exception.Expected);
+			Assert.AreEqual(new string[] { "\"WORLD!\"" }, exception.Expected);
 		}
 
 		[Test]

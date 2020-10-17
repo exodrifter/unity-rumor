@@ -90,13 +90,17 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new State("a", 4, 0);
 
-			var exception = Assert.Throws<ExpectedException>(() =>
+			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.Char('a').Many(2)(state)
 			);
-			Assert.AreEqual(1, exception.Index);
 			Assert.AreEqual(
-				new string[] { "at least 1 more of a" },
-				exception.Expected
+				"parse exception at index 1: expected at least 1 more " +
+				"instance(s) of the parser to succeed",
+				exception.Message
+			);
+			Assert.AreEqual(
+				"parse exception at index 1: expected 'a'",
+				exception.InnerException.Message
 			);
 
 			Assert.AreEqual(0, state.Index);
