@@ -2,35 +2,26 @@
 {
 	public class BooleanValue : Value
 	{
+		public bool Value { get { return (bool)InternalValue; } }
 		public override ValueType Type => ValueType.Boolean;
 
 		public BooleanValue(bool b) : base(b) { }
 
 		public static BooleanValue operator |(BooleanValue l, BooleanValue r) =>
-			new BooleanValue((bool)l.InternalValue | (bool)r.InternalValue);
-
+			new BooleanValue(l.Value | r.Value);
 		public static BooleanValue operator &(BooleanValue l, BooleanValue r) =>
-			new BooleanValue((bool)l.InternalValue & (bool)r.InternalValue);
-
+			new BooleanValue(l.Value & r.Value);
 		public static BooleanValue operator ^(BooleanValue l, BooleanValue r) =>
-			new BooleanValue((bool)l.InternalValue ^ (bool)r.InternalValue);
-
+			new BooleanValue(l.Value ^ r.Value);
 		public static BooleanValue operator !(BooleanValue l) =>
-			new BooleanValue(!(bool)l.InternalValue);
+			new BooleanValue(!l.Value);
 
-		public static bool operator true(BooleanValue x)
-		{
-			return (bool)x.InternalValue;
-		}
-
-		public static bool operator false(BooleanValue x)
-		{
-			return !(bool)x.InternalValue;
-		}
+		public static bool operator true(BooleanValue x) => x.Value;
+		public static bool operator false(BooleanValue x) => !x.Value;
 
 		public override string ToString()
 		{
-			return (bool)InternalValue ? "true" : "false";
+			return Value ? "true" : "false";
 		}
 	}
 }
