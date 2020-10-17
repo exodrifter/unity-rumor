@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Compiler
 	using BooleanOp =
 		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
 
-	public static class ExpressionCompiler
+	public static partial class Compiler
 	{
 		#region Logic
 

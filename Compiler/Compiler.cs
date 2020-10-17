@@ -7,7 +7,7 @@ namespace Exodrifter.Rumor.Compiler
 {
 	using Rumor = Engine.Rumor;
 
-	public static class Compiler
+	public static partial class Compiler
 	{
 		public static Parser<Dictionary<string, List<Node>>> Script
 		{
@@ -168,7 +168,7 @@ namespace Exodrifter.Rumor.Compiler
 					Parse.Char(ch)(state);
 					Parse.Whitespaces(state);
 
-					var dialog = ExpressionCompiler.Text(state);
+					var dialog = Compiler.Text(state);
 
 					transaction.CommitIndex();
 					return constructor(identifier, dialog);
@@ -206,7 +206,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("pause")(state);
 						Parse.Spaces1(state);
 
-						var number = ExpressionCompiler.Math(state);
+						var number = Compiler.Math(state);
 						Parse.Spaces(state);
 
 						var scale = Parse
