@@ -24,10 +24,12 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new ChoiceNode("", "Hello?")
+						{ new ChoiceNode(
+							"_7GsId23vSk3NFwOJtwQwIGlADow=",
+							"Hello?")
 						}
 					},
-					{ "", new List<Node>()
+					{ "_7GsId23vSk3NFwOJtwQwIGlADow=", new List<Node>()
 						{ new SayNode(null, "Hello!")
 						}
 					},
@@ -52,10 +54,67 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
-						{ new ChoiceNode("", "Hello? Anyone there?")
+						{ new ChoiceNode(
+							"_Mab778K2k2yaPnNxIK+OQQkcp90=",
+							"Hello? Anyone there?")
 						}
 					},
-					{ "", new List<Node>()
+					{ "_Mab778K2k2yaPnNxIK+OQQkcp90=", new List<Node>()
+						{ new SayNode(null, "Hello!")
+						}
+					},
+				},
+				result
+			);
+		}
+
+		[Test]
+		public static void ChoiceLabeledSingleSuccess()
+		{
+			var state = new ParserState(
+				"choice [choice1]\n" +
+				"  > Hello?\n" +
+				"  : Hello!",
+				4, 0
+			);
+
+			var result = Compiler.Choice(state);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ChoiceNode("choice1", "Hello?")
+						}
+					},
+					{ "choice1", new List<Node>()
+						{ new SayNode(null, "Hello!")
+						}
+					},
+				},
+				result
+			);
+		}
+
+		[Test]
+		public static void ChoiceLabeledMultilineSuccess()
+		{
+			var state = new ParserState(
+				"choice [choice1]\n" +
+				"  > Hello?\n" +
+				"  > Anyone there?\n" +
+				"  : Hello!",
+				4, 0
+			);
+
+			var result = Compiler.Choice(state);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ChoiceNode("choice1", "Hello? Anyone there?")
+						}
+					},
+					{ "choice1", new List<Node>()
 						{ new SayNode(null, "Hello!")
 						}
 					},

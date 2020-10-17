@@ -2,6 +2,8 @@
 using Exodrifter.Rumor.Parser;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Exodrifter.Rumor.Compiler
 {
@@ -101,12 +103,10 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						Parse.String("choice")(state);
-						// TODO: Generate a label if one isn't defined
-						var identifier = Parse
+						var maybeIdentifier = Parse
 							.Spaces1
 							.Then(IdentifierLabel)
-							.Maybe()(state)
-							.GetValueOrDefault("");
+							.Maybe()(state);
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
@@ -129,6 +129,9 @@ namespace Exodrifter.Rumor.Compiler
 						var result = Script(state);
 
 						// Move the main block to the identifier for this label
+						var textToHash = text.Evaluate().Value;
+						var identifier = maybeIdentifier
+							.GetValueOrDefault("_" + Sha1Hash(textToHash));
 						result[identifier] = result[Rumor.MainIdentifier];
 
 						// Add the choice as the only node in the main block
@@ -290,6 +293,8 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
+		#region Identifier
+
 		public static Parser<string> Identifier =>
 			Parse.Alphanumeric
 				.Many(1)
@@ -324,5 +329,16 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 		}
+
+		private static string Sha1Hash(string rawData)
+		{
+			using (var sha1Hasher = SHA1.Create())
+			{
+				var bytes = sha1Hasher.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+				return Convert.ToBase64String(bytes);
+			}
+		}
+
+		#endregion
 	}
 }
