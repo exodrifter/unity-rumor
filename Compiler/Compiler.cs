@@ -9,9 +9,7 @@ namespace Exodrifter.Rumor.Compiler
 
 	public static class Compiler
 	{
-		#region Block
-
-		public static Parser<Dictionary<string, List<Node>>> Block
+		public static Parser<Dictionary<string, List<Node>>> Script
 		{
 			get
 			{
@@ -55,7 +53,9 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Dictionary<string, List<Node>>> Label
+		#region Label
+
+		public static Parser<Dictionary<string, List<Node>>> Label
 		{
 			get
 			{
@@ -74,7 +74,7 @@ namespace Exodrifter.Rumor.Compiler
 						// Parse an indented block
 						Parse.Whitespaces(state);
 						Parse.Indented(state);
-						var result = Block(state);
+						var result = Script(state);
 
 						// Move the main block to the identifier for this label
 						result[identifier] = result[Rumor.MainIdentifier];

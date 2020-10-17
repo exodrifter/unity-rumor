@@ -7,14 +7,14 @@ namespace Exodrifter.Rumor.Compiler.Tests
 {
 	using Rumor = Engine.Rumor;
 
-	public static class Block
+	public static class Script
 	{
 		[Test]
-		public static void BlockOneSuccess()
+		public static void ScriptOneSuccess()
 		{
 			var state = new State("Alice: Hello world!", 4, 0);
 
-			var result = Compiler.Block(state);
+			var result = Compiler.Script(state);
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
-		public static void BlockMultipleSuccess()
+		public static void ScriptMultipleSuccess()
 		{
 			var state = new State(@"
 				Alice: Hello world!
@@ -41,7 +41,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				, 4, 0
 			);
 
-			var result = Compiler.Block(state);
+			var result = Compiler.Script(state);
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
