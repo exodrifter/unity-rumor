@@ -23,6 +23,9 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				},
 				result
 			);
+
+			Assert.AreEqual(19, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
 		}
 
 		[Test]
@@ -49,6 +52,9 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				},
 				result
 			);
+
+			Assert.AreEqual(92, state.Index);
+			Assert.AreEqual(0, state.IndentIndex);
 		}
 	}
 }

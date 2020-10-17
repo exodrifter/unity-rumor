@@ -4,7 +4,8 @@ namespace Exodrifter.Rumor.Parser
 {
 	/// <summary>
 	/// A class that can be used to roll back a <see cref="State"/> if an
-	/// exception is thrown.
+	/// exception is thrown. Also resets the indent index back to the original
+	/// value.
 	/// </summary>
 	public class Transaction : IDisposable
 	{
@@ -16,7 +17,8 @@ namespace Exodrifter.Rumor.Parser
 		public Transaction(State state)
 		{
 			this.state = state;
-			Commit();
+			index = state.Index;
+			indentIndex = state.IndentIndex;
 		}
 
 		/// <summary>
@@ -35,7 +37,6 @@ namespace Exodrifter.Rumor.Parser
 		public void Commit()
 		{
 			index = state.Index;
-			indentIndex = state.IndentIndex;
 		}
 
 		public void Dispose()

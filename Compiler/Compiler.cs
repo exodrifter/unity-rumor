@@ -15,48 +15,45 @@ namespace Exodrifter.Rumor.Compiler
 			{
 				return state =>
 				{
-					Parse.Whitespaces(state);
-					state.IndentIndex = state.Index;
-
-					var blocks = Parse.Many(NodeBlock.Or(LabelBlock))(state);
-
-					var result = new Dictionary<string, List<Node>>();
-					foreach (var block in blocks)
+					using (var transaction = new Transaction(state))
 					{
-						foreach (var key in block.Keys)
+						// Find the indentation level
+						Parse.Whitespaces(state);
+						state.IndentIndex = state.Index;
+
+						var blocks = Parse.Block(
+							Node.Select(x =>
+								new Dictionary<string, List<Node>>()
+									{ { "_main", new List<Node>() { x } } }
+							)
+							.Or(Label),
+							Parse.Same
+						)(state);
+
+						var result = new Dictionary<string, List<Node>>();
+						foreach (var block in blocks)
 						{
-							if (result.ContainsKey(key))
+							foreach (var key in block.Keys)
 							{
-								result[key].AddRange(block[key]);
-							}
-							else
-							{
-								result[key] = block[key];
+								if (result.ContainsKey(key))
+								{
+									result[key].AddRange(block[key]);
+								}
+								else
+								{
+									result[key] = block[key];
+								}
 							}
 						}
+
+						transaction.Commit();
+						return result;
 					}
-
-					return result;
 				};
 			}
 		}
 
-		private static Parser<Dictionary<string, List<Node>>> NodeBlock
-		{
-			get
-			{
-				return state =>
-				{
-					var nodes = Parse.Block(Node, Parse.Same)(state);
-
-					var result = new Dictionary<string, List<Node>>();
-					result.Add("_main", nodes);
-					return result;
-				};
-			}
-		}
-
-		private static Parser<Dictionary<string, List<Node>>> LabelBlock
+		private static Parser<Dictionary<string, List<Node>>> Label
 		{
 			get
 			{
@@ -68,17 +65,18 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.Spaces1(state);
 						var identifier = IdentifierLabel(state);
 
-						// Consume at least one newline
+						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
-						Parse.NewLine(state);
+						Parse.EOL(state);
+
+						// Parse an indented block
 						Parse.Whitespaces(state);
-
 						Parse.Indented(state);
-						var result = NodeBlock(state);
+						var result = Block(state);
 
-						// Move the node block to the identifier
-						result[identifier] = result[null];
-						result.Remove(null);
+						// Move the main block to the identifier
+						result[identifier] = result["_main"];
+						result.Remove("_main");
 
 						transaction.Commit();
 						return result;
@@ -112,8 +110,6 @@ namespace Exodrifter.Rumor.Compiler
 				{
 					using (var transaction = new Transaction(state))
 					{
-						state.IndentIndex = state.Index;
-
 						Parse.String("clear")(state);
 						transaction.Commit();
 

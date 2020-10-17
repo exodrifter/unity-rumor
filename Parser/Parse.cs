@@ -472,7 +472,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
-		/// parser position is less than the reference indentation level.
+		/// parser position is at a lower column number than the reference
+		/// indentation index.
 		/// </summary>
 		public static Parser<int> Unindented
 		{
@@ -500,7 +501,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
-		/// parser position is the same as the reference indentation level.
+		/// parser position is at the same column number as the reference
+		/// indentation index.
 		/// </summary>
 		public static Parser<int> Same
 		{
@@ -528,8 +530,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
-		/// parser position is at the same indentation level or more than the
-		/// reference indentation level.
+		/// parser position is at a same or greater column number than the
+		/// column for the reference indentation index.
 		/// </summary>
 		public static Parser<int> SameOrIndented
 		{
@@ -557,8 +559,8 @@ namespace Exodrifter.Rumor.Parser
 
 		/// <summary>
 		/// Returns a parser that returns the current column if the current
-		/// parser position is at a greater indentation level than the reference
-		/// indentation level.
+		/// parser position is at a greater column number than the column for
+		/// the reference indentation index.
 		/// </summary>
 		public static Parser<int> Indented
 		{
@@ -606,17 +608,13 @@ namespace Exodrifter.Rumor.Parser
 			for (int i = line.Length - 1; i >= 0; i--)
 			{
 				var ch = line[i];
-				if (ch == ' ')
-				{
-					column++;
-				}
-				else if (ch == '\t')
+				if (ch == '\t')
 				{
 					column += state.TabSize - (column % state.TabSize);
 				}
 				else
 				{
-					break;
+					column++;
 				}
 			}
 
@@ -640,9 +638,15 @@ namespace Exodrifter.Rumor.Parser
 		/// <summary>
 		/// Parses an indented block of zero or more occurrences of
 		/// <paramref name="line"/>.
+		/// 
+		/// This parser assumes a few things:
+		/// * The caller sets the indentation reference index.
+		/// * The line parser does not necessarily consume leading whitespace.
+		/// * The line parser may NOT consume the newline character at the end
+		///   of a line.
 		/// </summary>
 		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="line">The parser to use for one line.</param>
+		/// <param name="line">The parser to use for each line.</param>
 		/// <param name="indentType">The indentation parser.</param>
 		/// <param name="minimum">
 		/// The minimum number of times the parser must be successful.
@@ -656,13 +660,20 @@ namespace Exodrifter.Rumor.Parser
 				{
 					var results = new List<T>();
 
+					// Consume leading whitespace for this block
+					Whitespaces(state);
+					indentType(state);
+
 					while (true)
 					{
 						// Parse a line
 						results.Add(line(state));
 
-						// Consume the rest of the whitespace on this line
-						Space.Until(NewLine.Then(new Unit()).Or(EOF))(state);
+						// Consume the rest of the spaces on this line
+						if (!FollowedBy(EOL)(state))
+						{
+							Space.Until(EOL)(state);
+						}
 						transaction.Commit();
 
 						// If this is the end of the file, stop
@@ -673,7 +684,7 @@ namespace Exodrifter.Rumor.Parser
 								var delta = minimum - results.Count;
 								throw new ParserException(
 									state.Index,
-									"at least " + delta + " more line"
+									"at least " + delta + " more line(s)"
 								);
 							}
 							else
@@ -697,7 +708,7 @@ namespace Exodrifter.Rumor.Parser
 								var delta = minimum - results.Count;
 								throw new ParserException(
 									state.Index,
-									"at least " + delta + " more line"
+									"at least " + delta + " more line(s)"
 								);
 							}
 							else
