@@ -10,9 +10,31 @@ namespace Exodrifter.Rumor.Compiler
 	using BooleanOp =
 		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
 
-
 	public static partial class Compiler
 	{
+		/// <summary>
+		/// Helper for constructing operator parsers that can have leading
+		/// whitespace.
+		/// </summary>
+		/// <typeparam name="T">The type to return.</typeparam>
+		/// <param name="value">The value to return.</param>
+		/// <param name="ops">The strings which represent the operator.</param>
+		private static Parser<T> Op<T>(T value, params string[] ops)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String(ops)(state);
+
+					transaction.CommitIndex();
+					return value;
+				}
+			};
+		}
+
 		#region Comparison
 
 		public static Parser<Expression<BooleanValue>> Comparison =>
@@ -81,46 +103,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser
 			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			Is<T>() where T : Value
-		{
-			return state =>
-			{
-				using (var transaction = new Transaction(state))
-				{
-					Parse.Whitespaces(state);
-					Parse.SameOrIndented(state);
-					Parse.String("is", "==")(state);
-
-					transaction.CommitIndex();
-					Func<Expression<T>, Expression<T>, Expression<BooleanValue>> op =
-						(l, r) => new IsExpression<T>(l, r);
-					return op;
-				}
-			};
-		}
+			Is<T>() where T : Value =>
+			Op<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
+			((l, r) => new IsExpression<T>(l, r), "is", "==");
 
 		/// <summary>
 		/// Parses a logic not equal operator.
 		/// </summary>
 		private static Parser
 			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			IsNot<T>() where T : Value
-		{
-			return state =>
-			{
-				using (var transaction = new Transaction(state))
-				{
-					Parse.Whitespaces(state);
-					Parse.SameOrIndented(state);
-					Parse.String("is not", "!=")(state);
-
-					transaction.CommitIndex();
-					Func<Expression<T>, Expression<T>, Expression<BooleanValue>> op =
-						(l, r) => new IsNotExpression<T>(l, r);
-					return op;
-				}
-			};
-		}
+			IsNot<T>() where T : Value =>
+			Op<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
+			((l, r) => new IsNotExpression<T>(l, r), "is not", "!=");
 
 		/// <summary>
 		/// Parses a comparison expression wrapped in parenthesis.
@@ -173,71 +167,20 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a logic or operator.
 		/// </summary>
-		private static Parser<BooleanOp> Or
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.String("or", "||")(state);
-
-						transaction.CommitIndex();
-						BooleanOp op = (l, r) => new OrExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<BooleanOp> Or =>
+			Op<BooleanOp>((l, r) => new OrExpression(l, r), "or", "||");
 
 		/// <summary>
 		/// Parses a logic and operator.
 		/// </summary>
-		private static Parser<BooleanOp> And
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.String("and", "&&")(state);
-
-						transaction.CommitIndex();
-						BooleanOp op = (l, r) => new AndExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<BooleanOp> And =>
+			Op<BooleanOp>((l, r) => new AndExpression(l, r), "and", "&&");
 
 		/// <summary>
 		/// Parses a logic xor operator.
 		/// </summary>
-		private static Parser<BooleanOp> Xor
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.String("xor", "^")(state);
-
-						transaction.CommitIndex();
-						BooleanOp op = (l, r) => new XorExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<BooleanOp> Xor =>
+			Op<BooleanOp>((l, r) => new XorExpression(l, r), "xor", "^");
 
 		/// <summary>
 		/// Parses a boolean literal.
@@ -338,48 +281,14 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses an addition operator.
 		/// </summary>
-		private static Parser<NumberOp> Add
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.Char('+')(state);
-
-						transaction.CommitIndex();
-						NumberOp op = (l, r) => new AddExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<NumberOp> Add =>
+			Op<NumberOp>((l, r) => new AddExpression(l, r), "+");
 
 		/// <summary>
 		/// Parses a subtraction operator.
 		/// </summary>
-		private static Parser<NumberOp> Subtract
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.Char('-')(state);
-
-						transaction.CommitIndex();
-						NumberOp op = (l, r) => new SubtractExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<NumberOp> Subtract =>
+			Op<NumberOp>((l, r) => new SubtractExpression(l, r), "-");
 
 		/// <summary>
 		/// Parses a multiplication or division operator.
@@ -390,48 +299,14 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses an multiplication operator.
 		/// </summary>
-		private static Parser<NumberOp> Multiply
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.Char('*')(state);
-
-						transaction.CommitIndex();
-						NumberOp op = (l, r) => new MultiplyExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<NumberOp> Multiply =>
+			Op<NumberOp>((l, r) => new MultiplyExpression(l, r), "*");
 
 		/// <summary>
 		/// Parses a division operator.
 		/// </summary>
-		private static Parser<NumberOp> Divide
-		{
-			get
-			{
-				return state =>
-				{
-					using (var transaction = new Transaction(state))
-					{
-						Parse.Whitespaces(state);
-						Parse.SameOrIndented(state);
-						Parse.Char('/')(state);
-
-						transaction.CommitIndex();
-						NumberOp op = (l, r) => new DivideExpression(l, r);
-						return op;
-					}
-				};
-			}
-		}
+		private static Parser<NumberOp> Divide =>
+			Op<NumberOp>((l, r) => new DivideExpression(l, r), "/");
 
 		/// <summary>
 		/// Parses a number literal.
