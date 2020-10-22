@@ -48,12 +48,15 @@ namespace Exodrifter.Rumor.Compiler
 			{
 				return state =>
 				{
-					var p = Logic.Or(ComparisonParenthesis);
+					using (var transaction = new Transaction(state))
+					{
+						var l = Logic.Or(ComparisonParenthesis)(state);
+						var op = ComparisonOps<BooleanValue>()(state);
+						var r = Logic.Or(ComparisonParenthesis)(state);
 
-					var l = p(state);
-					var op = ComparisonOps<BooleanValue>()(state);
-					var r = p(state);
-					return op(l, r);
+						transaction.CommitIndex();
+						return op(l, r);
+					}
 				};
 			}
 		}
@@ -64,10 +67,15 @@ namespace Exodrifter.Rumor.Compiler
 			{
 				return state =>
 				{
-					var l = Math(state);
-					var op = ComparisonOps<NumberValue>()(state);
-					var r = Math(state);
-					return op(l, r);
+					using (var transaction = new Transaction(state))
+					{
+						var l = Math(state);
+						var op = ComparisonOps<NumberValue>()(state);
+						var r = Math(state);
+
+						transaction.CommitIndex();
+						return op(l, r);
+					}
 				};
 			}
 		}
@@ -78,10 +86,15 @@ namespace Exodrifter.Rumor.Compiler
 			{
 				return state =>
 				{
-					var l = QuoteLiteral(state);
-					var op = ComparisonOps<StringValue>()(state);
-					var r = QuoteLiteral(state);
-					return op(l, r);
+					using (var transaction = new Transaction(state))
+					{
+						var l = QuoteLiteral(state);
+						var op = ComparisonOps<StringValue>()(state);
+						var r = QuoteLiteral(state);
+
+						transaction.CommitIndex();
+						return op(l, r);
+					}
 				};
 			}
 		}
