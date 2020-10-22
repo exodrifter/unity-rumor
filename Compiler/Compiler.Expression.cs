@@ -10,8 +10,144 @@ namespace Exodrifter.Rumor.Compiler
 	using BooleanOp =
 		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
 
+
 	public static partial class Compiler
 	{
+		#region Comparison
+
+		public static Parser<Expression<BooleanValue>> Comparison =>
+			BooleanComparison
+			.Or(NumberComparison)
+			.Or(StringComparison);
+
+		private static Parser<Expression<BooleanValue>> BooleanComparison
+		{
+			get
+			{
+				return state =>
+				{
+					var p = Logic.Or(ComparisonParenthesis);
+
+					var l = p(state);
+					var op = ComparisonOps<BooleanValue>()(state);
+					var r = p(state);
+					return op(l, r);
+				};
+			}
+		}
+
+		private static Parser<Expression<BooleanValue>> NumberComparison
+		{
+			get
+			{
+				return state =>
+				{
+					var l = Math(state);
+					var op = ComparisonOps<NumberValue>()(state);
+					var r = Math(state);
+					return op(l, r);
+				};
+			}
+		}
+
+		private static Parser<Expression<BooleanValue>> StringComparison
+		{
+			get
+			{
+				return state =>
+				{
+					var l = QuoteLiteral(state);
+					var op = ComparisonOps<StringValue>()(state);
+					var r = QuoteLiteral(state);
+					return op(l, r);
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a comparison operator, which will return a
+		/// <see cref="BooleanLiteral"/> when evaluated.
+		/// </summary>
+		private static Parser
+			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
+			ComparisonOps<T>() where T : Value
+		{
+			return IsNot<T>()
+				.Or(Is<T>());
+		}
+
+		/// <summary>
+		/// Parses a logic is operator.
+		/// </summary>
+		private static Parser
+			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
+			Is<T>() where T : Value
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("is", "==")(state);
+
+					transaction.CommitIndex();
+					Func<Expression<T>, Expression<T>, Expression<BooleanValue>> op =
+						(l, r) => new IsExpression<T>(l, r);
+					return op;
+				}
+			};
+		}
+
+		/// <summary>
+		/// Parses a logic not equal operator.
+		/// </summary>
+		private static Parser
+			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
+			IsNot<T>() where T : Value
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					Parse.String("is not", "!=")(state);
+
+					transaction.CommitIndex();
+					Func<Expression<T>, Expression<T>, Expression<BooleanValue>> op =
+						(l, r) => new IsNotExpression<T>(l, r);
+					return op;
+				}
+			};
+		}
+
+		/// <summary>
+		/// Parses a comparison expression wrapped in parenthesis.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> ComparisonParenthesis
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var logic = Parse.SurroundBlock('(', ')',
+							Comparison, Parse.SameOrIndented
+						)(state);
+
+						transaction.CommitIndex();
+						return logic;
+					}
+				};
+			}
+		}
+
+		#endregion
+
 		#region Logic
 
 		/// <summary>
@@ -30,11 +166,9 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(LogicPiece, Xor);
 
 		private static Parser<Expression<BooleanValue>> LogicPiece =>
-			Parse.SurroundBlock('(', ')',
-				Parse.Ref(() => Logic),
-				Parse.SameOrIndented
-			).Or(NotExpression)
-			.Or(BooleanLiteral);
+			LogicParenthesis
+				.Or(NotExpression)
+				.Or(BooleanLiteral);
 
 		/// <summary>
 		/// Parses a logic or operator.
@@ -144,10 +278,34 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.Whitespaces(state);
 						Parse.SameOrIndented(state);
 						Parse.String("not", "!")(state);
-						var logic = Logic(state);
+						var logic = Logic.Or(Comparison)(state);
 
 						transaction.CommitIndex();
 						return new NotExpression(logic);
+					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a logic expression wrapped in parenthesis.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> LogicParenthesis
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var logic = Parse.SurroundBlock('(', ')',
+							Logic, Parse.SameOrIndented
+						)(state);
+
+						transaction.CommitIndex();
+						return logic;
 					}
 				};
 			}
@@ -169,10 +327,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece, MultiplyOrDivide);
 
 		private static Parser<Expression<NumberValue>> MathPiece =>
-			Parse.SurroundBlock('(', ')',
-				Parse.Ref(() => Math),
-				Parse.SameOrIndented
-			).Or(NumberLiteral);
+			MathParenthesis.Or(NumberLiteral);
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
@@ -296,6 +451,26 @@ namespace Exodrifter.Rumor.Compiler
 						transaction.CommitIndex();
 						return new NumberLiteral(num);
 					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a math expression wrapped in parenthesis.
+		/// </summary>
+		private static Parser<Expression<NumberValue>> MathParenthesis
+		{
+			get
+			{
+				return state =>
+				{
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
+					var math = Parse.SurroundBlock('(', ')',
+						Math, Parse.SameOrIndented
+					)(state);
+
+					return math;
 				};
 			}
 		}
@@ -444,6 +619,25 @@ namespace Exodrifter.Rumor.Compiler
 		public static Parser<Expression<StringValue>> Quote =>
 			Parse.Surround('\"', '\"', QuoteInternal);
 
+		private static Parser<Expression<StringValue>> QuoteLiteral
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var quote = Quote(state);
+
+						transaction.CommitIndex();
+						return quote;
+					}
+				};
+			}
+		}
+
 		private static Parser<Expression<StringValue>> QuoteInternal
 		{
 			get
@@ -508,7 +702,7 @@ namespace Exodrifter.Rumor.Compiler
 					}
 				};
 			}
-			
+
 		}
 
 		#endregion
