@@ -121,5 +121,111 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		#endregion
+
+		#region Greater
+
+		[Test]
+		public static void GreaterSuccess()
+		{
+			var state = new ParserState("5 > 4", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void GreaterFailure()
+		{
+			var state = new ParserState("4 > 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+		}
+
+		#endregion
+
+		#region Greater Or Equal
+
+		[Test]
+		public static void GreaterOrEqualSuccess()
+		{
+			var state = new ParserState("5 >= 4", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void GreaterOrEqualExactSuccess()
+		{
+			var state = new ParserState("5 >= 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void GreaterOrEqualFailure()
+		{
+			var state = new ParserState("4 >= 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+		}
+
+		#endregion
+
+		#region Less
+
+		[Test]
+		public static void LessSuccess()
+		{
+			var state = new ParserState("4 < 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void LessFailure()
+		{
+			var state = new ParserState("5 < 4", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+		}
+
+		#endregion
+
+		#region Less Or Equal
+
+		[Test]
+		public static void LessOrEqualSuccess()
+		{
+			var state = new ParserState("4 <= 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void LessOrEqualExactSuccess()
+		{
+			var state = new ParserState("5 <= 5", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+		}
+
+		[Test]
+		public static void LessOrEqualFailure()
+		{
+			var state = new ParserState("5 <= 4", 4, 0);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+		}
+
+		#endregion
 	}
 }

@@ -9,6 +9,8 @@ namespace Exodrifter.Rumor.Compiler
 		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<NumberValue>>;
 	using BooleanOp =
 		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
+	using NumberComparisonOp =
+		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<BooleanValue>>;
 
 	public static partial class Compiler
 	{
@@ -70,7 +72,9 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						var l = Math(state);
-						var op = ComparisonOps<NumberValue>()(state);
+						var op = ComparisonOps<NumberValue>()
+							.Or(NumberComparisonOps())
+							(state);
 						var r = Math(state);
 
 						transaction.CommitIndex();
@@ -112,7 +116,7 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		/// <summary>
-		/// Parses a logic is operator.
+		/// Parses a logic is comparison operator.
 		/// </summary>
 		private static Parser
 			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
@@ -121,13 +125,53 @@ namespace Exodrifter.Rumor.Compiler
 			((l, r) => new IsExpression<T>(l, r), "is", "==");
 
 		/// <summary>
-		/// Parses a logic not equal operator.
+		/// Parses a not equal comparison operator.
 		/// </summary>
 		private static Parser
 			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
 			IsNot<T>() where T : Value =>
 			Op<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
 			((l, r) => new IsNotExpression<T>(l, r), "is not", "!=");
+
+		/// <summary>
+		/// Parses a comparison operator that can only be used with numbers,
+		/// which will return a <see cref="BooleanLiteral"/> when evaluated.
+		/// </summary>
+		private static Parser<NumberComparisonOp> NumberComparisonOps()
+		{
+			return GreaterThanOrEqual
+				.Or(GreaterThan)
+				.Or(LessThanOrEqual)
+				.Or(LessThan);
+		}
+
+		/// <summary>
+		/// Parses a greater than comparison operator.
+		/// </summary>
+		private static Parser<NumberComparisonOp> GreaterThan =>
+			Op<NumberComparisonOp>
+			((l, r) => new GreaterThanExpression(l, r), ">");
+
+		/// <summary>
+		/// Parses a greater than comparison operator.
+		/// </summary>
+		private static Parser<NumberComparisonOp> LessThan =>
+			Op<NumberComparisonOp>
+			((l, r) => new LessThanExpression(l, r), "<");
+
+		/// <summary>
+		/// Parses a greater than comparison operator.
+		/// </summary>
+		private static Parser<NumberComparisonOp> GreaterThanOrEqual =>
+			Op<NumberComparisonOp>
+			((l, r) => new GreaterThanOrEqualExpression(l, r), ">=");
+
+		/// <summary>
+		/// Parses a greater than comparison operator.
+		/// </summary>
+		private static Parser<NumberComparisonOp> LessThanOrEqual =>
+			Op<NumberComparisonOp>
+			((l, r) => new LessThanOrEqualExpression(l, r), "<=");
 
 		/// <summary>
 		/// Parses a comparison expression wrapped in parenthesis.

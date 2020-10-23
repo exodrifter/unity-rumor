@@ -19,5 +19,14 @@
 			new NumberValue(l.Value * r.Value);
 		public static NumberValue operator /(NumberValue l, NumberValue r) =>
 			new NumberValue(l.Value / r.Value);
+
+		public static bool operator >(NumberValue l, NumberValue r) =>
+			l.Value > r.Value;
+		public static bool operator <(NumberValue l, NumberValue r) =>
+			l.Value < r.Value;
+		public static bool operator >=(NumberValue l, NumberValue r) =>
+			l.Value >= r.Value;
+		public static bool operator <=(NumberValue l, NumberValue r) =>
+			l.Value <= r.Value;
 	}
 }
