@@ -153,6 +153,22 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Pushes a list of nodes as a new stack frame onto the call stack.
+		/// </summary>
+		/// <param name="label">
+		/// The list of nodes to push onto the call stack.
+		/// </param>
+		public void Inject(List<Node> nodes)
+		{
+			if (nodes == null)
+			{
+				throw new ArgumentNullException(nameof(nodes));
+			}
+
+			Stack.Push(new StackFrame(nodes));
+		}
+
+		/// <summary>
 		/// Pushes a labeled list of nodes as a new stack frame onto the call
 		/// stack.
 		/// </summary>
