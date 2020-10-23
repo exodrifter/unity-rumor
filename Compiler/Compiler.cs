@@ -29,7 +29,8 @@ namespace Exodrifter.Rumor.Compiler
 									{ { Rumor.MainIdentifier, new List<Node>() { x } } }
 							)
 							.Or(AddChoice)
-							.Or(Label),
+							.Or(Label)
+							.Or(If),
 							Parse.Same
 						)(state);
 
@@ -141,6 +142,178 @@ namespace Exodrifter.Rumor.Compiler
 
 						transaction.CommitIndex();
 						return result;
+					}
+				};
+			}
+		}
+
+		#endregion
+
+		#region Control Flow
+
+		public static Parser<Dictionary<string, List<Node>>> If
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("if")(state);
+						Parse.Spaces1(state);
+						var comparison = ComparisonBlock(state);
+
+						// Consume the rest of the whitespace on this line
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.EOL(state);
+
+						// Parse an indented block
+						Parse.Whitespaces(state);
+						Parse.Indented(state);
+						var result = Script(state);
+						if (result[Rumor.MainIdentifier].Count == 0)
+						{
+							throw new ReasonException(
+								state.Index,
+								"if statements must be followed by a non-empty block"
+							);
+						}
+						transaction.CommitIndex();
+
+						// Try to parse the next control flow statement
+						ControlNode next;
+						try
+						{
+							Parse.Whitespaces(state);
+							var nextResult = Elif.Or(Else)(state);
+
+							next = nextResult.Item1;
+
+							// Combine the scripts
+							foreach (var item in nextResult.Item2)
+							{
+								result[item.Key] = item.Value;
+							}
+						}
+						catch (ParserException)
+						{
+							transaction.Rollback();
+							next = null;
+						}
+
+						// Move the main block to the control node
+						var block = result[Rumor.MainIdentifier];
+						var node = new ControlNode(comparison, block, next);
+						result.Remove(Rumor.MainIdentifier);
+
+						transaction.CommitIndex();
+						result[Rumor.MainIdentifier] = new List<Node>() { node };
+						return result;
+					}
+				};
+			}
+		}
+
+		public static Parser<Tuple<ControlNode, Dictionary<string, List<Node>>>> Elif
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("elif")(state);
+						Parse.Spaces1(state);
+						var comparison = ComparisonBlock(state);
+
+						// Consume the rest of the whitespace on this line
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.EOL(state);
+
+						// Parse an indented block
+						Parse.Whitespaces(state);
+						Parse.Indented(state);
+						var result = Script(state);
+						if (result[Rumor.MainIdentifier].Count == 0)
+						{
+							throw new ReasonException(
+								state.Index,
+								"elif statements must be followed by a non-empty block"
+							);
+						}
+						transaction.CommitIndex();
+
+						// Try to parse the next control flow statement
+						ControlNode next;
+						try
+						{
+							Parse.Whitespaces(state);
+							var nextResult = Elif.Or(Else)(state);
+
+							next = nextResult.Item1;
+
+							// Combine the scripts
+							foreach (var item in nextResult.Item2)
+							{
+								result[item.Key] = item.Value;
+							}
+						}
+						catch (ParserException)
+						{
+							transaction.Rollback();
+							next = null;
+						}
+
+						// Move the main block to the control node
+						var block = result[Rumor.MainIdentifier];
+						var node = new ControlNode(comparison, block, next);
+						result.Remove(Rumor.MainIdentifier);
+
+						return new Tuple<ControlNode, Dictionary<string, List<Node>>>(
+							node,
+							result
+						);
+					}
+				};
+			}
+		}
+
+		public static Parser<Tuple<ControlNode, Dictionary<string, List<Node>>>> Else
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("else")(state);
+
+						// Consume the rest of the whitespace on this line
+						Parse.Spaces.Until(Parse.EOL)(state);
+						Parse.EOL(state);
+
+						// Parse an indented block
+						Parse.Whitespaces(state);
+						Parse.Indented(state);
+						var result = Script(state);
+						if (result[Rumor.MainIdentifier].Count == 0)
+						{
+							throw new ReasonException(
+								state.Index,
+								"else statements must be followed by a non-empty block"
+							);
+						}
+						transaction.CommitIndex();
+
+						// Move the main block to the control node
+						var block = result[Rumor.MainIdentifier];
+						var node = new ControlNode(null, block, null);
+						result.Remove(Rumor.MainIdentifier);
+
+						return new Tuple<ControlNode, Dictionary<string, List<Node>>>(
+							node,
+							result
+						);
 					}
 				};
 			}

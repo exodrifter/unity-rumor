@@ -39,6 +39,12 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Comparison
 
+		/// <summary>
+		/// Parses a comparsion block.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> ComparisonBlock =>
+			Parse.SurroundBlock('{', '}', Comparison, Parse.SameOrIndented);
+
 		public static Parser<Expression<BooleanValue>> Comparison =>
 			BooleanComparison
 			.Or(NumberComparison)
@@ -416,12 +422,13 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="Quote"/> parsers.
 		/// </summary>
 		private static Parser<Expression<StringValue>> Substitution =>
-			Parse.Surround('{', '}',
+			Parse.SurroundBlock('{', '}',
 				Math.Select(x => (Expression<StringValue>)
 					new ToStringExpression<NumberValue>(x))
 				.Or(Logic.Select(x => (Expression<StringValue>)
 					new ToStringExpression<BooleanValue>(x)))
-				.Or(Quote)
+				.Or(Quote),
+				Parse.SameOrIndented
 			);
 
 		#endregion
