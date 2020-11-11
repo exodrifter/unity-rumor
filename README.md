@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="https://raw.githubusercontent.com/wiki/exodrifter/unity-rumor/Images/Logo.png">
-</p>
+<img width="225" height="100" src="https://raw.githubusercontent.com/wiki/exodrifter/unity-rumor/Images/Logo.png">
 
 Rumor
 =====
