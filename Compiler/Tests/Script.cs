@@ -33,11 +33,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ScriptMultipleSuccess()
 		{
-			var state = new ParserState(@"
-				Alice: Hello world!
-				Alice: How are you?
-				Alice: The weather seems nice today.
-				"
+			var state = new ParserState(
+				"Alice: Hello world!\n" +
+				"Alice: How are you?\n" +
+				"Alice: The weather seems nice today.\n"
 				, 4, 0
 			);
 
@@ -55,7 +54,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				result
 			);
 
-			Assert.AreEqual(92, state.Index);
+			Assert.AreEqual(76, state.Index);
 			Assert.AreEqual(0, state.IndentIndex);
 		}
 	}
