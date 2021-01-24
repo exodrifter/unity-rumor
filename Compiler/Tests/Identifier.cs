@@ -15,12 +15,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
-		public static void IdentifierNumericSuccess()
+		public static void IdentifierNumericFailure()
 		{
 			var state = new ParserState("123456789", 4, 0);
 
-			var result = Compiler.Identifier(state);
-			Assert.AreEqual("123456789", result);
+			var exception = Assert.Throws<ExpectedException>(() =>
+				Compiler.Identifier(state)
+			);
+			Assert.AreEqual(
+				"parse exception at index 0: expected letter",
+				exception.Message
+			);
 		}
 
 		[Test]
@@ -28,17 +33,12 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new ParserState("_foobar", 4, 0);
 
-			var exception = Assert.Throws<ReasonException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.Identifier(state)
 			);
 			Assert.AreEqual(
-				"parse exception at index 0: expected at least 1 more " +
-				"instance(s) of the parser to succeed",
+				"parse exception at index 0: expected letter",
 				exception.Message
-			);
-			Assert.AreEqual(
-				"parse exception at index 0: expected alphanumeric character",
-				exception.InnerException.Message
 			);
 		}
 
@@ -54,12 +54,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
-		public static void IdentifierLabelNumericSuccess()
+		public static void IdentifierLabelNumericFailure()
 		{
 			var state = new ParserState("[123456789]", 4, 0);
 
-			var result = Compiler.IdentifierLabel(state);
-			Assert.AreEqual("123456789", result);
+			var exception = Assert.Throws<ExpectedException>(() =>
+				Compiler.IdentifierLabel(state)
+			);
+			Assert.AreEqual(
+				"parse exception at index 1: expected letter",
+				exception.Message
+			);
 		}
 
 		[Test]
@@ -67,17 +72,12 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new ParserState("[_foobar]", 4, 0);
 
-			var exception = Assert.Throws<ReasonException>(() =>
+			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.IdentifierLabel(state)
 			);
 			Assert.AreEqual(
-				"parse exception at index 1: expected at least 1 more " +
-				"instance(s) of the parser to succeed",
+				"parse exception at index 1: expected letter",
 				exception.Message
-			);
-			Assert.AreEqual(
-				"parse exception at index 1: expected alphanumeric character",
-				exception.InnerException.Message
 			);
 		}
 

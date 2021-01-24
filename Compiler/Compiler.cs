@@ -546,14 +546,24 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Identifier
 
-		public static Parser<string> Identifier =>
-			Parse.Alphanumeric
-				.Many(1)
-				.String()
-				.Where(
-					x => !x.StartsWith("_"),
-					"identifiers starting with '_' are reserved"
-				);
+		public static Parser<string> Identifier
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var c = Parse.Letter(state);
+						var cs = Parse.Alphanumeric.Or(Parse.Char('_'))
+							.Many().String()(state);
+
+						transaction.CommitIndex();
+						return c + cs;
+					}
+				};
+			}
+		}
 
 		public static Parser<string> IdentifierLabel
 		{

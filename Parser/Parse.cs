@@ -199,37 +199,5 @@ namespace Exodrifter.Rumor.Parser
 				}
 			};
 		}
-
-		/// <summary>
-		/// Returns a new parser that returns the result of another parser only
-		/// if its result satisfies some predicate.
-		/// </summary>
-		/// <typeparam name="T">The type of the parser.</typeparam>
-		/// <param name="parser">The parser to check the result of.</param>
-		/// <param name="predicate">The predicate to satisfy.</param>
-		/// <param name="message">The error messages to use on failure.</param>
-		public static Parser<T> Where<T>
-			(this Parser<T> parser, Func<T, bool> predicate, string message)
-		{
-			return state =>
-			{
-				using (var transaction = new Transaction(state))
-				{
-					var result = parser(state);
-					if (predicate(result))
-					{
-						transaction.CommitIndex();
-						return result;
-					}
-					else
-					{
-						// We want to rollback the state to before the parser
-						// was run for the correct index.
-						transaction.Rollback();
-						throw new ReasonException(state.Index, message);
-					}
-				}
-			};
-		}
 	}
 }
