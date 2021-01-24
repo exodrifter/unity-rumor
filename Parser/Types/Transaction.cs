@@ -14,11 +14,14 @@ namespace Exodrifter.Rumor.Parser
 		private int index;
 		private int indentIndex;
 
+		private ParserUserState userState;
+
 		public Transaction(ParserState state)
 		{
 			this.state = state;
 			index = state.Index;
 			indentIndex = state.IndentIndex;
+			userState = state.UserState?.Clone();
 		}
 
 		/// <summary>
@@ -29,6 +32,7 @@ namespace Exodrifter.Rumor.Parser
 		{
 			state.Index = index;
 			state.IndentIndex = indentIndex;
+			state.UserState = userState;
 		}
 
 		/// <summary>
@@ -37,6 +41,7 @@ namespace Exodrifter.Rumor.Parser
 		public void CommitIndex()
 		{
 			index = state.Index;
+			userState = state.UserState;
 		}
 
 		public void Dispose()

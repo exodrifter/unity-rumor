@@ -35,9 +35,10 @@ namespace Exodrifter.Rumor.Parser
 		public bool EOF { get { return Index >= Source.Length; } }
 
 		/// <summary>
-		/// A list of identifiers that have already been used.
+		/// An arbitrary user state containing additional data that can be
+		/// referenced while parsing.
 		/// </summary>
-		public ParserUserState UserState { get; }
+		public ParserUserState UserState { get; set; }
 
 		/// <summary>
 		/// Creates a new parser state.

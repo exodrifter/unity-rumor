@@ -68,7 +68,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void VariableSuccess()
 		{
-			var state = new ParserState("foobar", 4);
+			var state = new ParserState("foobar", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 1234);
 
@@ -92,7 +92,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void AdditionVariableSuccess()
 		{
-			var state = new ParserState("foobar + 2", 4);
+			var state = new ParserState("foobar + 2", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 1234);
 
@@ -170,7 +170,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SubtractionVariableSuccess()
 		{
-			var state = new ParserState("foobar - 2", 4);
+			var state = new ParserState("foobar - 2", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 1234);
 
@@ -248,7 +248,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void MultiplicationVariableSuccess()
 		{
-			var state = new ParserState("foobar * 2", 4);
+			var state = new ParserState("foobar * 2", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 1234);
 
@@ -326,7 +326,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void DivisionVariableSuccess()
 		{
-			var state = new ParserState("foobar / 2", 4);
+			var state = new ParserState("foobar / 2", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 1234);
 

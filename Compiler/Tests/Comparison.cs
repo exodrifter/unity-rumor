@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableBooleanSuccess()
 		{
-			var state = new ParserState("foobar is false", 4);
+			var state = new ParserState("foobar is false", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", false);
 
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableBooleanFailure()
 		{
-			var state = new ParserState("foobar is false", 4);
+			var state = new ParserState("foobar is false", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", true);
 
@@ -60,7 +60,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableNumberSuccess()
 		{
-			var state = new ParserState("foobar is 4", 4);
+			var state = new ParserState("foobar is 4", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 4);
 
@@ -80,7 +80,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableNumberFailure()
 		{
-			var state = new ParserState("foobar is 5", 4);
+			var state = new ParserState("foobar is 5", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", 4);
 
@@ -100,7 +100,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableStringSuccess()
 		{
-			var state = new ParserState("foobar is \"a\"", 4);
+			var state = new ParserState("foobar is \"a\"", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", "a");
 
@@ -120,7 +120,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsVariableStringFailure()
 		{
-			var state = new ParserState("foobar is \"b\"", 4);
+			var state = new ParserState("foobar is \"b\"", 4, new RumorParserState());
 			var scope = new RumorScope();
 			scope.Set("foobar", "a");
 

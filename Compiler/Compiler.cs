@@ -472,9 +472,10 @@ namespace Exodrifter.Rumor.Compiler
 				{
 					using (var transaction = new Transaction(state))
 					{
+						var errorIndex = state.Index;
 						state.IndentIndex = state.Index;
 
-						var identifier = Identifier(state);
+						var id = Variable(Engine.ValueType.Boolean)(state);
 						Parse.Spaces(state);
 
 						Parse.String("=")(state);
@@ -483,7 +484,7 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Logic(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<BooleanValue>(identifier, expression);
+						return new SetVariableNode<BooleanValue>(id, expression);
 					}
 				};
 			}
@@ -497,9 +498,10 @@ namespace Exodrifter.Rumor.Compiler
 				{
 					using (var transaction = new Transaction(state))
 					{
+						var errorIndex = state.Index;
 						state.IndentIndex = state.Index;
 
-						var identifier = Identifier(state);
+						var id = Variable(Engine.ValueType.Number)(state);
 						Parse.Spaces(state);
 
 						Parse.String("=")(state);
@@ -508,7 +510,7 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Math(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<NumberValue>(identifier, expression);
+						return new SetVariableNode<NumberValue>(id, expression);
 					}
 				};
 			}
@@ -524,7 +526,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						state.IndentIndex = state.Index;
 
-						var identifier = Identifier(state);
+						var id = Variable(Engine.ValueType.String)(state);
 						Parse.Spaces(state);
 
 						Parse.String("=")(state);
@@ -533,10 +535,37 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Quote(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<StringValue>(identifier, expression);
+						return new SetVariableNode<StringValue>(id, expression);
 					}
 				};
 			}
+		}
+
+		public static Parser<string> Variable(Engine.ValueType type)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (userState.UsedVariables.ContainsKey(id)
+						&& userState.UsedVariables[id] != type)
+					{
+						throw new ReasonException(errorIndex,
+							"we are trying to use the variable \"" + id +
+							"\" as a " + type + ", but it has already been " +
+							"used as a " + userState.UsedVariables[id] + "!"
+						);
+					}
+
+					userState.UsedVariables[id] = type;
+					transaction.CommitIndex();
+					return id;
+				}
+			};
 		}
 
 		public static Parser<WaitNode> Wait =>
@@ -583,11 +612,9 @@ namespace Exodrifter.Rumor.Compiler
 							"used!"
 						);
 					}
-					else
-					{
-						userState.UsedIdentifiers.Add(id);
-						return id;
-					}
+
+					userState.UsedIdentifiers.Add(id);
+					return id;
 				};
 			}
 		}

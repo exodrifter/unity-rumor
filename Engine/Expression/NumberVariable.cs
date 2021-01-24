@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Engine
 			if (!(value is NumberValue))
 			{
 				throw new InvalidOperationException(
-					"Variable is not a boolean!"
+					"Variable is not a number!"
 				);
 			}
 

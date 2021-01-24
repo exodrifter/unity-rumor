@@ -283,7 +283,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.Whitespaces(state);
 						Parse.SameOrIndented(state);
-						var name = Compiler.Identifier(state);
+						var name = Variable(Engine.ValueType.Boolean)(state);
 
 						transaction.CommitIndex();
 						return new BooleanVariable(name);
@@ -429,7 +429,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.Whitespaces(state);
 						Parse.SameOrIndented(state);
-						var name = Compiler.Identifier(state);
+						var name = Variable(Engine.ValueType.Number)(state);
 
 						transaction.CommitIndex();
 						return new NumberVariable(name);
@@ -639,7 +639,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.Whitespaces(state);
 						Parse.SameOrIndented(state);
-						var name = Compiler.Identifier(state);
+						var name = Variable(Engine.ValueType.String)(state);
 
 						transaction.CommitIndex();
 						return new StringVariable(name);
