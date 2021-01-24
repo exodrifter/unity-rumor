@@ -111,7 +111,7 @@ namespace Exodrifter.Rumor.Compiler
 
 		/// <summary>
 		/// Parses a comparison operator, which will return a
-		/// <see cref="BooleanLiteral"/> when evaluated.
+		/// <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
 		private static Parser
 			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
@@ -141,7 +141,7 @@ namespace Exodrifter.Rumor.Compiler
 
 		/// <summary>
 		/// Parses a comparison operator that can only be used with numbers,
-		/// which will return a <see cref="BooleanLiteral"/> when evaluated.
+		/// which will return a <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
 		private static Parser<NumberComparisonOp> NumberComparisonOps()
 		{
@@ -209,7 +209,7 @@ namespace Exodrifter.Rumor.Compiler
 
 		/// <summary>
 		/// Parses a logic expression, which will return a
-		/// <see cref="BooleanLiteral"/> when evaluated.
+		/// <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression<BooleanValue>> Logic =>
 			Parse.ChainL1(AndPieces, Or);
@@ -225,7 +225,8 @@ namespace Exodrifter.Rumor.Compiler
 		private static Parser<Expression<BooleanValue>> LogicPiece =>
 			LogicParenthesis
 				.Or(NotExpression)
-				.Or(BooleanLiteral);
+				.Or(BooleanLiteral)
+				.Or(BooleanVariable);
 
 		/// <summary>
 		/// Parses a logic or operator.
@@ -264,6 +265,28 @@ namespace Exodrifter.Rumor.Compiler
 
 						transaction.CommitIndex();
 						return new BooleanLiteral(b);
+					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a boolean variable.
+		/// </summary>
+		private static Parser<Expression<BooleanValue>> BooleanVariable
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var name = Compiler.Identifier(state);
+
+						transaction.CommitIndex();
+						return new BooleanVariable(name);
 					}
 				};
 			}
@@ -333,7 +356,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece, MultiplyOrDivide);
 
 		private static Parser<Expression<NumberValue>> MathPiece =>
-			MathParenthesis.Or(NumberLiteral);
+			MathParenthesis.Or(NumberLiteral).Or(NumberVariable);
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
@@ -394,6 +417,28 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		/// <summary>
+		/// Parses a number variable.
+		/// </summary>
+		private static Parser<Expression<NumberValue>> NumberVariable
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var name = Compiler.Identifier(state);
+
+						transaction.CommitIndex();
+						return new NumberVariable(name);
+					}
+				};
+			}
+		}
+
+		/// <summary>
 		/// Parses a math expression wrapped in parenthesis.
 		/// </summary>
 		private static Parser<Expression<NumberValue>> MathParenthesis
@@ -423,13 +468,17 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Expression<StringValue>> Substitution =>
 			Parse.SurroundBlock('{', '}',
-				Math.Select(x => (Expression<StringValue>)
-					new ToStringExpression<NumberValue>(x))
-				.Or(Logic.Select(x => (Expression<StringValue>)
-					new ToStringExpression<BooleanValue>(x)))
-				.Or(Quote),
+				Logic.Select(x => (Expression<StringValue>)
+					new ToStringExpression<BooleanValue>(x)),
 				Parse.SameOrIndented
-			);
+			).Or(Parse.SurroundBlock('{', '}',
+				Math.Select(x => (Expression<StringValue>)
+					new ToStringExpression<NumberValue>(x)),
+				Parse.SameOrIndented
+			)).Or(Parse.SurroundBlock('{', '}',
+				Quote,
+				Parse.SameOrIndented
+			));
 
 		#endregion
 
@@ -556,7 +605,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="StringValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression<StringValue>> Quote =>
-			Parse.Surround('\"', '\"', QuoteInternal);
+			Parse.Surround('\"', '\"', QuoteInternal).Or(StringVariable);
 
 		private static Parser<Expression<StringValue>> QuoteLiteral
 		{
@@ -572,6 +621,28 @@ namespace Exodrifter.Rumor.Compiler
 
 						transaction.CommitIndex();
 						return quote;
+					}
+				};
+			}
+		}
+
+		/// <summary>
+		/// Parses a string variable.
+		/// </summary>
+		private static Parser<Expression<StringValue>> StringVariable
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var name = Compiler.Identifier(state);
+
+						transaction.CommitIndex();
+						return new StringVariable(name);
 					}
 				};
 			}

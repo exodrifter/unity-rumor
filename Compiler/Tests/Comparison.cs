@@ -18,12 +18,34 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void IsVariableBooleanSuccess()
+		{
+			var state = new ParserState("foobar is false", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", false);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(scope));
+		}
+
+		[Test]
 		public static void IsBooleanFailure()
 		{
 			var state = new ParserState("true is false", 4, 0);
 
 			var result = Compiler.Comparison(state);
 			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
+		}
+
+		[Test]
+		public static void IsVariableBooleanFailure()
+		{
+			var state = new ParserState("foobar is false", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", true);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(scope));
 		}
 
 		[Test]
@@ -36,12 +58,34 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void IsVariableNumberSuccess()
+		{
+			var state = new ParserState("foobar is 4", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 4);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(scope));
+		}
+
+		[Test]
 		public static void IsNumberFailure()
 		{
 			var state = new ParserState("4 is 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
 			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
+		}
+
+		[Test]
+		public static void IsVariableNumberFailure()
+		{
+			var state = new ParserState("foobar is 5", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 4);
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(scope));
 		}
 
 		[Test]
@@ -54,12 +98,34 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void IsVariableStringSuccess()
+		{
+			var state = new ParserState("foobar is \"a\"", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", "a");
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(scope));
+		}
+
+		[Test]
 		public static void IsStringFailure()
 		{
 			var state = new ParserState("\"a\" is \"b\"", 4, 0);
 
 			var result = Compiler.Comparison(state);
 			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
+		}
+
+		[Test]
+		public static void IsVariableStringFailure()
+		{
+			var state = new ParserState("foobar is \"b\"", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", "a");
+
+			var result = Compiler.Comparison(state);
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(scope));
 		}
 
 		#endregion

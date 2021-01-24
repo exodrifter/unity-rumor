@@ -65,6 +65,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				(new NumberValue(-1234567890.123456789d), n.Evaluate(new RumorScope()));
 		}
 
+		[Test]
+		public static void VariableSuccess()
+		{
+			var state = new ParserState("foobar", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 1234);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(new NumberValue(1234), n.Evaluate(scope));
+		}
+
 		#endregion
 
 		#region Addition
@@ -76,6 +87,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var exp = Compiler.Math(state);
 			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+		}
+
+		[Test]
+		public static void AdditionVariableSuccess()
+		{
+			var state = new ParserState("foobar + 2", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 1234);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(new NumberValue(1236), n.Evaluate(scope));
 		}
 
 		[Test]
@@ -146,6 +168,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void SubtractionVariableSuccess()
+		{
+			var state = new ParserState("foobar - 2", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 1234);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(new NumberValue(1232), n.Evaluate(scope));
+		}
+
+		[Test]
 		public static void SubtractionPlusSignSuccess()
 		{
 			var state = new ParserState("1-+2", 4, 0);
@@ -213,6 +246,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void MultiplicationVariableSuccess()
+		{
+			var state = new ParserState("foobar * 2", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 1234);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(new NumberValue(2468), n.Evaluate(scope));
+		}
+
+		[Test]
 		public static void MultiplicationPlusSignSuccess()
 		{
 			var state = new ParserState("1*+2", 4, 0);
@@ -277,6 +321,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var exp = Compiler.Math(state);
 			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate(new RumorScope()));
+		}
+
+		[Test]
+		public static void DivisionVariableSuccess()
+		{
+			var state = new ParserState("foobar / 2", 4, 0);
+			var scope = new RumorScope();
+			scope.Set("foobar", 1234);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(new NumberValue(617), n.Evaluate(scope));
 		}
 
 		[Test]

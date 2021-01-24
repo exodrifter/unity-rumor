@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Parser
 			Char(ch.Equals, "'" + ch.ToString() + "'");
 
 		/// <summary>
-		/// Returns a parser that parses a digit.
+		/// Returns a parser that parses a letter.
 		/// </summary>
 		public static Parser<char> Letter =>
 			Char(char.IsLetter, "letter");
