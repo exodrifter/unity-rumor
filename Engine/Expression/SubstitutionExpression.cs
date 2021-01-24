@@ -10,9 +10,9 @@
 			this.value = value;
 		}
 
-		public override StringValue Evaluate()
+		public override StringValue Evaluate(RumorScope scope)
 		{
-			return new StringValue(value.Evaluate().ToString());
+			return new StringValue(value.Evaluate(scope).ToString());
 		}
 
 		public override Expression<StringValue> Simplify()

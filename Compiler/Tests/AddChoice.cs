@@ -20,16 +20,17 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 
 			var result = Compiler.AddChoice(state);
+
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode(
-							"_7GsId23vSk3NFwOJtwQwIGlADow=",
+							"_X6LRibRD7ULzt3DCuvILxdkyEIk=",
 							"Hello?")
 						}
 					},
-					{ "_7GsId23vSk3NFwOJtwQwIGlADow=", new List<Node>()
+					{ "_X6LRibRD7ULzt3DCuvILxdkyEIk=", new List<Node>()
 						{ new SetDialogNode(null, "Hello!")
 						}
 					},
@@ -55,11 +56,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode(
-							"_Mab778K2k2yaPnNxIK+OQQkcp90=",
+							"_V/xLVtQ0UhbPPp0G9w6gIbMmVzg=",
 							"Hello? Anyone there?")
 						}
 					},
-					{ "_Mab778K2k2yaPnNxIK+OQQkcp90=", new List<Node>()
+					{ "_V/xLVtQ0UhbPPp0G9w6gIbMmVzg=", new List<Node>()
 						{ new SetDialogNode(null, "Hello!")
 						}
 					},

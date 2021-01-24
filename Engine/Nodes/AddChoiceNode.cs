@@ -21,7 +21,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			rumor.State.AddChoice(Label, Text.Evaluate().Value);
+			rumor.State.AddChoice(Label, Text.Evaluate(rumor.Scope).Value);
 			yield break;
 		}
 

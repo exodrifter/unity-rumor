@@ -9,9 +9,9 @@
 			this.value = value;
 		}
 
-		public override StringValue Evaluate()
+		public override StringValue Evaluate(RumorScope scope)
 		{
-			var result = value.Evaluate().InternalValue;
+			var result = value.Evaluate(scope).InternalValue;
 			return new StringValue(result.ToString());
 		}
 

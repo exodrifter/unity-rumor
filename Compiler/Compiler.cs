@@ -130,7 +130,7 @@ namespace Exodrifter.Rumor.Compiler
 						var result = Script(state);
 
 						// Move the main block to the identifier for this label
-						var textToHash = text.Evaluate().Value;
+						var textToHash = text.Simplify().GetHashCode().ToString();
 						var identifier = maybeIdentifier
 							.GetValueOrDefault("_" + Sha1Hash(textToHash));
 						result[identifier] = result[Rumor.MainIdentifier];

@@ -2,7 +2,7 @@
 {
 	public abstract class Expression<T> where T : Value
 	{
-		public abstract T Evaluate();
+		public abstract T Evaluate(RumorScope scope);
 
 		public abstract Expression<T> Simplify();
 

@@ -12,9 +12,9 @@
 			this.r = r;
 		}
 
-		public override StringValue Evaluate()
+		public override StringValue Evaluate(RumorScope scope)
 		{
-			return l.Evaluate() + r.Evaluate();
+			return l.Evaluate(scope) + r.Evaluate(scope);
 		}
 
 		public override Expression<StringValue> Simplify()

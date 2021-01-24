@@ -14,7 +14,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("false is false", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("true is false", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -32,7 +32,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 is 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 is 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -50,7 +50,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("\"a\" is \"a\"", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -59,7 +59,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("\"a\" is \"b\"", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion
@@ -72,7 +72,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("true is not false", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -81,7 +81,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("false is not false", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -90,7 +90,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 is not 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -99,7 +99,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 is not 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -108,7 +108,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("\"a\" is not \"b\"", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -117,7 +117,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("\"a\" is not \"a\"", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion
@@ -130,7 +130,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 > 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -139,7 +139,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 > 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion
@@ -152,7 +152,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 >= 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -161,7 +161,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 >= 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -170,7 +170,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 >= 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion
@@ -183,7 +183,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 < 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -192,7 +192,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 < 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion
@@ -205,7 +205,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("4 <= 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -214,7 +214,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 <= 5", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(true), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
 		}
 
 		[Test]
@@ -223,7 +223,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("5 <= 4", 4, 0);
 
 			var result = Compiler.Comparison(state);
-			Assert.AreEqual(new BooleanValue(false), result.Evaluate());
+			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));
 		}
 
 		#endregion

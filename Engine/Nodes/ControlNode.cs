@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			if (Condition.Evaluate().Value)
+			if (Condition.Evaluate(rumor.Scope).Value)
 			{
 				rumor.Inject(Block);
 			}

@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			var value = Expression.Evaluate();
+			var value = Expression.Evaluate(rumor.Scope);
 			rumor.Scope.Set(Name, value);
 			yield break;
 		}

@@ -9,9 +9,9 @@
 			this.expression = expression;
 		}
 
-		public override BooleanValue Evaluate()
+		public override BooleanValue Evaluate(RumorScope scope)
 		{
-			return !expression.Evaluate();
+			return !expression.Evaluate(scope);
 		}
 
 		public override Expression<BooleanValue> Simplify()

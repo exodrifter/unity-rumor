@@ -12,9 +12,9 @@
 			this.r = r;
 		}
 
-		public override BooleanValue Evaluate()
+		public override BooleanValue Evaluate(RumorScope scope)
 		{
-			return new BooleanValue(l.Evaluate() > r.Evaluate());
+			return new BooleanValue(l.Evaluate(scope) > r.Evaluate(scope));
 		}
 
 		public override Expression<BooleanValue> Simplify()

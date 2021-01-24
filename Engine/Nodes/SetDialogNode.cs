@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			var dialog = Dialog.Evaluate().Value;
+			var dialog = Dialog.Evaluate(rumor.Scope).Value;
 			rumor.State.SetDialog(Speaker, dialog);
 			yield return new ForAdvance();
 		}

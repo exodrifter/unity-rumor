@@ -18,7 +18,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			var seconds = Time.Evaluate().Value;
+			var seconds = Time.Evaluate(rumor.Scope).Value;
 			yield return new ForSeconds(seconds);
 		}
 

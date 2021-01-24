@@ -9,7 +9,7 @@
 			Value = value;
 		}
 
-		public override T Evaluate()
+		public override T Evaluate(RumorScope _)
 		{
 			return Value;
 		}
