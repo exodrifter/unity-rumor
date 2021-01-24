@@ -331,7 +331,10 @@ namespace Exodrifter.Rumor.Compiler
 			.Or(Jump.Select(x => (Node)x))
 			.Or(Wait.Select(x => (Node)x))
 			.Or(Pause.Select(x => (Node)x))
-			.Or(Return.Select(x => (Node)x));
+			.Or(Return.Select(x => (Node)x))
+			.Or(SetVariableLogic.Select(x => (Node)x))
+			.Or(SetVariableMath.Select(x => (Node)x))
+			.Or(SetVariableText.Select(x => (Node)x));
 
 		public static Parser<ChooseNode> Choose =>
 			Parse.String("choose").Then(new ChooseNode());
@@ -460,6 +463,81 @@ namespace Exodrifter.Rumor.Compiler
 
 		public static Parser<ReturnNode> Return =>
 			Parse.String("return").Then(new ReturnNode());
+
+		public static Parser<SetVariableNode<BooleanValue>> SetVariableLogic
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						state.IndentIndex = state.Index;
+
+						var identifier = Identifier(state);
+						Parse.Spaces(state);
+
+						Parse.String("=")(state);
+						Parse.Spaces(state);
+
+						var expression = Compiler.Logic(state).Simplify();
+
+						transaction.CommitIndex();
+						return new SetVariableNode<BooleanValue>(identifier, expression);
+					}
+				};
+			}
+		}
+
+		public static Parser<SetVariableNode<NumberValue>> SetVariableMath
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						state.IndentIndex = state.Index;
+
+						var identifier = Identifier(state);
+						Parse.Spaces(state);
+
+						Parse.String("=")(state);
+						Parse.Spaces(state);
+
+						var expression = Compiler.Math(state).Simplify();
+
+						transaction.CommitIndex();
+						return new SetVariableNode<NumberValue>(identifier, expression);
+					}
+				};
+			}
+		}
+
+		public static Parser<SetVariableNode<StringValue>> SetVariableText
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						state.IndentIndex = state.Index;
+
+						var identifier = Identifier(state);
+						Parse.Spaces(state);
+
+						Parse.String("=")(state);
+						Parse.Spaces(state);
+
+						var expression = Compiler.Quote(state).Simplify();
+
+						transaction.CommitIndex();
+						return new SetVariableNode<StringValue>(identifier, expression);
+					}
+				};
+			}
+		}
 
 		public static Parser<WaitNode> Wait =>
 			Parse.String("wait").Then(new WaitNode());
