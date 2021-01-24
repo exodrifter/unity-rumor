@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundBlockSuccess()
 		{
-			var state = new ParserState("(\n a \n)", 4, 0);
+			var state = new ParserState("(\n a \n)", 4);
 
 			var result = Parse.SurroundBlock('(', ')',
 				Parse.Char('a'), Parse.SameOrIndented
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundBlockFailure()
 		{
-			var state = new ParserState("(\na \n)", 4, 0);
+			var state = new ParserState("(\na \n)", 4);
 
 			var exception = Assert.Throws<ReasonException>(() =>
 				Parse.SurroundBlock('(', ')',

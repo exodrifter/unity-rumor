@@ -575,7 +575,8 @@ namespace Exodrifter.Rumor.Compiler
 
 					var id = Parse.Surround('[', ']', Identifier)(state);
 
-					if (state.UsedIdentifiers.Contains(id))
+					var userState = (RumorParserState)state.UserState;
+					if (userState.UsedIdentifiers.Contains(id))
 					{
 						throw new ReasonException(errorIndex,
 							"the identifier \"" + id + "\" has already been " +
@@ -584,7 +585,7 @@ namespace Exodrifter.Rumor.Compiler
 					}
 					else
 					{
-						state.UsedIdentifiers.Add(id);
+						userState.UsedIdentifiers.Add(id);
 						return id;
 					}
 				};

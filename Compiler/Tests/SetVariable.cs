@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetBooleanVariableLine()
 		{
-			var state = new ParserState("foobar = true", 4, 0);
+			var state = new ParserState("foobar = true", 4);
 
 			var node = Compiler.SetVariableLogic(state);
 			Assert.AreEqual(
@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetBooleanVariableMultiLine()
 		{
-			var state = new ParserState("foobar = true\n and false", 4, 0);
+			var state = new ParserState("foobar = true\n and false", 4);
 
 			var node = Compiler.SetVariableLogic(state);
 			Assert.AreEqual(
@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetNumberVariableLine()
 		{
-			var state = new ParserState("foobar = 3", 4, 0);
+			var state = new ParserState("foobar = 3", 4);
 
 			var node = Compiler.SetVariableMath(state);
 			Assert.AreEqual(
@@ -53,7 +53,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetNumberVariableMultiLine()
 		{
-			var state = new ParserState("foobar = 3\n + 4", 4, 0);
+			var state = new ParserState("foobar = 3\n + 4", 4);
 
 			var node = Compiler.SetVariableMath(state);
 			Assert.AreEqual(
@@ -68,7 +68,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetStringVariableLine()
 		{
-			var state = new ParserState("foobar = \"Hello world!\"", 4, 0);
+			var state = new ParserState("foobar = \"Hello world!\"", 4);
 
 			var node = Compiler.SetVariableText(state);
 			Assert.AreEqual(
@@ -83,7 +83,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetStringVariableMultiLine()
 		{
-			var state = new ParserState("foobar = \"Hello \n world!\"", 4, 0);
+			var state = new ParserState("foobar = \"Hello \n world!\"", 4);
 
 			var node = Compiler.SetVariableText(state);
 			Assert.AreEqual(

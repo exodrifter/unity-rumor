@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				"choice\n" +
 				"  > Hello?\n" +
 				"  : Hello!",
-				4, 0
+				4
 			);
 
 			var result = Compiler.AddChoice(state);
@@ -47,7 +47,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				"  > Hello?\n" +
 				"  > Anyone there?\n" +
 				"  : Hello!",
-				4, 0
+				4
 			);
 
 			var result = Compiler.AddChoice(state);
@@ -76,7 +76,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				"choice [choice1]\n" +
 				"  > Hello?\n" +
 				"  : Hello!",
-				4, 0
+				4, new RumorParserState()
 			);
 
 			var result = Compiler.AddChoice(state);
@@ -104,7 +104,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				"  > Hello?\n" +
 				"  > Anyone there?\n" +
 				"  : Hello!",
-				4, 0
+				4, new RumorParserState()
 			);
 
 			var result = Compiler.AddChoice(state);

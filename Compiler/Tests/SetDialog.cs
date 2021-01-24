@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogLineSuccess()
 		{
-			var state = new ParserState(": Hello world!", 4, 0);
+			var state = new ParserState(": Hello world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);
@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogSpeakerLineSuccess()
 		{
-			var state = new ParserState("alice: Hello world!", 4, 0);
+			var state = new ParserState("alice: Hello world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode("alice", "Hello world!"), node);
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogMultiLineSuccess()
 		{
-			var state = new ParserState(": Hello\n  world!", 4, 0);
+			var state = new ParserState(": Hello\n  world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);
@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogSpeakerMultiLineSuccess()
 		{
-			var state = new ParserState("alice: Hello\n  world!", 4, 0);
+			var state = new ParserState("alice: Hello\n  world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode("alice", "Hello world!"), node);
@@ -47,7 +47,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogNextMultiLineSuccess()
 		{
-			var state = new ParserState(":\n Hello\n  world!", 4, 0);
+			var state = new ParserState(":\n Hello\n  world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogSpeakerNextMultiLineSuccess()
 		{
-			var state = new ParserState("alice:\n Hello\n  world!", 4, 0);
+			var state = new ParserState("alice:\n Hello\n  world!", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode("alice", "Hello world!"), node);
@@ -69,7 +69,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogBooleanSubstitutionSuccess()
 		{
-			var state = new ParserState(": That's { true or false }.", 4, 0);
+			var state = new ParserState(": That's { true or false }.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "That's true."), node);
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogBooleanSubstitutionMultiLineSuccess()
 		{
-			var state = new ParserState(": That's { true\n or\n false }.", 4, 0);
+			var state = new ParserState(": That's { true\n or\n false }.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "That's true."), node);
@@ -88,7 +88,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetDialogBooleanSubstitutionComplexSuccess()
 		{
 			var state = new ParserState(
-				": That's { (true and false) or true }.", 4, 0);
+				": That's { (true and false) or true }.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "That's true."), node);
@@ -101,7 +101,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogMathSubstitutionSuccess()
 		{
-			var state = new ParserState(": {1+2} berries please.", 4, 0);
+			var state = new ParserState(": {1+2} berries please.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "3 berries please."), node);
@@ -110,7 +110,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogMathSubstitutionMultiLineSuccess()
 		{
-			var state = new ParserState(": {\n 1\n +\n 2} berries please.", 4, 0);
+			var state = new ParserState(": {\n 1\n +\n 2} berries please.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "3 berries please."), node);
@@ -119,7 +119,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogMathSubstitutionComplexSuccess()
 		{
-			var state = new ParserState(": {(1+2) * 5} berries please.", 4, 0);
+			var state = new ParserState(": {(1+2) * 5} berries please.", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "15 berries please."), node);
@@ -132,7 +132,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogQuoteSubstitutionSuccess()
 		{
-			var state = new ParserState(": Hello {\"world!\"}", 4, 0);
+			var state = new ParserState(": Hello {\"world!\"}", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);
@@ -141,7 +141,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void SetDialogQuoteSubstitutionMultiLineSuccess()
 		{
-			var state = new ParserState(": Hello {\n \"world!\"\n }", 4, 0);
+			var state = new ParserState(": Hello {\n \"world!\"\n }", 4);
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);

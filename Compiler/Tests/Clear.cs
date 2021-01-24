@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ClearSuccess()
 		{
-			var state = new ParserState("clear", 4, 0);
+			var state = new ParserState("clear", 4);
 
 			var node = Compiler.Clear(state);
 			Assert.AreEqual(new ClearNode(ClearType.All), node);
@@ -20,7 +20,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ClearAllSuccess()
 		{
-			var state = new ParserState("clear all", 4, 0);
+			var state = new ParserState("clear all", 4);
 
 			var node = Compiler.Clear(state);
 			Assert.AreEqual(new ClearNode(ClearType.All), node);
@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ClearChoicesSuccess()
 		{
-			var state = new ParserState("clear choices", 4, 0);
+			var state = new ParserState("clear choices", 4);
 
 			var node = Compiler.Clear(state);
 			Assert.AreEqual(new ClearNode(ClearType.Choices), node);
@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ClearDialogSuccess()
 		{
-			var state = new ParserState("clear dialog", 4, 0);
+			var state = new ParserState("clear dialog", 4);
 
 			var node = Compiler.Clear(state);
 			Assert.AreEqual(new ClearNode(ClearType.Dialog), node);

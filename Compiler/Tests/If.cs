@@ -14,7 +14,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IfSuccess()
 		{
-			var state = new ParserState("if { 5 == 5 }\n  wait", 4, 0);
+			var state = new ParserState("if { 5 == 5 }\n  wait", 4);
 
 			var script = Compiler.If(state);
 			Assert.AreEqual(
@@ -41,7 +41,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IfElseSuccess()
 		{
-			var state = new ParserState("if { 5 == 5 }\n  wait\nelse\n  wait", 4, 0);
+			var state = new ParserState("if { 5 == 5 }\n  wait\nelse\n  wait", 4);
 
 			var script = Compiler.If(state);
 			Assert.AreEqual(
@@ -77,7 +77,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		{
 			var state = new ParserState(
 				"if { 5 == 5 }\n  wait\nelif { 4 == 4 }\n  wait\nelse\n  wait",
-				4, 0
+				4
 			);
 
 			var script = Compiler.If(state);

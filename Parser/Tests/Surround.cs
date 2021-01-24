@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundSuccess()
 		{
-			var state = new ParserState("(a)", 4, 0);
+			var state = new ParserState("(a)", 4);
 
 			var result = Parse.Surround('(', ')', Parse.Char('a'))(state);
 			Assert.AreEqual('a', result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundPaddedSuccess()
 		{
-			var state = new ParserState("(\n a\t \n)", 4, 0);
+			var state = new ParserState("(\n a\t \n)", 4);
 
 			var result = Parse.Surround('(', ')', Parse.Char('a'))(state);
 			Assert.AreEqual('a', result);
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundLeftFailure()
 		{
-			var state = new ParserState(".a)", 4, 0);
+			var state = new ParserState(".a)", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
@@ -58,7 +58,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundLeftMissingFailure()
 		{
-			var state = new ParserState("a)", 4, 0);
+			var state = new ParserState("a)", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
@@ -76,7 +76,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundRightFailure()
 		{
-			var state = new ParserState("(a.", 4, 0);
+			var state = new ParserState("(a.", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)
@@ -94,7 +94,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void SurroundRightMissingFailure()
 		{
-			var state = new ParserState("(a", 4, 0);
+			var state = new ParserState("(a", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Parse.Surround('(', ')', Parse.Char('a'))(state)

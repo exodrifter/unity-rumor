@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ReturnSuccess()
 		{
-			var state = new ParserState("return", 4, 0);
+			var state = new ParserState("return", 4);
 
 			var node = Compiler.Return(state);
 			Assert.AreEqual(new ReturnNode(), node);

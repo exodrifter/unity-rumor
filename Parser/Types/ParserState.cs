@@ -37,7 +37,7 @@ namespace Exodrifter.Rumor.Parser
 		/// <summary>
 		/// A list of identifiers that have already been used.
 		/// </summary>
-		public HashSet<string> UsedIdentifiers { get; }
+		public ParserUserState UserState { get; }
 
 		/// <summary>
 		/// Creates a new parser state.
@@ -45,17 +45,18 @@ namespace Exodrifter.Rumor.Parser
 		/// <param name="source">
 		/// The contents of the source to parse.
 		/// </param>
-		/// <param name="index">
-		/// The index where the parser should start.
+		/// <param name="state">
+		/// Some arbitrary user state that can accompany a parsing operation.
 		/// </param>
-		public ParserState(string source, int tabSize, int index = 0)
+		public ParserState
+			(string source, int tabSize, ParserUserState userState = null)
 		{
 			Source = source;
 			TabSize = tabSize;
-			Index = index;
+			Index = 0;
 			IndentIndex = 0;
 
-			UsedIdentifiers = new HashSet<string>();
+			UserState = userState;
 		}
 
 		/// <summary>
@@ -69,7 +70,7 @@ namespace Exodrifter.Rumor.Parser
 			Index = other.Index;
 			IndentIndex = other.IndentIndex;
 
-			UsedIdentifiers = new HashSet<string>(other.UsedIdentifiers);
+			UserState = other.UserState?.Clone();
 		}
 	}
 }

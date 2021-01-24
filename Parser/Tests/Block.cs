@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void BlockDoesNotConsumesNewline()
 		{
-			var state = new ParserState("  a\n ", 4, 0);
+			var state = new ParserState("  a\n ", 4);
 			state.IndentIndex = 2;
 
 			var result = Parse.Block(Parse.Char('a'), Parse.Same)(state);
@@ -26,7 +26,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void PrefixBlockSingleSuccess()
 		{
-			var state = new ParserState("  >a\n ", 4, 0);
+			var state = new ParserState("  >a\n ", 4);
 			state.IndentIndex = 2;
 
 			var result = Parse.PrefixBlock(
@@ -44,7 +44,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void PrefixBlockMultilineSuccess()
 		{
-			var state = new ParserState("  >a\n  >a", 4, 0);
+			var state = new ParserState("  >a\n  >a", 4);
 			state.IndentIndex = 2;
 
 			var result = Parse.PrefixBlock(

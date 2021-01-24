@@ -8,7 +8,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierAlphaSuccess()
 		{
-			var state = new ParserState("Alice", 4, 0);
+			var state = new ParserState("Alice", 4);
 
 			var result = Compiler.Identifier(state);
 			Assert.AreEqual("Alice", result);
@@ -17,7 +17,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierNumericFailure()
 		{
-			var state = new ParserState("123456789", 4, 0);
+			var state = new ParserState("123456789", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.Identifier(state)
@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierFailure()
 		{
-			var state = new ParserState("_foobar", 4, 0);
+			var state = new ParserState("_foobar", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.Identifier(state)
@@ -47,7 +47,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierLabelSuccess()
 		{
-			var state = new ParserState("[foobar]", 4, 0);
+			var state = new ParserState("[foobar]", 4, new RumorParserState());
 
 			var result = Compiler.IdentifierLabel(state);
 			Assert.AreEqual("foobar", result);
@@ -56,7 +56,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierLabelNumericFailure()
 		{
-			var state = new ParserState("[123456789]", 4, 0);
+			var state = new ParserState("[123456789]", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.IdentifierLabel(state)
@@ -70,7 +70,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierLabelFailure()
 		{
-			var state = new ParserState("[_foobar]", 4, 0);
+			var state = new ParserState("[_foobar]", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
 				Compiler.IdentifierLabel(state)
@@ -84,8 +84,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IdentifierLabelRepeatFailure()
 		{
-			var state = new ParserState("[foobar]", 4, 0);
-			state.UsedIdentifiers.Add("foobar");
+			var userState = new RumorParserState();
+			userState.UsedIdentifiers.Add("foobar");
+
+			var state = new ParserState("[foobar]", 4, userState);
 
 			var exception = Assert.Throws<ReasonException>(() =>
 				Compiler.IdentifierLabel(state)

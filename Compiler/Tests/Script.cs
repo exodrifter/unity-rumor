@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ScriptOneSuccess()
 		{
-			var state = new ParserState("Alice: Hello world!", 4, 0);
+			var state = new ParserState("Alice: Hello world!", 4);
 
 			var result = Compiler.Script(state);
 			Assert.AreEqual(
@@ -37,7 +37,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				"Alice: Hello world!\n" +
 				"Alice: How are you?\n" +
 				"Alice: The weather seems nice today.\n"
-				, 4, 0
+				, 4
 			);
 
 			var result = Compiler.Script(state);

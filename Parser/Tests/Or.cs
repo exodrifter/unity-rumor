@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrLeftSuccess()
 		{
-			var state = new ParserState("a", 4, 0);
+			var state = new ParserState("a", 4);
 
 			var result = Parse.Char('a').Or(Parse.Char('z'))(state);
 			Assert.AreEqual('a', result);
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrRightSuccess()
 		{
-			var state = new ParserState("z", 4, 0);
+			var state = new ParserState("z", 4);
 
 			var result = Parse.Char('a').Or(Parse.Char('z'))(state);
 			Assert.AreEqual('z', result);
@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrEmptyFailure()
 		{
-			var state = new ParserState("", 4, 0);
+			var state = new ParserState("", 4);
 
 			var exception = Assert.Throws<MultipleParserException>(() =>
 				Parse.Char('a').Or(Parse.Char('z'))(state)
@@ -63,7 +63,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		[Test]
 		public static void OrFailure()
 		{
-			var state = new ParserState("m", 4, 0);
+			var state = new ParserState("m", 4);
 
 			var exception = Assert.Throws<MultipleParserException>(() =>
 				Parse.Char('a').Or(Parse.Char('z'))(state)
