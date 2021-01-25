@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsBooleanSuccess()
 		{
-			var state = new ParserState("false is false", 4);
+			var state = new ParserState("false is false", 4, new RumorParserState());
 
 			var result = Compiler.Comparison(state);
 			Assert.AreEqual(new BooleanValue(true), result.Evaluate(new RumorScope()));
@@ -31,7 +31,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void IsBooleanFailure()
 		{
-			var state = new ParserState("true is false", 4);
+			var state = new ParserState("true is false", 4, new RumorParserState());
 
 			var result = Compiler.Comparison(state);
 			Assert.AreEqual(new BooleanValue(false), result.Evaluate(new RumorScope()));

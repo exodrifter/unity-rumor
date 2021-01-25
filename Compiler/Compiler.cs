@@ -551,17 +551,8 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (userState.UsedVariables.ContainsKey(id)
-						&& userState.UsedVariables[id] != type)
-					{
-						throw new ReasonException(errorIndex,
-							"we are trying to use the variable \"" + id +
-							"\" as a " + type + ", but it has already been " +
-							"used as a " + userState.UsedVariables[id] + "!"
-						);
-					}
+					userState.LinkVariable(errorIndex, id, type);
 
-					userState.UsedVariables[id] = type;
 					transaction.CommitIndex();
 					return id;
 				}

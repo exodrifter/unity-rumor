@@ -47,8 +47,42 @@ namespace Exodrifter.Rumor.Compiler
 
 		public static Parser<Expression<BooleanValue>> Comparison =>
 			BooleanComparison
+			.Or(VariableComparison)
 			.Or(NumberComparison)
 			.Or(StringComparison);
+
+		private static Parser<Expression<BooleanValue>> VariableComparison
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var l = Identifier(state);
+
+						var op = ComparisonOps<Value>()(state);
+
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var r = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						userState.LinkVariables(errorIndex, l, r);
+
+						transaction.CommitIndex();
+						return op(
+							new VariableExpression(l),
+							new VariableExpression(r)
+						);
+					}
+				};
+			}
+		}
 
 		private static Parser<Expression<BooleanValue>> BooleanComparison
 		{
