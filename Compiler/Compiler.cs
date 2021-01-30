@@ -621,111 +621,220 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
-		public static Parser<BindingActionNode> BindingAction()
+		public static Parser<BindingActionNode> BindingAction() =>
+			BindingAction0()
+				.Or(BindingAction1())
+				.Or(BindingAction2())
+				.Or(BindingAction3())
+				.Or(BindingAction4());
+
+		private static Parser<BindingActionNode> BindingAction0()
 		{
 			return state =>
 			{
-				var errorIndex = state.Index;
-				var id = Identifier(state);
-
-				var userState = (RumorParserState)state.UserState;
-				if (!userState.BindingHints.ContainsKey(id))
+				using (var transaction = new Transaction(state))
 				{
-					throw new ReasonException(errorIndex,
-						"Tried to reference unlinked function \"" + id + "\"!"
-					);
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(HintType.Action, id, 0))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked action \"" + id + "\" " +
+							"with zero parameters!"
+						);
+					}
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					return new BindingActionNode(id);
 				}
-
-				Parse.Spaces(state);
-				Parse.String("(")(state);
-				Parse.Spaces(state);
-
-				BindingActionNode result;
-				if (userState.BindingHints[id] is BindingActionHint)
-				{
-					result = new BindingActionNode(id);
-				}
-				else if (userState.BindingHints[id] is BindingActionHint1)
-				{
-					var hint = (BindingActionHint1)userState.BindingHints[id];
-
-					var p1 = Param(hint.t1)(state);
-
-					result = new BindingActionNode(id, p1);
-				}
-				else if (userState.BindingHints[id] is BindingActionHint2)
-				{
-					var hint = (BindingActionHint2)userState.BindingHints[id];
-
-					var p1 = Param(hint.t1)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p2 = Param(hint.t2)(state);
-
-					result = new BindingActionNode(id, p1, p2);
-				}
-				else if (userState.BindingHints[id] is BindingActionHint3)
-				{
-					var hint = (BindingActionHint3)userState.BindingHints[id];
-
-					var p1 = Param(hint.t1)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p2 = Param(hint.t2)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p3 = Param(hint.t3)(state);
-
-					result = new BindingActionNode(id, p1, p2, p3);
-				}
-				else if (userState.BindingHints[id] is BindingActionHint4)
-				{
-					var hint = (BindingActionHint4)userState.BindingHints[id];
-
-					var p1 = Param(hint.t1)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p2 = Param(hint.t2)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p3 = Param(hint.t3)(state);
-
-					Parse.Spaces(state);
-					Parse.String(",")(state);
-					Parse.Spaces(state);
-
-					var p4 = Param(hint.t4)(state);
-
-					result = new BindingActionNode(id, p1, p2, p3, p4);
-				}
-				else
-				{
-					throw new InvalidOperationException("Unknown hint type!");
-				}
-
-				Parse.Spaces(state);
-				Parse.String(")")(state);
-
-				return result;
 			};
 		}
 
-		public static Parser<Expression> Param(Engine.ValueType t)
+		private static Parser<BindingActionNode> BindingAction1()
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(HintType.Action, id, 1))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked action \"" + id + "\" " +
+							"with one parameter!"
+						);
+					}
+					var hint = (BindingActionHint1)
+						userState.GetBindingHint(HintType.Action, id, 1);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					return new BindingActionNode(id, p1);
+				}
+			};
+		}
+
+		private static Parser<BindingActionNode> BindingAction2()
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(HintType.Action, id, 2))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked action \"" + id + "\" " +
+							"with two parameters!"
+						);
+					}
+					var hint = (BindingActionHint2)
+						userState.GetBindingHint(HintType.Action, id, 2);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					return new BindingActionNode(id, p1, p2);
+				}
+			};
+		}
+
+		private static Parser<BindingActionNode> BindingAction3()
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(HintType.Action, id, 3))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked action \"" + id + "\" " +
+							"with three parameters!"
+						);
+					}
+					var hint = (BindingActionHint3)
+						userState.GetBindingHint(HintType.Action, id, 3);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p3 = Param(hint.t3)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					return new BindingActionNode(id, p1, p2, p3);
+				}
+			};
+		}
+
+		private static Parser<BindingActionNode> BindingAction4()
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(HintType.Action, id, 4))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked action \"" + id + "\" " +
+							"with four parameters!"
+						);
+					}
+					var hint = (BindingActionHint4)
+						userState.GetBindingHint(HintType.Action, id, 4);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p3 = Param(hint.t3)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p4 = Param(hint.t4)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					return new BindingActionNode(id, p1, p2, p3, p4);
+				}
+			};
+		}
+
+		private static Parser<Expression> Param(Engine.ValueType t)
 		{
 			return state =>
 			{

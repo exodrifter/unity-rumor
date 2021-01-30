@@ -2,6 +2,8 @@ using System;
 
 namespace Exodrifter.Rumor.Engine
 {
+	public enum HintType { Action, Function }
+
 	public abstract class BindingHint { }
 
 	public class BindingActionHint : BindingHint

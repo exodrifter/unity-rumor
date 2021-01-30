@@ -8,7 +8,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 	public static class BindingAction
 	{
 		[Test]
-		public static void BindingActionSuccess()
+		public static void BindingAction0Success()
 		{
 			var userState = new RumorParserState();
 			userState.LinkAction("foobar");
@@ -113,6 +113,45 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					new NumberLiteral(8),
 					new StringLiteral("hello"),
 					new StringLiteral("world")
+				),
+				result
+			);
+		}
+
+		[Test]
+		public static void BindingActionOverloadedSuccess()
+		{
+			var userState = new RumorParserState();
+			userState.LinkAction("foobar",
+				ValueType.Boolean
+			);
+			userState.LinkAction("foobar",
+				ValueType.Boolean,
+				ValueType.Number
+			);
+			userState.LinkAction("foobar",
+				ValueType.Boolean,
+				ValueType.Number,
+				ValueType.String
+			);
+			userState.LinkAction("foobar",
+				ValueType.Boolean,
+				ValueType.Number,
+				ValueType.String,
+				ValueType.String
+			);
+
+			var state = new ParserState(
+				"foobar(true or false, 4 + 4, \"hello\")",
+				4, userState
+			);
+
+			var result = Compiler.BindingAction()(state);
+			Assert.AreEqual(
+				new BindingActionNode("foobar",
+					new BooleanLiteral(true),
+					new NumberLiteral(8),
+					new StringLiteral("hello")
 				),
 				result
 			);
