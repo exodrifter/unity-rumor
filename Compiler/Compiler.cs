@@ -638,7 +638,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(HintType.Action, id, 0))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 0))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -668,7 +668,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(HintType.Action, id, 1))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 1))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -676,7 +676,7 @@ namespace Exodrifter.Rumor.Compiler
 						);
 					}
 					var hint = (BindingActionHint1)
-						userState.GetBindingHint(HintType.Action, id, 1);
+						userState.GetBindingHint(BindingType.Action, id, 1);
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -703,7 +703,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(HintType.Action, id, 2))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 2))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -711,7 +711,7 @@ namespace Exodrifter.Rumor.Compiler
 						);
 					}
 					var hint = (BindingActionHint2)
-						userState.GetBindingHint(HintType.Action, id, 2);
+						userState.GetBindingHint(BindingType.Action, id, 2);
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -744,7 +744,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(HintType.Action, id, 3))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 3))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -752,7 +752,7 @@ namespace Exodrifter.Rumor.Compiler
 						);
 					}
 					var hint = (BindingActionHint3)
-						userState.GetBindingHint(HintType.Action, id, 3);
+						userState.GetBindingHint(BindingType.Action, id, 3);
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -791,7 +791,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(HintType.Action, id, 4))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 4))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -799,7 +799,7 @@ namespace Exodrifter.Rumor.Compiler
 						);
 					}
 					var hint = (BindingActionHint4)
-						userState.GetBindingHint(HintType.Action, id, 4);
+						userState.GetBindingHint(BindingType.Action, id, 4);
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);

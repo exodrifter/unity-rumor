@@ -57,20 +57,20 @@ namespace Exodrifter.Rumor.Compiler
 
 		public void LinkAction(string name)
 		{
-			BindingHints[MungeName(HintType.Action, name, 0)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Action, name, 0)] =
 				new BindingActionHint();
 		}
 
 		public void LinkAction(string name, Engine.ValueType p1)
 		{
-			BindingHints[MungeName(HintType.Action, name, 1)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Action, name, 1)] =
 				new BindingActionHint1(p1);
 		}
 
 		public void LinkAction
 			(string name, Engine.ValueType p1, Engine.ValueType p2)
 		{
-			BindingHints[MungeName(HintType.Action, name, 2)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Action, name, 2)] =
 				new BindingActionHint2(p1, p2);
 		}
 
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Compiler
 			(string name, Engine.ValueType p1, Engine.ValueType p2,
 			Engine.ValueType p3)
 		{
-			BindingHints[MungeName(HintType.Action, name, 3)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Action, name, 3)] =
 				new BindingActionHint3(p1, p2, p3);
 		}
 
@@ -86,20 +86,20 @@ namespace Exodrifter.Rumor.Compiler
 			(string name, Engine.ValueType p1, Engine.ValueType p2,
 			Engine.ValueType p3, Engine.ValueType p4)
 		{
-			BindingHints[MungeName(HintType.Action, name, 4)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Action, name, 4)] =
 				new BindingActionHint4(p1, p2, p3, p4);
 		}
 
 		public void LinkFunction(string name, Engine.ValueType result)
 		{
-			BindingHints[MungeName(HintType.Function, name, 0)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Function, name, 0)] =
 				new BindingFunctionHint(result);
 		}
 
 		public void LinkFunction
 			(string name, Engine.ValueType p1, Engine.ValueType result)
 		{
-			BindingHints[MungeName(HintType.Function, name, 1)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Function, name, 1)] =
 				new BindingFunctionHint1(p1, result);
 		}
 
@@ -107,7 +107,7 @@ namespace Exodrifter.Rumor.Compiler
 			(string name, Engine.ValueType p1, Engine.ValueType p2,
 			Engine.ValueType result)
 		{
-			BindingHints[MungeName(HintType.Function, name, 2)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Function, name, 2)] =
 				new BindingFunctionHint2(p1, p2, result);
 		}
 
@@ -115,7 +115,7 @@ namespace Exodrifter.Rumor.Compiler
 			(string name, Engine.ValueType p1, Engine.ValueType p2,
 			Engine.ValueType p3, Engine.ValueType result)
 		{
-			BindingHints[MungeName(HintType.Function, name, 3)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Function, name, 3)] =
 				new BindingFunctionHint3(p1, p2, p3, result);
 		}
 
@@ -123,31 +123,22 @@ namespace Exodrifter.Rumor.Compiler
 			(string name, Engine.ValueType p1, Engine.ValueType p2,
 			Engine.ValueType p3, Engine.ValueType p4, Engine.ValueType result)
 		{
-			BindingHints[MungeName(HintType.Function, name, 4)] =
+			BindingHints[BindingUtil.MungeName(BindingType.Function, name, 4)] =
 				new BindingFunctionHint4(p1, p2, p3, p4, result);
 		}
 
-		public bool ContainsBindingHint(HintType type, string name, int paramCount)
+		public bool ContainsBindingHint
+			(BindingType type, string name, int paramCount)
 		{
-			return BindingHints.ContainsKey(MungeName(type, name, paramCount));
+			return BindingHints.ContainsKey(
+				BindingUtil.MungeName(type, name, paramCount)
+			);
 		}
 
-		public BindingHint GetBindingHint(HintType type, string name, int paramCount)
+		public BindingHint GetBindingHint
+			(BindingType type, string name, int paramCount)
 		{
-			return BindingHints[MungeName(type, name, paramCount)];
-		}
-
-		/// <summary>
-		/// Munges a binding name.
-		/// </summary>
-		/// <param name="name">The binding name to munge.</param>
-		/// <param name="paramCount">
-		/// The number of parameters in the binding.
-		/// </param>
-		/// <returns>The munged name</returns>
-		private string MungeName(HintType type, string name, int paramCount)
-		{
-			return string.Format("{0}:{1}@{2}", type, name, paramCount);
+			return BindingHints[BindingUtil.MungeName(type, name, paramCount)];
 		}
 
 		#endregion

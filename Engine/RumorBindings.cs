@@ -23,7 +23,9 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The action to bind.</param>
 		public void Bind(string name, Action action)
 		{
-			AddBinding(name, 0, new BindingAction(action));
+			SetBinding(BindingType.Action, name, 0,
+				new BindingAction(action)
+			);
 		}
 
 		/// <summary>
@@ -34,7 +36,9 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="action">The <see cref="Action{T}"/> to bind.</param>
 		public void Bind<T1>(string name, Action<T1> action)
 		{
-			AddBinding(name, 1, new BindingAction<T1>(action));
+			SetBinding(BindingType.Action, name, 1,
+				new BindingAction<T1>(action)
+			);
 		}
 
 		/// <summary>
@@ -47,7 +51,9 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<T1, T2>(string name, Action<T1, T2> action)
 		{
-			AddBinding(name, 2, new BindingAction<T1, T2>(action));
+			SetBinding(BindingType.Action, name, 2,
+				new BindingAction<T1, T2>(action)
+			);
 		}
 
 		/// <summary>
@@ -61,7 +67,9 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3>
 			(string name, Action<T1, T2, T3> action)
 		{
-			AddBinding(name, 3, new BindingAction<T1, T2, T3>(action));
+			SetBinding(BindingType.Action, name, 3,
+				new BindingAction<T1, T2, T3>(action)
+			);
 		}
 
 		/// <summary>
@@ -75,7 +83,9 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, T4>
 			(string name, Action<T1, T2, T3, T4> action)
 		{
-			AddBinding(name, 4, new BindingAction<T1, T2, T3, T4>(action));
+			SetBinding(BindingType.Action, name, 4,
+				new BindingAction<T1, T2, T3, T4>(action)
+			);
 		}
 
 		/// <summary>
@@ -88,7 +98,9 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<TResult>(string name, Func<TResult> func)
 		{
-			AddBinding(name, 0, new BindingFunc<TResult>(func));
+			SetBinding(BindingType.Function, name, 0,
+				new BindingFunc<TResult>(func)
+			);
 		}
 
 		/// <summary>
@@ -101,7 +113,9 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Bind<T1, TResult>(string name, Func<T1, TResult> func)
 		{
-			AddBinding(name, 1, new BindingFunc<T1, TResult>(func));
+			SetBinding(BindingType.Function, name, 1,
+				new BindingFunc<T1, TResult>(func)
+			);
 		}
 
 		/// <summary>
@@ -115,7 +129,9 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, TResult>
 			(string name, Func<T1, T2, TResult> func)
 		{
-			AddBinding(name, 2, new BindingFunc<T1, T2, TResult>(func));
+			SetBinding(BindingType.Function, name, 2,
+				new BindingFunc<T1, T2, TResult>(func)
+			);
 		}
 
 		/// <summary>
@@ -129,7 +145,9 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, TResult>
 			(string name, Func<T1, T2, T3, TResult> func)
 		{
-			AddBinding(name, 3, new BindingFunc<T1, T2, T3, TResult>(func));
+			SetBinding(BindingType.Function, name, 3,
+				new BindingFunc<T1, T2, T3, TResult>(func)
+			);
 		}
 
 		/// <summary>
@@ -143,34 +161,28 @@ namespace Exodrifter.Rumor.Engine
 		public void Bind<T1, T2, T3, T4, TResult>
 			(string name, Func<T1, T2, T3, T4, TResult> func)
 		{
-			AddBinding(name, 4, new BindingFunc<T1, T2, T3, T4, TResult>(func));
+			SetBinding(BindingType.Function, name, 4,
+				new BindingFunc<T1, T2, T3, T4, TResult>(func)
+			);
 		}
 
 		/// <summary>
 		/// Add a binding.
 		/// </summary>
+		/// <param name="type">The type of the binding.</param>
 		/// <param name="name">The name associate with the binding.</param>
 		/// <param name="paramCount">
 		/// The number of parameters in the binding.
 		/// </param>
 		/// <param name="binding">The binding to use.</param>
-		private void AddBinding(string name, int paramCount, Binding binding)
+		private void SetBinding(BindingType type, string name, int paramCount, Binding binding)
 		{
 			if (binding == null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			var mungedName = MungeName(name, paramCount);
-			if (bindings.ContainsKey(mungedName))
-			{
-				var paramStr = paramCount == 1 ? "parameter" : "parameters";
-
-				throw new InvalidOperationException(string.Format(
-					"A binding \"{0}\" with {1} {2} is already in use!",
-					name, paramCount, paramStr));
-			}
-
+			var mungedName = BindingUtil.MungeName(type, name, paramCount);
 			bindings.Add(mungedName, binding);
 		}
 
