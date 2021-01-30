@@ -18,10 +18,10 @@ namespace Exodrifter.Rumor.Engine
 			object[] ps = new object[param.Length];
 			for (int i = 0; i < param.Length; ++i)
 			{
-				ps[i] = param[i].Evaluate(rumor.Scope);
+				ps[i] = param[i].Evaluate(rumor.Scope).InternalValue;
 			}
 
-			rumor.Bindings.CallBinding(id, ps);
+			rumor.Bindings.CallBinding(BindingType.Action, id, ps);
 			yield break;
 		}
 

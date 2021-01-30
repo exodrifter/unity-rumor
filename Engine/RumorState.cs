@@ -5,6 +5,8 @@ namespace Exodrifter.Rumor.Engine
 {
 	public class RumorState
 	{
+		private const string DefaultSpeaker = "_narrator";
+
 		private Dictionary<string, string> Dialog { get; }
 		private Dictionary<string, string> Choices { get; }
 
@@ -224,10 +226,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </exception>
 		public void AppendDialog(string speaker, string dialog)
 		{
-			if (speaker == null)
-			{
-				throw new ArgumentNullException(nameof(speaker));
-			}
+			speaker = speaker ?? DefaultSpeaker;
 			if (dialog == null)
 			{
 				throw new ArgumentNullException(nameof(dialog));
@@ -265,10 +264,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </exception>
 		public void AppendRawDialog(string speaker, string dialog)
 		{
-			if (speaker == null)
-			{
-				throw new ArgumentNullException(nameof(speaker));
-			}
+			speaker = speaker ?? DefaultSpeaker;
 			if (dialog == null)
 			{
 				throw new ArgumentNullException(nameof(dialog));
@@ -302,10 +298,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </exception>
 		public void SetDialog(string speaker, string dialog)
 		{
-			if (speaker == null)
-			{
-				throw new ArgumentNullException(nameof(speaker));
-			}
+			speaker = speaker ?? DefaultSpeaker;
 			if (dialog == null)
 			{
 				throw new ArgumentNullException(nameof(dialog));
@@ -334,10 +327,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </exception>
 		public void SetRawDialog(string speaker, string dialog)
 		{
-			if (speaker == null)
-			{
-				throw new ArgumentNullException(nameof(speaker));
-			}
+			speaker = speaker ?? DefaultSpeaker;
 			if (dialog == null)
 			{
 				throw new ArgumentNullException(nameof(dialog));

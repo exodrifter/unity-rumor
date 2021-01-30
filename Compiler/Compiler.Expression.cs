@@ -34,12 +34,6 @@ namespace Exodrifter.Rumor.Compiler
 
 		#region Comparison
 
-		/// <summary>
-		/// Parses a comparsion block.
-		/// </summary>
-		private static Parser<Expression> ComparisonBlock =>
-			Parse.SurroundBlock('{', '}', Comparison, Parse.SameOrIndented);
-
 		public static Parser<Expression> Comparison =>
 			BooleanComparison
 			.Or(VariableComparison)

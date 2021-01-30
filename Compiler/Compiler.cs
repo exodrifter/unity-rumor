@@ -161,7 +161,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.String("if")(state);
 						Parse.Spaces1(state);
-						var comparison = ComparisonBlock(state);
+						var comparison = Comparison.Or(BooleanVariable)(state);
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
@@ -224,7 +224,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.String("elif")(state);
 						Parse.Spaces1(state);
-						var comparison = ComparisonBlock(state);
+						var comparison = Comparison.Or(BooleanVariable)(state);
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
@@ -326,15 +326,16 @@ namespace Exodrifter.Rumor.Compiler
 		public static Parser<Node> Node =>
 			SetDialog.Select(x => (Node)x)
 			.Or(AppendDialog.Select(x => (Node)x))
+			.Or(SetVariableLogic.Select(x => (Node)x))
+			.Or(SetVariableMath.Select(x => (Node)x))
+			.Or(SetVariableText.Select(x => (Node)x))
+			.Or(BindingAction().Select(x => (Node)x))
 			.Or(Clear.Select(x => (Node)x))
 			.Or(Choose.Select(x => (Node)x))
 			.Or(Jump.Select(x => (Node)x))
 			.Or(Wait.Select(x => (Node)x))
 			.Or(Pause.Select(x => (Node)x))
-			.Or(Return.Select(x => (Node)x))
-			.Or(SetVariableLogic.Select(x => (Node)x))
-			.Or(SetVariableMath.Select(x => (Node)x))
-			.Or(SetVariableText.Select(x => (Node)x));
+			.Or(Return.Select(x => (Node)x));
 
 		public static Parser<ChooseNode> Choose =>
 			Parse.String("choose").Then(new ChooseNode());

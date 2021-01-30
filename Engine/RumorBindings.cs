@@ -189,12 +189,13 @@ namespace Exodrifter.Rumor.Engine
 		/// <summary>
 		/// Call a binding with the specified name and arguments
 		/// </summary>
+		/// <param name="type">The type of the binding to call.</param>
 		/// <param name="name">The name of the binding to call.</param>
 		/// <param name="p">The arguments to pass to the binding.</param>
 		/// <returns>The result of calling the binding.</returns>
-		public object CallBinding(string name, params object[] p)
+		public object CallBinding(BindingType type, string name, params object[] p)
 		{
-			var mungedName = MungeName(name, p.Length);
+			var mungedName = BindingUtil.MungeName(type, name, p.Length);
 			if (!bindings.ContainsKey(mungedName))
 			{
 				var paramStr = p.Length == 1 ? "parameter" : "parameters";
@@ -214,9 +215,9 @@ namespace Exodrifter.Rumor.Engine
 		/// <param name="paramCount">
 		/// The number of parameters of the binding to remove.
 		/// </param>
-		public bool RemoveBinding(string name, int paramCount)
+		public bool RemoveBinding(BindingType type, string name, int paramCount)
 		{
-			var mungedName = MungeName(name, paramCount);
+			var mungedName = BindingUtil.MungeName(type, name, paramCount);
 			return bindings.Remove(mungedName);
 		}
 
@@ -227,22 +228,5 @@ namespace Exodrifter.Rumor.Engine
 		{
 			bindings.Clear();
 		}
-
-		#region Util
-
-		/// <summary>
-		/// Munges a binding name.
-		/// </summary>
-		/// <param name="name">The binding name to munge.</param>
-		/// <param name="paramCount">
-		/// The number of parameters in the binding.
-		/// </param>
-		/// <returns>The munged name</returns>
-		private string MungeName(string name, int paramCount)
-		{
-			return string.Format("{0}@{1}", name, paramCount);
-		}
-
-		#endregion
 	}
 }
