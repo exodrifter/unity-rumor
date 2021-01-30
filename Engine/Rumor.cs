@@ -27,6 +27,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public RumorState State { get; }
 		public RumorScope Scope { get; }
+		public RumorBindings Bindings { get; }
 
 		public Rumor(Dictionary<string, List<Node>> nodes, RumorScope scope = null)
 		{
@@ -35,6 +36,7 @@ namespace Exodrifter.Rumor.Engine
 			Stack = new Stack<StackFrame>();
 			State = new RumorState();
 			Scope = scope ?? new RumorScope();
+			Bindings = new RumorBindings();
 		}
 
 		#region Execution
