@@ -2,7 +2,7 @@ using System;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class VariableExpression : Expression<Value>
+	public class VariableExpression : Expression
 	{
 		private readonly string name;
 
@@ -24,7 +24,7 @@ namespace Exodrifter.Rumor.Engine
 			return value;
 		}
 
-		public override Expression<Value> Simplify()
+		public override Expression Simplify()
 		{
 			return this;
 		}

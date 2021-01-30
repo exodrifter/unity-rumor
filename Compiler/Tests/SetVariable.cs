@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableLogic(state);
 			Assert.AreEqual(
-				new SetVariableNode<BooleanValue>(
+				new SetVariableNode(
 					"foobar",
 					new BooleanLiteral(true)
 				),
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableLogic(state);
 			Assert.AreEqual(
-				new SetVariableNode<BooleanValue>(
+				new SetVariableNode(
 					"foobar",
 					new BooleanLiteral(false)
 				),
@@ -51,7 +51,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableMath(state);
 			Assert.AreEqual(
-				new SetVariableNode<NumberValue>(
+				new SetVariableNode(
 					"foobar",
 					new NumberLiteral(3)
 				),
@@ -69,7 +69,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableMath(state);
 			Assert.AreEqual(
-				new SetVariableNode<NumberValue>(
+				new SetVariableNode(
 					"foobar",
 					new NumberLiteral(7)
 				),
@@ -87,7 +87,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableText(state);
 			Assert.AreEqual(
-				new SetVariableNode<StringValue>(
+				new SetVariableNode(
 					"foobar",
 					new StringLiteral("Hello world!")
 				),
@@ -105,7 +105,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetVariableText(state);
 			Assert.AreEqual(
-				new SetVariableNode<StringValue>(
+				new SetVariableNode(
 					"foobar",
 					new StringLiteral("Hello \n world!")
 				),

@@ -3,7 +3,7 @@
 	public abstract class DialogNode : Node
 	{
 		public string Speaker { get; }
-		public Expression<StringValue> Dialog { get; }
+		public Expression Dialog { get; }
 
 		public DialogNode(string speaker, string dialog)
 		{
@@ -11,7 +11,7 @@
 			Dialog = new StringLiteral(dialog);
 		}
 
-		public DialogNode(string speaker, Expression<StringValue> dialog)
+		public DialogNode(string speaker, Expression dialog)
 		{
 			Speaker = speaker;
 			Dialog = dialog;

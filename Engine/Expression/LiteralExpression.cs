@@ -1,20 +1,20 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public abstract class LiteralExpression<T> : Expression<T> where T : Value
+	public abstract class LiteralExpression : Expression
 	{
-		public readonly T Value;
+		public readonly Value Value;
 
-		public LiteralExpression(T value)
+		public LiteralExpression(Value value)
 		{
 			Value = value;
 		}
 
-		public override T Evaluate(RumorScope _)
+		public override Value Evaluate(RumorScope _)
 		{
 			return Value;
 		}
 
-		public override Expression<T> Simplify()
+		public override Expression Simplify()
 		{
 			return this;
 		}
@@ -23,10 +23,10 @@
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as LiteralExpression<T>);
+			return Equals(obj as LiteralExpression);
 		}
 
-		public bool Equals(LiteralExpression<T> other)
+		public bool Equals(LiteralExpression other)
 		{
 			if (other == null)
 			{

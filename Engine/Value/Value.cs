@@ -18,6 +18,21 @@
 			InternalValue = value;
 		}
 
+		public BooleanValue AsBoolean()
+		{
+			return (BooleanValue)this;
+		}
+
+		public NumberValue AsNumber()
+		{
+			return (NumberValue)this;
+		}
+
+		public StringValue AsString()
+		{
+			return (StringValue)this;
+		}
+
 		public override string ToString()
 		{
 			if (InternalValue == null)

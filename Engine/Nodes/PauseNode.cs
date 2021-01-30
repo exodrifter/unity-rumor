@@ -4,21 +4,21 @@ namespace Exodrifter.Rumor.Engine
 {
 	public class PauseNode : Node
 	{
-		public Expression<NumberValue> Time { get; }
+		public Expression Time { get; }
 
 		public PauseNode(double seconds)
 		{
 			Time = new NumberLiteral(seconds);
 		}
 
-		public PauseNode(Expression<NumberValue> time)
+		public PauseNode(Expression time)
 		{
 			Time = time;
 		}
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			var seconds = Time.Evaluate(rumor.Scope).Value;
+			var seconds = Time.Evaluate(rumor.Scope).AsNumber().Value;
 			yield return new ForSeconds(seconds);
 		}
 

@@ -1,25 +1,25 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class NotExpression : Expression<BooleanValue>
+	public class NotExpression : Expression
 	{
-		private readonly Expression<BooleanValue> expression;
+		private readonly Expression expression;
 
-		public NotExpression(Expression<BooleanValue> expression)
+		public NotExpression(Expression expression)
 		{
 			this.expression = expression;
 		}
 
-		public override BooleanValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
-			return !expression.Evaluate(scope);
+			return !expression.Evaluate(scope).AsBoolean();
 		}
 
-		public override Expression<BooleanValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (expression is BooleanLiteral)
 			{
 				var e = expression as BooleanLiteral;
-				return new BooleanLiteral(!e.Value);
+				return new BooleanLiteral(!e.Value.AsBoolean());
 			}
 			else
 			{

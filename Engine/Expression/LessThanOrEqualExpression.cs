@@ -1,30 +1,33 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class LessThanOrEqualExpression : Expression<BooleanValue>
+	public class LessThanOrEqualExpression : Expression
 	{
-		internal readonly Expression<NumberValue> l;
-		internal readonly Expression<NumberValue> r;
+		internal readonly Expression l;
+		internal readonly Expression r;
 
-		public LessThanOrEqualExpression
-			(Expression<NumberValue> l, Expression<NumberValue> r)
+		public LessThanOrEqualExpression(Expression l, Expression r)
 		{
 			this.l = l;
 			this.r = r;
 		}
 
-		public override BooleanValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
-			return new BooleanValue(l.Evaluate(scope) <= r.Evaluate(scope));
+			return new BooleanValue(
+				l.Evaluate(scope).AsNumber() <= r.Evaluate(scope).AsNumber()
+			);
 		}
 
-		public override Expression<BooleanValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (l is NumberLiteral && r is NumberLiteral)
 			{
 				var left = l as NumberLiteral;
 				var right = r as NumberLiteral;
 
-				return new BooleanLiteral(left.Value <= right.Value);
+				return new BooleanLiteral(
+					left.Value.AsNumber() <= right.Value.AsNumber()
+				);
 			}
 			else
 			{

@@ -6,7 +6,7 @@ namespace Exodrifter.Rumor.Engine
 {
 	public class ControlNode : Node
 	{
-		private Expression<BooleanValue> Condition { get; }
+		private Expression Condition { get; }
 
 		/// <summary>
 		/// The list of blocks that will be pushed onto the stack if the
@@ -16,7 +16,7 @@ namespace Exodrifter.Rumor.Engine
 
 		private ControlNode Next { get; }
 
-		public ControlNode(Expression<BooleanValue> condition, List<Node> block, ControlNode next)
+		public ControlNode(Expression condition, List<Node> block, ControlNode next)
 		{
 			Condition = condition;
 			Block = block;
@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			if (Condition.Evaluate(rumor.Scope).Value)
+			if (Condition.Evaluate(rumor.Scope).AsBoolean().Value)
 			{
 				rumor.Inject(Block);
 			}

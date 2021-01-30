@@ -1,21 +1,21 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class ToStringExpression<T> : Expression<StringValue> where T : Value
+	public class ToStringExpression : Expression
 	{
-		private readonly Expression<T> value;
+		private readonly Expression value;
 
-		public ToStringExpression(Expression<T> value)
+		public ToStringExpression(Expression value)
 		{
 			this.value = value;
 		}
 
-		public override StringValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
 			var result = value.Evaluate(scope).InternalValue;
 			return new StringValue(result.ToString());
 		}
 
-		public override Expression<StringValue> Simplify()
+		public override Expression Simplify()
 		{
 			// Inline literals
 			if (value is BooleanLiteral)
@@ -45,7 +45,7 @@
 				}
 				else
 				{
-					return new ToStringExpression<T>(v).Simplify();
+					return new ToStringExpression(v).Simplify();
 				}
 			}
 		}
@@ -54,10 +54,10 @@
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as ToStringExpression<T>);
+			return Equals(obj as ToStringExpression);
 		}
 
-		public bool Equals(ToStringExpression<T> other)
+		public bool Equals(ToStringExpression other)
 		{
 			if (other == null)
 			{

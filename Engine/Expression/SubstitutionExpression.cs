@@ -1,21 +1,20 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class SubstitutionExpression<T> : Expression<StringValue>
-		where T : Value
+	public class SubstitutionExpression : Expression
 	{
-		private readonly Expression<T> value;
+		private readonly Expression value;
 
-		public SubstitutionExpression(Expression<T> value)
+		public SubstitutionExpression(Expression value)
 		{
 			this.value = value;
 		}
 
-		public override StringValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
 			return new StringValue(value.Evaluate(scope).ToString());
 		}
 
-		public override Expression<StringValue> Simplify()
+		public override Expression Simplify()
 		{
 			// Inline literals
 			if (value is BooleanLiteral)
@@ -45,7 +44,7 @@
 				}
 				else
 				{
-					return new SubstitutionExpression<T>(v).Simplify();
+					return new SubstitutionExpression(v).Simplify();
 				}
 			}
 		}
@@ -54,10 +53,10 @@
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as SubstitutionExpression<T>);
+			return Equals(obj as SubstitutionExpression);
 		}
 
-		public bool Equals(SubstitutionExpression<T> other)
+		public bool Equals(SubstitutionExpression other)
 		{
 			if (other == null)
 			{

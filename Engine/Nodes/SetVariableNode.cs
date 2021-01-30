@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class SetVariableNode<T> : Node where T : Value
+	public class SetVariableNode : Node
 	{
 		public string Name { get; }
-		public Expression<T> Expression { get; }
+		public Expression Expression { get; }
 
-		public SetVariableNode(string name, Expression<T> expression)
+		public SetVariableNode(string name, Expression expression)
 		{
 			Name = name;
 			Expression = expression;
@@ -22,10 +22,10 @@ namespace Exodrifter.Rumor.Engine
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as SetVariableNode<T>);
+			return Equals(obj as SetVariableNode);
 		}
 
-		public bool Equals(SetVariableNode<T> other)
+		public bool Equals(SetVariableNode other)
 		{
 			if (other == null)
 			{

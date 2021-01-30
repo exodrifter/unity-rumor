@@ -1,30 +1,31 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class ConcatExpression : Expression<StringValue>
+	public class ConcatExpression : Expression
 	{
-		private readonly Expression<StringValue> l;
-		private readonly Expression<StringValue> r;
+		private readonly Expression l;
+		private readonly Expression r;
 
-		public ConcatExpression
-			(Expression<StringValue> l, Expression<StringValue> r)
+		public ConcatExpression(Expression l, Expression r)
 		{
 			this.l = l;
 			this.r = r;
 		}
 
-		public override StringValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
-			return l.Evaluate(scope) + r.Evaluate(scope);
+			return l.Evaluate(scope).AsString() + r.Evaluate(scope).AsString();
 		}
 
-		public override Expression<StringValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (l is StringLiteral && r is StringLiteral)
 			{
 				var left = l as StringLiteral;
 				var right = r as StringLiteral;
 
-				return new StringLiteral(left.Value + right.Value);
+				return new StringLiteral(
+					left.Value.AsString() + right.Value.AsString()
+				);
 			}
 			else
 			{

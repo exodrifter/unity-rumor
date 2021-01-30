@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class BooleanLiteral : LiteralExpression<BooleanValue>
+	public class BooleanLiteral : LiteralExpression
 	{
 		public BooleanLiteral(BooleanValue value) : base(value) { }
 		public BooleanLiteral(bool value) : base(new BooleanValue(value)) { }
@@ -31,7 +31,7 @@
 
 		public override string ToString()
 		{
-			return Value ? "true" : "false";
+			return Value.AsBoolean() ? "true" : "false";
 		}
 	}
 }

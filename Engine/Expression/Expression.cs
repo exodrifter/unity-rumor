@@ -1,10 +1,10 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public abstract class Expression<T> where T : Value
+	public abstract class Expression
 	{
-		public abstract T Evaluate(RumorScope scope);
+		public abstract Value Evaluate(RumorScope scope);
 
-		public abstract Expression<T> Simplify();
+		public abstract Expression Simplify();
 
 		public override bool Equals(object obj)
 		{
@@ -16,7 +16,7 @@
 			return base.GetHashCode();
 		}
 
-		public static bool operator ==(Expression<T> l, Expression<T> r)
+		public static bool operator ==(Expression l, Expression r)
 		{
 			if (ReferenceEquals(l, r))
 			{
@@ -29,7 +29,7 @@
 			return l.Equals(r);
 		}
 
-		public static bool operator !=(Expression<T> l, Expression<T> r)
+		public static bool operator !=(Expression l, Expression r)
 		{
 			return !(l == r);
 		}

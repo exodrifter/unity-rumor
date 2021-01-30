@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression<NumberValue>(
+							new IsExpression(
 								new NumberLiteral(5),
 								new NumberLiteral(5)
 							),
@@ -49,7 +49,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression<NumberValue>(
+							new IsExpression(
 								new NumberLiteral(5),
 								new NumberLiteral(5)
 							),
@@ -86,7 +86,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression<NumberValue>(
+							new IsExpression(
 								new NumberLiteral(5),
 								new NumberLiteral(5)
 							),
@@ -95,7 +95,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 								new WaitNode()
 							},
 							new ControlNode(
-								new IsExpression<NumberValue>(
+								new IsExpression(
 									new NumberLiteral(4),
 									new NumberLiteral(4)
 								),

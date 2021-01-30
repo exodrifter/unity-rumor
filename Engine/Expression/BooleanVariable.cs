@@ -2,7 +2,7 @@ using System;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class BooleanVariable : Expression<BooleanValue>
+	public class BooleanVariable : Expression
 	{
 		private readonly string name;
 
@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Engine
 			this.name = name;
 		}
 
-		public override BooleanValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
 			var value = scope.Get(name);
 			if (value == null)
@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Engine
 			return (BooleanValue)value;
 		}
 
-		public override Expression<BooleanValue> Simplify()
+		public override Expression Simplify()
 		{
 			return this;
 		}

@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class NumberLiteral : LiteralExpression<NumberValue>
+	public class NumberLiteral : LiteralExpression
 	{
 		public NumberLiteral(NumberValue value) : base(value) { }
 		public NumberLiteral(double value) : base(new NumberValue(value)) { }

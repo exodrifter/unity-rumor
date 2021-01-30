@@ -388,7 +388,7 @@ namespace Exodrifter.Rumor.Compiler
 			Dialog(':', (i, d) => new SetDialogNode(i, d));
 
 		private static Parser<T> Dialog<T>
-			(char ch, Func<string, Expression<StringValue>, T> constructor)
+			(char ch, Func<string, Expression, T> constructor)
 		{
 			return state =>
 			{
@@ -464,7 +464,7 @@ namespace Exodrifter.Rumor.Compiler
 		public static Parser<ReturnNode> Return =>
 			Parse.String("return").Then(new ReturnNode());
 
-		public static Parser<SetVariableNode<BooleanValue>> SetVariableLogic
+		public static Parser<SetVariableNode> SetVariableLogic
 		{
 			get
 			{
@@ -484,13 +484,13 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Logic(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<BooleanValue>(id, expression);
+						return new SetVariableNode(id, expression);
 					}
 				};
 			}
 		}
 
-		public static Parser<SetVariableNode<NumberValue>> SetVariableMath
+		public static Parser<SetVariableNode> SetVariableMath
 		{
 			get
 			{
@@ -510,13 +510,13 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Math(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<NumberValue>(id, expression);
+						return new SetVariableNode(id, expression);
 					}
 				};
 			}
 		}
 
-		public static Parser<SetVariableNode<StringValue>> SetVariableText
+		public static Parser<SetVariableNode> SetVariableText
 		{
 			get
 			{
@@ -535,7 +535,7 @@ namespace Exodrifter.Rumor.Compiler
 						var expression = Compiler.Quote(state).Simplify();
 
 						transaction.CommitIndex();
-						return new SetVariableNode<StringValue>(id, expression);
+						return new SetVariableNode(id, expression);
 					}
 				};
 			}

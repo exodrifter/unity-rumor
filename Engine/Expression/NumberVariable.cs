@@ -2,7 +2,7 @@ using System;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class NumberVariable : Expression<NumberValue>
+	public class NumberVariable : Expression
 	{
 		private readonly string name;
 
@@ -11,7 +11,7 @@ namespace Exodrifter.Rumor.Engine
 			this.name = name;
 		}
 
-		public override NumberValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
 			var value = scope.Get(name);
 			if (value == null)
@@ -30,7 +30,7 @@ namespace Exodrifter.Rumor.Engine
 			return (NumberValue)value;
 		}
 
-		public override Expression<NumberValue> Simplify()
+		public override Expression Simplify()
 		{
 			return this;
 		}

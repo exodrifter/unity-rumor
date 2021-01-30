@@ -5,12 +5,7 @@ using System;
 namespace Exodrifter.Rumor.Compiler
 {
 	// Define type aliases for convenience
-	using NumberOp =
-		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<NumberValue>>;
-	using BooleanOp =
-		Func<Expression<BooleanValue>, Expression<BooleanValue>, Expression<BooleanValue>>;
-	using NumberComparisonOp =
-		Func<Expression<NumberValue>, Expression<NumberValue>, Expression<BooleanValue>>;
+	using Op = Func<Expression, Expression, Expression>;
 
 	public static partial class Compiler
 	{
@@ -42,16 +37,16 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a comparsion block.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> ComparisonBlock =>
+		private static Parser<Expression> ComparisonBlock =>
 			Parse.SurroundBlock('{', '}', Comparison, Parse.SameOrIndented);
 
-		public static Parser<Expression<BooleanValue>> Comparison =>
+		public static Parser<Expression> Comparison =>
 			BooleanComparison
 			.Or(VariableComparison)
 			.Or(NumberComparison)
 			.Or(StringComparison);
 
-		private static Parser<Expression<BooleanValue>> VariableComparison
+		private static Parser<Expression> VariableComparison
 		{
 			get
 			{
@@ -65,7 +60,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.SameOrIndented(state);
 						var l = Identifier(state);
 
-						var op = ComparisonOps<Value>()(state);
+						var op = ComparisonOps()(state);
 
 						Parse.Whitespaces(state);
 						Parse.SameOrIndented(state);
@@ -84,7 +79,7 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Expression<BooleanValue>> BooleanComparison
+		private static Parser<Expression> BooleanComparison
 		{
 			get
 			{
@@ -93,7 +88,7 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						var l = Logic.Or(ComparisonParenthesis)(state);
-						var op = ComparisonOps<BooleanValue>()(state);
+						var op = ComparisonOps()(state);
 						var r = Logic.Or(ComparisonParenthesis)(state);
 
 						transaction.CommitIndex();
@@ -103,7 +98,7 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Expression<BooleanValue>> NumberComparison
+		private static Parser<Expression> NumberComparison
 		{
 			get
 			{
@@ -112,8 +107,8 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						var l = Math(state);
-						var op = ComparisonOps<NumberValue>()
-							.Or(NumberComparisonOps())
+						var op = ComparisonOps()
+							.Or(Ops())
 							(state);
 						var r = Math(state);
 
@@ -124,7 +119,7 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Expression<BooleanValue>> StringComparison
+		private static Parser<Expression> StringComparison
 		{
 			get
 			{
@@ -133,7 +128,7 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						var l = QuoteLiteral(state);
-						var op = ComparisonOps<StringValue>()(state);
+						var op = ComparisonOps()(state);
 						var r = QuoteLiteral(state);
 
 						transaction.CommitIndex();
@@ -147,76 +142,59 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a comparison operator, which will return a
 		/// <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
-		private static Parser
-			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			ComparisonOps<T>() where T : Value
-		{
-			return IsNot<T>()
-				.Or(Is<T>());
-		}
+		private static Parser<Op> ComparisonOps() =>
+			IsNot().Or(Is());
 
 		/// <summary>
 		/// Parses a logic is comparison operator.
 		/// </summary>
-		private static Parser
-			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			Is<T>() where T : Value =>
-			Op<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			((l, r) => new IsExpression<T>(l, r), "is", "==");
+		private static Parser<Op> Is() =>
+			Op<Op>((l, r) => new IsExpression(l, r), "is", "==");
 
 		/// <summary>
 		/// Parses a not equal comparison operator.
 		/// </summary>
-		private static Parser
-			<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			IsNot<T>() where T : Value =>
-			Op<Func<Expression<T>, Expression<T>, Expression<BooleanValue>>>
-			((l, r) => new IsNotExpression<T>(l, r), "is not", "!=");
+		private static Parser<Op> IsNot() =>
+			Op<Op>((l, r) => new IsNotExpression(l, r), "is not", "!=");
 
 		/// <summary>
 		/// Parses a comparison operator that can only be used with numbers,
 		/// which will return a <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
-		private static Parser<NumberComparisonOp> NumberComparisonOps()
-		{
-			return GreaterThanOrEqual
+		private static Parser<Op> Ops() =>
+			GreaterThanOrEqual
 				.Or(GreaterThan)
 				.Or(LessThanOrEqual)
 				.Or(LessThan);
-		}
 
 		/// <summary>
 		/// Parses a greater than comparison operator.
 		/// </summary>
-		private static Parser<NumberComparisonOp> GreaterThan =>
-			Op<NumberComparisonOp>
-			((l, r) => new GreaterThanExpression(l, r), ">");
+		private static Parser<Op> GreaterThan =>
+			Op<Op>((l, r) => new GreaterThanExpression(l, r), ">");
 
 		/// <summary>
 		/// Parses a greater than comparison operator.
 		/// </summary>
-		private static Parser<NumberComparisonOp> LessThan =>
-			Op<NumberComparisonOp>
-			((l, r) => new LessThanExpression(l, r), "<");
+		private static Parser<Op> LessThan =>
+			Op<Op>((l, r) => new LessThanExpression(l, r), "<");
 
 		/// <summary>
 		/// Parses a greater than comparison operator.
 		/// </summary>
-		private static Parser<NumberComparisonOp> GreaterThanOrEqual =>
-			Op<NumberComparisonOp>
-			((l, r) => new GreaterThanOrEqualExpression(l, r), ">=");
+		private static Parser<Op> GreaterThanOrEqual =>
+			Op<Op>((l, r) => new GreaterThanOrEqualExpression(l, r), ">=");
 
 		/// <summary>
 		/// Parses a greater than comparison operator.
 		/// </summary>
-		private static Parser<NumberComparisonOp> LessThanOrEqual =>
-			Op<NumberComparisonOp>
-			((l, r) => new LessThanOrEqualExpression(l, r), "<=");
+		private static Parser<Op> LessThanOrEqual =>
+			Op<Op>((l, r) => new LessThanOrEqualExpression(l, r), "<=");
 
 		/// <summary>
 		/// Parses a comparison expression wrapped in parenthesis.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> ComparisonParenthesis
+		private static Parser<Expression> ComparisonParenthesis
 		{
 			get
 			{
@@ -245,18 +223,18 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a logic expression, which will return a
 		/// <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
-		public static Parser<Expression<BooleanValue>> Logic =>
+		public static Parser<Expression> Logic =>
 			Parse.ChainL1(AndPieces, Or);
 
 		// Groups the "and" operators
-		private static Parser<Expression<BooleanValue>> AndPieces =>
+		private static Parser<Expression> AndPieces =>
 			Parse.ChainL1(XorPieces, And);
 
 		// Groups the "xor" operators
-		private static Parser<Expression<BooleanValue>> XorPieces =>
+		private static Parser<Expression> XorPieces =>
 			Parse.ChainL1(LogicPiece, Xor);
 
-		private static Parser<Expression<BooleanValue>> LogicPiece =>
+		private static Parser<Expression> LogicPiece =>
 			LogicParenthesis
 				.Or(NotExpression)
 				.Or(BooleanLiteral)
@@ -265,25 +243,25 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a logic or operator.
 		/// </summary>
-		private static Parser<BooleanOp> Or =>
-			Op<BooleanOp>((l, r) => new OrExpression(l, r), "or", "||");
+		private static Parser<Op> Or =>
+			Op<Op>((l, r) => new OrExpression(l, r), "or", "||");
 
 		/// <summary>
 		/// Parses a logic and operator.
 		/// </summary>
-		private static Parser<BooleanOp> And =>
-			Op<BooleanOp>((l, r) => new AndExpression(l, r), "and", "&&");
+		private static Parser<Op> And =>
+			Op<Op>((l, r) => new AndExpression(l, r), "and", "&&");
 
 		/// <summary>
 		/// Parses a logic xor operator.
 		/// </summary>
-		private static Parser<BooleanOp> Xor =>
-			Op<BooleanOp>((l, r) => new XorExpression(l, r), "xor", "^");
+		private static Parser<Op> Xor =>
+			Op<Op>((l, r) => new XorExpression(l, r), "xor", "^");
 
 		/// <summary>
 		/// Parses a boolean literal.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> BooleanLiteral
+		private static Parser<Expression> BooleanLiteral
 		{
 			get
 			{
@@ -307,7 +285,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a boolean variable.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> BooleanVariable
+		private static Parser<Expression> BooleanVariable
 		{
 			get
 			{
@@ -330,7 +308,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a logic not operator and the logic expression associated
 		/// with it.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> NotExpression
+		private static Parser<Expression> NotExpression
 		{
 			get
 			{
@@ -353,7 +331,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a logic expression wrapped in parenthesis.
 		/// </summary>
-		private static Parser<Expression<BooleanValue>> LogicParenthesis
+		private static Parser<Expression> LogicParenthesis
 		{
 			get
 			{
@@ -382,56 +360,56 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses an arithmetic expression, which will return a
 		/// <see cref="NumberValue"/> when evaluated.
 		/// </summary>
-		public static Parser<Expression<NumberValue>> Math =>
+		public static Parser<Expression> Math =>
 			Parse.ChainL1(MultipliedPieces, AddOrSubtract);
 
 		// Groups the multiplication and division operators
-		private static Parser<Expression<NumberValue>> MultipliedPieces =>
+		private static Parser<Expression> MultipliedPieces =>
 			Parse.ChainL1(MathPiece, MultiplyOrDivide);
 
-		private static Parser<Expression<NumberValue>> MathPiece =>
+		private static Parser<Expression> MathPiece =>
 			MathParenthesis.Or(NumberLiteral).Or(NumberVariable);
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
 		/// </summary>
-		private static Parser<NumberOp> AddOrSubtract =>
+		private static Parser<Op> AddOrSubtract =>
 			Add.Or(Subtract);
 
 		/// <summary>
 		/// Parses an addition operator.
 		/// </summary>
-		private static Parser<NumberOp> Add =>
-			Op<NumberOp>((l, r) => new AddExpression(l, r), "+");
+		private static Parser<Op> Add =>
+			Op<Op>((l, r) => new AddExpression(l, r), "+");
 
 		/// <summary>
 		/// Parses a subtraction operator.
 		/// </summary>
-		private static Parser<NumberOp> Subtract =>
-			Op<NumberOp>((l, r) => new SubtractExpression(l, r), "-");
+		private static Parser<Op> Subtract =>
+			Op<Op>((l, r) => new SubtractExpression(l, r), "-");
 
 		/// <summary>
 		/// Parses a multiplication or division operator.
 		/// </summary>
-		private static Parser<NumberOp> MultiplyOrDivide =>
+		private static Parser<Op> MultiplyOrDivide =>
 			Multiply.Or(Divide);
 
 		/// <summary>
 		/// Parses an multiplication operator.
 		/// </summary>
-		private static Parser<NumberOp> Multiply =>
-			Op<NumberOp>((l, r) => new MultiplyExpression(l, r), "*");
+		private static Parser<Op> Multiply =>
+			Op<Op>((l, r) => new MultiplyExpression(l, r), "*");
 
 		/// <summary>
 		/// Parses a division operator.
 		/// </summary>
-		private static Parser<NumberOp> Divide =>
-			Op<NumberOp>((l, r) => new DivideExpression(l, r), "/");
+		private static Parser<Op> Divide =>
+			Op<Op>((l, r) => new DivideExpression(l, r), "/");
 
 		/// <summary>
 		/// Parses a number literal.
 		/// </summary>
-		private static Parser<Expression<NumberValue>> NumberLiteral
+		private static Parser<Expression> NumberLiteral
 		{
 			get
 			{
@@ -453,7 +431,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a number variable.
 		/// </summary>
-		private static Parser<Expression<NumberValue>> NumberVariable
+		private static Parser<Expression> NumberVariable
 		{
 			get
 			{
@@ -475,7 +453,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a math expression wrapped in parenthesis.
 		/// </summary>
-		private static Parser<Expression<NumberValue>> MathParenthesis
+		private static Parser<Expression> MathParenthesis
 		{
 			get
 			{
@@ -500,14 +478,14 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a substitution. Shared by the <see cref="Text"/> and
 		/// <see cref="Quote"/> parsers.
 		/// </summary>
-		private static Parser<Expression<StringValue>> Substitution =>
+		private static Parser<Expression> Substitution =>
 			Parse.SurroundBlock('{', '}',
-				Logic.Select(x => (Expression<StringValue>)
-					new ToStringExpression<BooleanValue>(x)),
+				Logic.Select(x => (Expression)
+					new ToStringExpression(x)),
 				Parse.SameOrIndented
 			).Or(Parse.SurroundBlock('{', '}',
-				Math.Select(x => (Expression<StringValue>)
-					new ToStringExpression<NumberValue>(x)),
+				Math.Select(x => (Expression)
+					new ToStringExpression(x)),
 				Parse.SameOrIndented
 			)).Or(Parse.SurroundBlock('{', '}',
 				Quote,
@@ -522,7 +500,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a text expression, or a block of unquoted strings, which will
 		/// return a <see cref="StringValue"/> when evaluated.
 		/// </summary>
-		public static Parser<Expression<StringValue>> Text =>
+		public static Parser<Expression> Text =>
 			PrefixText<Unit>(null);
 
 		/// <summary>
@@ -534,7 +512,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// The prefix parser to use at the beginning of each line, or null for
 		/// no prefix parsing.
 		/// </param>
-		public static Parser<Expression<StringValue>> PrefixText<T>
+		public static Parser<Expression> PrefixText<T>
 			(Parser<T> prefix)
 		{
 			return state =>
@@ -549,7 +527,7 @@ namespace Exodrifter.Rumor.Compiler
 					)(state);
 
 					// Combine each line of the text into a single expression
-					Expression<StringValue> result = null;
+					Expression result = null;
 					foreach (var line in lines)
 					{
 						if (result != null)
@@ -575,7 +553,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a single line of a text block.
 		/// </summary>
-		private static Parser<Expression<StringValue>> TextLine
+		private static Parser<Expression> TextLine
 		{
 			get
 			{
@@ -638,10 +616,10 @@ namespace Exodrifter.Rumor.Compiler
 		/// Parses a quote expression, or a quoted string, which will return a
 		/// <see cref="StringValue"/> when evaluated.
 		/// </summary>
-		public static Parser<Expression<StringValue>> Quote =>
+		public static Parser<Expression> Quote =>
 			Parse.Surround('\"', '\"', QuoteInternal).Or(StringVariable);
 
-		private static Parser<Expression<StringValue>> QuoteLiteral
+		private static Parser<Expression> QuoteLiteral
 		{
 			get
 			{
@@ -663,7 +641,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <summary>
 		/// Parses a string variable.
 		/// </summary>
-		private static Parser<Expression<StringValue>> StringVariable
+		private static Parser<Expression> StringVariable
 		{
 			get
 			{
@@ -682,7 +660,7 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Expression<StringValue>> QuoteInternal
+		private static Parser<Expression> QuoteInternal
 		{
 			get
 			{
@@ -698,7 +676,7 @@ namespace Exodrifter.Rumor.Compiler
 
 						var rest = EscapeSequence
 							.Or(SubstitutionQuote)
-							.Or(Parse.Pure<Expression<StringValue>>(null))
+							.Or(Parse.Pure<Expression>(null))
 							(state);
 
 						transaction.CommitIndex();
@@ -715,7 +693,7 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static Parser<Expression<StringValue>> EscapeSequence
+		private static Parser<Expression> EscapeSequence
 		{
 			get
 			{
@@ -725,12 +703,12 @@ namespace Exodrifter.Rumor.Compiler
 					.Or(Parse.String("\\\"").Then("\""))
 					.Or(Parse.String("\\\\").Then("\\"))
 					.Select(str =>
-						(Expression<StringValue>)new StringLiteral(str)
+						(Expression)new StringLiteral(str)
 					);
 			}
 		}
 
-		private static Parser<Expression<StringValue>> SubstitutionQuote
+		private static Parser<Expression> SubstitutionQuote
 		{
 			get
 			{

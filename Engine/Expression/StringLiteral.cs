@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class StringLiteral : LiteralExpression<StringValue>
+	public class StringLiteral : LiteralExpression
 	{
 		public StringLiteral(StringValue value) : base(value) { }
 		public StringLiteral(string value) : base(new StringValue(value)) { }

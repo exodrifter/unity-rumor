@@ -5,7 +5,7 @@ namespace Exodrifter.Rumor.Engine
 	public class AddChoiceNode : Node
 	{
 		private string Label { get; }
-		private Expression<StringValue> Text { get; }
+		private Expression Text { get; }
 
 		public AddChoiceNode(string label, string text)
 		{
@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine
 			Text = new StringLiteral(text);
 		}
 
-		public AddChoiceNode(string label, Expression<StringValue> text)
+		public AddChoiceNode(string label, Expression text)
 		{
 			Label = label;
 			Text = text;
@@ -21,7 +21,10 @@ namespace Exodrifter.Rumor.Engine
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			rumor.State.AddChoice(Label, Text.Evaluate(rumor.Scope).Value);
+			rumor.State.AddChoice(
+				Label,
+				Text.Evaluate(rumor.Scope).AsString().Value
+			);
 			yield break;
 		}
 

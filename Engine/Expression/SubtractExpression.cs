@@ -1,30 +1,31 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class SubtractExpression : Expression<NumberValue>
+	public class SubtractExpression : Expression
 	{
-		private readonly Expression<NumberValue> l;
-		private readonly Expression<NumberValue> r;
+		private readonly Expression l;
+		private readonly Expression r;
 
-		public SubtractExpression
-			(Expression<NumberValue> l, Expression<NumberValue> r)
+		public SubtractExpression(Expression l, Expression r)
 		{
 			this.l = l;
 			this.r = r;
 		}
 
-		public override NumberValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
-			return l.Evaluate(scope) - r.Evaluate(scope);
+			return l.Evaluate(scope).AsNumber() - r.Evaluate(scope).AsNumber();
 		}
 
-		public override Expression<NumberValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (l is NumberLiteral && r is NumberLiteral)
 			{
 				var left = l as NumberLiteral;
 				var right = r as NumberLiteral;
 
-				return new NumberLiteral(left.Value - right.Value);
+				return new NumberLiteral(
+					left.Value.AsNumber() - right.Value.AsNumber()
+				);
 			}
 			else
 			{

@@ -7,12 +7,12 @@ namespace Exodrifter.Rumor.Engine
 		public SetDialogNode(string speaker, string dialog)
 			: base(speaker, dialog) { }
 
-		public SetDialogNode(string speaker, Expression<StringValue> dialog)
+		public SetDialogNode(string speaker, Expression dialog)
 			: base(speaker, dialog) { }
 
 		public override IEnumerator<Yield> Execute(Rumor rumor)
 		{
-			var dialog = Dialog.Evaluate(rumor.Scope).Value;
+			var dialog = Dialog.Evaluate(rumor.Scope).AsString().Value;
 			rumor.State.SetDialog(Speaker, dialog);
 			yield return new ForAdvance();
 		}

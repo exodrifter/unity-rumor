@@ -1,23 +1,22 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class IsExpression<T> : Expression<BooleanValue> where T : Value
+	public class IsExpression : Expression
 	{
-		internal readonly Expression<T> l;
-		internal readonly Expression<T> r;
+		internal readonly Expression l;
+		internal readonly Expression r;
 
-		public IsExpression
-			(Expression<T> l, Expression<T> r)
+		public IsExpression(Expression l, Expression r)
 		{
 			this.l = l;
 			this.r = r;
 		}
 
-		public override BooleanValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
 			return new BooleanValue(l.Evaluate(scope) == r.Evaluate(scope));
 		}
 
-		public override Expression<BooleanValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (l is BooleanLiteral && r is BooleanLiteral)
 			{
@@ -51,7 +50,7 @@
 				}
 				else
 				{
-					return new IsExpression<T>(left, right).Simplify();
+					return new IsExpression(left, right).Simplify();
 				}
 			}
 		}
@@ -60,10 +59,10 @@
 
 		public override bool Equals(object obj)
 		{
-			return Equals(obj as IsExpression<T>);
+			return Equals(obj as IsExpression);
 		}
 
-		public bool Equals(IsExpression<T> other)
+		public bool Equals(IsExpression other)
 		{
 			if (other == null)
 			{

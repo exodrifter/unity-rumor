@@ -1,30 +1,31 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class OrExpression : Expression<BooleanValue>
+	public class OrExpression : Expression
 	{
-		private readonly Expression<BooleanValue> l;
-		private readonly Expression<BooleanValue> r;
+		private readonly Expression l;
+		private readonly Expression r;
 
-		public OrExpression
-			(Expression<BooleanValue> l, Expression<BooleanValue> r)
+		public OrExpression(Expression l, Expression r)
 		{
 			this.l = l;
 			this.r = r;
 		}
 
-		public override BooleanValue Evaluate(RumorScope scope)
+		public override Value Evaluate(RumorScope scope)
 		{
-			return l.Evaluate(scope) || r.Evaluate(scope);
+			return l.Evaluate(scope).AsBoolean() || r.Evaluate(scope).AsBoolean();
 		}
 
-		public override Expression<BooleanValue> Simplify()
+		public override Expression Simplify()
 		{
 			if (l is BooleanLiteral && r is BooleanLiteral)
 			{
 				var left = l as BooleanLiteral;
 				var right = r as BooleanLiteral;
 
-				return new BooleanLiteral(left.Value || right.Value);
+				return new BooleanLiteral(
+					left.Value.AsBoolean() || right.Value.AsBoolean()
+				);
 			}
 			else
 			{
