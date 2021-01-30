@@ -23,11 +23,19 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		public List<Tuple<string, string>> LinkedVariables { get; }
 
+		/// <summary>
+		/// A list of bindings that can be called.
+		/// </summary>
+		public Dictionary<string, BindingHint> BindingHints { get; }
+
+		#region Constructors
+
 		public RumorParserState()
 		{
 			UsedIdentifiers = new HashSet<string>();
 			UsedVariables = new Dictionary<string, Engine.ValueType>();
 			LinkedVariables = new List<Tuple<string, string>>();
+			BindingHints = new Dictionary<string, BindingHint>();
 		}
 
 		public RumorParserState(RumorParserState other)
@@ -35,7 +43,83 @@ namespace Exodrifter.Rumor.Compiler
 			UsedIdentifiers = new HashSet<string>(other.UsedIdentifiers);
 			UsedVariables = new Dictionary<string, Engine.ValueType>(other.UsedVariables);
 			LinkedVariables = new List<Tuple<string, string>>(other.LinkedVariables);
+			BindingHints = new Dictionary<string, BindingHint>(other.BindingHints);
 		}
+
+		public ParserUserState Clone()
+		{
+			return new RumorParserState(this);
+		}
+
+		#endregion
+
+		#region Bindings
+
+		public void LinkAction(string name)
+		{
+			BindingHints[name] = new BindingActionHint();
+		}
+
+		public void LinkAction(string name, Engine.ValueType p1)
+		{
+			BindingHints[name] = new BindingActionHint1(p1);
+		}
+
+		public void LinkAction
+			(string name, Engine.ValueType p1, Engine.ValueType p2)
+		{
+			BindingHints[name] = new BindingActionHint2(p1, p2);
+		}
+
+		public void LinkAction
+			(string name, Engine.ValueType p1, Engine.ValueType p2,
+			Engine.ValueType p3)
+		{
+			BindingHints[name] = new BindingActionHint3(p1, p2, p3);
+		}
+
+		public void LinkAction
+			(string name, Engine.ValueType p1, Engine.ValueType p2,
+			Engine.ValueType p3, Engine.ValueType p4)
+		{
+			BindingHints[name] = new BindingActionHint4(p1, p2, p3, p4);
+		}
+
+		public void LinkFunction(string name, Engine.ValueType result)
+		{
+			BindingHints[name] = new BindingFunctionHint(result);
+		}
+
+		public void LinkFunction
+			(string name, Engine.ValueType p1, Engine.ValueType result)
+		{
+			BindingHints[name] = new BindingFunctionHint1(p1, result);
+		}
+
+		public void LinkFunction
+			(string name, Engine.ValueType p1, Engine.ValueType p2,
+			Engine.ValueType result)
+		{
+			BindingHints[name] = new BindingFunctionHint2(p1, p2, result);
+		}
+
+		public void LinkFunction
+			(string name, Engine.ValueType p1, Engine.ValueType p2,
+			Engine.ValueType p3, Engine.ValueType result)
+		{
+			BindingHints[name] = new BindingFunctionHint3(p1, p2, p3, result);
+		}
+
+		public void LinkFunction
+			(string name, Engine.ValueType p1, Engine.ValueType p2,
+			Engine.ValueType p3, Engine.ValueType p4, Engine.ValueType result)
+		{
+			BindingHints[name] = new BindingFunctionHint4(p1, p2, p3, p4, result);
+		}
+
+		#endregion
+
+		#region Variables
 
 		public void LinkVariable(int errorIndex, string id, Engine.ValueType type)
 		{
@@ -86,9 +170,6 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		public ParserUserState Clone()
-		{
-			return new RumorParserState(this);
-		}
+		#endregion
 	}
 }
