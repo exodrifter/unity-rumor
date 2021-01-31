@@ -24,13 +24,15 @@ namespace Exodrifter.Rumor.Compiler
 						state.IndentIndex = state.Index;
 
 						var blocks = Parse.Block(
-							Node.Select(x =>
-								new Dictionary<string, List<Node>>()
-									{ { Rumor.MainIdentifier, new List<Node>() { x } } }
-							)
-							.Or(AddChoice)
+							AddChoice
 							.Or(Label)
-							.Or(If),
+							.Or(If)
+							.Or(
+								Node.Select(x =>
+									new Dictionary<string, List<Node>>()
+										{ { Rumor.MainIdentifier, new List<Node>() { x } } }
+								)
+							),
 							Parse.Same
 						)(state);
 
