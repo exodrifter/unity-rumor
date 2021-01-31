@@ -65,6 +65,8 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public int CancelCount { get; private set; }
 
+		public event Action OnFinish;
+
 		/// <summary>
 		/// Clears the call stack and returns an iterator that the caller must
 		/// use to execute this Rumor.
@@ -113,6 +115,7 @@ namespace Exodrifter.Rumor.Engine
 				}
 			}
 
+			OnFinish?.Invoke();
 			FinishCount++;
 		}
 
