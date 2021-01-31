@@ -1,5 +1,6 @@
 {
     "name": "Exodrifter.Rumor.Compiler",
+    "rootNamespace": "",
     "references": [
         "GUID:3b1021c3659174e4d8475c19a9c62fd5",
         "GUID:99f7064735b3e3144b8444c435c2d6d4"
@@ -9,7 +10,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": true
