@@ -446,9 +446,9 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.Spaces(state);
 
 						var scale = Parse
-							.String("ms", "milliseconds").Then(0.001d)
-							.Or(Parse.String("s", "seconds").Then(1d))
-							.Or(Parse.String("m", "minutes").Then(60d))
+							.String("milliseconds", "millisecond", "ms").Then(0.001d)
+							.Or(Parse.String("seconds", "second", "s").Then(1d))
+							.Or(Parse.String("minutes", "minute", "m").Then(60d))
 							(state);
 
 						var time = new MultiplyExpression(
@@ -456,6 +456,7 @@ namespace Exodrifter.Rumor.Compiler
 							new NumberLiteral(scale)
 						).Simplify();
 
+						transaction.CommitIndex();
 						return new PauseNode(time);
 					}
 				};
