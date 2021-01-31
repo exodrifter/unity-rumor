@@ -66,6 +66,8 @@ namespace Exodrifter.Rumor.Engine
 		public int CancelCount { get; private set; }
 
 		public event Action OnFinish;
+		public event Action OnWaitForAdvance;
+		public event Action<Dictionary<string, string>> OnWaitForChoose;
 
 		/// <summary>
 		/// Clears the call stack and returns an iterator that the caller must
@@ -104,6 +106,13 @@ namespace Exodrifter.Rumor.Engine
 					&& Stack.Count > 0
 					&& Stack.Peek() == frame)
 				{
+					if (frame.Yield is ForChoose) {
+						OnWaitForChoose?.Invoke(State.GetChoices());
+					}
+					if (frame.Yield is ForAdvance) {
+						OnWaitForAdvance?.Invoke();
+					}
+
 					yield return null;
 				}
 
