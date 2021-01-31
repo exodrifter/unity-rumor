@@ -65,29 +65,16 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public int CancelCount { get; private set; }
 
+		/// <summary>
+		/// The current yield preventing further execution.
+		/// </summary>
+		private Yield Yield;
+
 		public event Action OnFinish;
 		public event Action OnWaitForAdvance;
 		public event Action<Dictionary<string, string>> OnWaitForChoose;
 
-		/// <summary>
-		/// Clears the call stack and returns an iterator that the caller must
-		/// use to execute this Rumor.
-		///
-		/// Note that this function doesn't actually do anything and that it
-		/// will return immediately; the caller is required to manipulate the
-		/// returned <see cref="IEnumerator"/> to execute Rumor. In Unity, this
-		/// can be done by passing the <see cref="IEnumerator"/> to
-		/// StartCoroutine.
-		///
-		/// This method cannot be used to spawn multiple execution instances;
-		/// create multiple Rumor instances instead if that behaviour is
-		/// desired.
-		/// </summary>
-		/// <returns>
-		/// Returns an <see cref="IEnumerator"/> that can be used to control
-		/// the execution of Rumor.
-		/// </returns>
-		public IEnumerator Start(string label = MainIdentifier)
+		public void Start(string label = MainIdentifier)
 		{
 			if (Stack.Count > 0)
 			{
@@ -95,32 +82,54 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			Jump(label);
+			Continue();
+		}
 
+		/// <summary>
+		/// This should be called after any operation that may allow execution
+		/// to continue.
+		/// </summary>
+		private void Continue()
+		{
 			while (Stack.Count > 0)
 			{
-				// Continue executing this stack frame until it is either
-				// finished or it is no longer the top-most stack frame.
-				var frame = Stack.Peek();
-				var iter = frame.Execute(this);
-				while (iter.MoveNext()
-					&& Stack.Count > 0
-					&& Stack.Peek() == frame)
+				// Check if the current yield is finished
+				if (Yield != null)
 				{
-					if (frame.Yield is ForChoose) {
-						OnWaitForChoose?.Invoke(State.GetChoices());
+					if (Yield?.Finished == true)
+					{
+						Yield = null;
 					}
-					if (frame.Yield is ForAdvance) {
-						OnWaitForAdvance?.Invoke();
+					else
+					{
+						// Wait for the current yield to finish
+						return;
 					}
-
-					yield return null;
 				}
 
-				// Don't pop the stack if the stack frame we were executing is
-				// no longer the top-most stack frame.
-				if (Stack.Count > 0 && Stack.Peek() == frame)
+				// Check if this frame is complete
+				var frame = Stack.Peek();
+				if (frame.Done)
 				{
 					Stack.Pop();
+					continue;
+				}
+
+				// Execute the next node in the stack frame
+				Yield = frame.Execute(this);
+				if (Yield is ForAdvance)
+				{
+					OnWaitForAdvance?.Invoke();
+					return;
+				}
+				else if (Yield is ForChoose)
+				{
+					OnWaitForChoose?.Invoke(State.GetChoices());
+					return;
+				}
+				else if (Yield is ForSeconds)
+				{
+					return;
 				}
 			}
 
@@ -148,23 +157,18 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		public void Advance()
 		{
-			if (Stack.Count > 0)
-			{
-				Stack.Peek().Yield?.Advance();
-			}
+			Yield?.Advance();
+			Continue();
 		}
 
 		public void Choose(string label)
 		{
 			if (State.GetChoices().ContainsKey(label))
 			{
-				if (Stack.Count > 0)
-				{
-					Stack.Peek().Yield?.Choose();
-				}
-
+				Yield?.Choose();
 				Jump(label);
 				State.ClearChoices();
+				Continue();
 			}
 		}
 
@@ -220,10 +224,8 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Update(double delta)
 		{
-			if (Stack.Count > 0)
-			{
-				Stack.Peek().Yield?.Update(delta);
-			}
+			Yield?.Update(delta);
+			Continue();
 		}
 
 		#endregion

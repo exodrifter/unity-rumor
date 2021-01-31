@@ -6,10 +6,10 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public ReturnNode() { }
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			rumor.Return();
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

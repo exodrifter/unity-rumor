@@ -19,13 +19,13 @@ namespace Exodrifter.Rumor.Engine
 			Text = text;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			rumor.State.AddChoice(
 				Label,
 				Text.Evaluate(rumor.Scope).AsString().Value
 			);
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

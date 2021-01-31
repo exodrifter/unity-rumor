@@ -6,9 +6,9 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public WaitNode() { }
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
-			yield return new ForAdvance();
+			return new ForAdvance();
 		}
 
 		public override bool Equals(object obj)

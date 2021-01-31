@@ -16,10 +16,10 @@ namespace Exodrifter.Rumor.Engine
 			Time = time;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			var seconds = Time.Evaluate(rumor.Scope).AsNumber().Value;
-			yield return new ForSeconds(seconds);
+			return new ForSeconds(seconds);
 		}
 
 		public override bool Equals(object obj)

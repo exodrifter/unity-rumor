@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Engine
 			Next = next;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			if (Condition.Evaluate(rumor.Scope).AsBoolean().Value)
 			{
@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Engine
 			{
 				Next?.Execute(rumor);
 			}
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

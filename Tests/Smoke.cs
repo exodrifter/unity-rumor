@@ -9,7 +9,7 @@ namespace Exodrifter.Rumor.Tests
 	public static class Smoke
 	{
 		[Test]
-		public static void AppendDialogLineSuccess()
+		public static void SmokeTest1()
 		{
 			string script =
 				"Alice: Hello? Are you there?\n" +
@@ -43,9 +43,7 @@ namespace Exodrifter.Rumor.Tests
 			double number = 0;
 			var rumor = new Engine.Rumor(nodes);
 			rumor.Bindings.Bind<double>("add", (x) => number += x);
-			var iter = rumor.Start();
-
-			iter.MoveNext();
+			rumor.Start();
 
 			Assert.AreEqual(
 				new Dictionary<string, string>
@@ -56,7 +54,6 @@ namespace Exodrifter.Rumor.Tests
 			);
 
 			rumor.Advance();
-			iter.MoveNext();
 
 			Assert.AreEqual(
 				new Dictionary<string, string>
@@ -67,7 +64,6 @@ namespace Exodrifter.Rumor.Tests
 			);
 
 			rumor.Advance();
-			iter.MoveNext();
 
 			Assert.AreEqual(4, number);
 			Assert.AreEqual(
@@ -79,10 +75,7 @@ namespace Exodrifter.Rumor.Tests
 			);
 
 			rumor.Advance();
-			iter.MoveNext();
-
 			rumor.Choose("hangup");
-			iter.MoveNext();
 
 			Assert.AreEqual(
 				new Dictionary<string, string>
@@ -93,7 +86,7 @@ namespace Exodrifter.Rumor.Tests
 			);
 
 			rumor.Advance();
-			Assert.IsFalse(iter.MoveNext());
+			Assert.IsFalse(rumor.Executing);
 		}
 	}
 }

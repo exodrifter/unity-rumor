@@ -13,11 +13,11 @@ namespace Exodrifter.Rumor.Engine
 			Expression = expression;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			var value = Expression.Evaluate(rumor.Scope);
 			rumor.Scope.Set(Name, value);
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

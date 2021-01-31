@@ -6,9 +6,9 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public ChooseNode() { }
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
-			yield return new ForChoose();
+			return new ForChoose();
 		}
 
 		public override bool Equals(object obj)

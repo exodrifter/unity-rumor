@@ -19,8 +19,7 @@ namespace Exodrifter.Rumor.Engine.Tests
 				}
 			);
 
-			var iter = rumor.Start();
-			Assert.IsFalse(iter.MoveNext());
+			rumor.Start();
 			Assert.IsFalse(rumor.Executing);
 			Assert.AreEqual(1, rumor.FinishCount);
 			Assert.AreEqual(0, rumor.CancelCount);

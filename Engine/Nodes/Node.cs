@@ -6,6 +6,6 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public Node() { }
 
-		public abstract IEnumerator<Yield> Execute(Rumor rumor);
+		public abstract Yield Execute(Rumor rumor);
 	}
 }

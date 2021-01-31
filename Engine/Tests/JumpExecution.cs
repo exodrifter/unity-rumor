@@ -23,12 +23,10 @@ namespace Exodrifter.Rumor.Engine.Tests
 				}
 			);
 
-			var iter = rumor.Start();
-			Assert.IsTrue(iter.MoveNext());
+			rumor.Start();
 			Assert.IsTrue(rumor.Executing);
 
 			rumor.Advance();
-			Assert.IsFalse(iter.MoveNext());
 			Assert.IsFalse(rumor.Executing);
 			Assert.AreEqual(1, rumor.FinishCount);
 			Assert.AreEqual(0, rumor.CancelCount);
@@ -47,9 +45,8 @@ namespace Exodrifter.Rumor.Engine.Tests
 				}
 			);
 
-			var iter = rumor.Start();
 			var exception = Assert.Throws<InvalidOperationException>(() =>
-				iter.MoveNext()
+				rumor.Start()
 			);
 			Assert.AreEqual(
 				"The label \"foobar\" does not exist!",

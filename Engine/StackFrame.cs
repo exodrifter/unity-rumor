@@ -20,14 +20,8 @@ namespace Exodrifter.Rumor.Engine
 		private int NextIndex { get; set; }
 
 		/// <summary>
-		/// The iterator pointing to the current execution position.
-		/// </summary>
-		private IEnumerator<Yield> Iterator { get; set; } = null;
-
-		/// <summary>
-		/// The current yield preventing further execution of the stack frame.
-		/// </summary>
-		internal Yield Yield { get { return Iterator?.Current; } }
+		/// True if all nodes have been executed.
+		internal bool Done { get { return NextIndex >= Nodes.Count; } }
 
 		/// <summary>
 		/// Creates a new stack frame.
@@ -43,40 +37,16 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
-		/// Starts or resumes execution of this call stack.
+		/// Executes the next node in the stack frame.
 		/// </summary>
-		/// <param name="rumor"></param>
-		/// <returns></returns>
-		internal IEnumerator Execute(Rumor rumor)
+		/// <param name="rumor">The rumor executing this stack frame.</param>
+		/// <returns>The yield preventing further execution, if any.</returns>
+		internal Yield Execute(Rumor rumor)
 		{
-			while (true)
-			{
-				if (Iterator == null)
-				{
-					if (NextIndex < Nodes.Count)
-					{
-						var node = Nodes[NextIndex];
-						NextIndex++;
-						Iterator = node.Execute(rumor);
-					}
-					else
-					{
-						// No more nodes to execute
-						yield break;
-					}
-				}
+			var node = Nodes[NextIndex];
+			NextIndex++;
 
-				// Execute the next node
-				while (Iterator.MoveNext())
-				{
-					// Wait for the yield to finish
-					while (!Iterator.Current.Finished)
-					{
-						yield return null;
-					}
-				}
-				Iterator = null;
-			}
+			return node.Execute(rumor);
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine
 			this.param = param;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			object[] ps = new object[param.Length];
 			for (int i = 0; i < param.Length; ++i)
@@ -22,7 +22,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			rumor.Bindings.CallBinding(BindingType.Action, id, ps);
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

@@ -11,10 +11,10 @@ namespace Exodrifter.Rumor.Engine
 			Label = label;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			rumor.Jump(Label);
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)

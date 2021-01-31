@@ -23,8 +23,7 @@ namespace Exodrifter.Rumor.Engine.Tests
 				}
 			);
 
-			var iter = rumor.Start();
-			Assert.IsTrue(iter.MoveNext());
+			rumor.Start();
 			Assert.IsTrue(rumor.Executing);
 			Assert.AreEqual(
 				new Dictionary<string, string>()
@@ -35,7 +34,6 @@ namespace Exodrifter.Rumor.Engine.Tests
 			);
 
 			rumor.Choose("choice1");
-			Assert.IsTrue(iter.MoveNext());
 			Assert.IsTrue(rumor.Executing);
 			Assert.AreEqual(
 				new Dictionary<string, string>()
@@ -46,7 +44,6 @@ namespace Exodrifter.Rumor.Engine.Tests
 			);
 
 			rumor.Advance();
-			Assert.IsFalse(iter.MoveNext());
 			Assert.IsFalse(rumor.Executing);
 			Assert.AreEqual(1, rumor.FinishCount);
 			Assert.AreEqual(0, rumor.CancelCount);

@@ -11,10 +11,10 @@ namespace Exodrifter.Rumor.Engine
 			Type = type;
 		}
 
-		public override IEnumerator<Yield> Execute(Rumor rumor)
+		public override Yield Execute(Rumor rumor)
 		{
 			rumor.State.Clear(Type);
-			yield break;
+			return null;
 		}
 
 		public override bool Equals(object obj)
