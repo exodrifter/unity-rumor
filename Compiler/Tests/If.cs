@@ -25,10 +25,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression(
-								new NumberLiteral(5),
-								new NumberLiteral(5)
-							),
+							new BooleanLiteral(true),
 							new List<Node>()
 							{
 								new WaitNode()
@@ -55,10 +52,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression(
-								new NumberLiteral(5),
-								new NumberLiteral(5)
-							),
+							new BooleanLiteral(true),
 							new List<Node>()
 							{
 								new WaitNode()
@@ -92,19 +86,13 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new IsExpression(
-								new NumberLiteral(5),
-								new NumberLiteral(5)
-							),
+							new BooleanLiteral(true),
 							new List<Node>()
 							{
 								new WaitNode()
 							},
 							new ControlNode(
-								new IsExpression(
-									new NumberLiteral(4),
-									new NumberLiteral(4)
-								),
+								new BooleanLiteral(true),
 								new List<Node>()
 								{
 									new WaitNode()
