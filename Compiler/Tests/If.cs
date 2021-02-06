@@ -20,6 +20,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 
 			var script = Compiler.If(state);
+			Assert.AreEqual(20, state.Index);
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
@@ -47,6 +48,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 
 			var script = Compiler.If(state);
+			Assert.AreEqual(32, state.Index);
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{
@@ -81,6 +83,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 
 			var script = Compiler.If(state);
+			Assert.AreEqual(53, state.Index);
 			Assert.AreEqual(
 				new Dictionary<string, List<Node>>
 				{

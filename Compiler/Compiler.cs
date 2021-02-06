@@ -271,6 +271,7 @@ namespace Exodrifter.Rumor.Compiler
 						var node = new ControlNode(comparison, block, next);
 						result.Remove(Rumor.MainIdentifier);
 
+						transaction.CommitIndex();
 						return new Tuple<ControlNode, Dictionary<string, List<Node>>>(
 							node,
 							result
@@ -305,13 +306,13 @@ namespace Exodrifter.Rumor.Compiler
 								"else statements must be followed by a non-empty block"
 							);
 						}
-						transaction.CommitIndex();
 
 						// Move the main block to the control node
 						var block = result[Rumor.MainIdentifier];
 						var node = new ControlNode(null, block, null);
 						result.Remove(Rumor.MainIdentifier);
 
+						transaction.CommitIndex();
 						return new Tuple<ControlNode, Dictionary<string, List<Node>>>(
 							node,
 							result
