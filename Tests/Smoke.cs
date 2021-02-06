@@ -14,7 +14,6 @@ namespace Exodrifter.Rumor.Tests
 			string script =
 				"Alice: Hello? Are you there?\n" +
 				"Eve: Yes, yes, just... one moment.\n" +
-				"waited = { false }\n" +
 				"add(4)\n" +
 				": The line briefly emits a sharp static. Then, silence.\n" +
 

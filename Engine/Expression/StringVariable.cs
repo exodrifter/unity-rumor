@@ -16,13 +16,13 @@ namespace Exodrifter.Rumor.Engine
 			var value = scope.Get(name);
 			if (value == null)
 			{
-				throw new InvalidOperationException(
+				throw new UndefinedVariableException(
 					"Variable \"" + name+ "\" has not been defined yet!"
 				);
 			}
 			if (!(value is StringValue))
 			{
-				throw new InvalidOperationException(
+				throw new VariableTypeException(
 					"Variable is not a string!"
 				);
 			}

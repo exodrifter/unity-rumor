@@ -25,7 +25,31 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Yield Execute(Rumor rumor)
 		{
-			if (Condition.Evaluate(rumor.Scope).AsBoolean().Value)
+			bool inject;
+			try
+			{
+				// If there is no condition, this is an else and we will always
+				// want to inject the block.
+				if (Condition == null)
+				{
+					inject = true;
+				}
+				else
+				{
+					var value = Condition.Evaluate(rumor.Scope)?.AsBoolean();
+					inject = value?.Value ?? false;
+				}
+			}
+			catch (UndefinedVariableException)
+			{
+				inject = false;
+			}
+			catch (VariableTypeException)
+			{
+				inject = false;
+			}
+
+			if (inject)
 			{
 				rumor.Inject(Block);
 			}
@@ -33,6 +57,7 @@ namespace Exodrifter.Rumor.Engine
 			{
 				Next?.Execute(rumor);
 			}
+
 			return null;
 		}
 
@@ -84,12 +109,12 @@ namespace Exodrifter.Rumor.Engine
 
 			if (Condition != null && Next != null)
 			{
-				lines.Add(Next.ToString());
+				lines.Add(Next.ToString_Internal());
 				return "elif {" + Condition + "}; " + string.Join("; ", lines);
 			}
 			else
 			{
-				return "else " + string.Join("; ", lines);
+				return "else; " + string.Join("; ", lines);
 			}
 		}
 	}
