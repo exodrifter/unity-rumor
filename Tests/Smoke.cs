@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Tests
 
 				"choose\n" +
 
-				"if waited\n" +
+				"if { waited }\n" +
 				"  Eve: There we go. Sorry about that.\n" +
 				"  Alice: No problem.\n" +
 				"  add(4)\n";

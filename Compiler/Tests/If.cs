@@ -15,7 +15,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void IfSuccess()
 		{
 			var state = new ParserState(
-				"if 5 == 5\n  wait",
+				"if { 5 == 5 }\n  wait",
 				4, new RumorParserState()
 			);
 
@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void IfElseSuccess()
 		{
 			var state = new ParserState(
-				"if 5 == 5\n  wait\nelse\n  wait",
+				"if { 5 == 5 }\n  wait\nelse\n  wait",
 				4, new RumorParserState()
 			);
 
@@ -76,7 +76,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void IfElseElifSuccess()
 		{
 			var state = new ParserState(
-				"if 5 == 5\n  wait\nelif 4 == 4\n  wait\nelse\n  wait",
+				"if { 5 == 5 }\n  wait\nelif {4 == 4}\n  wait\nelse\n  wait",
 				4, new RumorParserState()
 			);
 

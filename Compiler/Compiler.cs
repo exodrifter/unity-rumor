@@ -163,8 +163,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.String("if")(state);
 						Parse.Spaces1(state);
-						var comparison = Comparison.Or(BooleanVariable)(state)
-							.Simplify();
+						var comparison = ComparisonBlock(state).Simplify();
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
@@ -227,8 +226,7 @@ namespace Exodrifter.Rumor.Compiler
 					{
 						Parse.String("elif")(state);
 						Parse.Spaces1(state);
-						var comparison = Comparison.Or(BooleanVariable)(state)
-							.Simplify();
+						var comparison = ComparisonBlock(state).Simplify();
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
