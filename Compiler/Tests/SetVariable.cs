@@ -10,7 +10,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetBooleanVariableLine()
 		{
 			var state = new ParserState(
-				"foobar = true",
+				"foobar = { true }",
 				4, new RumorParserState()
 			);
 
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetBooleanVariableMultiLine()
 		{
 			var state = new ParserState(
-				"foobar = true\n and false",
+				"foobar = { true\n and false }",
 				4, new RumorParserState()
 			);
 
@@ -45,7 +45,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetNumberVariableLine()
 		{
 			var state = new ParserState(
-				"foobar = 3", 4,
+				"foobar = { 3 }", 4,
 				new RumorParserState()
 			);
 
@@ -63,7 +63,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetNumberVariableMultiLine()
 		{
 			var state = new ParserState(
-				"foobar = 3\n + 4",
+				"foobar = { 3\n + 4 }",
 				4, new RumorParserState()
 			);
 
@@ -81,7 +81,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetStringVariableLine()
 		{
 			var state = new ParserState(
-				"foobar = \"Hello world!\"",
+				"foobar = { \"Hello world!\" }",
 				4, new RumorParserState()
 			);
 
@@ -99,7 +99,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		public static void SetStringVariableMultiLine()
 		{
 			var state = new ParserState(
-				"foobar = \"Hello \n world!\"",
+				"foobar = { \"Hello \n world!\" }",
 				4, new RumorParserState()
 			);
 

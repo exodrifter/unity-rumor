@@ -485,7 +485,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("=")(state);
 						Parse.Spaces(state);
 
-						var expression = Compiler.Logic(state).Simplify();
+						var expression = Compiler.LogicBlock(state).Simplify();
 
 						transaction.CommitIndex();
 						return new SetVariableNode(id, expression);
@@ -511,7 +511,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("=")(state);
 						Parse.Spaces(state);
 
-						var expression = Compiler.Math(state).Simplify();
+						var expression = Compiler.MathBlock(state).Simplify();
 
 						transaction.CommitIndex();
 						return new SetVariableNode(id, expression);
@@ -536,7 +536,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("=")(state);
 						Parse.Spaces(state);
 
-						var expression = Compiler.Quote(state).Simplify();
+						var expression = Compiler.QuoteBlock(state).Simplify();
 
 						transaction.CommitIndex();
 						return new SetVariableNode(id, expression);

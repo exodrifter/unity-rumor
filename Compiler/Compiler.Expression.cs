@@ -221,6 +221,12 @@ namespace Exodrifter.Rumor.Compiler
 		#region Logic
 
 		/// <summary>
+		/// Parses a logic block.
+		/// </summary>
+		private static Parser<Expression> LogicBlock =>
+			Parse.SurroundBlock('{', '}', Logic, Parse.SameOrIndented);
+
+		/// <summary>
 		/// Parses a logic expression, which will return a
 		/// <see cref="BooleanValue"/> when evaluated.
 		/// </summary>
@@ -356,6 +362,12 @@ namespace Exodrifter.Rumor.Compiler
 		#endregion
 
 		#region Math
+
+		/// <summary>
+		/// Parses a math block.
+		/// </summary>
+		private static Parser<Expression> MathBlock =>
+			Parse.SurroundBlock('{', '}', Math, Parse.SameOrIndented);
 
 		/// <summary>
 		/// Parses an arithmetic expression, which will return a
@@ -612,6 +624,12 @@ namespace Exodrifter.Rumor.Compiler
 		#endregion
 
 		#region Quote
+
+		/// <summary>
+		/// Parses a text block.
+		/// </summary>
+		private static Parser<Expression> QuoteBlock =>
+			Parse.SurroundBlock('{', '}', Quote, Parse.SameOrIndented);
 
 		/// <summary>
 		/// Parses a quote expression, or a quoted string, which will return a
