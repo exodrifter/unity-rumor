@@ -14,12 +14,11 @@ namespace Exodrifter.Rumor.Compiler
 			userState = new RumorParserState();
 		}
 
-		public Engine.Rumor Compile(string script, RumorScope scope = null)
+		public Dictionary<string, List<Node>> Compile
+			(string script, RumorScope scope = null)
 		{
 			var state = new ParserState(script, tabSize, userState);
-			var nodes = Compiler.Script(state);
-
-			return new Engine.Rumor(nodes, scope);
+			return Compiler.Script(state);
 		}
 
 		#region Settings
