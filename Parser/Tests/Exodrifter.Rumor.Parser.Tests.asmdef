@@ -1,0 +1,19 @@
+{
+    "name": "Exodrifter.Rumor.Parser.Tests",
+    "references": [
+        "GUID:99f7064735b3e3144b8444c435c2d6d4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

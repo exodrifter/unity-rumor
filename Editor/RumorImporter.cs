@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor.Experimental.AssetImporters;
+using UnityEngine;
+using UnityEditor.AssetImporters;
 using System.IO;
 
 /// <summary>
@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Editor
 	{
 		private RumorImporter() { }
 
-		public override void OnImportAsset(AssetImportContext ctx)
+		public override void OnImportAsset(UnityEditor.AssetImporters.AssetImportContext ctx)
 		{
 			var str = File.ReadAllText(ctx.assetPath);
 
