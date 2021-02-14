@@ -7,10 +7,14 @@
 	public abstract class Yield
 	{
 		public bool Finished { get; protected set; }
+		public double Elapsed { get; protected set; }
 
 		public virtual void Advance() { }
 
-		public virtual void Update(double delta) { }
+		public virtual void Update(double delta)
+		{
+			Elapsed += delta;
+		}
 
 		public virtual void Choose() { }
 	}
@@ -32,21 +36,17 @@
 	public class ForSeconds : Yield
 	{
 		private readonly double time;
-		private double elapsed;
 
 		public ForSeconds(double seconds)
 		{
 			time = seconds;
-			elapsed = 0;
+			Elapsed = 0;
 		}
 
 		public override void Update(double delta)
 		{
-			if (elapsed < time)
-			{
-				elapsed += delta;
-				Finished = elapsed >= time;
-			}
+			base.Update(delta);
+			Finished = Elapsed >= time;
 		}
 	}
 

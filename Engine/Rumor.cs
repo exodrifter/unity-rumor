@@ -70,6 +70,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		private Yield Yield;
 
+		/// <summary>
+		/// If non-negative, the amount of time that must elapse before the
+		/// dialog is automatically advanced.
+		/// </summary>
+		private float AutoAdvance { get; set; } = -1;
+
 		public event Action OnFinish;
 		public event Action OnWaitForAdvance;
 		public event Action<Dictionary<string, string>> OnWaitForChoose;
@@ -86,6 +92,19 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
+		/// Tells Rumor that <paramref name="delta"/> seconds have passed.
+		/// </summary>
+		/// <param name="delta">
+		/// The amount of time in seconds that has passed since the last time
+		/// this function was called.
+		/// </param>
+		public void Update(double delta)
+		{
+			Yield?.Update(delta);
+			Continue();
+		}
+
+		/// <summary>
 		/// This should be called after any operation that may allow execution
 		/// to continue.
 		/// </summary>
@@ -96,13 +115,21 @@ namespace Exodrifter.Rumor.Engine
 				// Check if the current yield is finished
 				if (Yield != null)
 				{
-					if (Yield?.Finished == true)
+					if (Yield.Finished == true)
 					{
 						Yield = null;
 					}
+
+					// Auto-advance, if applicable
+					else if (Yield is ForAdvance
+						&& AutoAdvance >= 0 && Yield.Elapsed >= AutoAdvance)
+					{
+						Yield = null;
+					}
+
+					// Wait for the current yield to finish
 					else
 					{
-						// Wait for the current yield to finish
 						return;
 					}
 				}
@@ -117,7 +144,7 @@ namespace Exodrifter.Rumor.Engine
 
 				// Execute the next node in the stack frame
 				Yield = frame.Execute(this);
-				if (Yield is ForAdvance)
+				if (Yield is ForAdvance && AutoAdvance != 0)
 				{
 					OnWaitForAdvance?.Invoke();
 					return;
@@ -158,6 +185,20 @@ namespace Exodrifter.Rumor.Engine
 		public void Advance()
 		{
 			Yield?.Advance();
+			Continue();
+		}
+
+		/// <summary>
+		/// Sets the auto-advance setting.
+		/// </summary>
+		/// <param name="value">
+		/// A negative value to stop automatically advancing the dialog, or a
+		/// positive number indicating the number of seconds that must elapse
+		/// before automatically advancing the dialog.
+		/// </param>
+		public void SetAutoAdvance(float value)
+		{
+			AutoAdvance = value;
 			Continue();
 		}
 
@@ -213,19 +254,6 @@ namespace Exodrifter.Rumor.Engine
 		public void Return()
 		{
 			Stack.Pop();
-		}
-
-		/// <summary>
-		/// Tells Rumor that <paramref name="delta"/> seconds have passed.
-		/// </summary>
-		/// <param name="delta">
-		/// The amount of time in seconds that has passed since the last time
-		/// this function was called.
-		/// </param>
-		public void Update(double delta)
-		{
-			Yield?.Update(delta);
-			Continue();
 		}
 
 		#endregion

@@ -7,18 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
-* Added a `ScriptedImporter` to import files with the `.rumor` extension as
-  `TextAsset`s
-* Added `.asmdef` files, which should prevent Rumor from being repeatedly
-  recompiled when used as a submodule in a Unity Project
-* Added `GetVarNames` to `Scope` to allow iterating over all set variables in a
-  scope
+* Added support for automatically advancing the dialog.
 
-### Changed
-* Stop OnClear messages from being sent when `Rumor` is started or stopped or
-  when a `jump` or `call` command is encountered
-* `choice`, `label`, `if`, `elif`, and `else` commands no longer require the `:`
-  character
+
+## [4.0.0] - 2021-02-12
+
+Rumor has been completely rehauled in this release. It now features...
+
+* Simplified syntax
+* Simplified engine API (it no longer requires the use of a coroutine)
+* Stronger type checking
+
+...among many other changes which will soon be described in detail on the wiki.
+
+Some features have been lost in the rehaul. Specifically:
+
+* You can no longer bind any function you want; they can only use the types
+  `bool`, `double`, and `string` (this will likely never be re-added).
+* You can no longer serialize the state (this will be fixed in a future
+  release).
 
 
 ## [3.0.1] - 2018-11-06
@@ -230,7 +237,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/3.0.1...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/exodrifter/unity-rumor/compare/3.0.1...4.0.0
 [3.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.1
 [3.0.0]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.0
 [2.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.0...2.0.1
