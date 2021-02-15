@@ -1,6 +1,6 @@
 ﻿namespace Exodrifter.Rumor.Engine
 {
-	public class Util
+	internal class Util
 	{
 		public static int GetHashCode(params object[] args)
 		{

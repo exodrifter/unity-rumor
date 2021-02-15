@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Added support for automatically advancing the dialog.
 
+### Removed
+* `Exodrifter.Rumor.Engine.Util` is now internal instead of public.
+
 
 ## [4.0.0] - 2021-02-12
 
