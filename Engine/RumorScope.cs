@@ -12,6 +12,11 @@ namespace Exodrifter.Rumor.Engine
 			vars = new Dictionary<string, Value>();
 		}
 
+		public Dictionary<string, Value> GetVars()
+		{
+			return new Dictionary<string, Value>(vars);
+		}
+
 		public Value Get(string name)
 		{
 			if (vars.ContainsKey(name))
