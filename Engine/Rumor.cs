@@ -70,6 +70,10 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		private Yield Yield;
 
+		public bool Choosing { get { return Yield is ForChoose; } }
+		public bool Waiting { get { return Yield is ForAdvance; } }
+		public bool Pausing { get { return Yield is ForSeconds; } }
+
 		/// <summary>
 		/// If non-negative, the amount of time that must elapse before the
 		/// dialog is automatically advanced.
