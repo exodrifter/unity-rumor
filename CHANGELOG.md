@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 * Choices may now be empty.
+* The `Label` and `Text` properties on `AddChoiceNode` are now public.
 
 ### Fixed
 * Injecting nodes clears the current yield and continues execution instead of

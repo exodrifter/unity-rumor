@@ -6,8 +6,8 @@ namespace Exodrifter.Rumor.Engine
 	[Serializable]
 	public class AddChoiceNode : Node, ISerializable
 	{
-		private string Label { get; }
-		private Expression Text { get; }
+		public string Label { get; }
+		public Expression Text { get; }
 
 		public AddChoiceNode(string label, string text)
 		{
