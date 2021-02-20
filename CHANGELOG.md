@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Choices may now be empty.
 
+### Fixed
+* Injecting nodes clears the current yield and continues execution instead of
+  getting stuck.
+
 ### Removed
 * `Exodrifter.Rumor.Engine.Util` is now internal instead of public.
 

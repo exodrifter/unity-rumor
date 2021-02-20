@@ -233,6 +233,9 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			Stack.Push(new StackFrame(nodes));
+
+			Yield = null;
+			Continue();
 		}
 
 		/// <summary>
