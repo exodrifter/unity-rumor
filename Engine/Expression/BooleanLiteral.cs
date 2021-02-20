@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class BooleanLiteral : LiteralExpression
+	[Serializable]
+	public class BooleanLiteral : LiteralExpression, ISerializable
 	{
 		public BooleanLiteral(BooleanValue value) : base(value) { }
 		public BooleanLiteral(bool value) : base(new BooleanValue(value)) { }
@@ -26,6 +30,13 @@
 		{
 			return Util.GetHashCode(Value);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public BooleanLiteral(SerializationInfo info, StreamingContext context)
+			: base(info, context) { }
 
 		#endregion
 

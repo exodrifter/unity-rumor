@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class ClearNode : Node
+	[Serializable]
+	public class ClearNode : Node, ISerializable
 	{
 		public ClearType Type { get; }
 
@@ -16,6 +18,8 @@ namespace Exodrifter.Rumor.Engine
 			rumor.State.Clear(Type);
 			return null;
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -36,6 +40,24 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Type.GetHashCode();
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public ClearNode(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			Type = info.GetValue<ClearType>("type");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<ClearType>("type", Type);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

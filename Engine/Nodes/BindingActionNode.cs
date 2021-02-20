@@ -1,8 +1,10 @@
-using System.Collections.Generic;
+using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class BindingActionNode : Node
+	[Serializable]
+	public class BindingActionNode : Node, ISerializable
 	{
 		private readonly string id;
 		private Expression[] param;
@@ -25,6 +27,8 @@ namespace Exodrifter.Rumor.Engine
 			return null;
 		}
 
+		#region Equality
+
 		public override bool Equals(object obj)
 		{
 			return Equals(obj as BindingActionNode);
@@ -44,6 +48,27 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Util.GetHashCode(id);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public BindingActionNode
+			(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			id = info.GetValue<string>("id");
+			param = info.GetValue<Expression[]>("param");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<string>("id", id);
+			info.AddValue<Expression[]>("param", param);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

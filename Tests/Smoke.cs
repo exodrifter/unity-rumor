@@ -1,5 +1,6 @@
 using Exodrifter.Rumor.Compiler;
 using Exodrifter.Rumor.Engine;
+using Exodrifter.Rumor.Engine.Tests;
 using Exodrifter.Rumor.Parser;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -33,11 +34,10 @@ namespace Exodrifter.Rumor.Tests
 				"  Alice: No problem.\n" +
 				"  add(4)\n";
 
-			var userState = new RumorParserState();
-			userState.LinkAction("add", ValueType.Number);
-
-			var state = new ParserState(script, 2, userState);
-			var nodes = Compiler.Compiler.Script(state);
+			var nodes = new RumorCompiler()
+				.SetTabSize(2)
+				.LinkAction("add", ValueType.Number)
+				.Compile(script);
 
 			double number = 0;
 			var rumor = new Engine.Rumor(nodes);
@@ -61,6 +61,10 @@ namespace Exodrifter.Rumor.Tests
 				},
 				rumor.State.GetDialog()
 			);
+
+			// Simulate saving and loading the game
+			rumor = SerializationUtil.Reserialize(rumor);
+			rumor.Bindings.Bind<double>("add", (x) => number += x);
 
 			rumor.Advance();
 

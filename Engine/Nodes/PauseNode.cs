@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class PauseNode : Node
+	[Serializable]
+	public class PauseNode : Node, ISerializable
 	{
 		public Expression Time { get; }
 
@@ -21,6 +23,8 @@ namespace Exodrifter.Rumor.Engine
 			var seconds = Time.Evaluate(rumor.Scope).AsNumber().Value;
 			return new ForSeconds(seconds);
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -41,6 +45,24 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Time.GetHashCode();
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public PauseNode(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			Time = info.GetValue<Expression>("time");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("time", Time);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class JumpNode : Node
+	[Serializable]
+	public class JumpNode : Node, ISerializable
 	{
 		public string Label { get; }
 
@@ -16,6 +18,8 @@ namespace Exodrifter.Rumor.Engine
 			rumor.Jump(Label);
 			return null;
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -36,6 +40,24 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Label.GetHashCode();
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public JumpNode(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			Label = info.GetValue<string>("label");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<string>("label", Label);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

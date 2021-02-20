@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class ControlNode : Node
+	[Serializable]
+	public class ControlNode : Node, ISerializable
 	{
 		private Expression Condition { get; }
 
@@ -61,6 +63,8 @@ namespace Exodrifter.Rumor.Engine
 			return null;
 		}
 
+		#region Equality
+
 		public override bool Equals(object obj)
 		{
 			return Equals(obj as ControlNode);
@@ -82,6 +86,28 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return 0;
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public ControlNode(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			Condition = info.GetValue<Expression>("condition");
+			Block = info.GetValue<List<Node>>("block");
+			Next = info.GetValue<ControlNode>("next");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("condition", Condition);
+			info.AddValue<List<Node>>("block", Block);
+			info.AddValue<ControlNode>("next", Next);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

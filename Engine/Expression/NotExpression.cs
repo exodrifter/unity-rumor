@@ -1,4 +1,7 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
 	public class NotExpression : Expression
 	{
@@ -56,6 +59,21 @@
 		public override int GetHashCode()
 		{
 			return Util.GetHashCode(expression);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public NotExpression(SerializationInfo info, StreamingContext context)
+		{
+			expression = info.GetValue<Expression>("expression");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("expression", expression);
 		}
 
 		#endregion

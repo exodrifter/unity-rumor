@@ -1,9 +1,13 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
 	/// <summary>
 	/// Represents a value in Rumor.
 	/// </summary>
-	public abstract class Value
+	[Serializable]
+	public abstract class Value : ISerializable
 	{
 		public object InternalValue { get; }
 
@@ -79,6 +83,24 @@
 		public static bool operator !=(Value l, Value r)
 		{
 			return !(l == r);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public Value(SerializationInfo info, StreamingContext context)
+		{
+			var value = info.GetValue<object>("value");
+			var type = info.GetValue<Type>("type");
+			InternalValue = Convert.ChangeType(value, type);
+		}
+
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Type>("type", InternalValue.GetType());
+			info.AddValue<object>("value", InternalValue);
 		}
 
 		#endregion

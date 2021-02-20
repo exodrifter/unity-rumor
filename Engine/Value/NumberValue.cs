@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class NumberValue : Value
+	[Serializable]
+	public class NumberValue : Value, ISerializable
 	{
 		public double Value { get { return (double)InternalValue; } }
 		public override ValueType Type => ValueType.Number;
@@ -28,5 +32,14 @@
 			l.Value >= r.Value;
 		public static bool operator <=(NumberValue l, NumberValue r) =>
 			l.Value <= r.Value;
+
+		#region Serialization
+
+		public NumberValue(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		#endregion
 	}
 }

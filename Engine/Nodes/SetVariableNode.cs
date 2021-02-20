@@ -1,8 +1,10 @@
-using System.Collections.Generic;
+using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class SetVariableNode : Node
+	[Serializable]
+	public class SetVariableNode : Node, ISerializable
 	{
 		public string Name { get; }
 		public Expression Expression { get; }
@@ -19,6 +21,8 @@ namespace Exodrifter.Rumor.Engine
 			rumor.Scope.Set(Name, value);
 			return null;
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -40,6 +44,26 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Util.GetHashCode(Name, Expression);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public SetVariableNode(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			Name = info.GetValue<string>("name");
+			Expression = info.GetValue<Expression>("expression");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<string>("name", Name);
+			info.AddValue<Expression>("expression", Expression);
+		}
+
+		#endregion
 
 		public override string ToString()
 		{

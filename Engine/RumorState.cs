@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class RumorState
+	[Serializable]
+	public class RumorState : ISerializable
 	{
 		private const string DefaultSpeaker = "_narrator";
 
@@ -345,6 +347,23 @@ namespace Exodrifter.Rumor.Engine
 		public Dictionary<string, string> GetDialog()
 		{
 			return new Dictionary<string, string>(Dialog);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public RumorState(SerializationInfo info, StreamingContext context)
+		{
+			Dialog = info.GetValue<Dictionary<string, string>>("dialog");
+			Choices = info.GetValue<Dictionary<string, string>>("choices");
+		}
+
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Dictionary<string, string>>("dialog", Dialog);
+			info.AddValue<Dictionary<string, string>>("choices", Choices);
 		}
 
 		#endregion

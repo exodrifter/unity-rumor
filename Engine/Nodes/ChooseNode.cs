@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class ChooseNode : Node
+	[Serializable]
+	public class ChooseNode : Node, ISerializable
 	{
 		public ChooseNode() { }
 
@@ -10,6 +12,8 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return new ForChoose();
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -30,6 +34,18 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return 0;
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public ChooseNode(SerializationInfo info, StreamingContext context)
+			: base(info, context) { }
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context) { }
+
+		#endregion
 
 		public override string ToString()
 		{

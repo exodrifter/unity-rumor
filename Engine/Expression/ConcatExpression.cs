@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class ConcatExpression : Expression
+	[Serializable]
+	public class ConcatExpression : Expression, ISerializable
 	{
 		private readonly Expression l;
 		private readonly Expression r;
@@ -64,6 +68,23 @@
 		public override int GetHashCode()
 		{
 			return Util.GetHashCode(l, r);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public ConcatExpression(SerializationInfo info, StreamingContext context)
+		{
+			l = info.GetValue<Expression>("l");
+			r = info.GetValue<Expression>("r");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("l", l);
+			info.AddValue<Expression>("r", r);
 		}
 
 		#endregion

@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class NumberLiteral : LiteralExpression
+	[Serializable]
+	public class NumberLiteral : LiteralExpression, ISerializable
 	{
 		public NumberLiteral(NumberValue value) : base(value) { }
 		public NumberLiteral(double value) : base(new NumberValue(value)) { }
@@ -26,6 +30,13 @@
 		{
 			return Util.GetHashCode(Value);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public NumberLiteral(SerializationInfo info, StreamingContext context)
+			: base(info, context) { }
 
 		#endregion
 

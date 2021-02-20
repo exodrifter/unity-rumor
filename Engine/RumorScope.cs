@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class RumorScope
+	[Serializable]
+	public class RumorScope : ISerializable
 	{
 		private readonly Dictionary<string, Value> vars;
 
@@ -54,5 +56,20 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Set(name, new StringValue(value));
 		}
+
+		#region Serialization
+
+		public RumorScope(SerializationInfo info, StreamingContext context)
+		{
+			vars = info.GetValue<Dictionary<string, Value>>("vars");
+		}
+
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Dictionary<string, Value>>("vars", vars);
+		}
+
+		#endregion
 	}
 }

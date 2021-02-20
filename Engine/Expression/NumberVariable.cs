@@ -1,8 +1,10 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class NumberVariable : Expression
+	[Serializable]
+	public class NumberVariable : Expression, ISerializable
 	{
 		private readonly string name;
 
@@ -55,6 +57,22 @@ namespace Exodrifter.Rumor.Engine
 		public override int GetHashCode()
 		{
 			return name.GetHashCode();
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public NumberVariable
+			(SerializationInfo info, StreamingContext context)
+		{
+			name = info.GetValue<string>("name");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<string>("name", name);
 		}
 
 		#endregion

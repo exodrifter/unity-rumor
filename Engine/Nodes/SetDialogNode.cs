@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class SetDialogNode : DialogNode
+	[Serializable]
+	public class SetDialogNode : DialogNode, ISerializable
 	{
 		public SetDialogNode(string speaker, string dialog)
 			: base(speaker, dialog) { }
@@ -16,6 +18,8 @@ namespace Exodrifter.Rumor.Engine
 			rumor.State.SetDialog(Speaker, dialog);
 			return new ForAdvance();
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -37,6 +41,15 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return Util.GetHashCode(Speaker, Dialog);
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public SetDialogNode(SerializationInfo info, StreamingContext context)
+			: base(info, context) { }
+
+		#endregion
 
 		public override string ToString()
 		{

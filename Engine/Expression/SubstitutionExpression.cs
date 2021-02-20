@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class SubstitutionExpression : Expression
+	[Serializable]
+	public class SubstitutionExpression : Expression, ISerializable
 	{
 		private readonly Expression value;
 
@@ -69,6 +73,22 @@
 		public override int GetHashCode()
 		{
 			return Util.GetHashCode(value);
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public SubstitutionExpression
+			(SerializationInfo info, StreamingContext context)
+		{
+			value = info.GetValue<Expression>("value");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("value", value);
 		}
 
 		#endregion

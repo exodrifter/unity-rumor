@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public class ReturnNode : Node
+	[Serializable]
+	public class ReturnNode : Node, ISerializable
 	{
 		public ReturnNode() { }
 
@@ -11,6 +13,8 @@ namespace Exodrifter.Rumor.Engine
 			rumor.Return();
 			return null;
 		}
+
+		#region Equality
 
 		public override bool Equals(object obj)
 		{
@@ -31,6 +35,18 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return 0;
 		}
+
+		#endregion
+
+		#region Serialization
+
+		public ReturnNode(SerializationInfo info, StreamingContext context)
+			: base(info, context) { }
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context) { }
+
+		#endregion
 
 		public override string ToString()
 		{

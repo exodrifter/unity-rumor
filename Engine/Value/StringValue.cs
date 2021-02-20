@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class StringValue : Value
+	[Serializable]
+	public class StringValue : Value, ISerializable
 	{
 		public string Value { get { return (string)InternalValue; } }
 		public override ValueType Type => ValueType.String;
@@ -9,5 +13,14 @@
 
 		public static StringValue operator +(StringValue l, StringValue r) =>
 			new StringValue(l.Value + r.Value);
+
+		#region Serialization
+
+		public StringValue(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		#endregion
 	}
 }

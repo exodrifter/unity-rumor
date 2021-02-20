@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added `GetVars` to `RumorScope` as a way for getting all of the variables.
 * Added `Choosing`, `Waiting`, and `Pausing` flags to see what kind of yield is
   currently active.
+* Added serialization support for Rumor.
 
 ### Removed
 * `Exodrifter.Rumor.Engine.Util` is now internal instead of public.

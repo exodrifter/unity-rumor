@@ -1,5 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
@@ -7,7 +8,8 @@ namespace Exodrifter.Rumor.Engine
 	/// Contains a pointer to a list of nodes that are currently being
 	/// executed in Rumor.
 	/// </summary>
-	internal sealed class StackFrame
+	[Serializable]
+	internal sealed class StackFrame : ISerializable
 	{
 		/// <summary>
 		/// The list of nodes in this stack frame.
@@ -48,5 +50,22 @@ namespace Exodrifter.Rumor.Engine
 
 			return node.Execute(rumor);
 		}
+
+		#region Serialization
+
+		public StackFrame(SerializationInfo info, StreamingContext context)
+		{
+			Nodes = info.GetValue<List<Node>>("nodes");
+			NextIndex = info.GetValue<int>("nextIndex");
+		}
+
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<List<Node>>("nodes", Nodes);
+			info.AddValue<int>("nextIndex", NextIndex);
+		}
+
+		#endregion
 	}
 }

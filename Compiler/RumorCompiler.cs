@@ -14,8 +14,7 @@ namespace Exodrifter.Rumor.Compiler
 			userState = new RumorParserState();
 		}
 
-		public Dictionary<string, List<Node>> Compile
-			(string script, RumorScope scope = null)
+		public Dictionary<string, List<Node>> Compile(string script)
 		{
 			var state = new ParserState(script, tabSize, userState);
 			return Compiler.Script(state);

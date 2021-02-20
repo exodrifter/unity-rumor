@@ -1,6 +1,10 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public class BooleanValue : Value
+	[Serializable]
+	public class BooleanValue : Value, ISerializable
 	{
 		public bool Value { get { return (bool)InternalValue; } }
 		public override ValueType Type => ValueType.Boolean;
@@ -23,5 +27,14 @@
 		{
 			return Value ? "true" : "false";
 		}
+
+		#region Serialization
+
+		public BooleanValue(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		#endregion
 	}
 }

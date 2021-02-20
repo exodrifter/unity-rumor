@@ -1,7 +1,13 @@
-﻿namespace Exodrifter.Rumor.Engine
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Exodrifter.Rumor.Engine
 {
-	public abstract class Expression
+	[Serializable]
+	public abstract class Expression : ISerializable
 	{
+		public Expression() { }
+
 		public abstract Value Evaluate(RumorScope scope);
 
 		public abstract Expression Simplify();
@@ -33,5 +39,14 @@
 		{
 			return !(l == r);
 		}
+
+		#region Serialization
+
+		public Expression(SerializationInfo info, StreamingContext context) { }
+
+		public abstract void GetObjectData
+			(SerializationInfo info, StreamingContext context);
+
+		#endregion
 	}
 }

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Exodrifter.Rumor.Engine
 {
 	/// <summary>
 	/// A Rumor is the class used to execute a Rumor script.
 	/// </summary>
-	public class Rumor
+	[Serializable]
+	public class Rumor : ISerializable
 	{
 		/// <summary>
 		/// The identifier used for the main entry point of a script.
@@ -258,6 +260,37 @@ namespace Exodrifter.Rumor.Engine
 		public void Return()
 		{
 			Stack.Pop();
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public Rumor(SerializationInfo info, StreamingContext context)
+		{
+			Nodes = info.GetValue<Dictionary<string, List<Node>>>("nodes");
+			State = info.GetValue<RumorState>("state");
+			Scope = info.GetValue<RumorScope>("scope");
+			Stack = info.GetValue<Stack<StackFrame>>("stack");
+			FinishCount = info.GetValue<int>("finishCount");
+			CancelCount = info.GetValue<int>("cancelCount");
+			Yield = info.GetValue<Yield>("yield");
+			AutoAdvance = info.GetValue<float>("autoAdvance");
+
+			Bindings = new RumorBindings();
+		}
+
+		public void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Dictionary<string, List<Node>>>("nodes", Nodes);
+			info.AddValue<RumorState>("state", State);
+			info.AddValue<RumorScope>("scope", Scope);
+			info.AddValue<Stack<StackFrame>>("stack", Stack);
+			info.AddValue<int>("finishCount", FinishCount);
+			info.AddValue<int>("cancelCount", CancelCount);
+			info.AddValue<Yield>("yield", Yield);
+			info.AddValue<float>("autoAdvance", AutoAdvance);
 		}
 
 		#endregion
