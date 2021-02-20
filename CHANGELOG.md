@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   currently active.
 * Added serialization support for Rumor.
 
+### Changed
+* Choices may now be empty.
+
 ### Removed
 * `Exodrifter.Rumor.Engine.Util` is now internal instead of public.
 

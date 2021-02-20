@@ -124,12 +124,19 @@ namespace Exodrifter.Rumor.Compiler
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
-						Parse.EOL(state);
 
-						// Parse an indented block
-						Parse.Whitespaces(state);
-						Parse.Indented(state);
-						var result = Script(state);
+						// Parse an optional indented block on the next line
+						var result = Parse.EOL
+							.Then(Parse.Whitespaces)
+							.Then(Parse.Indented)
+							.Then(Script)
+							.Maybe()(state)
+							.GetValueOrDefault(
+								new Dictionary<string, List<Node>>()
+								{
+									{ Rumor.MainIdentifier, new List<Node>() }
+								}
+							);
 
 						// Move the main block to the identifier for this label
 						var textToHash = text.Simplify().GetHashCode().ToString();

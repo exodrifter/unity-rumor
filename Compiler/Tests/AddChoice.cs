@@ -123,5 +123,32 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				result
 			);
 		}
+
+		[Test]
+		public static void AddChoiceEmptySingleSuccess()
+		{
+			var state = new ParserState(
+				"choice\n" +
+				"  > Hello?",
+				4
+			);
+
+			var result = Compiler.AddChoice(state);
+
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new AddChoiceNode(
+							"_X6LRibRD7ULzt3DCuvILxdkyEIk=",
+							"Hello?")
+						}
+					},
+					{ "_X6LRibRD7ULzt3DCuvILxdkyEIk=", new List<Node>() {}
+					},
+				},
+				result
+			);
+		}
 	}
 }
