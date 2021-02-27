@@ -5,10 +5,8 @@
 Rumor
 =====
 Rumor is a free, open source narrative content framework meant to be integrated
-into any Unity3D game that needs a dialog system. This library is a good fit
-for teams that want a scripting language for writers to use and need an
-easy-to-use API for running the dialog. This library does not and will not
-contain any rendering capabilities.
+into any Unity3D game that needs a dialog system. It is easy to diff, easy to
+read, and it is very flexible!
 
 You can download official releases at the [releases page](https://github.com/exodrifter/unity-rumor/releases).
 
