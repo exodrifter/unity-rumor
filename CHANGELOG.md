@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+* Allow `jump` or `call` when specifying a default choice for `choose`.
+
 ## [5.0.0]
 
 ### Added

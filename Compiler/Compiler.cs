@@ -380,13 +380,17 @@ namespace Exodrifter.Rumor.Compiler
 						var time = Timespan(state);
 
 						Parse.Spaces1(state);
-						Parse.String("or jump")(state);
+						var moveType = Parse
+							.String("or jump").Then(MoveType.Jump)
+							.Or(Parse.String("or call").Then(MoveType.Call))
+							(state);
+
 						Parse.Spaces1(state);
 						var jump = Identifier(state);
 
 						Parse.Spaces(state);
 						transaction.CommitIndex();
-						return new ChooseNode(time, jump);
+						return new ChooseNode(time, moveType, jump);
 					}
 				};
 			}

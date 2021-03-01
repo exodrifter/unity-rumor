@@ -7,13 +7,15 @@ namespace Exodrifter.Rumor.Engine
 	public class ChooseNode : Node, ISerializable
 	{
 		private readonly Expression timeout;
+		private readonly MoveType? moveType;
 		private readonly string label;
 
 		public ChooseNode() { }
 
-		public ChooseNode(Expression timeout, string label)
+		public ChooseNode(Expression timeout, MoveType moveType, string label)
 		{
 			this.timeout = timeout;
+			this.moveType = moveType;
 			this.label = label;
 		}
 
@@ -21,6 +23,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			return new ForChoose(
 				timeout?.Evaluate(rumor.Scope).AsNumber().Value,
+				moveType,
 				label
 			);
 		}
@@ -55,6 +58,7 @@ namespace Exodrifter.Rumor.Engine
 			: base(info, context)
 		{
 			timeout = info.GetValue<Expression>("timeout");
+			moveType = info.GetValue<MoveType?>("moveType");
 			label = info.GetValue<string>("label");
 		}
 
@@ -62,6 +66,7 @@ namespace Exodrifter.Rumor.Engine
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<Expression>("timeout", timeout);
+			info.AddValue<MoveType?>("moveType", moveType);
 			info.AddValue<string>("label", label);
 		}
 
@@ -69,7 +74,16 @@ namespace Exodrifter.Rumor.Engine
 
 		public override string ToString()
 		{
-			return "choose";
+			if (timeout == null)
+			{
+				return "choose";
+			}
+			else
+			{
+				var move = moveType == MoveType.Jump ? "jump" : "call";
+				return "choose in {" + timeout + "} seconds or " + move + " " +
+					label;
+			}
 		}
 	}
 }

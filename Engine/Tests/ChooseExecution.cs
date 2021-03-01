@@ -58,7 +58,11 @@ namespace Exodrifter.Rumor.Engine.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode("choice1", "Hello?")
 						, new AddChoiceNode("choice2", "World?")
-						, new ChooseNode(new NumberLiteral(2), "choice2")
+						, new ChooseNode(
+								new NumberLiteral(2),
+								MoveType.Jump,
+								"choice2"
+							)
 						}
 					},
 					{ "choice1", new List<Node>()

@@ -111,11 +111,13 @@ namespace Exodrifter.Rumor.Engine
 	public class ForChoose : Yield, ISerializable
 	{
 		public double? Timeout { get; private set; }
+		private readonly MoveType? moveType;
 		private readonly string label;
 
-		public ForChoose(double? timeout, string label)
+		public ForChoose(double? timeout, MoveType? moveType, string label)
 		{
 			Timeout = timeout;
+			this.moveType = moveType;
 			this.label = label;
 		}
 
@@ -128,7 +130,15 @@ namespace Exodrifter.Rumor.Engine
 				Finished = Elapsed >= Timeout.Value;
 				if (Finished)
 				{
-					rumor.Jump(label);
+					switch (moveType)
+					{
+						case MoveType.Jump:
+							rumor.Jump(label);
+							break;
+						case MoveType.Call:
+							rumor.Call(label);
+							break;
+					}
 					rumor.State.ClearChoices();
 				}
 			}
@@ -145,6 +155,7 @@ namespace Exodrifter.Rumor.Engine
 			: base(info, context)
 		{
 			Timeout = info.GetValue<double?>("timeout");
+			moveType = info.GetValue<MoveType?>("moveType");
 			label = info.GetValue<string>("label");
 		}
 
@@ -153,6 +164,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			base.GetObjectData(info, context);
 			info.AddValue<double?>("timeout", Timeout);
+			info.AddValue<MoveType?>("moveType", moveType);
 			info.AddValue<string>("label", label);
 		}
 
