@@ -928,7 +928,7 @@ namespace Exodrifter.Rumor.Compiler
 				{
 					using (var transaction = new Transaction(state))
 					{
-						var number = Compiler.Math(state);
+						var number = Compiler.MathBlock(state);
 						Parse.Spaces(state);
 
 						var scale = Parse

@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Changed `jump` to work to move execution to the specified label and _not_
   return back after execution of the label is completed. This is the same
   behaviour that it had in Rumor 3.X.
+* `choose` and `pause` now require the `{}` block syntax when specifying an
+  amount of time.
 
 ### Fixed
 * Injecting nodes clears the current yield and continues execution instead of

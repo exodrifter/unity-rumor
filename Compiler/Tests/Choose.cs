@@ -18,7 +18,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		[Test]
 		public static void ChooseTimeoutSuccess()
 		{
-			var state = new ParserState("choose in 2 seconds or jump foobar", 4);
+			var state = new ParserState("choose in { 2 } seconds or jump foobar", 4);
 
 			var node = Compiler.Choose(state);
 			Assert.AreEqual(
