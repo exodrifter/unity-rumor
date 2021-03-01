@@ -118,9 +118,11 @@ namespace Exodrifter.Rumor.Compiler
 						// Parse the choice text
 						Parse.Whitespaces(state);
 						Parse.Indented(state);
-						var text = PrefixText(
-							Parse.Char('>').Then(Parse.Spaces)
-						)(state);
+
+						state.IndentIndex = state.Index;
+						Parse.Char('>')(state);
+						Parse.Whitespaces(state);
+						var text = Text(state);
 
 						// Consume the rest of the whitespace on this line
 						Parse.Spaces.Until(Parse.EOL)(state);
@@ -128,7 +130,7 @@ namespace Exodrifter.Rumor.Compiler
 						// Parse an optional indented block on the next line
 						var result = Parse.EOL
 							.Then(Parse.Whitespaces)
-							.Then(Parse.Indented)
+							.Then(Parse.Same)
 							.Then(Script)
 							.Maybe()(state)
 							.GetValueOrDefault(

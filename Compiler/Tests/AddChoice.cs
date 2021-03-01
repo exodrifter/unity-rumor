@@ -45,7 +45,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState(
 				"choice\n" +
 				"  > Hello?\n" +
-				"  > Anyone there?\n" +
+				"    Anyone there?\n" +
 				"  : Hello!",
 				4
 			);
@@ -102,7 +102,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState(
 				"choice [choice1]\n" +
 				"  > Hello?\n" +
-				"  > Anyone there?\n" +
+				"    Anyone there?\n" +
 				"  : Hello!",
 				4, new RumorParserState()
 			);

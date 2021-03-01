@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   behaviour that it had in Rumor 3.X.
 * `choose` and `pause` now require the `{}` block syntax when specifying an
   amount of time.
+* `choice` no longer uses `>` to prefix every line; instead, it works similar
+  to `:` and `+` commands.
 
 ### Fixed
 * Injecting nodes clears the current yield and continues execution instead of
