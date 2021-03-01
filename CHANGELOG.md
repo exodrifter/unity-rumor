@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Allow `jump` or `call` when specifying a default choice for `choose`.
 
-## [5.0.0]
+## [5.0.0] - 2021-03-01
 
 ### Added
 * Added support for automatically advancing the dialog.
