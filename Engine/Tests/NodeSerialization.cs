@@ -40,7 +40,8 @@ namespace Exodrifter.Rumor.Engine.Tests
 		[Test]
 		public static void ChooseNode()
 		{
-			var a = new ChooseNode();
+			var v = new NumberLiteral(2);
+			var a = new ChooseNode(v, "foobar");
 			var b = SerializationUtil.Reserialize(a);
 
 			Assert.AreEqual(a, b);

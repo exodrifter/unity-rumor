@@ -85,6 +85,7 @@ namespace Exodrifter.Rumor.Engine
 		public event Action OnFinish;
 		public event Action OnWaitForAdvance;
 		public event Action<Dictionary<string, string>> OnWaitForChoose;
+		public event Action<Dictionary<string, string>, double?> OnWaitForChooseTimeout;
 
 		public void Start(string label = MainIdentifier)
 		{
@@ -106,7 +107,7 @@ namespace Exodrifter.Rumor.Engine
 		/// </param>
 		public void Update(double delta)
 		{
-			Yield?.Update(delta);
+			Yield?.Update(this, delta);
 			Continue();
 		}
 
@@ -158,6 +159,10 @@ namespace Exodrifter.Rumor.Engine
 				else if (Yield is ForChoose)
 				{
 					OnWaitForChoose?.Invoke(State.GetChoices());
+					OnWaitForChooseTimeout?.Invoke(
+						State.GetChoices(),
+						(Yield as ForChoose).Timeout
+					);
 					return;
 				}
 				else if (Yield is ForSeconds)

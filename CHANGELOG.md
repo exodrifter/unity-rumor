@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added `Choosing`, `Waiting`, and `Pausing` flags to see what kind of yield is
   currently active.
 * Added serialization support for Rumor.
+* Added ability to set a timeout and default jump on choose. For example,
+  `choose in 2 seconds or jump foobar`.
 
 ### Changed
 * Choices may now be empty.

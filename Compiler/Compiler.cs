@@ -347,8 +347,47 @@ namespace Exodrifter.Rumor.Compiler
 			.Or(Pause.Select(x => (Node)x))
 			.Or(Return.Select(x => (Node)x));
 
-		public static Parser<ChooseNode> Choose =>
-			Parse.String("choose").Then(new ChooseNode());
+		public static Parser<ChooseNode> Choose
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("choose")(state);
+
+						var spaces = Parse.Spaces(state);
+						if (Parse.FollowedBy(Parse.EOL)(state))
+						{
+							transaction.CommitIndex();
+							return new ChooseNode();
+						}
+
+						if (spaces.Length == 0)
+						{
+							throw new ReasonException(
+								state.Index,
+								"Expected space after 'choose'"
+							);
+						}
+
+						Parse.String("in")(state);
+						Parse.Spaces1(state);
+						var time = Timespan(state);
+
+						Parse.Spaces1(state);
+						Parse.String("or jump")(state);
+						Parse.Spaces1(state);
+						var jump = Identifier(state);
+
+						Parse.Spaces(state);
+						transaction.CommitIndex();
+						return new ChooseNode(time, jump);
+					}
+				};
+			}
+		}
 
 		public static Parser<ClearNode> Clear
 		{
@@ -452,19 +491,7 @@ namespace Exodrifter.Rumor.Compiler
 						Parse.String("pause")(state);
 						Parse.Spaces1(state);
 
-						var number = Compiler.Math(state);
-						Parse.Spaces(state);
-
-						var scale = Parse
-							.String("milliseconds", "millisecond", "ms").Then(0.001d)
-							.Or(Parse.String("seconds", "second", "s").Then(1d))
-							.Or(Parse.String("minutes", "minute", "m").Then(60d))
-							(state);
-
-						var time = new MultiplyExpression(
-							number,
-							new NumberLiteral(scale)
-						).Simplify();
+						var time = Timespan(state);
 
 						transaction.CommitIndex();
 						return new PauseNode(time);
@@ -632,6 +659,8 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		#endregion
+
+		#region Binding
 
 		public static Parser<BindingActionNode> BindingAction() =>
 			BindingAction0()
@@ -867,6 +896,36 @@ namespace Exodrifter.Rumor.Compiler
 						);
 				}
 			};
+		}
+
+		#endregion
+
+		private static Parser<Expression> Timespan
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var number = Compiler.Math(state);
+						Parse.Spaces(state);
+
+						var scale = Parse
+							.String("milliseconds", "millisecond", "ms").Then(0.001d)
+							.Or(Parse.String("seconds", "second", "s").Then(1d))
+							.Or(Parse.String("minutes", "minute", "m").Then(60d))
+							(state);
+
+						transaction.CommitIndex();
+
+						return new MultiplyExpression(
+							number,
+							new NumberLiteral(scale)
+						).Simplify();
+					}
+				};
+			}
 		}
 	}
 }

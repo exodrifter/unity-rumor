@@ -6,11 +6,23 @@ namespace Exodrifter.Rumor.Engine
 	[Serializable]
 	public class ChooseNode : Node, ISerializable
 	{
+		private readonly Expression timeout;
+		private readonly string label;
+
 		public ChooseNode() { }
+
+		public ChooseNode(Expression timeout, string label)
+		{
+			this.timeout = timeout;
+			this.label = label;
+		}
 
 		public override Yield Execute(Rumor rumor)
 		{
-			return new ForChoose();
+			return new ForChoose(
+				timeout?.Evaluate(rumor.Scope).AsNumber().Value,
+				label
+			);
 		}
 
 		#region Equality
@@ -40,10 +52,18 @@ namespace Exodrifter.Rumor.Engine
 		#region Serialization
 
 		public ChooseNode(SerializationInfo info, StreamingContext context)
-			: base(info, context) { }
+			: base(info, context)
+		{
+			timeout = info.GetValue<Expression>("timeout");
+			label = info.GetValue<string>("label");
+		}
 
 		public override void GetObjectData
-			(SerializationInfo info, StreamingContext context) { }
+			(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue<Expression>("timeout", timeout);
+			info.AddValue<string>("label", label);
+		}
 
 		#endregion
 

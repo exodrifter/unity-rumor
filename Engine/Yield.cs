@@ -21,7 +21,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public virtual void Advance() { }
 
-		public virtual void Update(double delta)
+		public virtual void Update(Rumor rumor, double delta)
 		{
 			Elapsed += delta;
 		}
@@ -80,9 +80,9 @@ namespace Exodrifter.Rumor.Engine
 			time = seconds;
 		}
 
-		public override void Update(double delta)
+		public override void Update(Rumor rumor, double delta)
 		{
-			base.Update(delta);
+			base.Update(rumor, delta);
 			Finished = Elapsed >= time;
 		}
 
@@ -110,7 +110,29 @@ namespace Exodrifter.Rumor.Engine
 	[Serializable]
 	public class ForChoose : Yield, ISerializable
 	{
-		public ForChoose() { }
+		public double? Timeout { get; private set; }
+		private readonly string label;
+
+		public ForChoose(double? timeout, string label)
+		{
+			Timeout = timeout;
+			this.label = label;
+		}
+
+		public override void Update(Rumor rumor, double delta)
+		{
+			base.Update(rumor, delta);
+
+			if (Timeout.HasValue)
+			{
+				Finished = Elapsed >= Timeout.Value;
+				if (Finished)
+				{
+					rumor.Jump(label);
+					rumor.State.ClearChoices();
+				}
+			}
+		}
 
 		public override void Choose()
 		{
@@ -120,7 +142,19 @@ namespace Exodrifter.Rumor.Engine
 		#region Serialization
 
 		public ForChoose(SerializationInfo info, StreamingContext context)
-			: base(info, context) { }
+			: base(info, context)
+		{
+			Timeout = info.GetValue<double?>("timeout");
+			label = info.GetValue<string>("label");
+		}
+
+		public override void GetObjectData
+			(SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData(info, context);
+			info.AddValue<double?>("timeout", Timeout);
+			info.AddValue<string>("label", label);
+		}
 
 		#endregion
 	}
