@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [5.0.0]
+
 ### Added
 * Added support for automatically advancing the dialog.
 * Added `GetVars` to `RumorScope` as a way for getting all of the variables.
@@ -264,7 +266,8 @@ You can also:
 
 For examples of how Rumor works, see the `Examples/` folder.
 
-[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/4.0.0...HEAD
+[Unreleased]: https://github.com/exodrifter/unity-rumor/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/exodrifter/unity-rumor/compare/4.0.0...5.0.0
 [4.0.0]: https://github.com/exodrifter/unity-rumor/compare/3.0.1...4.0.0
 [3.0.1]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.1
 [3.0.0]: https://github.com/exodrifter/unity-rumor/compare/2.0.1...3.0.0
