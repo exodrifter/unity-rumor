@@ -14,10 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added serialization support for Rumor.
 * Added ability to set a timeout and default jump on choose. For example,
   `choose in 2 seconds or jump foobar`.
+* Added `call` command, which moves execution to the specified label and returns
+  back after execution of the label is completed. This is the same behaviour
+  that it had in Rumor 3.X.
 
 ### Changed
 * Choices may now be empty.
 * The `Label` and `Text` properties on `AddChoiceNode` are now public.
+* Changed `jump` to work to move execution to the specified label and _not_
+  return back after execution of the label is completed. This is the same
+  behaviour that it had in Rumor 3.X.
 
 ### Fixed
 * Injecting nodes clears the current yield and continues execution instead of

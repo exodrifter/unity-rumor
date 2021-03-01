@@ -94,7 +94,7 @@ namespace Exodrifter.Rumor.Engine
 				Stop();
 			}
 
-			Jump(label);
+			Call(label);
 			Continue();
 		}
 
@@ -213,6 +213,25 @@ namespace Exodrifter.Rumor.Engine
 			Continue();
 		}
 
+		/// <summary>
+		/// Pushes a labeled list of nodes as a new stack frame onto the call
+		/// stack.
+		/// </summary>
+		/// <param name="label">
+		/// The label of the list of nodes to jump execution to.
+		/// </param>
+		public void Call(string label)
+		{
+			if (!Nodes.ContainsKey(label))
+			{
+				throw new InvalidOperationException(
+					"The label \"" + label + "\" does not exist!"
+				);
+			}
+
+			Stack.Push(new StackFrame(Nodes[label]));
+		}
+
 		public void Choose(string label)
 		{
 			if (State.GetChoices().ContainsKey(label))
@@ -244,8 +263,8 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
-		/// Pushes a labeled list of nodes as a new stack frame onto the call
-		/// stack.
+		/// Pops the current stack frame and pushes a labeled list of nodes as a
+		/// new stack frame onto the call stack.
 		/// </summary>
 		/// <param name="label">
 		/// The label of the list of nodes to jump execution to.
@@ -259,6 +278,7 @@ namespace Exodrifter.Rumor.Engine
 				);
 			}
 
+			Stack.Pop();
 			Stack.Push(new StackFrame(Nodes[label]));
 		}
 

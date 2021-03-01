@@ -343,6 +343,7 @@ namespace Exodrifter.Rumor.Compiler
 			.Or(Clear.Select(x => (Node)x))
 			.Or(Choose.Select(x => (Node)x))
 			.Or(Jump.Select(x => (Node)x))
+			.Or(Call.Select(x => (Node)x))
 			.Or(Wait.Select(x => (Node)x))
 			.Or(Pause.Select(x => (Node)x))
 			.Or(Return.Select(x => (Node)x));
@@ -459,6 +460,25 @@ namespace Exodrifter.Rumor.Compiler
 					return constructor(identifier, dialog);
 				}
 			};
+		}
+
+		public static Parser<CallNode> Call
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("call")(state);
+						Parse.Spaces1(state);
+						var identifier = Identifier(state);
+
+						transaction.CommitIndex();
+						return new CallNode(identifier);
+					}
+				};
+			}
 		}
 
 		public static Parser<JumpNode> Jump
