@@ -237,7 +237,7 @@ namespace Exodrifter.Rumor.Engine
 			if (State.GetChoices().ContainsKey(label))
 			{
 				Yield?.Choose();
-				Jump(label);
+				Call(label);
 				State.ClearChoices();
 				Continue();
 			}

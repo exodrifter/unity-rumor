@@ -6,12 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+* Allow `jump` or `call` when specifying a default choice for `choose`.
+
 ### Changed
 * Internally, `ControlNode`s no longer store node blocks; the children nodes are
   flattened out into their own blocks like it is done for `AddChoiceNode`s.
 
-### Added
-* Allow `jump` or `call` when specifying a default choice for `choose`.
+### Fixed
+* Fixed bug where choosing would unintentionally pop the stack frame.
 
 ## [5.0.0] - 2021-03-01
 
