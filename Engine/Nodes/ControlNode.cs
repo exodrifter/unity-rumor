@@ -11,49 +11,49 @@ namespace Exodrifter.Rumor.Engine
 		private Expression Condition { get; }
 
 		/// <summary>
-		/// The list of blocks that will be pushed onto the stack if the
-		/// condition for this node is met.
+		/// The label that will be pushed onto the stack if the condition for
+		/// this node is met.
 		/// </summary>
-		private List<Node> Block { get; }
+		private string Label { get; }
 
 		private ControlNode Next { get; }
 
-		public ControlNode(Expression condition, List<Node> block, ControlNode next)
+		public ControlNode(Expression condition, string label, ControlNode next)
 		{
 			Condition = condition;
-			Block = block;
+			Label = label;
 			Next = next;
 		}
 
 		public override Yield Execute(Rumor rumor)
 		{
-			bool inject;
+			bool call;
 			try
 			{
 				// If there is no condition, this is an else and we will always
-				// want to inject the block.
+				// want to call
 				if (Condition == null)
 				{
-					inject = true;
+					call = true;
 				}
 				else
 				{
 					var value = Condition.Evaluate(rumor.Scope)?.AsBoolean();
-					inject = value?.Value ?? false;
+					call = value?.Value ?? false;
 				}
 			}
 			catch (UndefinedVariableException)
 			{
-				inject = false;
+				call = false;
 			}
 			catch (VariableTypeException)
 			{
-				inject = false;
+				call = false;
 			}
 
-			if (inject)
+			if (call)
 			{
-				rumor.Inject(Block);
+				rumor.Call(Label);
 			}
 			else
 			{
@@ -78,7 +78,7 @@ namespace Exodrifter.Rumor.Engine
 			}
 
 			return (Condition?.Equals(other.Condition) ?? true)
-				&& Block.SequenceEqual(other.Block)
+				&& Label.SequenceEqual(other.Label)
 				&& (Next?.Equals(other.Next) ?? true);
 		}
 
@@ -95,7 +95,7 @@ namespace Exodrifter.Rumor.Engine
 			: base(info, context)
 		{
 			Condition = info.GetValue<Expression>("condition");
-			Block = info.GetValue<List<Node>>("block");
+			Label = info.GetValue<string>("label");
 			Next = info.GetValue<ControlNode>("next");
 		}
 
@@ -103,7 +103,7 @@ namespace Exodrifter.Rumor.Engine
 			(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue<Expression>("condition", Condition);
-			info.AddValue<List<Node>>("block", Block);
+			info.AddValue<string>("label", Label);
 			info.AddValue<ControlNode>("next", Next);
 		}
 
@@ -112,7 +112,7 @@ namespace Exodrifter.Rumor.Engine
 		public override string ToString()
 		{
 			var lines = new List<string>();
-			foreach (var node in Block)
+			foreach (var node in Label)
 			{
 				lines.Add(node.ToString());
 			}
@@ -122,25 +122,20 @@ namespace Exodrifter.Rumor.Engine
 				lines.Add(Next.ToString_Internal());
 			}
 
-			return "if {" + Condition + "}; " + string.Join("; ", lines);
+			return "if {" + Condition + "}; call " + Label + ";"
+				+ Next.ToString_Internal();
 		}
 
 		private string ToString_Internal()
 		{
-			var lines = new List<string>();
-			foreach (var node in Block)
-			{
-				lines.Add(node.ToString());
-			}
-
 			if (Condition != null && Next != null)
 			{
-				lines.Add(Next.ToString_Internal());
-				return "elif {" + Condition + "}; " + string.Join("; ", lines);
+				return "elif {" + Condition + "}; call " + Label + ";"
+					+ Next.ToString_Internal();
 			}
 			else
 			{
-				return "else; " + string.Join("; ", lines);
+				return "else; call " + Label;
 			}
 		}
 	}

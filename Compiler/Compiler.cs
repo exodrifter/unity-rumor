@@ -1,9 +1,10 @@
 ﻿using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System;
 
 namespace Exodrifter.Rumor.Compiler
 {
@@ -212,9 +213,15 @@ namespace Exodrifter.Rumor.Compiler
 							next = null;
 						}
 
-						// Move the main block to the control node
-						var block = result[Rumor.MainIdentifier];
-						var node = new ControlNode(comparison, block, next);
+						// Move the main block to a unique label
+						var nodes = result[Rumor.MainIdentifier];
+						var nodesHash = string.Join("",
+							nodes.Select(x => x.GetHashCode().ToString())
+								.ToArray()
+						);
+						var identifier = "_" + Sha1Hash(nodesHash);
+						result[identifier] = result[Rumor.MainIdentifier];
+						var node = new ControlNode(comparison, identifier, next);
 						result.Remove(Rumor.MainIdentifier);
 
 						transaction.CommitIndex();
@@ -275,9 +282,15 @@ namespace Exodrifter.Rumor.Compiler
 							next = null;
 						}
 
-						// Move the main block to the control node
-						var block = result[Rumor.MainIdentifier];
-						var node = new ControlNode(comparison, block, next);
+						// Move the main block to a unique label
+						var nodes = result[Rumor.MainIdentifier];
+						var nodesHash = string.Join("",
+							nodes.Select(x => x.GetHashCode().ToString())
+								.ToArray()
+						);
+						var identifier = "_" + Sha1Hash(nodesHash);
+						result[identifier] = result[Rumor.MainIdentifier];
+						var node = new ControlNode(comparison, identifier, next);
 						result.Remove(Rumor.MainIdentifier);
 
 						transaction.CommitIndex();
@@ -316,9 +329,15 @@ namespace Exodrifter.Rumor.Compiler
 							);
 						}
 
-						// Move the main block to the control node
-						var block = result[Rumor.MainIdentifier];
-						var node = new ControlNode(null, block, null);
+						// Move the main block to a unique label
+						var nodes = result[Rumor.MainIdentifier];
+						var nodesHash = string.Join("",
+							nodes.Select(x => x.GetHashCode().ToString())
+								.ToArray()
+						);
+						var identifier = "_" + Sha1Hash(nodesHash);
+						result[identifier] = result[Rumor.MainIdentifier];
+						var node = new ControlNode(null, identifier, null);
 						result.Remove(Rumor.MainIdentifier);
 
 						transaction.CommitIndex();

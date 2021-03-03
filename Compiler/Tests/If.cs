@@ -27,13 +27,15 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 							new BooleanLiteral(true),
-							new List<Node>()
-							{
-								new WaitNode()
-							},
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
 							null)
 						}
 					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
 				},
 				script
 			);
@@ -54,19 +56,19 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new BooleanLiteral(true),
-							new List<Node>()
-							{
-								new WaitNode()
-							},
-							new ControlNode(
-								null,
-								new List<Node>()
-								{
-									new WaitNode()
-								},
-								null
-							))
+								new BooleanLiteral(true),
+								"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+								new ControlNode(
+									null,
+									"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+									null
+								)
+							)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
 						}
 					},
 				},
@@ -89,26 +91,23 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
-							new BooleanLiteral(true),
-							new List<Node>()
-							{
-								new WaitNode()
-							},
-							new ControlNode(
 								new BooleanLiteral(true),
-								new List<Node>()
-								{
-									new WaitNode()
-								},
+								"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
 								new ControlNode(
-									null,
-									new List<Node>()
-									{
-										new WaitNode()
-									},
-									null
+									new BooleanLiteral(true),
+									"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+									new ControlNode(
+										null,
+										"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+										null
+									)
 								)
-							))
+							)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
 						}
 					},
 				},

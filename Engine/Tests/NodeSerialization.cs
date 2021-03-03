@@ -61,10 +61,10 @@ namespace Exodrifter.Rumor.Engine.Tests
 		{
 			var a = new ControlNode(
 				new BooleanLiteral(false),
-				new List<Node>() { new WaitNode() },
+				"foo",
 				new ControlNode(
 					new BooleanLiteral(true),
-					new List<Node>() { new WaitNode() },
+					"bar",
 					null
 				)
 			);
