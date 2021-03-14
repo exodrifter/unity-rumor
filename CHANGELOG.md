@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 * Fixed bug where choosing would unintentionally pop the stack frame.
+* `OnFinish` is only called once after execution finishes.
 
 ## [5.0.0] - 2021-03-01
 

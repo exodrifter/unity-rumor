@@ -117,6 +117,12 @@ namespace Exodrifter.Rumor.Engine
 		/// </summary>
 		private void Continue()
 		{
+			// There is nothing to do
+			if (Stack.Count == 0)
+			{
+				return;
+			}
+
 			while (Stack.Count > 0)
 			{
 				// Check if the current yield is finished
