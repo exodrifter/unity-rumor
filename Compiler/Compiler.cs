@@ -659,7 +659,7 @@ namespace Exodrifter.Rumor.Compiler
 					using (var transaction = new Transaction(state))
 					{
 						var c = Parse.Letter(state);
-						var cs = Parse.Alphanumeric.Or(Parse.Char('_'))
+						var cs = Parse.Alphanumeric.Or(Parse.Char("_-"))
 							.Many().String()(state);
 
 						transaction.CommitIndex();
