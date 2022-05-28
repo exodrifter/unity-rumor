@@ -3,7 +3,7 @@
 	"version": "5.0.0",
 	"description": "Rumor is a free, open source narrative content framework meant to be integrated into any Unity3D game that needs a dialog system. It is easy to diff, easy to read, and it is very flexible!",
 	"displayName": "Unity Rumor",
-	"unity": "2019.3",
+	"unity": "2020.3",
 	"author": {
 		"name": "exodrifter",
 		"email": "exodrifter@gmail.com",
