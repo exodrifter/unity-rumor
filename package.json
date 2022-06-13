@@ -1,0 +1,15 @@
+﻿{
+	"name": "space.exodrifter.unity-rumor",
+	"version": "5.0.0",
+	"description": "Rumor is a free, open source narrative content framework meant to be integrated into any Unity3D game that needs a dialog system. It is easy to diff, easy to read, and it is very flexible!",
+	"displayName": "Rumor",
+	"unity": "2020.3",
+	"author": {
+		"name": "exodrifter",
+		"email": "code@exodrifter.space",
+		"url": "https://www.exodrifter.space"
+	},
+	"changelogUrl": "https://github.com/exodrifter/unity-rumor/blob/master/CHANGELOG.md",
+	"documentationUrl": "https://github.com/exodrifter/unity-rumor/wiki",
+	"license": "https://github.com/exodrifter/unity-rumor/blob/master/LICENSE.md"
+}

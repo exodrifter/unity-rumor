@@ -1,0 +1,2 @@
+﻿#Disable diffs on meta files 
+*.meta -diff linguist-generated
