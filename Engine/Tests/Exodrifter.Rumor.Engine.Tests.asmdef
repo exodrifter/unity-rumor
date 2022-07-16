@@ -1,5 +1,6 @@
 {
     "name": "Exodrifter.Rumor.Engine.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:3b1021c3659174e4d8475c19a9c62fd5"
     ],
@@ -9,11 +10,17 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
+    "defineConstraints": [
+        "UNITY_TEST_FRAMEWORK_EXISTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.test-framework",
+            "expression": "0",
+            "define": "UNITY_TEST_FRAMEWORK_EXISTS"
+        }
+    ],
     "noEngineReferences": true
 }
