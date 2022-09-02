@@ -433,25 +433,45 @@ namespace Exodrifter.Rumor.Compiler
 						}
 						catch (ParserException)
 						{
-							return new ClearNode(ClearType.All);
+							return new ClearNode(ClearType.All, null);
 						}
 
 						// Parse the optional clear type
 						if (!Parse.FollowedBy(Parse.EOL)(state))
 						{
-							var type =
-								Parse.String("all").Then(ClearType.All)
-								.Or(Parse.String("choices").Then(ClearType.Choices))
-								.Or(Parse.String("dialog").Then(ClearType.Dialog))
+							var node =
+								Parse.String("all").Then(new ClearNode(ClearType.All, null))
+								.Or(Parse.String("choices").Then(new ClearNode(ClearType.Choices, null)))
+								.Or(Parse.String("dialog").Then(new ClearNode(ClearType.Dialog, null)))
+								.Or(ClearChoice.Select((label) => new ClearNode(ClearType.Choice, label)))
 								(state);
 
 							transaction.CommitIndex();
-							return new ClearNode(type);
+							return node;
 						}
 						else
 						{
-							return new ClearNode(ClearType.All);
+							return new ClearNode(ClearType.All, null);
 						}
+					}
+				};
+			}
+		}
+
+		public static Parser<string> ClearChoice
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						Parse.String("choice")(state);
+						Parse.Spaces1(state);
+						var identifier = Identifier(state);
+
+						transaction.CommitIndex();
+						return identifier;
 					}
 				};
 			}

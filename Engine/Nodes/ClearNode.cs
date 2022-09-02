@@ -7,15 +7,17 @@ namespace Exodrifter.Rumor.Engine
 	public class ClearNode : Node, ISerializable
 	{
 		public ClearType Type { get; }
+		public string LabelTarget { get; }
 
-		public ClearNode(ClearType type)
+		public ClearNode(ClearType type, string labelTarget)
 		{
 			Type = type;
+			LabelTarget = labelTarget;
 		}
 
 		public override Yield Execute(Rumor rumor)
 		{
-			rumor.State.Clear(Type);
+			rumor.State.Clear(Type, LabelTarget);
 			return null;
 		}
 

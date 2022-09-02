@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new SetDialogNode("Alice", "Hello world!")
-						, new ClearNode(ClearType.Dialog)
+						, new ClearNode(ClearType.Dialog, null)
 						}
 					}
 				}

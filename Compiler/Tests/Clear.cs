@@ -14,7 +14,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("clear", 4);
 
 			var node = Compiler.Clear(state);
-			Assert.AreEqual(new ClearNode(ClearType.All), node);
+			Assert.AreEqual(new ClearNode(ClearType.All, null), node);
 		}
 
 		[Test]
@@ -23,7 +23,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("clear all", 4);
 
 			var node = Compiler.Clear(state);
-			Assert.AreEqual(new ClearNode(ClearType.All), node);
+			Assert.AreEqual(new ClearNode(ClearType.All, null), node);
 		}
 
 		[Test]
@@ -32,7 +32,16 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("clear choices", 4);
 
 			var node = Compiler.Clear(state);
-			Assert.AreEqual(new ClearNode(ClearType.Choices), node);
+			Assert.AreEqual(new ClearNode(ClearType.Choices, null), node);
+		}
+
+		[Test]
+		public static void ClearChoiceSuccess()
+		{
+			var state = new ParserState("clear choice foobar", 4);
+
+			var node = Compiler.Clear(state);
+			Assert.AreEqual(new ClearNode(ClearType.Choice, "foobar"), node);
 		}
 
 		[Test]
@@ -41,7 +50,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("clear dialog", 4);
 
 			var node = Compiler.Clear(state);
-			Assert.AreEqual(new ClearNode(ClearType.Dialog), node);
+			Assert.AreEqual(new ClearNode(ClearType.Dialog, null), node);
 		}
 
 		#endregion

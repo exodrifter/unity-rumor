@@ -50,7 +50,7 @@ namespace Exodrifter.Rumor.Engine.Tests
 		[Test]
 		public static void ClearNode()
 		{
-			var a = new ClearNode(ClearType.Dialog);
+			var a = new ClearNode(ClearType.Dialog, null);
 			var b = SerializationUtil.Reserialize(a);
 
 			Assert.AreEqual(a, b);

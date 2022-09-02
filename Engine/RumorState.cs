@@ -112,7 +112,7 @@ namespace Exodrifter.Rumor.Engine
 		/// An event you can subscribe to in order to get notified when dialog
 		/// and/or choices are removed from the state.
 		/// </summary>
-		public event Action<ClearType> OnClear;
+		public event Action<ClearType, string> OnClear;
 
 		/// <summary>
 		/// An event you can subscribe to in order to get notified when all of
@@ -140,7 +140,7 @@ namespace Exodrifter.Rumor.Engine
 			Dialog.Clear();
 			Choices.Clear();
 
-			OnClear?.Invoke(ClearType.All);
+			OnClear?.Invoke(ClearType.All, null);
 			OnClearAll?.Invoke();
 			OnClearDialog?.Invoke();
 			OnClearChoices?.Invoke();
@@ -153,7 +153,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Dialog.Clear();
 
-			OnClear?.Invoke(ClearType.Dialog);
+			OnClear?.Invoke(ClearType.Dialog, null);
 			OnClearDialog?.Invoke();
 		}
 
@@ -164,7 +164,18 @@ namespace Exodrifter.Rumor.Engine
 		{
 			Choices.Clear();
 
-			OnClear?.Invoke(ClearType.Choices);
+			OnClear?.Invoke(ClearType.Choices, null);
+			OnClearChoices?.Invoke();
+		}
+
+		/// <summary>
+		/// Removes a specific choice from the state.
+		/// </summary>
+		public void ClearChoice(string label)
+		{
+			Choices.Remove(label);
+
+			OnClear?.Invoke(ClearType.Choice, label);
 			OnClearChoices?.Invoke();
 		}
 
@@ -172,7 +183,10 @@ namespace Exodrifter.Rumor.Engine
 		/// Removes some subset of the state.
 		/// </summary>
 		/// <param name="type">The type of data to remove.</param>
-		public void Clear(ClearType type)
+		/// <param name="labelTarget">
+		/// The label to target. Only used when the clear type uses it.
+		/// </param>
+		public void Clear(ClearType type, string targetLabel)
 		{
 			switch (type)
 			{
@@ -186,6 +200,10 @@ namespace Exodrifter.Rumor.Engine
 
 				case ClearType.Choices:
 					ClearChoices();
+					break;
+
+				case ClearType.Choice:
+					ClearChoice(targetLabel);
 					break;
 
 				default:

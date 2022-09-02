@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Internally, `ControlNode`s no longer store node blocks; the children nodes are
   flattened out into their own blocks like it is done for `AddChoiceNode`s.
 * The character `-` can now be used in identifiers.
+* The ability to clear a specific choice has been added, which also changed the
+  signature of `OnClear`.
 
 ### Fixed
 * Fixed bug where choosing would unintentionally pop the stack frame.
