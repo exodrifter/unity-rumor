@@ -21,8 +21,9 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Yield Execute(Rumor rumor)
 		{
+			var value = timeout?.Evaluate(rumor.Scope, rumor.Bindings);
 			return new ForChoose(
-				timeout?.Evaluate(rumor.Scope).AsNumber().Value,
+				value?.AsNumber()?.Value,
 				moveType,
 				label
 			);

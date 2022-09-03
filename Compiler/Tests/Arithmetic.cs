@@ -14,7 +14,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("01234567890", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1234567890d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1234567890d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -23,7 +26,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("+01234567890", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1234567890d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1234567890d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -32,7 +38,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("-01234567890", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1234567890d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1234567890d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -41,8 +50,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("01234567890.123456789", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual
-				(new NumberValue(1234567890.123456789d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1234567890.123456789d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -51,8 +62,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("+01234567890.123456789", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual
-				(new NumberValue(1234567890.123456789d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1234567890.123456789d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -61,8 +74,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("-01234567890.123456789", 4);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual
-				(new NumberValue(-1234567890.123456789d), n.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1234567890.123456789d),
+				n.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -73,7 +88,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			scope.Set("foobar", 1234);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1234), n.Evaluate(scope));
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(scope, new RumorBindings())
+			);
 		}
 
 		#endregion
@@ -86,7 +104,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1+2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(3d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -97,7 +118,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			scope.Set("foobar", 1234);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1236), n.Evaluate(scope));
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(scope, new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -106,7 +130,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1++2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(3d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -115,7 +142,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1+-2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -124,7 +154,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1  +   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(3d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -133,7 +166,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1\n   +\n   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(3d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -142,7 +178,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 + 2 + 3 + 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(10d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(10d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -151,7 +190,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 +\n 2 +\n 3 + 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(10d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(10d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		#endregion
@@ -164,7 +206,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1-2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -175,7 +220,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			scope.Set("foobar", 1234);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1232), n.Evaluate(scope));
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(scope, new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -184,7 +232,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1-+2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -193,7 +244,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1--2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(3d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(3d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -202,7 +256,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1  -   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -211,7 +268,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1\n   -\n   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -220,7 +280,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 - 2 - 3 - 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-8d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-8d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -229,7 +292,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 -\n 2 -\n 3 - 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-8d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-8d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		#endregion
@@ -242,7 +308,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1*2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(2d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(2d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -253,7 +322,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			scope.Set("foobar", 1234);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(2468), n.Evaluate(scope));
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(scope, new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -262,7 +334,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1*+2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(2d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(2d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -271,7 +346,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1*-2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-2d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-2d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -280,7 +358,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1  *   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(2d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(2d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -289,7 +370,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1\n   *\n   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(2d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(2d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -298,7 +382,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 * 2 * 3 * 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(24d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(24d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -307,7 +394,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1 *\n 2 *\n 3 * 4", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(24d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(24d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		#endregion
@@ -320,7 +410,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1/2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(0.5d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -331,7 +424,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			scope.Set("foobar", 1234);
 
 			var n = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(617), n.Evaluate(scope));
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(scope, new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -340,7 +436,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1/+2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(0.5d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -349,7 +448,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1/-2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(-0.5d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(-0.5d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -358,7 +460,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1  /   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(0.5d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -367,7 +472,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("1\n   /\n   2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(0.5d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(0.5d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -376,7 +484,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("8 / 4 / 2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -385,7 +496,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("8 /\n 4 /\n 2", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(1d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(1d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		#endregion
@@ -398,7 +512,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("8 + 2 * 5 / 5 + 1", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(11d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(11d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -407,7 +524,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("(8 + 2) * 5", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(50d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(50d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		[Test]
@@ -416,7 +536,10 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			var state = new ParserState("(8 \n + 2) * 5", 4);
 
 			var exp = Compiler.Math(state);
-			Assert.AreEqual(new NumberValue(50d), exp.Evaluate(new RumorScope()));
+			Assert.AreEqual(
+				new NumberValue(50d),
+				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
 		}
 
 		#endregion

@@ -14,7 +14,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Yield Execute(Rumor rumor)
 		{
-			var dialog = Dialog.Evaluate(rumor.Scope).AsString().Value;
+			var value = Dialog.Evaluate(rumor.Scope, rumor.Bindings);
+			var dialog = value.AsString().Value;
 			rumor.State.AppendDialog(Speaker, dialog);
 			return new ForAdvance();
 		}

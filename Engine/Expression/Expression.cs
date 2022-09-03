@@ -8,7 +8,7 @@ namespace Exodrifter.Rumor.Engine
 	{
 		public Expression() { }
 
-		public abstract Value Evaluate(RumorScope scope);
+		public abstract Value Evaluate(RumorScope scope, RumorBindings bindings);
 
 		public abstract Expression Simplify();
 

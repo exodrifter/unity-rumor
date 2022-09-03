@@ -20,7 +20,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Yield Execute(Rumor rumor)
 		{
-			var seconds = Time.Evaluate(rumor.Scope).AsNumber().Value;
+			var value = Time.Evaluate(rumor.Scope, rumor.Bindings);
+			var seconds = value.AsNumber().Value;
 			return new ForSeconds(seconds);
 		}
 

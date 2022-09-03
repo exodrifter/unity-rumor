@@ -38,8 +38,8 @@ namespace Exodrifter.Rumor.Engine
 				}
 				else
 				{
-					var value = Condition.Evaluate(rumor.Scope)?.AsBoolean();
-					call = value?.Value ?? false;
+					var value = Condition.Evaluate(rumor.Scope, rumor.Bindings);
+					call = value?.AsBoolean()?.Value ?? false;
 				}
 			}
 			catch (UndefinedVariableException)
