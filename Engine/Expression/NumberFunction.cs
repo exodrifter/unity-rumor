@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Exodrifter.Rumor.Engine
 {
 	[Serializable]
-	public class NumberFunction : Expression, ISerializable
+	public class NumberFunction : FunctionExpression, ISerializable
 	{
 		private readonly string name;
 		private readonly Expression[] args;
@@ -22,17 +22,16 @@ namespace Exodrifter.Rumor.Engine
 			foreach (var arg in args) {
 				evaluatedArgs.Add(arg.Evaluate(scope, bindings).InternalValue);
 			}
+			var argArr = evaluatedArgs.ToArray();
 
-			var result = bindings.CallBinding(BindingType.Function, name, evaluatedArgs);
-			var value = result as StringValue;
-			if (value == null)
-			{
+			var result = bindings.CallBinding(BindingType.Function, name, argArr);
+			try {
+				return new NumberValue(Convert.ToDouble(result));
+			} catch (Exception) {
 				throw new FunctionTypeException(
 					"Variable is not a number!"
 				);
 			}
-
-			return value;
 		}
 
 		public override Expression Simplify()
@@ -88,7 +87,11 @@ namespace Exodrifter.Rumor.Engine
 
 		public override string ToString()
 		{
-			return name;
+			var argStrings = new List<string>();
+			foreach (var arg in args) {
+				argStrings.Add(arg.ToString());
+			}
+			return name + "<number>(" + string.Join(",", argStrings) + ")";
 		}
 	}
 }

@@ -725,7 +725,7 @@ namespace Exodrifter.Rumor.Compiler
 
 		#endregion
 
-		#region Binding
+		#region Action
 
 		public static Parser<BindingActionNode> BindingAction() =>
 			BindingAction0()
@@ -744,7 +744,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(BindingType.Action, id, 0))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 0, null))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -774,7 +774,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(BindingType.Action, id, 1))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 1, null))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -809,7 +809,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(BindingType.Action, id, 2))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 2, null))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -850,7 +850,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(BindingType.Action, id, 3))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 3, null))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +
@@ -897,7 +897,7 @@ namespace Exodrifter.Rumor.Compiler
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
-					if (!userState.ContainsBindingHint(BindingType.Action, id, 4))
+					if (!userState.ContainsBindingHint(BindingType.Action, id, 4, null))
 					{
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked action \"" + id + "\" " +

@@ -2,11 +2,19 @@ using System;
 
 namespace Exodrifter.Rumor.Engine
 {
-	public abstract class BindingHint { }
+	public abstract class BindingHint
+	{
+		public abstract ValueType? GetReturnType();
+	}
 
 	public class BindingActionHint : BindingHint
 	{
 		public BindingActionHint() { }
+
+		public override ValueType? GetReturnType()
+		{
+			return null;
+		}
 	}
 
 	public class BindingActionHint1 : BindingHint
@@ -16,6 +24,11 @@ namespace Exodrifter.Rumor.Engine
 		public BindingActionHint1(ValueType t1)
 		{
 			this.t1 = t1;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return null;
 		}
 	}
 
@@ -28,6 +41,11 @@ namespace Exodrifter.Rumor.Engine
 		{
 			this.t1 = t1;
 			this.t2 = t2;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return null;
 		}
 	}
 
@@ -42,6 +60,11 @@ namespace Exodrifter.Rumor.Engine
 			this.t1 = t1;
 			this.t2 = t2;
 			this.t3 = t3;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return null;
 		}
 	}
 
@@ -60,6 +83,11 @@ namespace Exodrifter.Rumor.Engine
 			this.t3 = t3;
 			this.t4 = t4;
 		}
+
+		public override ValueType? GetReturnType()
+		{
+			return null;
+		}
 	}
 
 	public class BindingFunctionHint : BindingHint
@@ -69,6 +97,11 @@ namespace Exodrifter.Rumor.Engine
 		public BindingFunctionHint(ValueType result)
 		{
 			this.result = result;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return result;
 		}
 	}
 
@@ -81,6 +114,11 @@ namespace Exodrifter.Rumor.Engine
 		{
 			this.t1 = t1;
 			this.result = result;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return result;
 		}
 	}
 
@@ -95,6 +133,11 @@ namespace Exodrifter.Rumor.Engine
 			this.t1 = t1;
 			this.t2 = t2;
 			this.result = result;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return result;
 		}
 	}
 
@@ -112,6 +155,11 @@ namespace Exodrifter.Rumor.Engine
 			this.t2 = t2;
 			this.t3 = t3;
 			this.result = result;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return result;
 		}
 	}
 
@@ -132,6 +180,11 @@ namespace Exodrifter.Rumor.Engine
 			this.t3 = t3;
 			this.t4 = t4;
 			this.result = result;
+		}
+
+		public override ValueType? GetReturnType()
+		{
+			return result;
 		}
 	}
 }

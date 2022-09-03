@@ -128,11 +128,18 @@ namespace Exodrifter.Rumor.Compiler
 		}
 
 		public bool ContainsBindingHint
-			(BindingType type, string name, int paramCount)
+			(BindingType type, string name, int paramCount, Engine.ValueType? returnType)
 		{
-			return BindingHints.ContainsKey(
-				BindingUtil.MungeName(type, name, paramCount)
-			);
+			var munge = BindingUtil.MungeName(type, name, paramCount);
+			if (!BindingHints.ContainsKey(munge)) {
+				return false;
+			}
+
+			if (returnType == null) {
+				return true;
+			}
+
+			return BindingHints[munge].GetReturnType() == returnType;
 		}
 
 		public BindingHint GetBindingHint

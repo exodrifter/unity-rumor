@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * Allow `jump` or `call` when specifying a default choice for `choose`.
+* Support for Functions in expressions and substitutions.
 
 ### Changed
 * Internally, `ControlNode`s no longer store node blocks; the children nodes are

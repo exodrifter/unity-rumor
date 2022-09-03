@@ -1,7 +1,6 @@
 using Exodrifter.Rumor.Compiler;
 using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Engine.Tests;
-using Exodrifter.Rumor.Parser;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -20,7 +19,7 @@ namespace Exodrifter.Rumor.Tests
 
 				"choice [hangup]\n" +
 				"  > Hang up.\n" +
-				"  : Alice hangs up.\n" +
+				"  : Alice hangs up after { subtract(4, 2) } seconds.\n" +
 
 				"choice [wait]\n" +
 				"  > Wait.\n" +
@@ -37,11 +36,13 @@ namespace Exodrifter.Rumor.Tests
 			var nodes = new RumorCompiler()
 				.SetTabSize(2)
 				.LinkAction("add", ValueType.Number)
+				.LinkFunction("subtract", ValueType.Number, ValueType.Number, ValueType.Number)
 				.Compile(script);
 
 			double number = 0;
 			var rumor = new Engine.Rumor(nodes);
 			rumor.Bindings.Bind<double>("add", (x) => number += x);
+			rumor.Bindings.Bind<int, int, int>("subtract", (l, r) => { return l - r; });
 			rumor.Start();
 
 			Assert.AreEqual(
@@ -65,6 +66,7 @@ namespace Exodrifter.Rumor.Tests
 			// Simulate saving and loading the game
 			rumor = SerializationUtil.Reserialize(rumor);
 			rumor.Bindings.Bind<double>("add", (x) => number += x);
+			rumor.Bindings.Bind<int, int, int>("subtract", (l, r) => { return l - r; });
 
 			rumor.Advance();
 
@@ -81,11 +83,8 @@ namespace Exodrifter.Rumor.Tests
 			rumor.Choose("hangup");
 
 			Assert.AreEqual(
-				new Dictionary<string, string>
-				{
-					{ "_narrator", "Alice hangs up." },
-				},
-				rumor.State.GetDialog()
+				"Alice hangs up after 2 seconds.",
+				rumor.State.GetDialog()["_narrator"]
 			);
 
 			rumor.Advance();

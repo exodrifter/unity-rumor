@@ -36,6 +36,21 @@ namespace Exodrifter.Rumor.Engine
 				var left = l.Simplify();
 				var right = r.Simplify();
 
+				if (left is StringLiteral)
+				{
+					var leftStr = (string)((StringLiteral)left).Value.InternalValue;
+					if (string.IsNullOrEmpty(leftStr)) {
+						return right;
+					}
+				}
+				else if (right is StringLiteral)
+				{
+					var rightStr = (string)((StringLiteral)right).Value.InternalValue;
+					if (string.IsNullOrEmpty(rightStr)) {
+						return left;
+					}
+				}
+				
 				if (l == left && r == right)
 				{
 					return this;

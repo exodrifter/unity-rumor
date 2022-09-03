@@ -1,7 +1,6 @@
 using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Exodrifter.Rumor.Compiler.Tests
 {

@@ -245,6 +245,7 @@ namespace Exodrifter.Rumor.Compiler
 			LogicParenthesis
 				.Or(NotExpression)
 				.Or(BooleanLiteral)
+				.Or(BooleanFunction)
 				.Or(BooleanVariable);
 
 		/// <summary>
@@ -288,6 +289,10 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 		}
+
+		private static Parser<Expression> BooleanFunction =>
+			BindingFunction(Engine.ValueType.Boolean).Select(x => (Expression)x);
+
 
 		/// <summary>
 		/// Parses a boolean variable.
@@ -381,7 +386,10 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece, MultiplyOrDivide);
 
 		private static Parser<Expression> MathPiece =>
-			MathParenthesis.Or(NumberLiteral).Or(NumberVariable);
+			MathParenthesis
+				.Or(NumberLiteral)
+				.Or(NumberFunction)
+				.Or(NumberVariable);
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
@@ -440,6 +448,9 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 		}
+
+		private static Parser<Expression> NumberFunction =>
+			BindingFunction(Engine.ValueType.Number).Select(x => (Expression)x);
 
 		/// <summary>
 		/// Parses a number variable.
@@ -612,7 +623,7 @@ namespace Exodrifter.Rumor.Compiler
 								new ConcatExpression(
 									new StringLiteral(s + rest),
 									substitution
-								),
+								).Simplify(),
 								remaining
 							);
 						}
@@ -636,7 +647,9 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="StringValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression> Quote =>
-			Parse.Surround('\"', '\"', QuoteInternal).Or(StringVariable);
+			Parse.Surround('\"', '\"', QuoteInternal)
+				.Or(StringFunction)
+				.Or(StringVariable);
 
 		private static Parser<Expression> QuoteLiteral
 		{
@@ -656,6 +669,9 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 		}
+
+		private static Parser<Expression> StringFunction =>
+			BindingFunction(Engine.ValueType.String).Select(x => (Expression)x);
 
 		/// <summary>
 		/// Parses a string variable.
@@ -744,6 +760,275 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 
+		}
+
+		#endregion
+
+		#region Function
+
+		public static Parser<FunctionExpression> BindingFunction(Engine.ValueType vt) =>
+			BindingFunction0(vt)
+				.Or(BindingFunction1(vt))
+				.Or(BindingFunction2(vt))
+				.Or(BindingFunction3(vt))
+				.Or(BindingFunction4(vt));
+
+		private static Parser<FunctionExpression> BindingFunction0(Engine.ValueType vt)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(BindingType.Function, id, 0, vt))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked function \"" + id + "\" " +
+							"with zero parameters!"
+						);
+					}
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					switch (vt) {
+						case Engine.ValueType.Boolean:
+							return new BooleanFunction(id);
+						case Engine.ValueType.Number:
+							return new NumberFunction(id);
+						case Engine.ValueType.String:
+							return new StringFunction(id);
+						default:
+							// Should never happen
+							throw new InvalidOperationException("Unknown Value type");
+					}
+				}
+			};
+		}
+
+		private static Parser<FunctionExpression> BindingFunction1(Engine.ValueType vt)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(BindingType.Function, id, 1, vt))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked function \"" + id + "\" " +
+							"with one parameter!"
+						);
+					}
+					var hint = (BindingFunctionHint1)
+						userState.GetBindingHint(BindingType.Function, id, 1);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					switch (vt) {
+						case Engine.ValueType.Boolean:
+							return new BooleanFunction(id, p1);
+						case Engine.ValueType.Number:
+							return new NumberFunction(id, p1);
+						case Engine.ValueType.String:
+							return new StringFunction(id, p1);
+						default:
+							// Should never happen
+							throw new InvalidOperationException("Unknown Value type");
+					}
+				}
+			};
+		}
+
+		private static Parser<FunctionExpression> BindingFunction2(Engine.ValueType vt)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(BindingType.Function, id, 2, vt))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked function \"" + id + "\" " +
+							"with two parameters!"
+						);
+					}
+					var hint = (BindingFunctionHint2)
+						userState.GetBindingHint(BindingType.Function, id, 2);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+
+					transaction.CommitIndex();
+					switch (vt) {
+						case Engine.ValueType.Boolean:
+							return new BooleanFunction(id, p1, p2);
+						case Engine.ValueType.Number:
+							return new NumberFunction(id, p1, p2);
+						case Engine.ValueType.String:
+							return new StringFunction(id, p1, p2);
+						default:
+							// Should never happen
+							throw new InvalidOperationException("Unknown Value type");
+					}
+				}
+			};
+		}
+
+		private static Parser<FunctionExpression> BindingFunction3(Engine.ValueType vt)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(BindingType.Function, id, 3, vt))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked function \"" + id + "\" " +
+							"with three parameters!"
+						);
+					}
+					var hint = (BindingFunctionHint3)
+						userState.GetBindingHint(BindingType.Function, id, 3);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p3 = Param(hint.t3)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					switch (vt) {
+						case Engine.ValueType.Boolean:
+							return new BooleanFunction(id, p1, p2, p3);
+						case Engine.ValueType.Number:
+							return new NumberFunction(id, p1, p2, p3);
+						case Engine.ValueType.String:
+							return new StringFunction(id, p1, p2, p3);
+						default:
+							// Should never happen
+							throw new InvalidOperationException("Unknown Value type");
+					}
+				}
+			};
+		}
+
+		private static Parser<FunctionExpression> BindingFunction4(Engine.ValueType vt)
+		{
+			return state =>
+			{
+				using (var transaction = new Transaction(state))
+				{
+					var errorIndex = state.Index;
+					var id = Identifier(state);
+
+					var userState = (RumorParserState)state.UserState;
+					if (!userState.ContainsBindingHint(BindingType.Function, id, 4, vt))
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference unlinked function \"" + id + "\" " +
+							"with four parameters!"
+						);
+					}
+					var hint = (BindingFunctionHint4)
+						userState.GetBindingHint(BindingType.Function, id, 4);
+
+					Parse.Spaces(state);
+					Parse.String("(")(state);
+
+					Parse.Spaces(state);
+					var p1 = Param(hint.t1)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p2 = Param(hint.t2)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p3 = Param(hint.t3)(state);
+
+					Parse.Spaces(state);
+					Parse.String(",")(state);
+
+					Parse.Spaces(state);
+					var p4 = Param(hint.t4)(state);
+
+					Parse.Spaces(state);
+					Parse.String(")")(state);
+
+					transaction.CommitIndex();
+					switch (vt) {
+						case Engine.ValueType.Boolean:
+							return new BooleanFunction(id, p1, p2, p3, p4);
+						case Engine.ValueType.Number:
+							return new NumberFunction(id, p1, p2, p3, p4);
+						case Engine.ValueType.String:
+							return new StringFunction(id, p1, p2, p3, p4);
+						default:
+							// Should never happen
+							throw new InvalidOperationException("Unknown Value type");
+					}
+				}
+			};
 		}
 
 		#endregion
