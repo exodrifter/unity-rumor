@@ -111,19 +111,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public override string ToString()
 		{
-			var lines = new List<string>();
-			foreach (var node in Label)
-			{
-				lines.Add(node.ToString());
-			}
-
-			if (Next != null)
-			{
-				lines.Add(Next.ToString_Internal());
-			}
-
-			return "if {" + Condition + "}; call " + Label + ";"
-				+ Next.ToString_Internal();
+			return "if {" + Condition + "}; call " + Label + "; "
+				+ Next?.ToString_Internal();
 		}
 
 		private string ToString_Internal()

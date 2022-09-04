@@ -116,5 +116,213 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		#endregion
+
+		#region Function
+
+		[Test]
+		public static void IfFunction0Success()
+		{
+			var hints = new RumorParserState();
+			hints.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState(
+				"if { foobar() == 5 }\n  wait",
+				4, hints
+			);
+
+			var script = Compiler.If(state);
+			Assert.AreEqual(27, state.Index);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ControlNode(
+							new IsExpression(new NumberFunction("foobar"), new NumberLiteral(5)),
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							null)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
+				},
+				script
+			);
+		}
+
+		[Test]
+		public static void IfFunction1Success()
+		{
+			var hints = new RumorParserState();
+			hints.LinkFunction("foobar", ValueType.String, ValueType.Number);
+
+			var state = new ParserState(
+				"if { foobar(\"baz\") == 5 }\n  wait",
+				4, hints
+			);
+
+			var script = Compiler.If(state);
+			Assert.AreEqual(32, state.Index);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ControlNode(
+							new IsExpression(new NumberFunction("foobar", new StringLiteral("baz")), new NumberLiteral(5)),
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							null)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
+				},
+				script
+			);
+		}
+
+		[Test]
+		public static void IfFunction2Success()
+		{
+			var hints = new RumorParserState();
+			hints.LinkFunction("foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.Number
+			);
+
+			var state = new ParserState(
+				"if { foobar(\"a\", \"b\") == 5 }\n  wait",
+				4, hints
+			);
+
+			var script = Compiler.If(state);
+			Assert.AreEqual(35, state.Index);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ControlNode(
+							new IsExpression(
+								new NumberFunction(
+									"foobar",
+									new StringLiteral("a"),
+									new StringLiteral("b")
+								),
+								new NumberLiteral(5)
+							),
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							null)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
+				},
+				script
+			);
+		}
+
+		[Test]
+		public static void IfFunction3Success()
+		{
+			var hints = new RumorParserState();
+			hints.LinkFunction("foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.Number
+			);
+
+			var state = new ParserState(
+				"if { foobar(\"a\", \"b\", \"c\") == 5 }\n  wait",
+				4, hints
+			);
+
+			var script = Compiler.If(state);
+			Assert.AreEqual(40, state.Index);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ControlNode(
+							new IsExpression(
+								new NumberFunction(
+									"foobar",
+									new StringLiteral("a"),
+									new StringLiteral("b"),
+									new StringLiteral("c")
+								),
+								new NumberLiteral(5)
+							),
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							null)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
+				},
+				script
+			);
+		}
+
+		[Test]
+		public static void IfFunction4Success()
+		{
+			var hints = new RumorParserState();
+			hints.LinkFunction("foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.Number
+			);
+
+			var state = new ParserState(
+				"if { foobar(\"a\", \"b\", \"c\", \"d\") == 5 }\n  wait",
+				4, hints
+			);
+
+			var script = Compiler.If(state);
+			Assert.AreEqual(45, state.Index);
+			Assert.AreEqual(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new ControlNode(
+							new IsExpression(
+								new NumberFunction(
+									"foobar",
+									new StringLiteral("a"),
+									new StringLiteral("b"),
+									new StringLiteral("c"),
+									new StringLiteral("d")
+								),
+								new NumberLiteral(5)
+							),
+							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							null)
+						}
+					},
+					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+						{
+							new WaitNode()
+						}
+					}
+				},
+				script
+			);
+		}
+
+		#endregion
 	}
 }
