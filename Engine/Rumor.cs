@@ -289,13 +289,18 @@ namespace Exodrifter.Rumor.Engine
 		}
 
 		/// <summary>
-		/// Removes the next-to-top-most stack frame from the call stack if it
-		/// exists.
+		/// Removes the specified stack if it exists, where index 0 is the top
+		/// of the stack. DropStack(0) is the same as return.
 		/// </summary>
-		public void DropCallStack()
+		public void DropStack(int depth)
 		{
+			if (depth <= 0) {
+				Stack.Pop(); // Discarded
+				return;
+			}
+			
 			var current = Stack.Pop();
-			Stack.Pop(); // Discarded
+			DropStack(depth - 1);
 			Stack.Push(current);
 		}
 
