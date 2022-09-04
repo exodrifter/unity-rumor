@@ -144,6 +144,46 @@ namespace Exodrifter.Rumor.Engine.Tests
 		}
 
 		[Test]
+		public static void KeepTopStackCountSuccess()
+		{
+			var rumor = new Rumor(
+				new Dictionary<string, List<Node>>
+				{
+					{ Rumor.MainIdentifier, new List<Node>()
+						{ new CallNode("foo")
+						, new WaitNode()
+						}
+					},
+					{ "foo", new List<Node>()
+						{ new CallNode("bar")
+						, new WaitNode()
+						}
+					},
+					{ "bar", new List<Node>()
+						{ new CallNode("baz")
+						, new WaitNode()
+						}
+					},
+					{ "baz", new List<Node>()
+						{ new WaitNode()
+						}
+					}
+				}
+			);
+
+			rumor.Start();
+			Assert.IsTrue(rumor.Executing);
+
+			rumor.KeepTopStack();
+			Assert.IsTrue(rumor.Executing);
+
+			rumor.Advance();
+			Assert.IsFalse(rumor.Executing);
+			Assert.AreEqual(1, rumor.FinishCount);
+			Assert.AreEqual(0, rumor.CancelCount);
+		}
+
+		[Test]
 		public static void CallFailure()
 		{
 			var rumor = new Rumor(

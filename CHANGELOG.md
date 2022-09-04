@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Support for Functions in expressions and substitutions.
 * Add `DropStack` which allows stacks to be manually discarded during execution,
   useful for turning calls into jumps.
+* Add `KeepLastStack` which drops all but the current stack.
 
 ### Changed
 * Internally, `ControlNode`s no longer store node blocks; the children nodes are
