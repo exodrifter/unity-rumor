@@ -27,11 +27,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 							new BooleanLiteral(true),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -57,16 +57,16 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 								new BooleanLiteral(true),
-								"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+								"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 								new ControlNode(
 									null,
-									"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+									"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 									null
 								)
 							)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -92,20 +92,20 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 								new BooleanLiteral(true),
-								"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+								"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 								new ControlNode(
 									new BooleanLiteral(true),
-									"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+									"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 									new ControlNode(
 										null,
-										"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+										"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 										null
 									)
 								)
 							)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -138,11 +138,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 							new IsExpression(new NumberFunction("foobar"), new NumberLiteral(5)),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -171,11 +171,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new ControlNode(
 							new IsExpression(new NumberFunction("foobar", new StringLiteral("baz")), new NumberLiteral(5)),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -215,11 +215,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 								),
 								new NumberLiteral(5)
 							),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -261,11 +261,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 								),
 								new NumberLiteral(5)
 							),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}
@@ -309,11 +309,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 								),
 								new NumberLiteral(5)
 							),
-							"_tlifxqsNyCzxIJnRwtQKuZToQQw=",
+							"_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=",
 							null)
 						}
 					},
-					{ "_tlifxqsNyCzxIJnRwtQKuZToQQw=", new List<Node>()
+					{ "_aSaiL1SHPV+jsOOg6aGG/SXu5Fw=", new List<Node>()
 						{
 							new WaitNode()
 						}

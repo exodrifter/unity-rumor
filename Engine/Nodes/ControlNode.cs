@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -77,14 +76,14 @@ namespace Exodrifter.Rumor.Engine
 				return false;
 			}
 
-			return (Condition?.Equals(other.Condition) ?? true)
-				&& Label.SequenceEqual(other.Label)
-				&& (Next?.Equals(other.Next) ?? true);
+			return this.Condition == other.Condition
+				&& this.Label == other.Label
+				&& this.Next == other.Next;
 		}
 
 		public override int GetHashCode()
 		{
-			return 0;
+			return Util.GetHashCode("control", Condition, Label, Next);
 		}
 
 		#endregion

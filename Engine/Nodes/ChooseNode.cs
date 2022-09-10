@@ -43,12 +43,14 @@ namespace Exodrifter.Rumor.Engine
 				return false;
 			}
 
-			return true;
+			return this.timeout == other.timeout
+				&& this.moveType == other.moveType
+				&& this.label == other.label;
 		}
 
 		public override int GetHashCode()
 		{
-			return 0;
+			return Util.GetHashCode("choose", timeout, moveType, label);
 		}
 
 		#endregion

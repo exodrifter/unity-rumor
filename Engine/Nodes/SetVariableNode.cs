@@ -42,7 +42,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override int GetHashCode()
 		{
-			return Util.GetHashCode(Name, Expression);
+			return Util.GetHashCode("variable", Name, Expression);
 		}
 
 		#endregion

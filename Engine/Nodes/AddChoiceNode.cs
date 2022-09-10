@@ -44,12 +44,13 @@ namespace Exodrifter.Rumor.Engine
 				return false;
 			}
 
-			return true;
+			return this.Label == other.Label
+				&& this.Text == other.Text;
 		}
 
 		public override int GetHashCode()
 		{
-			return 0;
+			return Util.GetHashCode("add", Label, Text);
 		}
 
 		#endregion

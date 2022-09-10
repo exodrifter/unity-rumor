@@ -38,7 +38,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override int GetHashCode()
 		{
-			return Label.GetHashCode();
+			return Util.GetHashCode("jump", Label);
 		}
 
 		#endregion

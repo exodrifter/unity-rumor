@@ -42,12 +42,13 @@ namespace Exodrifter.Rumor.Engine
 				return false;
 			}
 
-			return Equals(id, other.id);
+			return this.id == other.id
+				&& Util.ArrayEquals(this.param, this.param);
 		}
 
 		public override int GetHashCode()
 		{
-			return Util.GetHashCode(id);
+			return Util.GetHashCode("binding", id, Util.GetHashCode(param));
 		}
 
 		#endregion

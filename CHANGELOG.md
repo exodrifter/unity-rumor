@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 * Fixed bug where choosing would unintentionally pop the stack frame.
 * `OnFinish` is only called once after execution finishes.
+* Fixes blocks being appended to each other when they shouldn't due to
+  improperly implemented hash codes and equality testing (such as is the case
+  with two `choice`s which only contain an `if` statement).
 
 ## [5.0.0] - 2021-03-01
 

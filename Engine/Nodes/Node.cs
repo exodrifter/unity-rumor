@@ -10,6 +10,24 @@ namespace Exodrifter.Rumor.Engine
 
 		public abstract Yield Execute(Rumor rumor);
 
+		public static bool operator ==(Node l, Node r)
+		{
+			if (ReferenceEquals(l, r))
+			{
+				return true;
+			}
+			if (l as object == null || r as object == null)
+			{
+				return false;
+			}
+			return l.Equals(r);
+		}
+
+		public static bool operator !=(Node l, Node r)
+		{
+			return !(l == r);
+		}
+
 		#region Serialization
 
 		public Node(SerializationInfo info, StreamingContext context) { }

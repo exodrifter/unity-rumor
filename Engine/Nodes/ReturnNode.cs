@@ -33,7 +33,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override int GetHashCode()
 		{
-			return 0;
+			return Util.GetHashCode("return");
 		}
 
 		#endregion

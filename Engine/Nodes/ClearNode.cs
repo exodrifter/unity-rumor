@@ -35,12 +35,13 @@ namespace Exodrifter.Rumor.Engine
 				return false;
 			}
 
-			return Type == other.Type;
+			return this.Type == other.Type
+				&& this.LabelTarget == other.LabelTarget;
 		}
 
 		public override int GetHashCode()
 		{
-			return Type.GetHashCode();
+			return Util.GetHashCode("clear", Type, LabelTarget);
 		}
 
 		#endregion

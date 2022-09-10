@@ -44,7 +44,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override int GetHashCode()
 		{
-			return Time.GetHashCode();
+			return Util.GetHashCode("pause", Time);
 		}
 
 		#endregion

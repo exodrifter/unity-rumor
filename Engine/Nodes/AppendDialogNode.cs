@@ -40,7 +40,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override int GetHashCode()
 		{
-			return Util.GetHashCode(Speaker, Dialog);
+			return Util.GetHashCode("append", Speaker, Dialog);
 		}
 
 		#endregion
