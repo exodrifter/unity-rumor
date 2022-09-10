@@ -90,5 +90,66 @@ namespace Exodrifter.Rumor.Tests
 			rumor.Advance();
 			Assert.IsFalse(rumor.Executing);
 		}
+	
+		[Test]
+		public static void SmokeTest2()
+		{
+			string script =
+				"x = { 0 }\n" +
+				"if { true is true }\n" +
+				"  x = { x + 1 }\n" +
+				"  : Hello!\n" +
+				": In the middle!\n" +
+				"if { true is true }\n" +
+				"  x = { x + 1 }\n" +
+				"  : Hello!\n" +
+				": That's it!\n";
+
+			var nodes = new RumorCompiler()
+				.SetTabSize(2)
+				.Compile(script);
+
+			var rumor = new Engine.Rumor(nodes);
+			rumor.Start();
+
+			Assert.AreEqual(
+				new Dictionary<string, string>
+				{
+					{ "_narrator", "Hello!" },
+				},
+				rumor.State.GetDialog()
+			);
+			rumor.Advance();
+
+			Assert.AreEqual(
+				new Dictionary<string, string>
+				{
+					{ "_narrator", "In the middle!" },
+				},
+				rumor.State.GetDialog()
+			);
+			rumor.Advance();
+
+			Assert.AreEqual(
+				new Dictionary<string, string>
+				{
+					{ "_narrator", "Hello!" },
+				},
+				rumor.State.GetDialog()
+			);
+			rumor.Advance();
+
+			Assert.AreEqual(
+				new Dictionary<string, string>
+				{
+					{ "_narrator", "That's it!" },
+				},
+				rumor.State.GetDialog()
+			);
+			rumor.Advance();
+
+			Assert.IsFalse(rumor.Executing);
+			Assert.AreEqual(new NumberValue(2), rumor.Scope.Get("x"));
+		}
 	}
 }

@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fixes blocks being appended to each other when they shouldn't due to
   improperly implemented hash codes and equality testing (such as is the case
   with two `choice`s which only contain an `if` statement).
+* `choice` and `if`/`elif`/`else` code which contains the same code as another
+  are no longer combined.
 
 ## [5.0.0] - 2021-03-01
 

@@ -26,11 +26,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode(
-							"_X6LRibRD7ULzt3DCuvILxdkyEIk=",
+							"_6UneA59ka0+xivIVzV0HSu2W08o=",
 							"Hello?")
 						}
 					},
-					{ "_X6LRibRD7ULzt3DCuvILxdkyEIk=", new List<Node>()
+					{ "_6UneA59ka0+xivIVzV0HSu2W08o=", new List<Node>()
 						{ new SetDialogNode(null, "Hello!")
 						}
 					},
@@ -56,11 +56,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode(
-							"_V/xLVtQ0UhbPPp0G9w6gIbMmVzg=",
+							"_SnGOWgMY+B2jxdb0cDqRSaV2by8=",
 							"Hello? Anyone there?")
 						}
 					},
-					{ "_V/xLVtQ0UhbPPp0G9w6gIbMmVzg=", new List<Node>()
+					{ "_SnGOWgMY+B2jxdb0cDqRSaV2by8=", new List<Node>()
 						{ new SetDialogNode(null, "Hello!")
 						}
 					},
@@ -140,11 +140,11 @@ namespace Exodrifter.Rumor.Compiler.Tests
 				{
 					{ Rumor.MainIdentifier, new List<Node>()
 						{ new AddChoiceNode(
-							"_X6LRibRD7ULzt3DCuvILxdkyEIk=",
+							"_aw5hXzryzc4KSwOXy9KhEqu8QFM=",
 							"Hello?")
 						}
 					},
-					{ "_X6LRibRD7ULzt3DCuvILxdkyEIk=", new List<Node>() {}
+					{ "_aw5hXzryzc4KSwOXy9KhEqu8QFM=", new List<Node>() {}
 					},
 				},
 				result

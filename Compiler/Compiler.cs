@@ -144,7 +144,7 @@ namespace Exodrifter.Rumor.Compiler
 						// Move the main block to the identifier for this label
 						var textToHash = text.Simplify().GetHashCode().ToString();
 						var identifier = maybeIdentifier
-							.GetValueOrDefault("_" + Sha1Hash(textToHash));
+							.GetValueOrDefault("_" + Sha1Hash(state, textToHash));
 						result[identifier] = result[Rumor.MainIdentifier];
 
 						// Add the choice as the only node in the main block
@@ -219,7 +219,7 @@ namespace Exodrifter.Rumor.Compiler
 							nodes.Select(x => x.GetHashCode().ToString())
 								.ToArray()
 						);
-						var identifier = "_" + Sha1Hash(nodesHash);
+						var identifier = "_" + Sha1Hash(state, nodesHash);
 						result[identifier] = result[Rumor.MainIdentifier];
 						var node = new ControlNode(comparison, identifier, next);
 						result.Remove(Rumor.MainIdentifier);
@@ -288,7 +288,7 @@ namespace Exodrifter.Rumor.Compiler
 							nodes.Select(x => x.GetHashCode().ToString())
 								.ToArray()
 						);
-						var identifier = "_" + Sha1Hash(nodesHash);
+						var identifier = "_" + Sha1Hash(state, nodesHash);
 						result[identifier] = result[Rumor.MainIdentifier];
 						var node = new ControlNode(comparison, identifier, next);
 						result.Remove(Rumor.MainIdentifier);
@@ -335,7 +335,7 @@ namespace Exodrifter.Rumor.Compiler
 							nodes.Select(x => x.GetHashCode().ToString())
 								.ToArray()
 						);
-						var identifier = "_" + Sha1Hash(nodesHash);
+						var identifier = "_" + Sha1Hash(state, nodesHash);
 						result[identifier] = result[Rumor.MainIdentifier];
 						var node = new ControlNode(null, identifier, null);
 						result.Remove(Rumor.MainIdentifier);
@@ -714,12 +714,13 @@ namespace Exodrifter.Rumor.Compiler
 			}
 		}
 
-		private static string Sha1Hash(string rawData)
+		private static string Sha1Hash(ParserState state, string rawData)
 		{
 			using (var sha1Hasher = SHA1.Create())
 			{
-				var bytes = sha1Hasher.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-				return Convert.ToBase64String(bytes);
+				var bytes = Encoding.UTF8.GetBytes(state.Index + rawData);
+				var hash = sha1Hasher.ComputeHash(bytes);
+				return Convert.ToBase64String(hash);
 			}
 		}
 
