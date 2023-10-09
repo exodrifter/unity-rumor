@@ -522,6 +522,9 @@ namespace Exodrifter.Rumor.Compiler
 					new ToStringExpression(x)),
 				Parse.SameOrIndented
 			)).Or(Parse.SurroundBlock('{', '}',
+				StringBinding,
+				Parse.SameOrIndented
+			)).Or(Parse.SurroundBlock('{', '}',
 				Quote,
 				Parse.SameOrIndented
 			));
@@ -657,7 +660,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="StringValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression> Quote =>
-			Parse.Surround('\"', '\"', QuoteInternal).Or(StringVariable);
+			Parse.Surround('"', '"', false, QuoteInternal).Or(StringVariable);
 
 		private static Parser<Expression> QuoteLiteral
 		{
@@ -699,6 +702,16 @@ namespace Exodrifter.Rumor.Compiler
 				};
 			}
 		}
+
+		/// <summary>
+		/// Parses a string binding.
+		/// </summary>
+		public static Parser<Expression> StringBinding =>
+			Binding0(Engine.ValueType.String, (id) => { return new StringBinding(id); } )
+				.Or(Binding1(Engine.ValueType.String, (id, a) => { return new StringBinding(id, a); }))
+				.Or(Binding2(Engine.ValueType.String, (id, a, b) => { return new StringBinding(id, a, b); }))
+				.Or(Binding3(Engine.ValueType.String, (id, a, b, c) => { return new StringBinding(id, a, b, c); }))
+				.Or(Binding4(Engine.ValueType.String, (id, a, b, c, d) => { return new StringBinding(id, a, b, c, d); }));
 
 		private static Parser<Expression> QuoteInternal
 		{

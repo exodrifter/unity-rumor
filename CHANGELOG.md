@@ -8,16 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * Allow `jump` or `call` when specifying a default choice for `choose`.
-* Allow function calls that return a Number type in expressions.
-* Allow function calls that return a Boolean type in expressions.
+* Allow function calls in expressions.
 
 ### Changed
 * Internally, `ControlNode`s no longer store node blocks; the children nodes are
   flattened out into their own blocks like it is done for `AddChoiceNode`s.
+* `RumorState.DefaultSpeaker` is now public.
 
 ### Fixed
 * Fixed bug where choosing would unintentionally pop the stack frame.
 * `OnFinish` is only called once after execution finishes.
+* Leading and trailing whitespace is no longer removed from quoted strings in
+  substitutions.
 
 ## [5.0.0] - 2021-03-01
 
