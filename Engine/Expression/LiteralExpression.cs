@@ -13,7 +13,7 @@ namespace Exodrifter.Rumor.Engine
 			Value = value;
 		}
 
-		public override Value Evaluate(RumorScope _)
+		public override Value Evaluate(RumorScope _scope, RumorBindings _bindings)
 		{
 			return Value;
 		}

@@ -25,7 +25,7 @@ namespace Exodrifter.Rumor.Engine
 		{
 			rumor.State.AddChoice(
 				Label,
-				Text.Evaluate(rumor.Scope).AsString().Value
+				Text.Evaluate(rumor.Scope, rumor.Bindings).AsString().Value
 			);
 			return null;
 		}

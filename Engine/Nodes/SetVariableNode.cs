@@ -17,7 +17,7 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Yield Execute(Rumor rumor)
 		{
-			var value = Expression.Evaluate(rumor.Scope);
+			var value = Expression.Evaluate(rumor.Scope, rumor.Bindings);
 			rumor.Scope.Set(Name, value);
 			return null;
 		}
