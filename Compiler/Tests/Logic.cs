@@ -6,7 +6,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 {
 	public static class Logic
 	{
-		#region Literal
+		#region Primitives
 
 		[Test]
 		public static void BooleanTrueSuccess()
@@ -29,6 +29,129 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new BooleanValue(false),
 				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void VariableSuccess()
+		{
+			var state = new ParserState("foobar", 4, new RumorParserState());
+			var scope = new RumorScope();
+			scope.Set("foobar", true);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void Binding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean);
+
+			var state = new ParserState("foobar()", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return true; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean, ValueType.Boolean);
+
+			var state = new ParserState("foobar(true)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool>("foobar", (a) => { return a; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool>(
+				"foobar", (a, b) => { return a ^ b; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool>(
+				"foobar", (a, b, c) => { return a ^ b ^ c; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true, false)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool, bool>(
+				"foobar", (a, b, c, d) => { return a ^ b ^ c ^ d; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 
@@ -57,6 +180,129 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new BooleanValue(true),
 				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void NotVariableSuccess()
+		{
+			var state = new ParserState("not foobar", 4, new RumorParserState());
+			var scope = new RumorScope();
+			scope.Set("foobar", true);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void NotBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean);
+
+			var state = new ParserState("not foobar()", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return true; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void NotBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean, ValueType.Boolean);
+
+			var state = new ParserState("not foobar(true)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool>("foobar", (a) => { return a; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void NotBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("not foobar(true, false)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool>(
+				"foobar", (a, b) => { return a ^ b; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void NotBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("not foobar(true, false, true)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool>(
+				"foobar", (a, b, c) => { return a ^ b ^ c; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void NotBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("not foobar(true, false, true, false)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool, bool>(
+				"foobar", (a, b, c, d) => { return a ^ b ^ c ^ d; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 
@@ -136,6 +382,129 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 		}
 
+		[Test]
+		public static void OrVariableSuccess()
+		{
+			var state = new ParserState("foobar or true", 4, new RumorParserState());
+			var scope = new RumorScope();
+			scope.Set("foobar", false);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void OrBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean);
+
+			var state = new ParserState("foobar() or true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return false; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void OrBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean, ValueType.Boolean);
+
+			var state = new ParserState("foobar(false) or true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool>("foobar", (a) => { return a; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void OrBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false) or false", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool>(
+				"foobar", (a, b) => { return a ^ b; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void OrBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true) or false", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool>(
+				"foobar", (a, b, c) => { return a ^ b ^ c; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void OrBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true, false) or false", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool, bool>(
+				"foobar", (a, b, c, d) => { return a ^ b ^ c ^ d; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
 		#endregion
 
 		#region And
@@ -212,6 +581,129 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 		}
 
+		[Test]
+		public static void AndVariableSuccess()
+		{
+			var state = new ParserState("foobar and true", 4, new RumorParserState());
+			var scope = new RumorScope();
+			scope.Set("foobar", false);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void AndBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean);
+
+			var state = new ParserState("foobar() and true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return false; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AndBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean, ValueType.Boolean);
+
+			var state = new ParserState("foobar(false) and true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool>("foobar", (a) => { return a; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AndBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false) and false", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool>(
+				"foobar", (a, b) => { return a ^ b; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AndBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true) and true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool>(
+				"foobar", (a, b, c) => { return a ^ b ^ c; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AndBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true, false) and true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool, bool>(
+				"foobar", (a, b, c, d) => { return a ^ b ^ c ^ d; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
 		#endregion
 
 		#region Xor
@@ -285,6 +777,129 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new BooleanValue(false),
 				exp.Evaluate(new RumorScope(), new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void XorVariableSuccess()
+		{
+			var state = new ParserState("foobar xor true", 4, new RumorParserState());
+			var scope = new RumorScope();
+			scope.Set("foobar", false);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void XorBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean);
+
+			var state = new ParserState("foobar() xor true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return false; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void XorBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Boolean, ValueType.Boolean);
+
+			var state = new ParserState("foobar(false) xor true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool>("foobar", (a) => { return a; });
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void XorBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false) xor true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool>(
+				"foobar", (a, b) => { return a ^ b; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(false),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void XorBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true) xor true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool>(
+				"foobar", (a, b, c) => { return a ^ b ^ c; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void XorBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean,
+				ValueType.Boolean
+			);
+
+			var state = new ParserState("foobar(true, false, true, false) xor true", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<bool, bool, bool, bool, bool>(
+				"foobar", (a, b, c, d) => { return a ^ b ^ c ^ d; }
+			);
+
+			var n = Compiler.Logic(state);
+			Assert.AreEqual(
+				new BooleanValue(true),
+				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 
