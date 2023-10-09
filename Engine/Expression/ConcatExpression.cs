@@ -17,7 +17,8 @@ namespace Exodrifter.Rumor.Engine
 
 		public override Value Evaluate(RumorScope scope, RumorBindings bindings)
 		{
-			return l.Evaluate(scope, bindings).AsString() + r.Evaluate(scope, bindings).AsString();
+			return l.Evaluate(scope, bindings).AsString()
+				+ r.Evaluate(scope, bindings).AsString();
 		}
 
 		public override Expression Simplify()

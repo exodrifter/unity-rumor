@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Engine
 				return new StringValue(Convert.ToString(result));
 			} catch (Exception) {
 				throw new FunctionTypeException(
-					"Variable is not a string!"
+					"Function \"" + name + "\" did not return a string!"
 				);
 			}
 		}

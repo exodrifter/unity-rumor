@@ -697,7 +697,7 @@ namespace Exodrifter.Rumor.Compiler
 				{
 					var errorIndex = state.Index;
 
-					var id = Parse.Surround('[', ']', Identifier)(state);
+					var id = Parse.Surround('[', ']', true, Identifier)(state);
 
 					var userState = (RumorParserState)state.UserState;
 					if (userState.UsedIdentifiers.Contains(id))

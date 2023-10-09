@@ -7,7 +7,7 @@ namespace Exodrifter.Rumor.Engine
 	[Serializable]
 	public class RumorState : ISerializable
 	{
-		private const string DefaultSpeaker = "_narrator";
+		public const string DefaultSpeaker = "_narrator";
 
 		private Dictionary<string, string> Dialog { get; }
 		private Dictionary<string, string> Choices { get; }

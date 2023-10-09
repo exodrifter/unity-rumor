@@ -1,4 +1,5 @@
-﻿using Exodrifter.Rumor.Engine;
+﻿using System.Collections.Generic;
+using Exodrifter.Rumor.Engine;
 using Exodrifter.Rumor.Parser;
 using NUnit.Framework;
 
@@ -145,6 +146,110 @@ namespace Exodrifter.Rumor.Compiler.Tests
 
 			var node = Compiler.SetDialog(state);
 			Assert.AreEqual(new SetDialogNode(null, "Hello world!"), node);
+		}
+
+		[Test]
+		public static void StringBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.String);
+
+			var state = new ParserState(": Hello {foobar()}", 4, rps);
+			var node = Compiler.SetDialog(state);
+
+			var rumor = new Engine.Rumor(new Dictionary<string, List<Node>>());
+			rumor.Bindings.Bind("foobar", () => { return "world!"; });
+
+			node.Execute(rumor);
+			Assert.AreEqual("Hello world!", rumor.State.GetDialog()[RumorState.DefaultSpeaker]);
+		}
+
+		[Test]
+		public static void StringBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.String, ValueType.String);
+
+			var state = new ParserState(": Hello {foobar(\"world!\")}", 4, rps);
+			var node = Compiler.SetDialog(state);
+
+			var rumor = new Engine.Rumor(new Dictionary<string, List<Node>>());
+			rumor.Bindings.Bind<string, string>("foobar", (a) => { return a; });
+
+			node.Execute(rumor);
+			Assert.AreEqual("Hello world!", rumor.State.GetDialog()[RumorState.DefaultSpeaker]);
+		}
+
+		[Test]
+		public static void StringBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.String
+			);
+
+			var state = new ParserState(": { foobar(\"Hello \", \"world!\") }", 4, rps);
+			var node = Compiler.SetDialog(state);
+
+			var rumor = new Engine.Rumor(new Dictionary<string, List<Node>>());
+			rumor.Bindings.Bind<string, string, string>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			node.Execute(rumor);
+			Assert.AreEqual("Hello world!", rumor.State.GetDialog()[RumorState.DefaultSpeaker]);
+		}
+
+		[Test]
+		public static void StringBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.String
+			);
+
+			var state = new ParserState(": { foobar(\"Hello\", \" \", \"world!\") }", 4, rps);
+			var node = Compiler.SetDialog(state);
+
+			var rumor = new Engine.Rumor(new Dictionary<string, List<Node>>());
+			rumor.Bindings.Bind<string, string, string, string>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			node.Execute(rumor);
+			Assert.AreEqual("Hello world!", rumor.State.GetDialog()[RumorState.DefaultSpeaker]);
+		}
+
+		[Test]
+		public static void StringBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.String,
+				ValueType.String
+			);
+
+			var state = new ParserState(": { foobar(\"Hello\", \" \", \"world\", \"!\") }", 4, rps);
+			var node = Compiler.SetDialog(state);
+
+			var rumor = new Engine.Rumor(new Dictionary<string, List<Node>>());
+			rumor.Bindings.Bind<string, string, string, string, string>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			node.Execute(rumor);
+			Assert.AreEqual("Hello world!", rumor.State.GetDialog()[RumorState.DefaultSpeaker]);
 		}
 
 		#endregion

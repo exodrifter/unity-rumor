@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Engine
 				return new NumberValue(Convert.ToDouble(result));
 			} catch (Exception) {
 				throw new FunctionTypeException(
-					"Variable is not a number!"
+					"Function \"" + name + "\" did not return a number!"
 				);
 			}
 		}

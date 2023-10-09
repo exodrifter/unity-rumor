@@ -6,7 +6,7 @@ namespace Exodrifter.Rumor.Compiler.Tests
 {
 	public static class Arithmetic
 	{
-		#region Literal
+		#region Primitives
 
 		[Test]
 		public static void IntegerSuccess()
@@ -94,6 +94,115 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			);
 		}
 
+		[Test]
+		public static void Binding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState("foobar()", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return 1234d; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number, ValueType.Number);
+
+			var state = new ParserState("foobar(1234)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double>("foobar", (a) => { return a; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(411, 823)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(176, 352, 706)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void Binding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(82, 164, 329, 659)", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double, double>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1234),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
 		#endregion
 
 		#region Addition
@@ -121,6 +230,115 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new NumberValue(1236),
 				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void AdditionBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState("foobar() + 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return 1234d; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AdditionBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number, ValueType.Number);
+
+			var state = new ParserState("foobar(1234) + 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double>("foobar", (a) => { return a; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AdditionBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(411, 823) + 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AdditionBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(176, 352, 706) + 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void AdditionBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(82, 164, 329, 659) + 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double, double>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1236),
+				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 
@@ -227,6 +445,115 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void SubtractionBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState("foobar() - 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return 1234d; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void SubtractionBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number, ValueType.Number);
+
+			var state = new ParserState("foobar(1234) - 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double>("foobar", (a) => { return a; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void SubtractionBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(411, 823) - 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void SubtractionBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(176, 352, 706) - 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void SubtractionBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(82, 164, 329, 659) - 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double, double>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(1232),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
 		public static void SubtractionPlusSignSuccess()
 		{
 			var state = new ParserState("1-+2", 4);
@@ -329,6 +656,115 @@ namespace Exodrifter.Rumor.Compiler.Tests
 		}
 
 		[Test]
+		public static void MultiplicationBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState("foobar() * 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return 1234d; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void MultiplicationBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number, ValueType.Number);
+
+			var state = new ParserState("foobar(1234) * 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double>("foobar", (a) => { return a; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void MultiplicationBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(411, 823) * 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void MultiplicationBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(176, 352, 706) * 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void MultiplicationBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(82, 164, 329, 659) * 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double, double>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(2468),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
 		public static void MultiplicationPlusSignSuccess()
 		{
 			var state = new ParserState("1*+2", 4);
@@ -427,6 +863,115 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new NumberValue(617),
 				n.Evaluate(scope, new RumorBindings())
+			);
+		}
+
+		[Test]
+		public static void DivisionBinding0Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number);
+
+			var state = new ParserState("foobar() / 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind("foobar", () => { return 1234d; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void DivisionBinding1Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction("foobar", ValueType.Number, ValueType.Number);
+
+			var state = new ParserState("foobar(1234) / 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double>("foobar", (a) => { return a; });
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void DivisionBinding2Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(411, 823) / 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double>(
+				"foobar", (a, b) => { return a + b; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void DivisionBinding3Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(176, 352, 706) / 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double>(
+				"foobar", (a, b, c) => { return a + b + c; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(new RumorScope(), bindings)
+			);
+		}
+
+		[Test]
+		public static void DivisionBinding4Success()
+		{
+			var rps = new RumorParserState();
+			rps.LinkFunction(
+				"foobar",
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number,
+				ValueType.Number
+			);
+
+			var state = new ParserState("foobar(82, 164, 329, 659) / 2", 4, rps);
+			var bindings = new RumorBindings();
+			bindings.Bind<double, double, double, double, double>(
+				"foobar", (a, b, c, d) => { return a + b + c + d; }
+			);
+
+			var n = Compiler.Math(state);
+			Assert.AreEqual(
+				new NumberValue(617),
+				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 
@@ -539,114 +1084,6 @@ namespace Exodrifter.Rumor.Compiler.Tests
 			Assert.AreEqual(
 				new NumberValue(50d),
 				exp.Evaluate(new RumorScope(), new RumorBindings())
-			);
-		}
-
-		#endregion
-
-		#region Function
-
-		[Test]
-		public static void Function0Success()
-		{
-			var hints = new RumorParserState();
-			hints.LinkFunction("foobar", ValueType.Number);
-
-			var state = new ParserState("foobar() + 2", 4, hints);
-			var bindings = new RumorBindings();
-			bindings.Bind("foobar", () => { return 1234; });
-
-			var n = Compiler.Math(state);
-			Assert.AreEqual(
-				new NumberValue(1236),
-				n.Evaluate(new RumorScope(), bindings)
-			);
-		}
-
-		[Test]
-		public static void Function1Success()
-		{
-			var hints = new RumorParserState();
-			hints.LinkFunction("foobar", ValueType.Number, ValueType.Number);
-
-			var state = new ParserState("foobar(3) + 2", 4, hints);
-			var bindings = new RumorBindings();
-			bindings.Bind<int, int>("foobar", (i) => { return i; });
-
-			var n = Compiler.Math(state);
-			Assert.AreEqual(
-				new NumberValue(5),
-				n.Evaluate(new RumorScope(), bindings)
-			);
-		}
-
-		[Test]
-		public static void Function2Success()
-		{
-			var hints = new RumorParserState();
-			hints.LinkFunction("foobar",
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number
-			);
-
-			var state = new ParserState("foobar(3, 4) + 2", 4, hints);
-			var bindings = new RumorBindings();
-			bindings.Bind<int, int, int>("foobar", (i, j) => { return i + j; });
-
-			var n = Compiler.Math(state);
-			Assert.AreEqual(
-				new NumberValue(9),
-				n.Evaluate(new RumorScope(), bindings)
-			);
-		}
-
-		[Test]
-		public static void Function3Success()
-		{
-			var hints = new RumorParserState();
-			hints.LinkFunction("foobar",
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number
-			);
-
-			var state = new ParserState("foobar(3, 4, 5) + 2", 4, hints);
-			var bindings = new RumorBindings();
-			bindings.Bind<int, int, int, int>("foobar",
-				(i, j, k) => { return i + j + k; }
-			);
-
-			var n = Compiler.Math(state);
-			Assert.AreEqual(
-				new NumberValue(14),
-				n.Evaluate(new RumorScope(), bindings)
-			);
-		}
-
-		[Test]
-		public static void Function4Success()
-		{
-			var hints = new RumorParserState();
-			hints.LinkFunction("foobar",
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number,
-				ValueType.Number
-			);
-
-			var state = new ParserState("foobar(3, 4, 5, 6) + 2", 4, hints);
-			var bindings = new RumorBindings();
-			bindings.Bind<int, int, int, int, int>("foobar",
-				(i, j, k, l) => { return i + j + k + l; }
-			);
-
-			var n = Compiler.Math(state);
-			Assert.AreEqual(
-				new NumberValue(20),
-				n.Evaluate(new RumorScope(), bindings)
 			);
 		}
 

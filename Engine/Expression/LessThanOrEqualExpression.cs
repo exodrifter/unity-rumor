@@ -18,7 +18,8 @@ namespace Exodrifter.Rumor.Engine
 		public override Value Evaluate(RumorScope scope, RumorBindings bindings)
 		{
 			return new BooleanValue(
-				l.Evaluate(scope, bindings).AsNumber() <= r.Evaluate(scope, bindings).AsNumber()
+				l.Evaluate(scope, bindings).AsNumber() <=
+				r.Evaluate(scope, bindings).AsNumber()
 			);
 		}
 

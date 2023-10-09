@@ -12,7 +12,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new ParserState("(a)", 4);
 
-			var result = Parse.Surround('(', ')', Parse.Char('a'))(state);
+			var result = Parse.Surround('(', ')', true, Parse.Char('a'))(state);
 			Assert.AreEqual('a', result);
 
 			Assert.AreEqual(3, state.Index);
@@ -27,7 +27,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 		{
 			var state = new ParserState("(\n a\t \n)", 4);
 
-			var result = Parse.Surround('(', ')', Parse.Char('a'))(state);
+			var result = Parse.Surround('(', ')', true, Parse.Char('a'))(state);
 			Assert.AreEqual('a', result);
 
 			Assert.AreEqual(8, state.Index);
@@ -43,7 +43,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new ParserState(".a)", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
-				Parse.Surround('(', ')', Parse.Char('a'))(state)
+				Parse.Surround('(', ')', true, Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "'('" }, exception.Expected);
@@ -61,7 +61,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new ParserState("a)", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
-				Parse.Surround('(', ')', Parse.Char('a'))(state)
+				Parse.Surround('(', ')', true, Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(0, exception.Index);
 			Assert.AreEqual(new string[] { "'('" }, exception.Expected);
@@ -79,7 +79,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new ParserState("(a.", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
-				Parse.Surround('(', ')', Parse.Char('a'))(state)
+				Parse.Surround('(', ')', true, Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(new string[] { "')'" }, exception.Expected);
@@ -97,7 +97,7 @@ namespace Exodrifter.Rumor.Parser.Tests
 			var state = new ParserState("(a", 4);
 
 			var exception = Assert.Throws<ExpectedException>(() =>
-				Parse.Surround('(', ')', Parse.Char('a'))(state)
+				Parse.Surround('(', ')', true, Parse.Char('a'))(state)
 			);
 			Assert.AreEqual(2, exception.Index);
 			Assert.AreEqual(new string[] { "')'" }, exception.Expected);

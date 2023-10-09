@@ -29,7 +29,7 @@ namespace Exodrifter.Rumor.Engine
 				return new BooleanValue(Convert.ToBoolean(result));
 			} catch (Exception) {
 				throw new FunctionTypeException(
-					"Variable is not a boolean!"
+					"Function \"" + name + "\" did not return a boolean!"
 				);
 			}
 		}

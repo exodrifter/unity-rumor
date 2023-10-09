@@ -293,7 +293,6 @@ namespace Exodrifter.Rumor.Compiler
 		private static Parser<Expression> BooleanFunction =>
 			BindingFunction(Engine.ValueType.Boolean).Select(x => (Expression)x);
 
-
 		/// <summary>
 		/// Parses a boolean variable.
 		/// </summary>
@@ -647,7 +646,7 @@ namespace Exodrifter.Rumor.Compiler
 		/// <see cref="StringValue"/> when evaluated.
 		/// </summary>
 		public static Parser<Expression> Quote =>
-			Parse.Surround('\"', '\"', QuoteInternal)
+			Parse.Surround('\"', '\"', false, QuoteInternal)
 				.Or(StringFunction)
 				.Or(StringVariable);
 
@@ -780,6 +779,8 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var errorIndex = state.Index;
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
@@ -788,6 +789,16 @@ namespace Exodrifter.Rumor.Compiler
 						throw new ReasonException(errorIndex,
 							"Tried to reference unlinked function \"" + id + "\" " +
 							"with zero parameters!"
+						);
+					}
+
+					var hint = (BindingFunctionHint)
+						userState.GetBindingHint(BindingType.Function, id, 0);
+					if (hint.result != vt)
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference function \"" + id + "\" " +
+							"but it doesn't return a " + vt + "!"
 						);
 					}
 
@@ -820,6 +831,8 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var errorIndex = state.Index;
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
@@ -830,8 +843,16 @@ namespace Exodrifter.Rumor.Compiler
 							"with one parameter!"
 						);
 					}
+
 					var hint = (BindingFunctionHint1)
 						userState.GetBindingHint(BindingType.Function, id, 1);
+					if (hint.result != vt)
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference function \"" + id + "\" " +
+							"but it doesn't return a " + vt + "!"
+						);
+					}
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -865,6 +886,8 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var errorIndex = state.Index;
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
@@ -875,8 +898,16 @@ namespace Exodrifter.Rumor.Compiler
 							"with two parameters!"
 						);
 					}
+
 					var hint = (BindingFunctionHint2)
 						userState.GetBindingHint(BindingType.Function, id, 2);
+					if (hint.result != vt)
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference function \"" + id + "\" " +
+							"but it doesn't return a " + vt + "!"
+						);
+					}
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -892,8 +923,6 @@ namespace Exodrifter.Rumor.Compiler
 
 					Parse.Spaces(state);
 					Parse.String(")")(state);
-
-					transaction.CommitIndex();
 
 					transaction.CommitIndex();
 					switch (vt) {
@@ -918,6 +947,8 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var errorIndex = state.Index;
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
@@ -928,8 +959,16 @@ namespace Exodrifter.Rumor.Compiler
 							"with three parameters!"
 						);
 					}
+
 					var hint = (BindingFunctionHint3)
 						userState.GetBindingHint(BindingType.Function, id, 3);
+					if (hint.result != vt)
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference function \"" + id + "\" " +
+							"but it doesn't return a " + vt + "!"
+						);
+					}
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);
@@ -975,6 +1014,8 @@ namespace Exodrifter.Rumor.Compiler
 				using (var transaction = new Transaction(state))
 				{
 					var errorIndex = state.Index;
+					Parse.Whitespaces(state);
+					Parse.SameOrIndented(state);
 					var id = Identifier(state);
 
 					var userState = (RumorParserState)state.UserState;
@@ -985,8 +1026,16 @@ namespace Exodrifter.Rumor.Compiler
 							"with four parameters!"
 						);
 					}
+
 					var hint = (BindingFunctionHint4)
 						userState.GetBindingHint(BindingType.Function, id, 4);
+					if (hint.result != vt)
+					{
+						throw new ReasonException(errorIndex,
+							"Tried to reference function \"" + id + "\" " +
+							"but it doesn't return a " + vt + "!"
+						);
+					}
 
 					Parse.Spaces(state);
 					Parse.String("(")(state);

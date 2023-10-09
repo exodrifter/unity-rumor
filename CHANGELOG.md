@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * The character `-` can now be used in identifiers.
 * The ability to clear a specific choice has been added, which also changed the
   signature of `OnClear`.
+* `RumorState.DefaultSpeaker` is now public.
 
 ### Fixed
 * Fixed bug where choosing would unintentionally pop the stack frame.
@@ -28,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   with two `choice`s which only contain an `if` statement).
 * `choice` and `if`/`elif`/`else` code which contains the same code as another
   are no longer combined.
+* Leading and trailing whitespace is no longer removed from quoted strings in
+  substitutions.
 
 ## [5.0.0] - 2021-03-01
 
