@@ -381,7 +381,7 @@ namespace Exodrifter.Rumor.Compiler
 			Parse.ChainL1(MathPiece, MultiplyOrDivide);
 
 		private static Parser<Expression> MathPiece =>
-			MathParenthesis.Or(NumberLiteral).Or(NumberVariable);
+			MathParenthesis.Or(NumberLiteral).Or(NumberBinding).Or(NumberVariable);
 
 		/// <summary>
 		/// Parses an addition or subtraction operator.
@@ -418,6 +418,285 @@ namespace Exodrifter.Rumor.Compiler
 		/// </summary>
 		private static Parser<Op> Divide =>
 			Op<Op>((l, r) => new DivideExpression(l, r), "/");
+
+		/// <summary>
+		/// Parses a number binding.
+		/// </summary>
+		public static Parser<Expression> NumberBinding =>
+			NumberBinding0
+				.Or(NumberBinding1)
+				.Or(NumberBinding2)
+				.Or(NumberBinding3)
+				.Or(NumberBinding4);
+
+		private static Parser<Expression> NumberBinding0
+		{
+			get
+			{
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var id = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						if (!userState.ContainsBindingHint(BindingType.Function, id, 0))
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference unlinked function \"" + id + "\" " +
+								"with zero parameters!"
+							);
+						}
+
+						var hint = (BindingFunctionHint)
+							userState.GetBindingHint(BindingType.Function, id, 0);
+						if (hint.result != Engine.ValueType.Number)
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference function \"" + id + "\" " +
+								"but it doesn't return a number!"
+							);
+						}
+
+						Parse.Spaces(state);
+						Parse.String("(")(state);
+
+						Parse.Spaces(state);
+						Parse.String(")")(state);
+
+						transaction.CommitIndex();
+						return new NumberBinding(id);
+					}
+				};
+			}
+		}
+
+		private static Parser<Expression> NumberBinding1
+		{
+			get {
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var id = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						if (!userState.ContainsBindingHint(BindingType.Function, id, 1))
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference unlinked function \"" + id + "\" " +
+								"with one parameter!"
+							);
+						}
+
+						var hint = (BindingFunctionHint1)
+							userState.GetBindingHint(BindingType.Function, id, 1);
+						if (hint.result != Engine.ValueType.Number)
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference function \"" + id + "\" " +
+								"but it doesn't return a number!"
+							);
+						}
+
+						Parse.Spaces(state);
+						Parse.String("(")(state);
+
+						Parse.Spaces(state);
+						var p1 = Param(hint.t1)(state);
+
+						Parse.Spaces(state);
+						Parse.String(")")(state);
+
+						transaction.CommitIndex();
+						return new NumberBinding(id, p1);
+					}
+				};
+			}
+		}
+
+		private static Parser<Expression> NumberBinding2
+		{
+			get {
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var id = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						if (!userState.ContainsBindingHint(BindingType.Function, id, 2))
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference unlinked function \"" + id + "\" " +
+								"with two parameters!"
+							);
+						}
+
+						var hint = (BindingFunctionHint2)
+							userState.GetBindingHint(BindingType.Function, id, 2);
+						if (hint.result != Engine.ValueType.Number)
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference function \"" + id + "\" " +
+								"but it doesn't return a number!"
+							);
+						}
+
+						Parse.Spaces(state);
+						Parse.String("(")(state);
+
+						Parse.Spaces(state);
+						var p1 = Param(hint.t1)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p2 = Param(hint.t2)(state);
+
+						Parse.Spaces(state);
+						Parse.String(")")(state);
+
+						transaction.CommitIndex();
+						return new NumberBinding(id, p1, p2);
+					}
+				};
+			}
+		}
+
+		private static Parser<Expression> NumberBinding3
+		{
+			get {
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var id = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						if (!userState.ContainsBindingHint(BindingType.Function, id, 3))
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference unlinked function \"" + id + "\" " +
+								"with three parameters!"
+							);
+						}
+
+						var hint = (BindingFunctionHint3)
+							userState.GetBindingHint(BindingType.Function, id, 3);
+						if (hint.result != Engine.ValueType.Number)
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference function \"" + id + "\" " +
+								"but it doesn't return a number!"
+							);
+						}
+
+						Parse.Spaces(state);
+						Parse.String("(")(state);
+
+						Parse.Spaces(state);
+						var p1 = Param(hint.t1)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p2 = Param(hint.t2)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p3 = Param(hint.t3)(state);
+
+						Parse.Spaces(state);
+						Parse.String(")")(state);
+
+						transaction.CommitIndex();
+						return new NumberBinding(id, p1, p2, p3);
+					}
+				};
+			}
+		}
+
+		private static Parser<Expression> NumberBinding4
+		{
+			get {
+				return state =>
+				{
+					using (var transaction = new Transaction(state))
+					{
+						var errorIndex = state.Index;
+						Parse.Whitespaces(state);
+						Parse.SameOrIndented(state);
+						var id = Identifier(state);
+
+						var userState = (RumorParserState)state.UserState;
+						if (!userState.ContainsBindingHint(BindingType.Function, id, 4))
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference unlinked function \"" + id + "\" " +
+								"with four parameters!"
+							);
+						}
+
+						var hint = (BindingFunctionHint4)
+							userState.GetBindingHint(BindingType.Function, id, 4);
+						if (hint.result != Engine.ValueType.Number)
+						{
+							throw new ReasonException(errorIndex,
+								"Tried to reference function \"" + id + "\" " +
+								"but it doesn't return a number!"
+							);
+						}
+
+						Parse.Spaces(state);
+						Parse.String("(")(state);
+
+						Parse.Spaces(state);
+						var p1 = Param(hint.t1)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p2 = Param(hint.t2)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p3 = Param(hint.t3)(state);
+
+						Parse.Spaces(state);
+						Parse.String(",")(state);
+
+						Parse.Spaces(state);
+						var p4 = Param(hint.t4)(state);
+
+						Parse.Spaces(state);
+						Parse.String(")")(state);
+
+						transaction.CommitIndex();
+						return new NumberBinding(id, p1, p2, p3, p4);
+					}
+				};
+			}
+		}
 
 		/// <summary>
 		/// Parses a number literal.
